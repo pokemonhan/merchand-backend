@@ -11,7 +11,7 @@
                 class="iconfont icon-icon-test"></i>
             <span v-else :class="['drop-down', '', isShow ? 'icon-rotate' : '']"></span>
         </div>
-        <ul :class="['sections', sectionsDir]">
+        <ul :class="['sections', sectionsDir]" ref="sections">
             <li 
                 v-for="(item, index) in options"
                 :key="index"
@@ -58,17 +58,20 @@
         methods: {
             showOptions(e) {
                 this.isShow = !this.isShow
+                let ele = this.$refs.sections
+                console.log("TCL: showOptions -> ele", ele)
                 if(this.isShow) {
                     let y = document.body.scrollHeight - e.target.getBoundingClientRect().bottom 
                     this.sectionsDir = y < 30 * this.options.length ? 'top-upfold' : 'bottom-upfold'
-                    $('.sections').slideDown(200)
+                    $(ele).slideDown(200)
                 }else{
-                    $('.sections').slideUp(200)
+                    $(ele).slideUp(200)
                 }
             },
             select(item) {
                 this.isShow = false
-                $('.sections').slideUp(200)
+                let ele = this.$refs.sections
+                $(ele).slideUp(200)
                 if(item.value === this.selectedValue) return
                 this.selectedValue = item.value
                 this.selectedLabel = item.label
@@ -81,7 +84,8 @@
             },
             closeSections() {
                 this.isShow = false
-                $('.sections').slideUp(200)
+                let ele = this.$refs.sections
+                $(ele).slideUp(200)
             },
             updateClearState(bool) {
                 this.isClear = bool
@@ -98,24 +102,27 @@
     }
 </script>
 
-<style>
+<style scoped>
     .v-select{
+        /* height: 22px; */
+        /* height: 100%; */
         width: 150px;
         position: relative;
-        margin: 0 5px;
-        display: inline-block;
+        /* margin: 0 5px; */
+        /* display: inline-block; */
         box-sizing: border-box;
         cursor:pointer;
         box-sizing: border-box;
+        background: #fff;
     }
     .val-box{
         width: 100%;
-        height: 26px;
-        line-height: 26px;
+        height: 30px;
+        line-height: 30px;
         display: flex;
         flex-direction: row;
         justify-content: space-between;
-        border: 1px solid #dcdee2;
+        border: 1px solid #e2dcdc;
         border-radius: 4px;
         position: relative;
     }
@@ -141,7 +148,7 @@
     .val-box span{
         display: inline-block;
         width:100%;
-        height: 100%;
+        height: 26px;
         text-align: left;
         text-indent: 10px;
     }

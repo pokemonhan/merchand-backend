@@ -244,12 +244,12 @@
 
 <style scoped>
     .v-date-picker{
-        width: 95px;
-        height: 24px;
-        line-height: 24px;
+        width: 90px;
+        height: 30px;
+        line-height: 28px;
         position: relative;
         text-align: center;
-        display: inline-block;
+        /* display: inline-block; */
     }
     .date-current{
         width: 100%;

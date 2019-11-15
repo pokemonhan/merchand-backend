@@ -4,30 +4,26 @@
             <div class="title">江湖互娱</div>
             <form id="loginForm">
                 <ul>
-                    <li>
+                    <li class="acc flex">
                         <span>账号:</span>
                         <Input
                             v-model="email"
-                            size="large"
                             @keyup="limitemail"
                             @update="checkUname"
                             limit="no-zh-cn"
                             holder="请输入账号"
-                            clearable
                         />
                     </li>
                     <li class="err-item">
                         <span>{{unameMsg}}</span>
                     </li>
-                    <li>
+                    <li class="psw flex">
                         <span>密码:</span>
                         <Input
                             v-model="password"
-                            size="large"
                             @update="checkPwd"
                             @enter="login"
                             holder="请输入密码"
-                            clearable
                             type="password"
                         />
                     </li>
@@ -161,6 +157,11 @@ export default {
     background-color: #169bd5;
     color: rgb(236, 234, 234);
     margin-top: 10px;
+}
+.flex{
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 </style>
 

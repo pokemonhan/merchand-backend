@@ -14,7 +14,6 @@ for (let item in state) {
         state[item] = value
     }
 }
-console.log(mutations, 'mutations')
 export default new Vuex.Store({
     state,
     mutations

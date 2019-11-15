@@ -10,17 +10,20 @@ let menuList = [
                     icon: "iconaccount",
                     children: [
                         { name: "会员列表", path: "/user/userlist" },
-                        { name: "会员登录平台", path: "/user/userloginplantform" },
-                        { name: "会员现金系统 ", path: "/user/usermoney" }
+                        { name: "登录记录", path: "/user/loginlog" },
+                        { name: "标签管理 ", path: "/user/tabmanage" },
+                        { name: "黑名单管理 ", path: "/user/blacklistmanage" },
+                        { name: "等级设置 ", path: "/user/levsetting" },
+                        { name: "洗码设置 ", path: "/user/washsetting" },
                     ]
                 },
                 {
-                    name: "资金管理",
+                    name: "财务管理",
                     // path: '/funds',
                     icon: "iconmoneybag",
                     children: [
-                        { name: "存款审核", path: "/funds/depositreview" },
-                        { name: "取款审核", path: "/funds/withdrawalreview" }
+                        { name: "入款审核", path: "/funds/depositreview" },
+                        { name: "人工存取", path: "/funds/withdrawalreview" }
                         // { name: "会员现金系统 ", path: "/usermoney" }
                     ]
                 },

@@ -1,10 +1,15 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+
 import HomePage from '@/components/views/home/homePage.vue'
+import Login from '@/components/Login.vue'
+// 测试组件
+import Test from '@/components/Test.vue'
 /* 会员管理 */
   // 会员列表
 import UserList from '@/components/views/user/UserList.vue'
-import UserLoginPlantform from '@/components/views/user/UserLoginPlantform.vue'
+import LoginLog from '@/components/views/user/LoginLog.vue'
+import TabManage from '@/components/views/user/TabManage.vue'
 
 Vue.use(Router)
 
@@ -14,6 +19,14 @@ export default new Router({
     {
       path: '/',
       component: HomePage
+    },
+    {
+      path: '/test',
+      component: Test
+    },
+    {
+      path: '/login',
+      component: Login
     },
 
     {
@@ -28,9 +41,15 @@ export default new Router({
       path: '/user/userlist',
       component: UserList
     },
+    // 登录记录
     {
-      path: '/user/UserLoginPlantform',
-      component: UserLoginPlantform
+      path: '/user/loginlog',
+      component: LoginLog
+    },
+    // 标签管理
+    {
+      path: '/user/tabmanage',
+      component: TabManage
     },
    /*  会员管理 */
   ]

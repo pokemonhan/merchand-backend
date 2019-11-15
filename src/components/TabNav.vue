@@ -1,16 +1,16 @@
 <template>
     <div class="container" v-if="$route.path!=='/home'">
         <ul>
-            <li v-for="(item, index) in tab_nav_list" :key="index">
-                <span :class="['title', item.path===$route.path?'active-tab-nav':'']" @click="jumpRouter(item)">{{item.name}}</span>
-                <span class="close" @click="close(item)">x</span>
+            <li v-for="(item, index) in tab_nav_list" :key="index" :class="[item.path===$route.path?'active-tab-nav':'']">
+                <span :class="['title']" @click="jumpRouter(item)">{{item.name}}</span>
+                <span class="close" @click="close(item)">X</span>
             </li>
         </ul>
     </div>
 </template>
 
 <script>
-import { mapState } from "vuex";
+import { mapState, mapMutations } from "vuex";
 export default {
     data() {
         return {
@@ -53,6 +53,7 @@ export default {
         }
     },
     methods: {
+        ...mapMutations(['updatetab_nav_list']),
         jumpRouter(item){
             // 非当前则跳转
             if(item.path !== this.$route.path){ 
@@ -76,8 +77,16 @@ export default {
         //         }
         //     })
         // },
-        close(name){
-            
+        close(tab){
+            console.log('要关闭的', tab);
+         
+            let list = this.tab_nav_list.filter(item => item.path!==tab.path) // 把当前tab 从中去除
+            this.updatetab_nav_list(list)
+            // 如果关闭当前,跳转到最后一个tab
+            if(this.$route.path===tab.path && this.tab_nav_list.length > 1){
+                let last_index = this.tab_nav_list.length - 1
+                this.$router.push(this.tab_nav_list[last_index].path)
+            }
         }
     },
     watch: {
@@ -117,6 +126,7 @@ export default {
     width: 130px;
     background: #fff;
     margin-left: 10px;
+    padding-left: 6px;
     border-top-left-radius: 4px;
     border-top-right-radius: 4px;
 
@@ -135,14 +145,26 @@ ul > li .title{
 }
 .close {
     /* float: right; */
+    /* display: inline-block; */
+    height: 23px;
+    width: 23px;
     position: absolute;
-    right:5px;
+    right:3px;
+    top: 3px;
+    padding: 2px 2px 2px 7px;
+    /* border: 1px solid #000; */
+    background: rgb(241, 241, 241);
+    border-radius: 50%;
+    line-height: 17px;
+    /* background: #000; */
     /* margin-right: -5px; */
 }
 .close:hover {
     color: red;
+    /* background: rgb(155, 142, 142); */
 }
-.active-tab-nav{
-    color:rgb(0, 110, 255);
+.container ul .active-tab-nav{
+    color:rgb(0, 128, 255);
+    background-color: rgba(255, 255, 255, 0.8);
 }
 </style>

@@ -1,113 +1,113 @@
 <template>
     <span :class="['v-input', size]">
-        <input :type="type==='password'? 'password':'text'" 
-            ref="input" 
-            :placeholder="placeholder" 
-            v-model="val" 
-            @input="input" 
+        <input
+            :type="type==='password'? 'password':'text'"
+            ref="input"
+            :placeholder="placeholder"
+            v-model="val"
+            @input="input"
             @keyup.enter="pressEnter"
             :disabled="disabled"
-            />
+        />
         <i v-if="icon" :class="['iconfont', icon]"></i>
     </span>
 </template>
 
 <script>
 export default {
-    name: 'Input',
-    props:{
+    name: "Input",
+    props: {
         disabled: Boolean,
-        type:{
+        type: {
             type: String,
-            default: 'text'
+            default: "text"
         },
         icon: String,
-        size:{
+        size: {
             type: String,
-            default: 'normal'
+            default: "normal"
         },
         limit: {
             type: String,
-            default:''
+            default: ""
         },
         placeholder: String,
         value: String
     },
     model: {
-        prop: 'value',
-        event: 'input'
+        prop: "value",
+        event: "input"
     },
-    data(){
+    data() {
         return {
-            val: '',
-
-        }
+            val: ""
+        };
     },
     methods: {
-        input(){
-            this.$emit('input', this.val)
+        input() {
+            this.$emit("input", this.val);
         },
-        pressEnter(){
-            this.$emit('enter')
+        pressEnter() {
+            this.$emit("enter");
         }
     }
-}
+};
 </script>
 
 <style scoped>
-        .v-input{
-        display: inline-block;
-        /* width: 100%; */
-        position: relative;
-    }
-    .large{
-        height: 36px;
-        line-height: 34px;
-    }
-    .normal{
-        height: 32px;
-        line-height: 30px;
-    }
-    .small{
-        height: 24px;
-        line-height: 22px;
-    }
-    /* .small{
+.v-input {
+    /* display: inline-block; */
+    /* width: 100%; */
+    position: relative;
+    /* min-height: 26px; */
+}
+.large {
+    height: 36px;
+    line-height: 34px;
+}
+.normal {
+    height: 30px;
+    line-height: 28px;
+}
+.small {
+    height: 26px;
+    line-height: 26px;
+}
+/* .small{
         height: 20px;
         line-height: 18px;
     } */
-    .v-input input{
-        width: 100%;
-        height: 100%;
-        border: none;
-        outline: none;
-        border-radius: 4px;
-        box-sizing: border-box;
-        border: 1px solid #ddd;
-        padding: 0 10px;
-        background: #fff;
-    }
-    .v-input span {
-        position: absolute;
-        width: 100%;
-        height: 100%;
-    }
-    .v-input input:focus{
-        border-color:#2d8cf0;
-    }
-    .v-input i{
-        position: absolute;
-        right: 10px;
-        color: #808695;
-    }
-    .v-input .icon-icon-test{
-        cursor: pointer; 
-    }
-    .large .iconfont{
-        font-size: 20px;
-    }
-    .normal .iconfont{
-        font-size:18px;
-    }
-       
+.v-input input {
+    width: 100%;
+    height: 100%;
+    border: none;
+    outline: none;
+    border-radius: 4px;
+    box-sizing: border-box;
+    border: 1px solid #ddd;
+    padding: 0 10px;
+    background: #fff;
+}
+.v-input span {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
+.v-input input:focus {
+    border-color: #2d8cf0;
+}
+.v-input i {
+    position: absolute;
+    right: 10px;
+    color: #808695;
+}
+.v-input .icon-icon-test {
+    cursor: pointer;
+}
+.large .iconfont {
+    font-size: 20px;
+}
+.normal .iconfont {
+    font-size: 18px;
+}
 </style>>

@@ -5,32 +5,32 @@ import App from './App'
 import router from './js/router'
 import store from './js/vuex'
 
-import tool from './js/tool'
-import plugins from './js/plugins.js'
-var echarts = require('echarts')
-import menuList from './js/menuList'
+import tool from './js/tool'                  // 常用工具
+import plugins from './js/plugins.js'         // 1.公用组件, 2.指令,  3.axios
 
-import $ from 'jquery'
+import echarts from 'echarts'
+import wangeditor from 'wangeditor'             // wangeditor 富文本 ,使用见官网
+import menu_list from './js/menuList'           // 菜单目录
+
+import $ from 'jquery'                          // jquery
 Vue.use(plugins)
 window.$ = $
-window.all = {};
-
-all.tool = tool;
-all.store = store;
-all.router = router;
-
-all.menu_list = menuList;
-all.echarts = echarts;
-// console.log(all,'$tool');
-// all.tool.setLocal("name","abc");
+window.all = {
+    tool,
+    store,
+    router,
+    menu_list,
+    echarts,
+    wangeditor
+};
 
 Vue.config.productionTip = false
 
 /* eslint-disable no-new */
-new Vue({
-  el: '#app',
-  store,
-  router,
-  components: { App },
-  template: '<App/>'
+window._Vue_=new Vue({
+    el: '#app',
+    store,
+    router,
+    components: { App },
+    template: '<App/>'
 })

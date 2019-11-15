@@ -11,7 +11,7 @@ npm install
 # serve with hot reload at localhost:8080  开发命令
 npm run dev
 
-# build for production with minification	打包
+# build for production with minification	打包(打好的包在/dist文件里)
 npm run build
 
 

@@ -1,7 +1,7 @@
-<template>
+<template> 
     <div class="container">
-        标签管理
-        <!--  -->
+        
+        <!--  标签管理-->
         <div>
             <button class="btn-blue" @click="add_tab">添加标签</button>
         </div>
@@ -16,8 +16,8 @@
                     <td>{{row.e}}</td>
                     <td>{{row.f}}</td>
                     <td>
-                        <span class="a"  @click="edit_tab">编辑</span>
-                        <span class="a" @click="show_del=true">删除</span>
+                        <span class="a"  @click="editTab">编辑</span>
+                        <span class="a" @click="delTab">删除</span>
                     </td>
                 </template>
             </Table>
@@ -32,6 +32,9 @@
         </div>
         <div class="modal-mask" v-if="show_mask">
             <div class="v-modal">
+                 <div @click="show_mask=false">
+                    <i class="iconfont iconcuowuguanbi-"></i>
+                </div>
                 <ul class="form">
                     <li>
                         <span>标签名称:</span>
@@ -60,17 +63,11 @@
             </div>
         </div>
         <!-- 删除-确认框 -->
-        <div class="modal-mask" v-if="show_del">
-            <div class="del-label">
-                <div class="inner">
-                    <div class="infor" >是否确定把{{'156465'}}删除！</div>
-                    <div class="btn">
-                        <button class="btn-plain-normal" @click="show_del=false">取消</button>
-                        <button class="btn-blue-normal">确认</button>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <Modal :show="show_delete_tab_conf" 
+            title="标签管理" content="是否删除该标签" 
+            @cancel="show_delete_tab_conf=false" 
+            @confirm="delTabConf">
+        </Modal>
     </div>
 </template>
 
@@ -118,7 +115,7 @@ export default {
             pagerCount: 0,
             show_mask: false,
             tab_name: '',
-            show_del: true
+            show_delete_tab_conf: false
         };
     },
     methods: {
@@ -128,9 +125,15 @@ export default {
         add_tab(){
             this.show_mask = true
         },
-        edit_tab(){
+        editTab(){
             this.show_mask = true
         },
+        delTab(){
+            this.show_delete_tab_conf =true
+        },
+        delTabConf(){
+
+        }
     },
     mounted() {}
 };
@@ -138,7 +141,7 @@ export default {
 
 <style scoped>
 .container {
-    padding: 10px 8px;
+    padding: 20px 8px 20px 8px;
     background: #fff;
     border-radius: 5px;
     border-top-left-radius: 0;
@@ -187,6 +190,18 @@ export default {
     transform: translate(-50%, -50%);
     background-color: #fff;
     border-radius: 7px;
+}
+.modal-mask .iconcuowuguanbi- {
+    position: absolute;
+    right: 12px;
+    top: 12px;
+    font-size: 35px;
+    color: #4c8bfd;
+}
+
+.modal-mask .iconcuowuguanbi-:hover {
+    color: #749ff0;
+    cursor: pointer;
 }
 .form{
     /* display: flex; */

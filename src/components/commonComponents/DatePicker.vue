@@ -8,11 +8,11 @@
             class="date-current">
             <input v-model="date" type="hidden"/>
             <span>{{dateStr}}
-                <i 
+                <!-- <i 
                     v-if="clearable && isClear"
                     @click.stop="clear"
                     class="iconfont icon-icon-test"></i>
-                <i v-else class="iconfont icon-rili"></i>
+                <i v-else class="iconfont icon-rili"></i> -->
             </span>
         </div>
         <!-- 已选 -->
@@ -23,31 +23,27 @@
             <!-- 当前选中 -->
             <div class="date-info">
                 <span>
-                    <i 
-                        @click="changeYear('-')"
-                        class="iconfont icon-zuofanyezuohua"></i>
+                    <i @click="changeYear('-')"
+                        class="iconfont iconzuofanyezuohua">{{year_reduce}}</i>
                     <i
                         v-show="step===1"
                         @click="changeMonth('-')"
-                        class="iconfont icon-shangyiye"></i>
+                        class="iconfont iconxiayiye">{{month_reduce}}</i>
                 </span>
                 <span>
-                    <span 
-                        @click="changeStep(2)"
-                        class="change-btn change-year">{{year}}年</span>&nbsp;
-                    <span 
-                        @click="changeStep(3)"
-                        v-if="step==1"
-                        class="change-btn change-month">{{month}}月</span>
+                    <!-- <span @click="changeStep(2)" class="change-btn change-year">{{year}}年</span>&nbsp; -->
+                    <span>{{year}}年</span>
+                    <!-- <span @click="changeStep(3)" v-if="step==1" class="change-btn change-month">{{month}}月</span> -->
+                    <span>{{month}}</span>
                 </span>
                 <span>
                     <i
                         v-show="step===1"
                         @click="changeMonth('+')"
-                        class="iconfont icon-xiayiye"></i>
+                        class="iconfont iconxiayiye">{{'>'}}</i>
                     <i 
                         @click="changeYear('+')"
-                        class="iconfont icon-youfanyeyouhua"></i>
+                        class="iconfont iconyoufanyeyouhua">{{'>>'}}</i>
                 </span>
             </div>
             <!-- 当前选中 -->
@@ -117,6 +113,8 @@
         },
         data() {
             return {
+                year_reduce:'<<',
+                month_reduce:'<',
                 dateStr: '',
                 isClear: false,
                 year: undefined, // 当前选中未确定

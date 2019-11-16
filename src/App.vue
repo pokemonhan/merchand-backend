@@ -1,6 +1,7 @@
 <template>
     <div id="app">
-        <Header></Header>
+        <!-- 顶部 -->
+        <Header class="header"></Header>
         <div class="content">
             <!-- 侧边栏 -->
             <Aside class="aside"></Aside>
@@ -10,6 +11,7 @@
                 <div id="toast-box"></div>
             </div>
         </div>
+
     </div>
 </template>
 
@@ -51,7 +53,7 @@ export default {
     mounted() {
         let self = this;
         setTimeout(() => {
-            self.playMusic()
+            // self.playMusic()
         }, 400);
     }
 };

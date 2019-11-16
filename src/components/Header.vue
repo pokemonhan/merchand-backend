@@ -192,6 +192,7 @@ export default {
     justify-content: center;
     color: #fff;
     width: 1200px;
+    white-space: nowrap;
 }
 .content .inner > span{
     /* display: inline-block; */

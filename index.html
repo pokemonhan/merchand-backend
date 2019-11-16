@@ -69,7 +69,7 @@
             z-index: 1;
             background-color: rgba(0, 0, 0, 0.6);
         }
-
+        /* 内部遮罩层 */
         .inner-mask {
             position: fixed;
             top: 0;
@@ -108,6 +108,7 @@
             box-shadow: none;
             background: #6397f7;
         }
+
         .btn-blue-normal {
             /* height: 26px; */
             padding: 9px 16px;
@@ -146,9 +147,10 @@
             box-shadow: none;
             color: #246aeb;
         }
+
         .btn-plain-normal {
             /* height: 26px; */
-             padding: 8px 16px;
+            padding: 8px 16px;
             box-sizing: border-box;
             border-radius: 3px;
             outline: none;
@@ -196,19 +198,32 @@
             display: flex;
         }
 
-        .filter .left > div {
+        .filter .left>div {
             display: flex;
             margin-right: 10px;
         }
-        .filter .left > div>span:first-child {
+
+        .filter .left>div>span:first-child {
             margin-right: 4px;
         }
+
         .page {
-    margin-top: 30px;
-    display: flex;
-    justify-content: center;
-}
-       
+            margin-top: 30px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .a {
+            font-weight: border;
+            text-decoration: underline;
+            cursor: pointer;
+            color: #4c8bfd;
+            margin-left: 8px;
+        }
+
+        .a:active {
+            color: red;
+        }
     </style>
 </head>
 

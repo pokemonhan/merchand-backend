@@ -34,12 +34,10 @@ const components ={
 
 export default {
     install(Vue){
-        // 全局注册组件
+       
 
-        for(let key in components){
-            Vue.component(key,components[key])
-        }
-            // $toast组件
+
+            // 1.  $toast组件
             Vue.prototype.$toast = function (option) {
                 let opt = {}
                 if (typeof option === 'string' || typeof option === 'number') {
@@ -73,13 +71,17 @@ export default {
                 }
             })
 
+         // 2. 全局注册组件
 
-        // 指令
+         for(let key in components){
+            Vue.component(key,components[key])
+        }
+        // 3. 指令
         for(let key in directives) {
             Vue.directive(key, directives[key])
         }
 
-        // axios
+        // 4. axios
         Vue.prototype.$http = $http;
         Vue.prototype.$api = $api;
         Vue.prototype.$socket = $socket;

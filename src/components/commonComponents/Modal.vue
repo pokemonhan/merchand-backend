@@ -3,9 +3,9 @@
         <transition name="modal-animate">
             <div v-if="show" class="v-modal">
                 <div class="modal-header">
-                    <i v-if="icon" :class="['iconfont', icon]"></i>
+                    <!-- <i v-if="icon" :class="['iconfont', icon]"></i> -->
                     <span v-text="title"></span>
-                    <i v-if="closeable" @click="close" class="iconfont icon-guanbi"></i>
+                    <!-- <i v-if="closeable" @click="close" class="iconfont icon-guanbi"></i> -->
                 </div>
                 <div class="modal-body">
                     <div>{{content}}</div>
@@ -107,12 +107,11 @@
         right: 16px;
     }
     .v-modal .modal-body {
-        padding: 16px;
-        font-size: 12px;
-        line-height: 1.5;
-        font-size: 14px;
-        color: #515a6e;
-        text-align: left;
+        padding: 46px 16px;
+        font-size: 17px;
+        /* line-height: 1.5; */
+        color: #3f4450;
+        text-align: center;
     }
     .v-modal .modal-footer{
         padding: 12px 18px;

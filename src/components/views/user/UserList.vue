@@ -1,4 +1,6 @@
-<template>
+<template> 
+
+ <!-- 会员列表 -->
     <div class="container">
         <div class="filter">
             <div class="left">
@@ -63,26 +65,30 @@
             :column="list"
             @checkboxChange="checkboxChange"
             :haveCheckbox="false"
-        >
+        >   
+            <!-- 在线状态, 游戏账号, 游戏ID, 会员标签, 团队人数, 上级账号, 玩家金额 注册IP-登录iP,注册日期--登录日期 -->
             <template v-slot:item="{row}">
-                <td class="table-td">{{row.a}}</td>
+                <td>{{row.a}}</td>
                 <td>{{row.b}}</td>
                 <td>{{row.c}}</td>
                 <td>{{row.d}}</td>
-                <td>{{row.d}}</td>
-                <td>{{row.d}}</td>
+                <td>{{row.e}}</td>
+                <td>{{row.f}}</td>
                 <td>
-                    <div>{{row.d}}</div>
-                    <div>{{row.d}}</div>
+                    <div>{{row.h}}</div>
+                    <div>{{row.i}}</div>
                 </td>
                 <td>
-                    <div>{{row.d}}</div>
-                    <div>{{row.d}}</div>
+                    <div>{{row.j}}</div>
+                    <div>{{row.k}}</div>
                 </td>
-                <td>{{row.d}}</td>
+                <td>
+                    <div>{{row.l}}</div>
+                    <div>{{row.m}}</div>
+                </td>
                 <td>
                     <div class="table-opra">
-                        <span @click="showDetail">详情</span>
+                        <span style="margin-right:10px;" @click="showDetail">详情</span>
                         <span @click="addBlackList">加入黑名单</span>
                     </div>
                 </td>
@@ -352,7 +358,7 @@ export default {
                 { label: "操作" }
             ],
             list: [
-                { a: "在线", b: "132****4654", c: "3", d: "4" },
+                { a: "在线", b: "132****4654", c: "33542354234", d: "555555554234" ,e:'sd',f:'192.168.0.0',g:'df',h:'df',i:'192.168.0.0',j:'192.168.0.0',k:'2019/8/12 14：12：00',l:'2019/8/12 14：12：00',m:'2019/8/12 14：12：00'},
                 { a: "离线", b: "132****4654", c: "3", d: "4" }
             ],
             online_state: "",
@@ -412,9 +418,9 @@ export default {
 
 <style scoped>
 .container {
+    padding: 20px 8px 20px 8px;
     font-size: 14px;
     background: #fff;
-    padding: 10px 8px;
     border-radius: 5px;
     border-top-left-radius: 0;
 }

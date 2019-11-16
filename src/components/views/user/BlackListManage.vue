@@ -1,28 +1,15 @@
 <template>
     <div class="container">
+         <!-- 会员列表 -->
 
-         <!-- 登录记录 -->
         <div class="filter">
             <div class="left">
                 <div>
                     <span>会员账号</span>
                     <Input style="width:110px" class="game-account" />
                 </div>
-                <div>
-                    <span>游戏ID</span>
-                    <Input style="width:110px" class="game-id"  />
-                </div>
-                <div>
-                    <span>登录日期</span>
-                    <Date />
-                </div>
-            </div>
-            <div class="right">
                 <span>
                     <button class="btn-blue">查询</button>
-                </span>
-                <span>
-                    <button class="btn-blue">导出Excel</button>
                 </span>
             </div>
         </div>
@@ -35,9 +22,13 @@
                     <td>{{row.b}}</td>
                     <td>{{row.c}}</td>
                     <td>{{row.d}}</td>
+                    <td>{{row.e}}</td>
+                    <td>
+                        <button class="btn-blue" @click="turnOnUser">启用</button>
+                    </td>
                 </template>
             </Table>
-            <Page 
+            <Page
                 class="page"
                 :total="total"
                 :pagerCount="pagerCount"
@@ -45,6 +36,17 @@
                 @updateSize="updateSize"
             />
         </div>
+        <!-- <div class="modal-mask" >
+            <div class="v-modal">
+            </div>
+        </div>-->
+        <Modal
+            :show="show_black_list_conf"
+            title="黑名单管理"
+            content="是否启用该账户"
+            @cancel="show_black_list_conf=false"
+            @confirm="blackListConfirm"
+        ></Modal>
     </div>
 </template>
 
@@ -60,34 +62,35 @@ export default {
             user_id: "",
             headers: [
                 { label: "会员账号" },
-                { label: "会员ID" },
-                { label: "登录IP" },
-                { label: "登录网址" },
-                { label: "登录设备" },
-                { label: "登录日期" }
+                { label: "上级账户" },
+                { label: "账户余额" },
+                { label: "注册时间" },
+                { label: "最后登录时间" },
+                { label: "最近登录IP" },
+                { label: "状态" },
+                { label: "操作" }
             ],
+
             list: [
-                {
-                    a: "1",
-                    b: "2",
-                    c: "192.168.1.1(中国.广州）",
-                    d: "2019/12/15 12:12:00"
-                },
-                {
-                    a: "1",
-                    b: "2",
-                    c: "192.168.1.1(中国.广州）",
-                    d: "2019/12/15 12:12:00"
-                }
+                { a: "13245678998", b: "100.00", c: "2019/11/02 12:30:23", d: "2019/12/15 12:12:00", e: "冻结" },
+                { a: "1", b: "2", c: "192.168.1.1(中国.广州）", d: "2019/12/15 12:12:00", e: "冻结" }
             ],
             total: 0,
-            pagerCount: 0
+            pagerCount: 0,
+
+            modal_cont: "是否启用该账户",
+            show_black_list_conf: false
         };
     },
     methods: {
-      
         updateNo(val) {},
-        updateSize(val) {}
+        updateSize(val) {},
+        turnOnUser() {
+            this.show_black_list_conf = true;
+        },
+        blackListConfirm() {
+            console.log("我确认了");
+        }
     },
     mounted() {}
 };

@@ -13,7 +13,7 @@ let menuList = [
                         { name: "登录记录", path: "/user/loginlog" },
                         { name: "标签管理 ", path: "/user/tabmanage" },
                         { name: "黑名单管理 ", path: "/user/blacklistmanage" },
-                        { name: "等级设置 ", path: "/user/levsetting" },
+                        { name: "等级设置 ", path: "/user/levelsetting" },
                         { name: "洗码设置 ", path: "/user/washsetting" },
                     ]
                 },

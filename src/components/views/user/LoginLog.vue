@@ -37,13 +37,7 @@
                     <td>{{row.d}}</td>
                 </template>
             </Table>
-            <Page 
-                class="page"
-                :total="total"
-                :pagerCount="pagerCount"
-                @updateNo="updateNo"
-                @updateSize="updateSize"
-            />
+             <Page class="page" :total="total" :pageNo.sync="pageNo" :pageSize.sync="pageSize" @updateNo="updateNo" @updateSize="updateSize"/>
         </div>
     </div>
 </template>
@@ -81,7 +75,8 @@ export default {
                 }
             ],
             total: 0,
-            pagerCount: 0
+            pageNo: 1,
+            pageSize: 25,
         };
     },
     methods: {

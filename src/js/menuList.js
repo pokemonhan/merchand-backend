@@ -22,9 +22,11 @@ let menuList = [
                     // path: '/funds',
                     icon: "iconmoneybag",
                     children: [
-                        { name: "入款审核", path: "/funds/depositreview" },
-                        { name: "人工存取", path: "/funds/withdrawalreview" }
-                        // { name: "会员现金系统 ", path: "/usermoney" }
+                        { name: "入款审核", path: "/funds/incomereview" },
+                        { name: "人工存取", path: "/funds/manualaccess" },
+                        { name: "出款审核", path: "/funds/paymentreview" },
+                        { name: "出款列表", path: "/funds/paymentlist" },
+                        { name: "资金账变", path: "/funds/fundchange" }
                     ]
                 },
                 {

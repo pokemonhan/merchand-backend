@@ -8,6 +8,10 @@
                     <span>会员账号</span>
                     <Input style="width:110px" class="game-account" />
                 </div>
+                <div>
+                    <span>上级账号</span>
+                    <Input style="width:110px" class="game-account" />
+                </div>
                 <span>
                     <button class="btn-blue">查询</button>
                 </span>

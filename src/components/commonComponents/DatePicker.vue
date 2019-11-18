@@ -24,11 +24,11 @@
             <div class="date-info">
                 <span>
                     <i @click="changeYear('-')"
-                        class="iconfont iconzuofanyezuohua">{{year_reduce}}</i>
+                        class="iconfont iconzuofanyezuohua"></i>
                     <i
                         v-show="step===1"
                         @click="changeMonth('-')"
-                        class="iconfont iconxiayiye">{{month_reduce}}</i>
+                        class="iconfont iconshangyiye"></i>
                 </span>
                 <span>
                     <!-- <span @click="changeStep(2)" class="change-btn change-year">{{year}}年</span>&nbsp; -->
@@ -40,10 +40,10 @@
                     <i
                         v-show="step===1"
                         @click="changeMonth('+')"
-                        class="iconfont iconxiayiye">{{'>'}}</i>
+                        class="iconfont iconxiayiye"></i>
                     <i 
                         @click="changeYear('+')"
-                        class="iconfont iconyoufanyeyouhua">{{'>>'}}</i>
+                        class="iconfont iconyoufanyeyouhua"></i>
                 </span>
             </div>
             <!-- 当前选中 -->
@@ -113,8 +113,6 @@
         },
         data() {
             return {
-                year_reduce:'<<',
-                month_reduce:'<',
                 dateStr: '',
                 isClear: false,
                 year: undefined, // 当前选中未确定

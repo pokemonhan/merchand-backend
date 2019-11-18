@@ -645,10 +645,10 @@ export default {
     /* border: none; */
 }
 /* 优惠活动 */
-.row3 {
+/* .row3 { */
     /* padding: 10px; */
     /* background: #fff; */
-}
+/* } */
 .row3 .data,
 row3 .graph {
     width: 510px;

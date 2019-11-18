@@ -61,8 +61,8 @@ export default {
         ...mapMutations(["updatetab_nav_list"]),
         expandMenu(item, index) {
             // console.log("TCL: expandMenu -> item", item)
-            console.log("该元素item", item);
-            console.log("这个index", index);
+            // console.log("该元素item", item);
+            // console.log("这个index", index);
             // console.log("TCL: expandMenu -> 当前", this.currentMenu)
             if (item.path && true) {
                 if (this.$route.path !== item.path) {
@@ -84,7 +84,6 @@ export default {
                 // 没有 path 就是父级菜单,就下滑打开该菜单
             } else {
                 let ele = this.$refs[index];
-                console.log("元素 ele😀😀😀😀😀", ele);
                 item.children && $(ele).slideToggle(200);
             }
             this.currentMenu = index;

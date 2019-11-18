@@ -25,6 +25,7 @@
                     </td>
                     <slot name="item" :row="col_row"></slot>
                 </tr>
+                <slot name="tr"></slot>
             </tbody>
         </table>
     </div>
@@ -90,6 +91,7 @@ tr td {
     text-align: center;
     padding: 8px 4px;
     border: 1px solid rgb(212, 211, 211);
+    font-size: 13px;
 }
 tbody tr:hover {
     background: #eee;

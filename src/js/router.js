@@ -5,18 +5,22 @@ import HomePage from '@/components/views/home/homePage.vue'
 import Login from '@/components/Login.vue'
 // 测试组件
 import Test from '@/components/Test.vue'
+
 /* 会员管理 */
-  // 会员列表
 // import UserList from '@/components/views/user/UserList.vue'
-const UserList = ()=>import('@/components/views/user/UserList.vue')
-const LoginLog = ()=>import('@/components/views/user/LoginLog.vue')
+const UserList = ()=>import('@/components/views/user/UserList.vue')                       //会员列表
+const LoginLog = ()=>import('@/components/views/user/LoginLog.vue')                       //登录记录
 
-const TabManage = ()=>import('@/components/views/user/TabManage.vue')
-const BlackListManage = ()=>import('@/components/views/user/BlackListManage.vue')
-const LevelSetting = ()=>import('@/components/views/user/LevelSetting.vue')
-const WashSetting = ()=>import('@/components/views/user/WashSetting.vue')
+const TabManage = ()=>import('@/components/views/user/TabManage.vue')                     // 标签管理
+const BlackListManage = ()=>import('@/components/views/user/BlackListManage.vue')         // 黑名单管理
+const LevelSetting = ()=>import('@/components/views/user/LevelSetting.vue')               // 等级设置
+const WashSetting = ()=>import('@/components/views/user/WashSetting.vue')                 // 洗码设置
+/* 会员管理 */
 
-
+/* 财务管理 */
+const IncomeReview = ()=>import('@/components/views/funds/IncomeReview.vue')              // 入款审核
+const ManualAccess = ()=>import('@/components/views/funds/ManualAccess.vue')              // 人工存取
+/* 财务管理 */
 Vue.use(Router)
 
 export default new Router({
@@ -40,7 +44,7 @@ export default new Router({
       component: HomePage
     },
 
-   /*  会员管理 */
+   /* ============================= 会员管理 ==================================*/
 
     // 会员列表
     {
@@ -72,6 +76,23 @@ export default new Router({
       path: '/user/washsetting',
       component: WashSetting
     },
-   /*  会员管理 */
+    /* ----------------------------------  会员管理 ----------------------*/
+
+
+
+
+   /* ==================================== 财务管理 =========================*/
+    // -- 入款审核
+   {
+    path: '/funds/incomereview',
+    component: IncomeReview
+    },
+   {
+    path: '/funds/manualaccess',
+    component: ManualAccess
+    },
+
+
+   /* -----------------------------------  财务管理 ------------------------------------*/
   ]
 })

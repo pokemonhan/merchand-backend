@@ -1,6 +1,5 @@
-<template> 
-
- <!-- 会员列表 -->
+<template>
+    <!-- 会员列表 -->
     <div class="container">
         <div class="filter">
             <div class="left">
@@ -65,7 +64,7 @@
             :column="list"
             @checkboxChange="checkboxChange"
             :haveCheckbox="false"
-        >   
+        >
             <!-- 在线状态, 游戏账号, 游戏ID, 会员标签, 团队人数, 上级账号, 玩家金额 注册IP-登录iP,注册日期--登录日期 -->
             <template v-slot:item="{row}">
                 <td>{{row.a}}</td>
@@ -97,7 +96,8 @@
         <div class="page">
             <Page
                 :total="total"
-                :pagerCount="pagerCount"
+                :pageNo.sync="pageNo"
+                :pageSize.sync="pageSize"
                 @updateNo="updateNo"
                 @updateSize="updateSize"
             />
@@ -322,7 +322,7 @@
                         </li>
                     </ul>
                     <div class="confirm-btn">
-                        <button class="btn-blue-normal">确认</button>
+                        <button class="btn-blue-large">确认</button>
                     </div>
                 </div>
             </div>
@@ -330,10 +330,10 @@
         <div class="modal-mask" v-if="show_add_black_list">
             <div class="blacklist">
                 <div class="blacklist-inner">
-                    <div class="infor" >是否确定把该玩家加入黑名单！</div>
-                    <div class="btn">
-                        <button class="btn-plain-normal" @click="show_add_black_list=false">取消</button>
-                        <button class="btn-blue-normal">确认</button>
+                    <div class="infor">是否确定把该玩家加入黑名单！</div>
+                    <div class="btns">
+                        <button class="btn-plain-large" @click="show_add_black_list=false">取消</button>
+                        <button class="btn-blue-large">确认</button>
                     </div>
                 </div>
             </div>
@@ -358,7 +358,7 @@ export default {
                 { label: "操作" }
             ],
             list: [
-                { a: "在线", b: "132****4654", c: "33542354234", d: "555555554234" ,e:'sd',f:'192.168.0.0',g:'df',h:'df',i:'192.168.0.0',j:'192.168.0.0',k:'2019/8/12 14：12：00',l:'2019/8/12 14：12：00',m:'2019/8/12 14：12：00'},
+                { a: "在线", b: "132****4654", c: "33542354234", d: "555555554234", e: "sd", f: "192.168.0.0", g: "df", h: "df", i: "192.168.0.0", j: "192.168.0.0", k: "2019/8/12 14：12：00", l: "2019/8/12 14：12：00", m: "2019/8/12 14：12：00" },
                 { a: "离线", b: "132****4654", c: "3", d: "4" }
             ],
             online_state: "",
@@ -367,8 +367,10 @@ export default {
                 { label: "在线", value: "1" },
                 { label: "离线", value: "2" }
             ],
-            total: 0,
-            pagerCount: 0,
+            pageNo: 1,
+            pageSize: 25,
+            total: 300,
+            
             show_detail: false,
             use_detail: false,
             add_acc: "",
@@ -409,7 +411,9 @@ export default {
         closeConfirm() {
             this.inner_mask_show = false;
         },
-        updateNo(val) {},
+        updateNo(val) {
+            this.p
+        },
         updateSize(val) {}
     },
     mounted() {}
@@ -439,11 +443,11 @@ export default {
 .account-status {
     width: 80px;
 }
-.acc-status {
-    /* display: flex;
-        align-items: center; */
-    /* display: inline-block; */
-}
+/* .acc-status {
+    display: flex;
+    align-items: center;
+    display: inline-block;
+} */
 
 .btn-blue {
     /* padding: 4px 15px; */
@@ -542,11 +546,11 @@ export default {
     text-align: center;
     font-size: 20px;
 }
-.blacklist-inner .btn button{
+.blacklist-inner .btns button {
     margin-top: 70px;
     /* padding: 8px 16px; */
 }
-.blacklist-inner .btn .btn-plain-normal{
+.blacklist-inner .btns .btn-plain-normal {
     margin-right: 60px;
 }
 .table-opra span {
@@ -592,9 +596,8 @@ export default {
 .v-modal .detail .row1 {
     display: flex;
 }
-.detail .user-info {
-    /* margin-top: 20px; */
-}
+/* .detail .user-info {
+} */
 .detail .user-info tr td {
     padding: 6px 12px;
 }

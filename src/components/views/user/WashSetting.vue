@@ -93,8 +93,8 @@
                        
                     </ul>
                     <div style="margin-top:50px;text-align:center;">
-                        <button class="btn-plain-normal mr" @click="edit_modal=false">取消</button>
-                        <button class="btn-blue-normal" @click="editModalSave">保存</button>
+                        <button class="btn-plain-large mr" @click="edit_modal=false">取消</button>
+                        <button class="btn-blue-large" @click="editModalSave">保存</button>
                     </div>
                 </div>
             </div>
@@ -192,8 +192,9 @@ export default {
 .container {
     padding: 20px 8px 20px 8px;
     background: #fff;
-    border-radius: 5px;
-    border-top-left-radius: 0;
+    border-top-right-radius: 5px;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
 }
 .sort > span {
     padding: 4px 12px;

@@ -3,11 +3,11 @@
         <div class="total-num">共 {{total}} 条</div>
         <ul class="page-list">
             <li
-                :class="['previous-page', pageNo <= 2 ? 'icon-disabled' : '']"
+                :class="['previous-page', pageNo < 2 ? 'icon-disabled' : '']"
                 @click="updatePageNo('-')"
                 title="上一页">
                 <a href="javascript:;"
-                class="iconfont icon-shangyiye"></a>
+                class="iconfont iconshangyiye"></a>
             </li>
             <li v-if="pagesNum" @click="updatePageNo(1)"
                 :class="[pageNo === 1 ? 'active' : '']">
@@ -16,10 +16,10 @@
             <li
                 title="向前5页"
                 @click="pageBack"
-                v-if="pagesNum > pagerCount & pageNo > Math.ceil(pagerCount/2)"
+                v-if="pagesNum > pagerCount && pageNo > Math.ceil(pagerCount/2)"
                 class="pages-back">
-                <a href="javascript:;" class="iconfont icon-more"></a>
-                <a href="javascript:;" class="iconfont icon-zuofanyezuohua icon-hover"></a>
+                <a href="javascript:;" class="iconfont iconmore"></a>
+                <a href="javascript:;" class="iconfont iconzuofanyezuohua icon-hover"></a>
             </li>
             <li 
                 v-for="n in pageRange"
@@ -34,22 +34,22 @@
                 @click="pageForward"
                 v-if="pagesNum > pagerCount && pageNo < pagesNum-Math.floor(pagerCount/2)"
                 class="pages-forward">
-                <a href="javascript:;" class="iconfont icon-more"></a>
-                <a href="javascript:;" class="iconfont icon-youfanyeyouhua icon-hover"></a>
+                <a href="javascript:;" class="iconfont iconmore"></a>
+                <a href="javascript:;" class="iconfont iconyoufanyeyouhua icon-hover"></a>
             </li>
-            <li v-if="pagesNum" @click="updatePageNo(pagesNum)"
+            <li v-if="pagesNum>1" @click="updatePageNo(pagesNum)"
                 :class="[pageNo === pagesNum ? 'active' : '']">
                 <a href="javascript:;">{{pagesNum}}</a>
             </li>
             <li
-                :class="['next-page', pageNo >= pagesNum-1 ? 'icon-disabled' : '']"
+                :class="['next-page', pageNo >= pagesNum ? 'icon-disabled' : '']"
                 @click="updatePageNo('+')"
                 title="下一页">
-                <a class="iconfont icon-xiayiye"></a>
+                <a class="iconfont iconxiayiye"></a>
             </li>
         </ul>
-        <Select  v-model="pageSize" @update="updatePageSize" :options="pageSizeList"/>
-        <div class="page-jump">跳至<input @blur="pageJump" v-model.number="jumpNo" v-inputLimit="'p-integer'" type="text">页</div>
+        <Select style="width:90px;" @update="updatePageSize" :value="pageSize" :options="pageSizeList"/>
+        <div class="page-jump">跳至<input @change="pageJump" v-model.number="jumpNo" v-inputLimit="'p-integer'" type="text">页</div>
     </div>
 </template>
 
@@ -58,59 +58,76 @@
         event
             updateNo: 页码改变 返回 (pageNo)
             updateSize: 每页条数改变 返回 (pageSize)
+            pagesNum: 共有多少页,
+            pageCount: 显示多少个方块(跳转用)
     */
     export default {
         name: 'Page',
         props: {
-            total: {    // 数据总条数
-                type: Number,
-                default: () => 0            },
-            pagerCount: {// total: Number 数据总条目
+            total: {
+                type: [Number, String],
+                default: () => 0
+            },
+            pagerCount: {
                 type: Number,
                 default: () => 7
+            },
+            pageSize: {
+                type: Number,
+                default: () => 10
+            },
+            pageNo: {
+                type: Number,
+                default: () => 1
             }
         },
         data() {
             return {
-                pageNo: 1,
-                pageSize: 10,
                 pagesNum: 0,
                 pageRange: [],
-                pageSize: 10,
-                pageSizeList: [{
-                    value: 10,
-                    label: '10 条/页'
-                },{
+                pageSizeList: [
+                //     {
+                //     value: 2,
+                //     label: '2 条/页'
+                // },
+                    {
                     value: 25,
                     label: '25 条/页'
-                },{
+                },
+                {
                     value: 50,
                     label: '50 条/页'
-                }, {
+                },{
                     value: 100,
                     label: '100 条/页'
+                }, {
+                    value: 200,
+                    label: '200 条/页'
                 }],
-                jumpNo: 0
+                jumpNo: undefined
             }
         },
         methods: {
             updatePageNo(num) {
+                let pageNo = Number(this.pageNo)
                 if(num==='-') {
-                    this.pageNo > 1 && this.pageNo--
+                    pageNo > 1 && pageNo--
                 }else if(num==='+') {
-                    this.pageNo < this.pagesNum && this.pageNo++
+                    pageNo < this.pagesNum && pageNo++
                 }else{
-                    if(num === this.pageNo) {
+                    if(num === pageNo) {
                         return
                     }
-                    this.pageNo = num
+                    pageNo = num
                 }
-
-                this.$emit('updateNo', this.pageNo)
+                if(pageNo===this.pageNo) return
+                this.$emit('update:pageNo', pageNo)
+                this.$emit('updateNo', pageNo)
 
                 this.pageRange = []
                 let centerCount = this.pagerCount - 2
-                if(this.pageNo <= 4) {
+
+                if(pageNo <= 4) {
                     for(let i=0; i< centerCount; i++) {
                         let page = i + 2
                         if(page >= this.pagesNum) {
@@ -118,7 +135,7 @@
                         }
                         this.pageRange[i] = page
                     }
-                }else if(this.pageNo >= this.pagesNum - Math.floor(centerCount/2)) {
+                }else if(pageNo >= this.pagesNum - Math.floor(centerCount/2)) {
                     for(let i=0; i< centerCount; i++) {
                         let page = this.pagesNum - centerCount + i
                         if(page < 2) {
@@ -131,12 +148,26 @@
                     }
                 }else{
                     for(let i=0; i< centerCount; i++) {
-                        this.pageRange[i] = this.pageNo - Math.floor(centerCount/2) + i
+                        this.pageRange[i] = pageNo - Math.floor(centerCount/2) + i
                     }
                 }
             },
             updatePageSize(size) {
+                this.$emit('update:pageSize', size)
+                this.$emit('update:pageNo', 1)
                 this.$emit('updateSize', size)
+                this.pagesNum = Math.ceil(Number(this.total) / size)
+                if(this.pagesNum < 3) {
+                    this.pageRange = []
+                    return
+                }
+                for(let i = 0; i<this.pagerCount-2; i++) {
+                    let num = i + 2
+                    if(num >= this.pagesNum) {
+                        break
+                    }
+                    this.pageRange[i] = num
+                }
             },
             pageBack() {
                 this.updatePageNo(this.pageNo - 5 < 1 ? 1 : this.pageNo - 5)
@@ -144,24 +175,41 @@
             pageForward() {
                 this.updatePageNo(this.pageNo + 5 > this.pagesNum ? this.pagesNum : this.pageNo + 5)
             },
+            
             pageJump() {
+                
                 if(this.jumpNo > this.pagesNum) {
-                    console.log('不能超过最大页')
-                }else if(this.jumpNo == 0){
-                    console.log('不存在0页,请重新输入')
+                    this.jumpNo = undefined
+                    this.$toast.warning('不能超过最大页')
+                }else if(this.jumpNo === 0){
+                    this.jumpNo = undefined
+                    this.$toast.warning('页面必须大于0')
                 }else{
                     this.updatePageNo(this.jumpNo)
+                }
+            },
+            initPages(total) {
+                this.pagesNum = Math.ceil(Number(total) / this.pageSize)
+                if(this.pagesNum < 3) {
+                    this.pageRange = []
+                    return
+                }
+                this.pageRange = []
+                for(let i = 0; i<this.pagerCount-2; i++) {
+                    let num = this.pageNo + i + 1
+                    if(num >= this.pagesNum) {
+                        break
+                    }
+                    this.pageRange[i] = num
                 }
             }
         },
         mounted() {
-            this.pagesNum = Math.ceil(this.total / this.pageSize)
-            for(let i = 0; i<this.pagerCount-2; i++) {
-                let num = this.pageNo + i + 1
-                if(num >= this.pagesNum) {
-                    break
-                }
-                this.pageRange[i] = num
+            this.initPages(this.total)
+        },
+        watch: {
+            total(val) {
+                this.initPages(val)
             }
         }
     }
@@ -177,6 +225,7 @@
         -moz-user-select:none;
         -ms-user-select:none;
         user-select:none;
+        white-space:nowrap;
     }
     .total-num{
         margin: 0 10px;
@@ -196,6 +245,10 @@
         line-height: 30px;
         cursor: pointer;
         text-align: center;
+    }
+    .page-list li a{
+        color: #333;
+        text-decoration: none;
     }
     .page-list .icon-disabled{
         cursor: not-allowed;
@@ -219,7 +272,7 @@
     .pages-back .icon-hover, .pages-forward .icon-hover{
         display: none;
     }
-    .pages-back:hover .icon-more, .pages-forward:hover .icon-more{
+    .pages-back:hover .iconmore, .pages-forward:hover .iconmore{
         display: none;
     }
     .pages-back:hover .icon-hover, .pages-forward:hover .icon-hover{

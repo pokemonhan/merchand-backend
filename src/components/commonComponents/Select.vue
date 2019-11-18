@@ -155,7 +155,7 @@
     .val-box .drop-down{
         width: 0;
         height: 0;
-        margin-top: 8px;
+        margin-top: 10px;
         margin-right: 4px;
         border-left: 8px solid transparent;
         border-right: 8px solid transparent;

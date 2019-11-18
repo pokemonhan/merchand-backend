@@ -6,6 +6,7 @@ import Switchbox from '../components/commonComponents/Switch.vue'
 import Table from '../components/commonComponents/Table.vue'
 import Modal from '../components/commonComponents/Modal.vue'
 import Page from '../components/commonComponents/Page.vue'
+import Checkbox from '../components/commonComponents/Checkbox.vue'
 
 import Toast from '../components/commonComponents/Toast.vue'
 
@@ -28,7 +29,8 @@ const components ={
     Toast,
     Table,
     Modal,
-    Page
+    Page,
+    Checkbox
 }
 
 

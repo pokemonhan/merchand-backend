@@ -60,6 +60,7 @@ export default {
     /* width: 100%; */
     position: relative;
     /* min-height: 26px; */
+    min-width: 100px;
 }
 .large {
     height: 36px;

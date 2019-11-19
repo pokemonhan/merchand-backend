@@ -3,7 +3,7 @@
 > A Vue.js project
 
 ## Build Setup
-![avatar](/src/assets/image/样板.png)
+![avatar](/static/样板.png)
 ``` bash
 # install dependencies 安装依赖(需要有安装npm)
 npm install

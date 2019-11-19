@@ -3,19 +3,19 @@
          <!-- 会员列表 -->
 
         <div class="filter">
-            <div class="left">
-                <div>
+            <ul class="left">
+                <li>
                     <span>会员账号</span>
                     <Input style="width:110px" class="game-account" />
-                </div>
-                <div>
+                </li>
+                <li>
                     <span>上级账号</span>
                     <Input style="width:110px" class="game-account" />
-                </div>
-                <span>
+                </li>
+                <li>
                     <button class="btn-blue">查询</button>
-                </span>
-            </div>
+                </li>
+            </ul>
         </div>
         <div class="table">
             <Table :headers="headers" :column="list">

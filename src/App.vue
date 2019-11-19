@@ -290,13 +290,13 @@ button:hover{
             flex-wrap: wrap;
         }
 
-        .filter .left>div {
+        .filter .left>li {
             display: flex;
             align-items: center;
             margin-right: 10px;
         }
 
-        .filter .left>div>span:first-child {
+        .filter .left>li>span:first-child {
             margin-right: 4px;
         }
 

@@ -3,20 +3,20 @@
 
          <!-- 登录记录 -->
         <div class="filter">
-            <div class="left">
-                <div>
+            <ul class="left">
+                <li>
                     <span>会员账号</span>
                     <Input style="width:110px" class="game-account" />
-                </div>
-                <div>
+                </li>
+                <li>
                     <span>游戏ID</span>
                     <Input style="width:110px" class="game-id"  />
-                </div>
-                <div>
+                </li>
+                <li>
                     <span>登录日期</span>
                     <Date />
-                </div>
-            </div>
+                </li>
+            </ul>
             <div class="right">
                 <span>
                     <button class="btn-blue">查询</button>

@@ -14,50 +14,50 @@
         <!-- ------------------------------------    线下   --------------------------------------------------------->
         <div v-if="curr_list==='offline'">
             <div class="filter">
-                <div class="left">
-                    <div>
+                <ul class="left">
+                    <li>
                         <span>会员账号</span>
                         <Input style="width:110px" v-model="offline_filter.account" />
-                    </div>
-                    <div>
+                    </li>
+                    <li>
                         <span>会员ID</span>
                         <Input style="width:110px" v-model="offline_filter.id" />
-                    </div>
-                    <div>
+                    </li>
+                    <li>
                         <span>充值时间</span>
                         <Date style="width:110px" v-model="offline_filter.date" />
-                    </div>
-                    <div>
+                    </li>
+                    <li>
                         <span>订单号</span>
                         <Input style="width:110px" v-model="offline_filter.order_id" />
-                    </div>
-                    <div>
+                    </li>
+                    <li>
                         <span>商户</span>
                         <Input style="width:110px" v-model="offline_filter.vendor" />
-                    </div>
-                    <div>
+                    </li>
+                    <li>
                         <span>支付状态</span>
                         <Select
                             style="width:110px"
                             v-model="offline_filter.pay_status"
                             :options="pay_status_opt"
                         ></Select>
-                    </div>
-                    <div>
+                    </li>
+                    <li>
                         <span>支付方式</span>
                         <Select
                             style="width:110px"
                             v-model="offline_filter.pay_way"
                             :options="pay_way_opt"
                         ></Select>
-                    </div>
-                    <div style="margin-left:600px">
+                    </li>
+                    <li style="margin-left:600px">
                         <button class="btn-blue">查询</button>
-                    </div>
-                    <div>
+                    </li>
+                    <li>
                         <button class="btn-blue">导出Excel</button>
-                    </div>
-                </div>
+                    </li>
+                </ul>
                 <div class="right1"></div>
             </div>
             <div class="table">
@@ -165,43 +165,43 @@
         <!-- ------------------------------------    线上入款    --------------------------------------------------------->
         <div v-if="curr_list==='online'">
             <div class="filter">
-                <div class="left">
-                    <div>
+                <ul class="left">
+                    <li>
                         <span>会员账号</span>
                         <Input style="width:100px" v-model="online_filter.account" />
-                    </div>
-                    <div>
+                    </li>
+                    <li>
                         <span>会员ID</span>
                         <Input style="width:100px" v-model="online_filter.id" />
-                    </div>
-                    <div>
+                    </li>
+                    <li>
                         <span>充值时间</span>
                         <Date style="width:90px" v-model="online_filter.date" />
-                    </div>
+                    </li>
 
-                    <div>
+                    <li>
                         <span>转账方式</span>
                         <Select
                             style="width:100px"
                             v-model="online_filter.pay_way"
                             :options="pay_way_opt"
                         ></Select>
-                    </div>
-                    <div>
+                    </li>
+                    <li>
                         <span>审核状态</span>
                         <Select
                             style="width:110px"
                             v-model="online_filter.review_status"
                             :options="review_status_opt"
                         ></Select>
-                    </div>
-                    <div>
+                    </li>
+                    <li>
                         <button class="btn-blue">查询</button>
-                    </div>
-                    <div>
+                    </li>
+                    <li>
                         <button class="btn-blue">导出Excel</button>
-                    </div>
-                </div>
+                    </li>
+                </ul>
                 <div class="right1"></div>
             </div>
             <div class="table">
@@ -488,17 +488,10 @@ export default {
     border-bottom: 1px solid #eee;
     /* margin-bottom: 10px; */
 }
-.filter {
-    display: flex;
-    /* flex-wrap: wrap; */
+/*  */
+.filter ul li{
+    margin: 10px 0;
 }
-.filter .left > div {
-    margin: 10px 5px;
-}
-.filter .left > div > span:first-child {
-    white-space: nowrap;
-}
-
 /* .modal-mask     样式在公共区... */
 .v-modal {
     min-width: 600px;

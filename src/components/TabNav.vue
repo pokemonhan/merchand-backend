@@ -82,11 +82,18 @@ export default {
          
             let list = this.tab_nav_list.filter(item => item.path!==tab.path) // 把当前tab 从中去除
             this.updatetab_nav_list(list)
+            // 如果关闭所以有 ,调到首页
+            if(this.tab_nav_list.length ===0){
+                this.$router.push('/')
+                return
+            }
             // 如果关闭当前,跳转到最后一个tab
-            if(this.$route.path===tab.path && this.tab_nav_list.length > 1){
+            if(this.$route.path===tab.path){
                 let last_index = this.tab_nav_list.length - 1
+                console.log('last_index: ', last_index);
                 this.$router.push(this.tab_nav_list[last_index].path)
             }
+
         }
     },
     watch: {

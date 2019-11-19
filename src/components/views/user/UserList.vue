@@ -2,22 +2,22 @@
     <!-- 会员列表 -->
     <div class="container">
         <div class="filter">
-            <div class="left">
-                <div>
+            <ul class="left">
+                <li>
                     <span>会员账号</span>
-                    <Input class="game-account" />
-                </div>
-                <div>
+                    <Input style="width:100px;" class="game-account" />
+                </li>
+                <li>
                     <span>会员ID</span>
-                    <Input class="game-id" />
-                </div>
-                <div>
+                    <Input style="width:100px;" class="game-id" />
+                </li>
+                <li>
                     <span>注册日期</span>
                     <Date />
                     <span>至</span>
                     <Date />
-                </div>
-                <div class="acc-status">
+                </li>
+                <li class="acc-status">
                     <span>在线状态</span>
                     <!-- <Input class="account-status" size="small"/> -->
                     <span>
@@ -28,15 +28,15 @@
                             @update="selectupdate"
                         ></Select>
                     </span>
-                </div>
-                <div class="acc-status">
+                </li>
+                <li class="acc-status">
                     <span>注册IP</span>
                     <!-- <Input class="account-status" size="small"/> -->
                     <span>
                         <Date />
                     </span>
-                </div>
-            </div>
+                </li>
+            </ul>
             <div class="right">
                 <span>
                     <button class="btn-blue">查询</button>

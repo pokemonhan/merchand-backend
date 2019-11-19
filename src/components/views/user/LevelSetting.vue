@@ -110,7 +110,7 @@
                         </li>
                     </ul>
                     <div style="margin-top:50px;text-align:center;">
-                        <button class="btn-plain-large mr100" @click="show_lev_modal=false">取消</button>
+                        <button class="btn-plain-large mr100" @click="show_rule_modal=false">取消</button>
                         <button class="btn-blue-large" @click="editModalSave">保存</button>
                     </div>
                 </div>
@@ -226,7 +226,7 @@ export default {
                 { label: "打码量", value: 2 }
             ],
             show_lev_modal: false, // 添加编辑等级 _模态框
-            show_rule_modal: true, // 晋级规则_模态框
+            show_rule_modal: false, // 晋级规则_模态框
             /* ----------  form ------------ */
             lev_name: "", // 等级名称
             exchange_a: "", // 额度转换a

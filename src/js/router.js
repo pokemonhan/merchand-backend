@@ -4,7 +4,7 @@ import Router from 'vue-router'
 import HomePage from '@/components/views/home/homePage.vue'
 import Login from '@/components/Login.vue'
 // 测试组件
-import Test from '@/components/Test.vue'
+// import Test from '@/components/Test.vue'
 
 /* 会员管理 */
 // import UserList from '@/components/views/user/UserList.vue'
@@ -30,10 +30,7 @@ export default new Router({
             path: '/',
             component: HomePage
         },
-        {
-            path: '/test',
-            component: Test
-        },
+    
         {
             path: '/login',
             component: Login

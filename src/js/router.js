@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 
-import HomePage from '@/components/views/home/homePage.vue'
+import HomePage from '@/components/views/home/HomePage.vue'
 import Login from '@/components/Login.vue'
 // 测试组件
 // import Test from '@/components/Test.vue'

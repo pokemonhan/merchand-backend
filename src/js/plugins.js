@@ -7,6 +7,7 @@ import Table from '../components/commonComponents/Table.vue'
 import Modal from '../components/commonComponents/Modal.vue'
 import Page from '../components/commonComponents/Page.vue'
 import Checkbox from '../components/commonComponents/Checkbox.vue'
+import QuickQuery from '../components/commonComponents/QuickQuery.vue'
 
 import Toast from '../components/commonComponents/Toast.vue'
 
@@ -30,7 +31,8 @@ const components ={
     Table,
     Modal,
     Page,
-    Checkbox
+    Checkbox,
+    QuickQuery
 }
 
 

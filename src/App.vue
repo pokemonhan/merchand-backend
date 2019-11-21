@@ -149,12 +149,11 @@ button:hover{
             /* height: 26px; */
             padding-left: 15px;
             padding-right: 15px;
-            /* padding: 3px 15px; */
             box-sizing: border-box;
             border-radius: 3px;
             outline: none;
             border: none;
-            box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+            /* box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2); */
             cursor: pointer;
             color: #333;
             border: 1px solid #333;
@@ -173,7 +172,7 @@ button:hover{
             padding-right: 15px;
             outline: none;
             border: none;
-            box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+            /* box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2); */
             cursor: pointer;
             box-sizing: border-box;
             border-radius: 3px;
@@ -196,7 +195,7 @@ button:hover{
             padding: 9px 18px;
             /* outline: none; */
             border: none;
-            box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+            /* box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2); */
             cursor: pointer;
             box-sizing: border-box;
             border-radius: 3px;
@@ -226,7 +225,7 @@ button:hover{
             border-radius: 3px;
             outline: none;
             border: none;
-            box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+            /* box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2); */
             cursor: pointer;
             color: #4c8bfd;
             border: 1px solid #4c8bfd;
@@ -245,7 +244,7 @@ button:hover{
             border-radius: 3px;
             outline: none;
             border: none;
-            box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+            /* box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2); */
             cursor: pointer;
             color: #4c8bfd;
             border: 1px solid #4c8bfd;
@@ -317,4 +316,8 @@ button:hover{
         .a:active {
             color: red;
         }
+        .w100{
+            width: 110px;
+        }
+      
 </style>

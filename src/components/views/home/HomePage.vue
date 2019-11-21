@@ -22,7 +22,7 @@
                         <span>{{'0.00'}}%</span>
                         <span class="drop-down"></span>
                     </span>
-                </div> -->
+                </div>-->
                 <div class="row1-5">
                     <span>日环比:</span>
                     <span>{{'0.00%'}}</span>
@@ -50,7 +50,7 @@
                         <span>{{'0.00'}}%</span>
                         <span class="drop-down"></span>
                     </span>
-                </div> -->
+                </div>-->
                 <div class="row1-55">
                     <span>充值人数:</span>
                     <span>{{'0'}}</span>
@@ -78,7 +78,7 @@
                         <span>{{'0.00'}}%</span>
                         <span class="drop-down"></span>
                     </span>
-                </div> -->
+                </div>-->
                 <div class="row1-5">
                     <span>提现人数:</span>
                     <span>{{'0'}}</span>
@@ -106,7 +106,7 @@
                         <span>{{'0.00'}}%</span>
                         <span class="drop-down"></span>
                     </span>
-                </div> -->
+                </div>-->
                 <div class="row1-5">
                     <span>领取人数:</span>
                     <span>{{'0'}}</span>
@@ -182,6 +182,7 @@
             <div class="graph">
                 <div class="graph-head header">
                     <button
+                        style="margin:0;"
                         :class="[is_show_login?'btn-active':'btn-plain']"
                         @click="is_show_login=true"
                     >登录统计</button>
@@ -267,7 +268,7 @@
 
 <script>
 export default {
-    name: 'HomePage',
+    name: "HomePage",
     data() {
         return {
             is_show_login: true,
@@ -383,7 +384,7 @@ export default {
                     name: "登录人数",
                     type: "pie",
                     radius: ["50%", "70%"],
-                    avoidLabelOverlap: false,
+                    avoidLabelOverlap: true,
                     label: {
                         normal: {
                             show: false,
@@ -396,6 +397,19 @@ export default {
                                 fontWeight: "bold"
                             }
                         }
+                    },
+                    //  右侧图标
+                    legend: {
+                        type: "scroll",
+                        orient: "vertical",
+                        right: 30,
+                        top: 20,
+                        bottom: 20,
+                        data: ['安卓','苹果','H5','PC'
+                     
+                    ],
+
+                        selected: [true, true ,true, true]
                     },
                     itemStyle: {
                         normal: {
@@ -516,6 +530,12 @@ export default {
                             color: "#4c8bfd"
                         }
                     },
+                    label: {
+                        normal: {
+                            position: "top",
+                            show: true
+                        }
+                    },
                     data: [18203, 23489, 29034]
                 },
                 {
@@ -524,6 +544,12 @@ export default {
                     itemStyle: {
                         normal: {
                             color: "#faaa0b"
+                        }
+                    },
+                    label: {
+                        normal: {
+                            position: "top",
+                            show: true
                         }
                     },
                     data: [19325, 23438, 31000]
@@ -546,7 +572,7 @@ export default {
     justify-content: space-between;
 }
 .row1 li {
-    width: 220px;
+    width: 246px;
     height: 100%;
     padding: 10px;
     /* border: 1px solid #000; */
@@ -596,12 +622,13 @@ export default {
 
 .row2 .contain {
     display: flex;
-    justify-content: space-between;
+    /* justify-content: space-between; */
     margin-top: 15px;
 }
 .row2 .game-data {
     width: 450px;
-    /* padding-right: 20px; */
+    padding-right: 20px;
+    margin-right: 80px;
 }
 .row2 .contain .title {
     width: 4em;
@@ -611,6 +638,7 @@ export default {
 }
 .row2 .plant-rank {
     width: 450px;
+    /* margin-right: 40px; */
 }
 .row2 .header {
     display: flex;
@@ -647,18 +675,17 @@ export default {
 }
 /* 优惠活动 */
 /* .row3 { */
-    /* padding: 10px; */
-    /* background: #fff; */
+/* padding: 10px; */
+/* background: #fff; */
 /* } */
 .row3 .data,
-row3 .graph {
+.row3 .graph {
     width: 510px;
-    /* padding-right: 20px; */
     padding: 10px;
     background: #fff;
 }
 .row3 .header {
-    /* padding-bottom: 10px; */
+    padding-bottom: 10px;
     height: 4 0px;
     border-bottom: 1px solid #eee;
 }
@@ -668,9 +695,7 @@ row3 .graph {
 .row3-number .number {
     font-size: 24px;
 }
-.row3 .graph {
-    padding: 10px 20px;
-}
+
 .row3 .graph .contain {
     /* width: 100%; */
     padding-top: 10px;
@@ -733,18 +758,17 @@ row3 .graph {
     background: #fc4c4c;
 }
 .row4 {
-    margin-top: 10px;
+    margin-top: 20px;
 }
-.row1>li{
+.row1 > li {
     position: relative;
 }
 /* .row1 .row1-4, */
 .row1 .row1-5 {
     position: relative;
     bottom: -65px;
-    border-top:1px solid #4d4d4d;
+    border-top: 1px solid #4d4d4d;
     font-size: 14px;
-
 }
 .row1 .row1-55 {
     position: absolute;

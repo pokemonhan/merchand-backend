@@ -209,12 +209,11 @@ export default {
     width: 100%;
     font-size: 16px;
     font-weight: 600;
-    color: rgb(63, 62, 62);
+    /* color: rgb(63, 62, 62); */
 }
 /* 二级菜单 */
-.level2 {
-    /* display: none; */
-}
+/* .level2 {
+} */
 .level2 > li > .title {
     display: inline-block;
     /* display:none; */
@@ -233,18 +232,16 @@ export default {
 }
 li .title:hover {
     width: 100%;
-    background: linear-gradient(to right, #5a5efd, #67b5fd);
+    background: linear-gradient(to right, #7678fa7e, #67b4fd7a);
     /* border: 1px solid #000; */
 }
 .active-menu {
     background: linear-gradient(to right, #5a5efd, #67b5fd);
+    color: #000;
 }
-.contain > ul > li {
-    /* border: 1px solid rgb(189, 189, 189); */
-    /* padding: 10px 0; */
-    /* height: 30px; */
-    /* background: #000; */
-}
+/* .contain > ul > li {
+  
+} */
 .right {
     float: right;
     margin-right: 8px;

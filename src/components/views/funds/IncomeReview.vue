@@ -17,7 +17,7 @@
                 <ul class="left">
                     <li>
                         <span>会员账号</span>
-                        <Input style="width:110px" v-model="offline_filter.account" />
+                        <Input style="width:120px" v-model="offline_filter.account" />
                     </li>
                     <li>
                         <span>会员ID</span>
@@ -490,7 +490,7 @@ export default {
 }
 /*  */
 .filter ul li{
-    margin: 10px 0;
+    margin: 10px 10px 10px 0;
 }
 /* .modal-mask     样式在公共区... */
 .v-modal {

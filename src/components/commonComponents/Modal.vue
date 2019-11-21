@@ -92,11 +92,11 @@
     .v-modal .modal-header{
         padding: 14px 16px;
         font-size: 14px;
-        color: #17233d;
+        /* color: #17233d; */
         font-weight: 700;
         text-align: left;
         position: relative;
-        border-bottom: 1px solid #e8eaec;
+        border-bottom: 1px solid #fbfbfc;
     }
     .v-modal .modal-header i:first-child{
         margin-right: 5px;
@@ -110,12 +110,12 @@
         padding: 46px 16px;
         font-size: 17px;
         /* line-height: 1.5; */
-        color: #3f4450;
+        /* color: #3f4450; */
         text-align: center;
     }
     .v-modal .modal-footer{
         padding: 12px 18px;
-        border-top: 1px solid #e8eaec;
+        border-top: 1px solid #f7f9fa;
         display: flex;
         justify-content: flex-end;
     }

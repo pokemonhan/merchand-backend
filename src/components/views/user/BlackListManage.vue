@@ -1,26 +1,33 @@
 <template>
     <div class="container">
-         <!-- 会员列表 -->
-
+         <!-- 黑名单管理 -->
+        <QuickQuery @update="dateUpdate"/>
         <div class="filter">
             <ul class="left">
                 <li>
                     <span>会员账号</span>
-                    <Input style="width:110px" class="game-account" />
+                    <Input style="width:110px" limit="en-num" v-model="filter.account" />
                 </li>
                 <li>
-                    <span>上级账号</span>
-                    <Input style="width:110px" class="game-account" />
+                    <span>会员ID</span>
+                    <Input style="width:110px" limit="en-num" v-model="filter.user_id" />
                 </li>
                 <li>
-                    <button class="btn-blue">查询</button>
+                    <span>进入黑名单时间</span>
+                    <Date v-model="filter.start_date" />
+                    <span style="margin:0 5px;"> ~ </span>
+                    <Date v-model="filter.end_date" />
                 </li>
+                
             </ul>
+            <div class="right">
+                    <button class="btn-blue">查询</button>
+            </div>
         </div>
         <div class="table">
             <Table :headers="headers" :column="list">
                 <template v-slot:item="{row}">
-                    <td style="height:30px">{{row.b}}</td>
+                    <td>{{row.b}}</td>
                     <td>{{row.a}}</td>
                     <td>{{row.b}}</td>
                     <td>{{row.b}}</td>
@@ -58,11 +65,12 @@
 export default {
     data() {
         return {
-            game_plant: "2",
-            game_plant_option: [
-                { label: "全部", value: "2" },
-                { label: "甲", value: "3" }
-            ],
+            filter: {
+                account: '',
+                user_id: '',
+                start_date: '',
+                end_date: '',
+            },
             user_id: "",
             headers: [
                 { label: "会员账号" },
@@ -87,6 +95,18 @@ export default {
         };
     },
     methods: {
+        dateUpdate(dates) {
+            console.log('开始',this.filter);
+            
+            console.log('dates: ', dates[0]);
+            this.filter.start_date = dates[0]
+            this.filter.end_date = dates[1]
+            // this.$set(this.filter, 'start_date', dates[0])
+            // this.$set(this.filter, 'end_date', dates[1])
+            this.filter = Object.assign(this.filter)
+            console.log('结束',this.filter);
+
+        },
         updateNo(val) {},
         updateSize(val) {},
         turnOnUser() {
@@ -109,7 +129,7 @@ export default {
 }
 .filter {
     /* display: flex; */
-    line-height: 30px;
+    /* line-height: 30px; */
 }
 /* .filter > ul > li {
     margin-right: 15px;
@@ -123,9 +143,9 @@ export default {
 .table {
     margin-top: 15px;
 }
-.page {
+/* .page {
     margin-top: 30px;
     display: flex;
     justify-content: center;
-}
+} */
 </style>

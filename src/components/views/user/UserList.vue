@@ -5,36 +5,34 @@
             <ul class="left">
                 <li>
                     <span>会员账号</span>
-                    <Input style="width:100px;" class="game-account" />
+                    <Input style="width:90px;" limit="en-num" v-model="filter.account" />
                 </li>
                 <li>
                     <span>会员ID</span>
-                    <Input style="width:100px;" class="game-id" />
+                    <Input style="width:90px;" limit="en-num" v-model="filter.userid" />
                 </li>
                 <li>
                     <span>注册日期</span>
-                    <Date />
+                    <Date v-model="filter.start_date"/>
                     <span>至</span>
-                    <Date />
+                    <Date v-model="filter.end_date"/>
                 </li>
                 <li class="acc-status">
                     <span>在线状态</span>
                     <!-- <Input class="account-status" size="small"/> -->
                     <span>
                         <Select
-                            v-model="online_state"
+                            v-model="filter.online_state"
                             :options="online_state_opt"
-                            style="width:70px;"
+                            style="width:90px;"
                             @update="selectupdate"
                         ></Select>
                     </span>
                 </li>
                 <li class="acc-status">
                     <span>注册IP</span>
-                    <!-- <Input class="account-status" size="small"/> -->
-                    <span>
-                        <Date />
-                    </span>
+                    <Input style="width:90px;" limit="number" v-model="filter.registid" />
+                   
                 </li>
             </ul>
             <div class="right">
@@ -345,6 +343,14 @@
 export default {
     data() {
         return {
+            filter:{
+                account: '',
+                userid: '',
+                start_date: '',
+                end_date: '',
+                online_state: '',
+                registid: '',
+            },
             headers: [
                 { label: "在线状态" },
                 { label: "游戏账号" },
@@ -423,7 +429,7 @@ export default {
 <style scoped>
 .container {
     padding: 20px 8px 20px 8px;
-    font-size: 14px;
+    /* font-size: 14px; */
     background: #fff;
     border-radius: 5px;
     border-top-left-radius: 0;
@@ -431,18 +437,9 @@ export default {
 .filter {
     line-height: 30px;
 }
-.game-account,
-.game-id,
-.ip-address {
-    width: 100px;
-}
+
 /*  */
-.game-date {
-    width: 80px;
-}
-.account-status {
-    width: 80px;
-}
+
 /* .acc-status {
     display: flex;
     align-items: center;

@@ -14,7 +14,7 @@ let menuList = [
                         { name: "标签管理 ", path: "/user/tabmanage" },
                         { name: "黑名单管理 ", path: "/user/blacklistmanage" },
                         { name: "等级设置 ", path: "/user/levelsetting" },
-                        { name: "洗码设置 ", path: "/user/washsetting" },
+                        { name: "洗码设置 ", path: "/user/washsetting" }
                     ]
                 },
                 {
@@ -30,36 +30,40 @@ let menuList = [
                     ]
                 },
                 {
-                    name: "运营管理",
-                    // path: '/operation',
+                    name: "公告管理",
+                    // path: '/announce',
                     icon: "iconyunyingzhongxin",
                     children: [
-                        { name: "等级设置", path: "/operation/rank" },
-                        { name: "洗码设置", path: "/operation/washcodeSet" },
-                        { name: "出入款设定 ", path: "/operation/deposits" },
-                        { name: "层级管理 ", path: "/operation/level" },
-                        { name: "会员稽核 ", path: "/operation/useraudit" },
-                        { name: "会员分析系统 ", path: "/operation/useranalysis" },
-                        { name: "洗码记录 ", path: "/operation/washcoderecording" }
+                        { name: "跑马灯消息", path: "/announce/marquee" },
+                        { name: "系统公告", path: "/announce/systemannounce" },
+                        { name: "站内消息 ", path: "/announce/station" },
+                        { name: "登录弹窗公告 ", path: "/announce/loginpopup" },
+                        { name: "轮播公告 ", path: "/announce/carousel" }
                     ]
                 },
                 {
-                    name: "注单管理",
+                    name: "报表管理",
                     // path: '/note',
                     icon: "iconaccount",
                     children: [
-                        { name: "洗码记录", path: "/note/washcoderecording" },
-                        { name: "平台注单", path: "/note/plantformNote" },
-                        { name: "处理遗漏注单 ", path: "/note/legacyset" }
+                        { name: "个人报表", path: "aaaaa" },
+                        { name: "游戏报表", path: "aaaaa" },
+                        { name: "公司报表", path: "aaaaa" },
+                        { name: "会员稽核", path: "aaaaa" },
+                        { name: "平台注单", path: "aaaaa" },
+                        { name: "活动报表", path: "aaaaa" },
+                        { name: "会员洗码", path: "aaaaa" }
+                      
                     ]
                 },
                 {
-                    name: "数据报表",
+                    name: "游戏管理",
                     // path: '/report',
                     icon: "iconmiaojie1029data",
                     children: [
-                        { name: "游戏报表", path: "/report/gamereport" },
-                        { name: "公司报表", path: "/report/companyreport" }
+                        { name: "平台游戏", path: "aaaaaaa" },
+                        { name: "游戏分类", path: "aaaaaaa" }
+                       
                     ]
                 },
                 {
@@ -67,59 +71,65 @@ let menuList = [
                     // path: '/activity',
                     icon: "iconcalculator",
                     children: [
-                        { name: "活动列表", path: "/activity/activitylist" },
-                        { name: "活动规则列表", path: "/activity/activityruleList" },
-                        { name: "签到管理 ", path: "/activity/checkIn" }
+                        { name: "注册赠送设定", path: "aaaaaaaaa" },
+                        { name: "首充赠送设定", path: "aaaaaaaaa" },
+                        { name: "有奖竞猜设定", path: "aaaaaaaaa" },
+                        { name: "幸运转盘设定", path: "aaaaaaaaa" },
+                        { name: "每日签到设定", path: "aaaaaaaaa" },
+                        { name: "抢红包设定", path: "aaaaaaaaa" },
+                        { name: "活动详细列表", path: "aaaaaaaaa" },
+                        { name: "活动列表", path: "aaaaaaaaa" },
+                        
                     ]
                 },
                 {
-                    name: "游戏管理",
+                    name: "支付配置",
                     // path: '/game',
                     icon: "icongame",
                     children: [
-                        { name: "平台游戏", path: "/game/plantformGame" },
-                        { name: "分类配置", path: "/game/sortsetting" },
-                        { name: "热门游戏 ", path: "/game/hotgame" }
+                        { name: "线下支付配置", path: "aaaaaaaaaa" },
+                        { name: "线上支付配置", path: "aaaaaaaaaa" },
+                        { name: "出款银行配置", path: "aaaaaaaaaa" },
+                        
                     ]
                 },
                 {
-                    name: "网站设置",
+                    name: "代理配置",
                     // path: '/net',
                     icon: "iconnet",
                     children: [
-                        { name: "网站信息", path: "/net/netinform" },
-                        { name: "注册设置", path: "/net/registsetting" },
-                        { name: "轮播管理", path: "/net/carousel" },
-                        { name: "客服设置", path: "/net/customservice" }
+                        { name: "代理配置", path: "aaaaaaaaaa" },
                     ]
                 },
                 {
-                    name: "消息设置",
+                    name: "设置管理",
                     // path: '/message',
                     icon: "iconspeaker-5",
                     children: [
-                        { name: "系统公告", path: "/message/systemmessage" },
-                        { name: "站内消息", path: "/message/instationmessage" },
-                        { name: "游戏公告", path: "/message/gamemessage" }
+                        { name: "管理员分组", path: "aaaaaaaaaa" },
+                        { name: "全域设置", path: "aaaaaaaaaa" },
+                        { name: "客服设置", path: "aaaaaaaaaa" },
+                        { name: "帮助设置", path: "aaaaaaaaaa" },
+                        { name: "操作记录", path: "aaaaaaaaaa" },
                     ]
                 },
-                {
-                    name: "代理推广",
-                    // path: '/agentpromotion',
-                    icon: "iconconnections",
-                    children: [
-                        { name: "代理配置", path: "/agentpromotion/agentsetting" },
-                        { name: "佣金记录", path: "/agentpromotion/commissionrecord" }
-                    ]
-                },
-                {
-                    name: "系统设置",
-                    // path: '/systemset',
-                    icon: "iconshezhi2",
-                    children: [
-                        { name: "管理员设置", path: "/systemset/adminsetting" },
-                        { name: "系统日志", path: "/systemset/systemlog" }
-                    ]
-                }
+                // {
+                //     name: "代理推广",
+                //     // path: '/agentpromotion',
+                //     icon: "iconconnections",
+                //     children: [
+                //         { name: "代理配置", path: "/agentpromotion/agentsetting" },
+                //         { name: "佣金记录", path: "/agentpromotion/commissionrecord" }
+                //     ]
+                // },
+                // {
+                //     name: "系统设置",
+                //     // path: '/systemset',
+                //     icon: "iconshezhi2",
+                //     children: [
+                //         { name: "管理员设置", path: "/systemset/adminsetting" },
+                //         { name: "系统日志", path: "/systemset/systemlog" }
+                //     ]
+                // }
             ]
 export default menuList

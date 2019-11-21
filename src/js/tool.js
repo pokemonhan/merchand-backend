@@ -29,7 +29,7 @@ const Tool = {//工具汇总
     //TODO 通用工具类*************************************************************************//
     isType: type => Object.prototype.toString.call(type).slice(8, Object.prototype.toString.call(type).length - 1),//数据类型判断工具
     // 时间格式化
-    formatDate(time, withTime=true) {
+    formatDate(time, withTime=false) {
         let arr1 = [],
             arr2 = [],
             date = new Date(time);

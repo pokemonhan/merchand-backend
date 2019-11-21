@@ -59,7 +59,7 @@
             showOptions(e) {
                 this.isShow = !this.isShow
                 let ele = this.$refs.sections
-                console.log("TCL: showOptions -> ele", ele)
+                // console.log("TCL: showOptions -> ele", ele)
                 if(this.isShow) {
                     let y = document.body.scrollHeight - e.target.getBoundingClientRect().bottom 
                     this.sectionsDir = y < 30 * this.options.length ? 'top-upfold' : 'bottom-upfold'

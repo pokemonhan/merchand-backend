@@ -6,15 +6,19 @@
             <ul class="left">
                 <li>
                     <span>会员账号</span>
-                    <Input style="width:110px" class="game-account" />
+                    <Input style="width:130px;" limit="en-num" v-model="filter.account" />
                 </li>
                 <li>
                     <span>游戏ID</span>
-                    <Input style="width:110px" class="game-id"  />
+                    <Input style="width:130px" limit="en-num" v-model="filter.game_id" />
                 </li>
                 <li>
                     <span>登录日期</span>
-                    <Date />
+                    <Date v-model="filter.date"/>
+                </li>
+                <li>
+                    <span>登录IP</span>
+                    <Input style="width:130px" limit="en-num" v-model="filter.login_ip" />
                 </li>
             </ul>
             <div class="right">
@@ -46,12 +50,18 @@
 export default {
     data() {
         return {
-            game_plant: "2",
-            game_plant_option: [
-                { label: "全部", value: "2" },
-                { label: "甲", value: "3" }
-            ],
-            user_id: "",
+            // game_plant: "2",
+            // game_plant_option: [
+            //     { label: "全部", value: "2" },
+            //     { label: "甲", value: "3" }
+            // ],
+            // user_id: "",
+            filter:{
+                account: '',
+                game_id: '',
+                date: '',
+                login_ip: ''
+            },
             headers: [
                 { label: "会员账号" },
                 { label: "会员ID" },

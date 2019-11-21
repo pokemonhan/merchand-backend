@@ -89,16 +89,17 @@ tbody tr:nth-child(2n){
 }
 tr td {
     text-align: center;
-    padding: 8px 4px;
-    border: 1px solid rgb(212, 211, 211);
+    padding: 7px 4px;
+    border: 1px solid rgb(235, 235, 235);
     font-size: 13px;
 }
 tbody tr:hover {
-    background: #eee;
+    background: rgb(240, 240, 240);
 }
 .container table th {
-    padding: 8px 6px;
-    border: 1px solid rgb(212, 211, 211);
+    padding: 7px 4px;
+    border: 1px solid rgb(235, 235, 235);
+    font-weight: 400;
     color: #4c8bfc;
     background: #e6f7ff;
 }

@@ -20,6 +20,9 @@ const WashSetting = () => import('@/components/views/user/WashSetting.vue')     
 /* 财务管理 */
 const IncomeReview = () => import('@/components/views/funds/IncomeReview.vue')              // 入款审核
 const ManualAccess = () => import('@/components/views/funds/ManualAccess.vue')              // 人工存取
+const PaymentReview = () => import('@/components/views/funds/PaymentReview.vue')            // 出款审核
+const PaymentList = () => import('@/components/views/funds/PaymentList.vue')                // 出款列表
+const FundChange = () => import('@/components/views/funds/FundChange.vue')                // 出款列表
 /* 财务管理 */
 Vue.use(Router)
 
@@ -84,9 +87,25 @@ export default new Router({
             path: '/funds/incomereview',
             component: IncomeReview
         },
+        //  -- 人工存取
         {
             path: '/funds/manualaccess',
             component: ManualAccess
+        },
+        // --出款审核
+        {
+            path: '/funds/paymentreview',
+            component: PaymentReview
+        },
+        // --出款列表
+        {
+            path: '/funds/paymentlist',
+            component: PaymentList
+        },
+        // --资金账变
+        {
+            path: '/funds/fundchange',
+            component: FundChange
         },
 
 

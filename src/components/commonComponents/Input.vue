@@ -7,6 +7,7 @@
             v-model="val"
             @input="input"
             @keyup.enter="pressEnter"
+            @keyup="keyup"
             :disabled="disabled"
         />
         <i v-if="icon" :class="['iconfont', icon]"></i>
@@ -40,7 +41,15 @@ export default {
     },
     data() {
         return {
-            val: ""
+            val: "",
+            regs: {
+                "number": /[^\-?\d.]/g,                  // 数字
+                "p-number": /[^\d.]/g,                   // 正数
+                "integer": /[^\-?\d]/g,                  // 整数
+                "p-integer": /\D/g,                      //  正整数
+                "no-zh-cn": /[\u4E00-\u9FA5]*/g,         // 没中文
+                "en-num": /[\W_]/g                       // 字母和数字
+            }
         };
     },
     methods: {
@@ -49,6 +58,10 @@ export default {
         },
         pressEnter() {
             this.$emit("enter");
+        },
+        keyup() {
+            this.regs[this.limit] && (this.val = this.val .toString() .replace(this.regs[this.limit], ""));
+            this.$emit("update", this.val);
         }
     }
 };
@@ -60,7 +73,7 @@ export default {
     /* width: 100%; */
     position: relative;
     /* min-height: 26px; */
-    width: 110px;
+    /* min-width: 100px; */
 }
 .large {
     height: 36px;
@@ -105,6 +118,7 @@ export default {
 .v-input .icon-icon-test {
     cursor: pointer;
 }
+
 .large .iconfont {
     font-size: 20px;
 }

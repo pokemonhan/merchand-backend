@@ -14,7 +14,7 @@
         <!-- 人工存款_记录 -->
 
         <div class="deposit" v-if="curr_list==='withdrawal'">
-            <div class="filter" style="margin-top:20px;">
+            <div class="filter" style="margin-top:15px;">
                 <ul class="left">
                     <li>
                         <span>会员账号:</span>
@@ -60,7 +60,7 @@
 
         <!-- 人工取款_记录 -->
         <div class="withdrawal" v-else>
-            <div class="filter" style="margin-top:20px;">
+            <div class="filter" style="margin-top:15px;">
                 <ul class="left">
                     <li>
                         <span>会员账号:</span>
@@ -173,33 +173,9 @@ export default {
                 { label: "备注" }
             ],
             withdrawal_list: [
-                {
-                    a1: "D456123456789",
-                    a2: "13245678942",
-                    a3: "4561234",
-                    a4: "100.00",
-                    a5: "2019/09/20 12:25:20",
-                    a6: "admin",
-                    a7: "备注"
-                },
-                {
-                    a1: "D456123456789",
-                    a2: "13245678942",
-                    a3: "4561234",
-                    a4: "100.00",
-                    a5: "2019/09/20 12:25:20",
-                    a6: "admin",
-                    a7: "备注"
-                },
-                {
-                    a1: "D456123456789",
-                    a2: "13245678942",
-                    a3: "4561234",
-                    a4: "100.00",
-                    a5: "2019/09/20 12:25:20",
-                    a6: "admin",
-                    a7: "备注"
-                }
+                { a1: "D456123456789", a2: "13245678942", a3: "4561234", a4: "100.00", a5: "2019/09/20 12:25:20", a6: "admin", a7: "备注" },
+                { a1: "D456123456789", a2: "13245678942", a3: "4561234", a4: "100.00", a5: "2019/09/20 12:25:20", a6: "admin", a7: "备注" },
+                { a1: "D456123456789", a2: "13245678942", a3: "4561234", a4: "100.00", a5: "2019/09/20 12:25:20", a6: "admin", a7: "备注" }
             ],
             withdrawal_total: 0,
             withdrawal_pageNo: 1,

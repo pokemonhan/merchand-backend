@@ -124,8 +124,12 @@ export default {
                 case 'no-zh-cn':  // 禁止中文
                     reg = /[\u4E00-\u9FA5]*/g
                     break
+                case 'en-num':  // 字母和数字
+                    reg = /[^A-Za-z0-9]/g
+                    break
                 default:
             }
+            console.log(el)
             el.addEventListener('keyup', () => {
                 el.value = el.value.replace(reg, '')
             })

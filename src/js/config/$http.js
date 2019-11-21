@@ -22,7 +22,8 @@ http.interceptors.request.use(req => {
     let Authorization = window.all.tool.getSession('Authorization')
     let expires = new Date(window.all.tool.getSession('expires_at')).getTime()
     let now = new Date().getTime()
-    if(Authorization){
+    let not_login = req.url.indexOf('/headquarters-api/login')=== -1        // 并非 /login页面
+    if(Authorization && not_login){
         // req.headers.token= token
         req.headers.Authorization = Authorization   // 这是token+token_type
         if(expires && now>expires){

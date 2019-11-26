@@ -11,7 +11,7 @@
         <div class="game-plant">
             <span>选择游戏平台:</span>
             <button
-                :class="active_plant===index?'btn-blue':'btn'"
+                :class="active_plant===index?'btn-blue':'btn-plain'"
                 v-for="(game_plant, index) in plants"
                 :key="index"
                 @click="active_plant=index"
@@ -57,38 +57,38 @@
                         </li>
                         <li>
                             <span>VIP1:</span>
-                            <Input class="w100" v-model="wash_form.vip1.num" />
-                            <Input class="w100" v-model="wash_form.vip1.bonust" />
+                            <Input class="w100" limit="number" v-model="wash_form.vip1.num" />
+                            <Input class="w100" limit="number" v-model="wash_form.vip1.bonust" />
                         </li>
                         <li>
                             <span>VIP2:</span>
-                            <Input class="w100" v-model="wash_form.vip2.num" />
-                            <Input class="w100" v-model="wash_form.vip2.bonus" />
+                            <Input class="w100" limit="number" v-model="wash_form.vip2.num" />
+                            <Input class="w100" limit="number" v-model="wash_form.vip2.bonus" />
                         </li>
                         <li>
                             <span>VIP3:</span>
-                            <Input class="w100" v-model="wash_form.vip3.num" />
-                            <Input class="w100" v-model="wash_form.vip3.bonus" />
+                            <Input class="w100" limit="number" v-model="wash_form.vip3.num" />
+                            <Input class="w100" limit="number" v-model="wash_form.vip3.bonus" />
                         </li>
                         <li>
                             <span>VIP4:</span>
-                            <Input class="w100" v-model="wash_form.vip4.num" />
-                            <Input class="w100" v-model="wash_form.vip4.bonus" />
+                            <Input class="w100" limit="number" v-model="wash_form.vip4.num" />
+                            <Input class="w100" limit="number" v-model="wash_form.vip4.bonus" />
                         </li>
                         <li>
                             <span>VIP5:</span>
-                            <Input class="w100" v-model="wash_form.vip5.num" />
-                            <Input class="w100" v-model="wash_form.vip5.bonus" />
+                            <Input class="w100" limit="number" v-model="wash_form.vip5.num" />
+                            <Input class="w100" limit="number" v-model="wash_form.vip5.bonus" />
                         </li>
                         <li>
                             <span>VIP6:</span>
-                            <Input class="w100" v-model="wash_form.vip6.num" />
-                            <Input class="w100" v-model="wash_form.vip6.bonus" />
+                            <Input class="w100" limit="number" v-model="wash_form.vip6.num" />
+                            <Input class="w100" limit="number" v-model="wash_form.vip6.bonus" />
                         </li>
                         <li>
                             <span>VIP7:</span>
-                            <Input class="w100" v-model="wash_form.vip7.num" />
-                            <Input class="w100" v-model="wash_form.vip7.bonus" />
+                            <Input class="w100" limit="number" v-model="wash_form.vip7.num" />
+                            <Input class="w100" limit="number" v-model="wash_form.vip7.bonus" />
                         </li>
                        
                     </ul>

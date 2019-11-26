@@ -5,11 +5,11 @@
             <ul class="left">
                 <li>
                     <span>会员账号</span>
-                    <Input class="w100" v-model="filter.user_account" />
+                    <Input class="w100" limit="en-num" v-model="filter.user_account" />
                 </li>
                 <li>
                     <span>会员ID</span>
-                    <Input class="w100" v-model="filter.userid" />
+                    <Input class="w100" limit="en-num" v-model="filter.userid" />
                 </li>
                 <li>
                     <span>申请时间</span>
@@ -17,7 +17,7 @@
                 </li>
                 <li>
                     <span>订单号</span>
-                    <Input class="w100" v-model="filter.userid" />
+                    <Input class="w100" limit="en-num" v-model="filter.userid" />
                 </li>
                 <li>
                     <span>出款类型</span>
@@ -53,8 +53,8 @@
                     <td>{{row.a7}}</td>
                     <td>{{row.a8}}</td>
                     <td>
-                        <span class="a" @click="pass(row)">通过</span>
-                        <span class="a" @click="refuse(row)">拒绝</span>
+                        <span class="a" @click="confShow(row,'pass')">通过</span>
+                        <span class="a" @click="confShow(row, 'reject')">拒绝</span>
                         <span class="a" @click="seeAudit(row)">查看稽核</span>
                     </td>
                 </tr>
@@ -78,6 +78,7 @@
             </div>
             
         </div>
+        
         <div class="total-table">
                 <table>
                     <tr>
@@ -98,8 +99,8 @@
                     </tr>
                 </table>
         </div>
-         <Page class="page" :total="total" :pageNo.sync="pageNo" :pageSize.sync="pageSize" @updateNo="updateNo" @updateSize="updateSize"/>
-        <Modal :show="show_conf!==''" title="我是标题" content="我是内容" @cancel="show_conf=''" @confirm="paymentConfirm"></Modal>
+         <Page class="table-page" :total="total" :pageNo.sync="pageNo" :pageSize.sync="pageSize" @updateNo="updateNo" @updateSize="updateSize"/>
+        <Modal :show="show_conf!==''" :title="confirm.title" :content="confirm.content" @cancel="show_conf=''" @confirm="paymentConfirm"></Modal>
         <div v-if="show_detail" class="modal-mask">
             <div class="v-modal">
                 <PaymentReviewDetail :userid="'userid__34234324'" @close="show_detail=false" />
@@ -152,6 +153,11 @@ export default {
             pageNo: 1,
             pageSize: 25,
             show_conf: '',
+           
+            confirm:{
+                title:'出款审核',
+                content:'',
+            },
             show_detail: false,
         };
     },
@@ -166,16 +172,22 @@ export default {
         },
         paymentConfirm() {
             if(this.show_conf==='pass'){
-                console.log('pass')
+                
             }else if(this.show_conf==='refuse'){
-                console.log('refuse')
+                 this.conf_title = '出款审核'
+                this.conf_content = '是否拒绝该订单'
             }
         },
         pass(row) {
             this.show_conf = 'pass'
+            this.conf_title = '出款审核'
+            this.conf_content = '是否通过该订单'
         },
         refuse(row) {
             this.show_conf = 'refuse'
+        },
+        confShow(row,status){
+
         },
         seeAudit(row) {
             this.show_detail = true

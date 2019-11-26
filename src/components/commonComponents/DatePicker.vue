@@ -258,6 +258,9 @@
                             <Button size="small" @click="confirm" active>确定</Button>
                         </div>
                     </div>
+                    <div style="padding:5px 0;" v-else>
+                        <button class="clear-btn" @click="clear" v-if="clearable">清空</Button>
+                    </div>
                 </div>
             </div>
         </transition>
@@ -817,6 +820,7 @@
 
 <style scoped>
     .v-date-picker{
+        /* width: 100%; */
         height: 32px;
         line-height: 32px;
         position: relative;
@@ -828,7 +832,7 @@
         user-select: none;
     }
     .v-date-picker.date{
-        width: 90px;
+        width: 110px;
     }
     .v-date-picker.datetime{
         width: 160px;
@@ -1055,6 +1059,11 @@
     }
     .not-allowed{
         cursor:not-allowed
+    }
+    .clear-btn{
+        background: #4c8bfc;
+        color: #fff;
+        border-radius: 3px;
     }
 </style>
 

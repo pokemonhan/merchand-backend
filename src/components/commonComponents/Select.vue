@@ -106,7 +106,7 @@
     .v-select{
         /* height: 22px; */
         /* height: 100%; */
-        width: 150px;
+        width: 110px;
         position: relative;
         /* margin: 0 5px; */
         /* display: inline-block; */

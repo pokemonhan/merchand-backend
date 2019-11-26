@@ -73,10 +73,10 @@ export default {
                 // 导航条没有该页面 就添加进去
                 if (this.tab_nav_list.indexOf(item) === -1) {
                     list.push(item);
-                    // 保持不大于7个菜单导航
-                    if (list.length > 7) {
-                        list.shift();
-                    }
+                    // // 保持不大于7个菜单导航
+                    // if (list.length > 7) {
+                    //     list.shift();
+                    // }
                     // if(list.length)
                     this.updatetab_nav_list(list);
                 }
@@ -104,7 +104,7 @@ export default {
         $route: function(to, from) {
             if (to.path === "/home") return;
             let path = to.path;
-            console.log("TCL: path", path);
+            // console.log("TCL: path", path);
             /*       1.同一父级,则 退出 2.不同父级,关闭以前,打开跳转的父级菜单 */
 
             //1.同一父级,则 退出
@@ -131,7 +131,7 @@ export default {
     mounted() {
         // console.log('aside');
         this.menu_list = window.all.menu_list;
-        var self = this;
+        const self = this;
         let { method, url, params } = this.$api.all_menu;
         // function objToArr(obj) {
         //     let list = [];
@@ -151,7 +151,7 @@ export default {
             data: params
         };
         this.$http(opt).then(res => {
-            console.log(res);
+            // console.log(res);
             if (res && res.code === "200") {
                 // self.menu_list = res.data;
                 function objToArr(obj) {
@@ -166,23 +166,23 @@ export default {
                     return list;
                 }
                 // console.log("list-list", objToArr(self.menu_list));
-            
             }
         });
-        // console.log(this.tab_nav_list.length);
         // 解决刷新时顶部tab_nav都消失的问题, 根据路由加载当前导航.
-        if (this.tab_nav_list.length === 0) {
-            this.menu_list.forEach((item, index) => {
-                if (item.children) {
-                    item.children.forEach(item => {
-                        if (item.path === this.$route.path) {
-                            let list = [item]; // 获取当前路由 item {name: name,path:'/***'}
-                            this.updatetab_nav_list(list);
-                        }
-                    });
-                }
-            });
-        }
+        setTimeout(() => {
+              if (self.tab_nav_list.length === 0) {
+                self.menu_list.forEach((item, index) => {
+                    if (item.children) {
+                        item.children.forEach(item => {
+                            if (item.path === self.$route.path) {
+                                let list = [item]; // 获取当前路由 item {name: name,path:'/***'}
+                                self.updatetab_nav_list(list);
+                            }
+                        });
+                    }
+                });
+            }
+        }, 100);
     }
 };
 </script>
@@ -191,7 +191,6 @@ export default {
 .contain {
     width: 150px;
     max-height: 92vh;
-    border: 1px solid rgb(247, 247, 247);
     box-sizing: border-box;
     background: #fff;
     /* text-align: center; */

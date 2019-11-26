@@ -8,7 +8,12 @@
                     </th>
                     <th v-for="(col, index) in headers" :key="index">
                         <!-- <div v-if="col.label.split(',').length!==0"></div> -->
-                        <div v-for="(item, index) in col.label.split(',')" :key="index">{{item}}</div>
+                        <template v-if="col.label">
+                            <div v-for="(item, index) in col.label.split(',')" :key="index">{{item}}</div>
+                        </template>
+                        <template v-else>
+                            <div v-for="(item, index) in col.split(',')" :key="index">{{item}}</div>                   
+                        </template>
                     </th>
                 </tr>
             </thead>
@@ -28,6 +33,7 @@
                 <slot name="tr"></slot>
             </tbody>
         </table>
+
     </div>
 </template>
 

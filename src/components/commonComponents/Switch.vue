@@ -11,7 +11,10 @@ export default {
         value: {
             type: Boolean,
             default: false
-        }
+        },
+        // color:{
+        //     type :String,
+        // }
     },
     model:{
         prop:'value',
@@ -43,8 +46,10 @@ export default {
     .weui-switch{
         display: block;
         position: relative;
-        width: 52px;
-        height: 32px;
+        /* width: 52px;
+        height: 32px; */
+        width: 42px;
+        height: 25px;
         border: 1px solid #aaa;
         outline: 0;
         border-radius: 16px;
@@ -59,8 +64,10 @@ export default {
         position: absolute;
         top: 0;
         left: 0;
-        width: 50px;
-        height: 30px;
+        /* width: 50px;
+        height: 30px; */
+        width: 40px;
+        height: 23px;
         border-radius: 15px;
         background-color: rgb(175, 175, 175);
         transition: transform 0.35s cubic-bezier(0.45, 1, 0.5, 1);
@@ -71,8 +78,10 @@ export default {
         position: absolute;
         top: 0;
         left: 0;
-        width: 30px;
-        height: 30px;
+        /* width: 30px;
+        height: 30px; */
+        width: 23px;
+        height: 23px;
         border-radius: 50%;
         background-color: rgb(255, 255, 255);
         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
@@ -90,6 +99,7 @@ export default {
     }
     /* 小圆球位移 */
     .weui-switch-on:after{
-        transform: translateX(20px);
+        /* transform: translateX(20px); */
+        transform: translateX(17px);
     }
 </style>

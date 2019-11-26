@@ -18,11 +18,11 @@
                 <ul class="left">
                     <li>
                         <span>会员账号:</span>
-                        <Input v-model="deposit_filter.orderid" />
+                        <Input limit="en-num" v-model="deposit_filter.orderid" />
                     </li>
                     <li>
                         <span>会员ID:</span>
-                        <Input v-model="deposit_filter.orderid" />
+                        <Input limit="en-num" v-model="deposit_filter.orderid" />
                     </li>
                     <li>
                         <span>充值时间:</span>
@@ -64,11 +64,11 @@
                 <ul class="left">
                     <li>
                         <span>会员账号:</span>
-                        <Input v-model="withdrawal_filter.orderid" />
+                        <Input limit="en-num" v-model="withdrawal_filter.orderid" />
                     </li>
                     <li>
                         <span>游戏ID:</span>
-                        <Input v-model="withdrawal_filter.orderid" />
+                        <Input limit="en-num" v-model="withdrawal_filter.orderid" />
                     </li>
                     <li>
                         <span>充值时间:</span>
@@ -94,7 +94,7 @@
                     </template>
                 </Table>
                 <Page
-                    class="page"
+                    class="table-page"
                     :total="withdrawal_total"
                     :pageNo.sync="withdrawal_pageNo"
                     :pageSize.sync="withdrawal_pageSize"

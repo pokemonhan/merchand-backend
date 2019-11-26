@@ -99,7 +99,7 @@ export default {
     border-radius: 4px;
     box-sizing: border-box;
     border: 1px solid #ddd;
-    padding: 0 10px;
+    padding: 6px 10px;
     background: #fff;
 }
 .v-input span {

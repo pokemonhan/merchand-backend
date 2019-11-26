@@ -211,6 +211,10 @@ export default {
 .content .out-money {
     margin-left: 30px;
 }
+.content .info-music {
+    display: inline-block;
+    width: 56px;
+}
 
 .iconfont {
     margin-right: 5px;

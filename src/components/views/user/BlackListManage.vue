@@ -14,9 +14,9 @@
                 </li>
                 <li>
                     <span>进入黑名单时间</span>
-                    <Date v-model="filter.start_date" />
+                    <Date style="width:110px;" v-model="filter.start_date" />
                     <span style="margin:0 5px;"> ~ </span>
-                    <Date v-model="filter.end_date" />
+                    <Date style="width:110px;" v-model="filter.end_date" />
                 </li>
                 
             </ul>
@@ -40,7 +40,7 @@
                 </template>
             </Table>
             <Page
-                class="page"
+                class="table-page"
                 :total="total"
                 :pagerCount="pagerCount"
                 @updateNo="updateNo"

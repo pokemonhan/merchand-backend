@@ -22,8 +22,13 @@ const IncomeReview = () => import('@/components/views/funds/IncomeReview.vue')  
 const ManualAccess = () => import('@/components/views/funds/ManualAccess.vue')              // 人工存取
 const PaymentReview = () => import('@/components/views/funds/PaymentReview.vue')            // 出款审核
 const PaymentList = () => import('@/components/views/funds/PaymentList.vue')                // 出款列表
-const FundChange = () => import('@/components/views/funds/FundChange.vue')                // 出款列表
+const FundChange = () => import('@/components/views/funds/FundChange.vue')                  // 资金账变
 /* 财务管理 */
+
+/* 公告管理 */
+const Marquee = () => import('@/components/views/announce/Marquee.vue')                     // 出款列表
+const SystemAnnounce = () => import('@/components/views/announce/SystemAnnounce.vue')       // 出款列表
+/* 公告管理 */
 Vue.use(Router)
 
 export default new Router({
@@ -110,6 +115,16 @@ export default new Router({
 
 
         /* -----------------------------------  财务管理 ------------------------------------*/
+        // 跑马灯消息
+        {
+            path: '/announce/marquee',
+            component: Marquee
+        },
+        // 系统公告消息
+        {
+            path: '/announce/systemannounce',
+            component: SystemAnnounce
+        },
     ]
 })
 
@@ -133,7 +148,7 @@ export default new Router({
 
 // let route_add = []
 
-// let r = require.context('../components/views', true, /.vue$/, 'lazy')           //获取 /views所有文件路径
+// let r = require.context('../components/views', true, /.vue$/, 'lazy')           //获取 /views所有文件路径 lazy加载
 // r.keys().forEach(file_name => {
 //     let path = file_name.slice(1).replace('.vue', '').toLowerCase()
 //     let length = file_name.split('/').length
@@ -143,6 +158,7 @@ export default new Router({
 //     route_add.push({
 //         path: path,
 //         // name: name,
+//         // 懒加载
 //         component: () => r(file_name)
 //     })
     

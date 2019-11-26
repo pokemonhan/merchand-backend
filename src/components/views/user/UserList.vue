@@ -13,11 +13,11 @@
                 </li>
                 <li>
                     <span>注册日期</span>
-                    <Date v-model="filter.start_date"/>
-                    <span>至</span>
-                    <Date v-model="filter.end_date"/>
+                    <Date style="width:100px;" v-model="filter.start_date" />
+                    <span style="margin:0 5px;">至</span>
+                    <Date v-model="filter.end_date" />
                 </li>
-                <li class="acc-status">
+                <li>
                     <span>在线状态</span>
                     <!-- <Input class="account-status" size="small"/> -->
                     <span>
@@ -29,32 +29,35 @@
                         ></Select>
                     </span>
                 </li>
-                <li class="acc-status">
+                <li>
+                    <span>上级状态</span>
+                    <!-- <Input class="account-status" size="small"/> -->
+                    <span>
+                        <Select
+                            v-model="filter.online_state"
+                            :options="online_state_opt"
+                            style="width:90px;"
+                            @update="selectupdate"
+                        ></Select>
+                    </span>
+                </li>
+                <li>
                     <span>注册IP</span>
                     <Input style="width:90px;" limit="number" v-model="filter.registid" />
-                   
+                </li>
+                <li style="margin-left:600px;margin-top:10px;">
+                    <span>
+                        <button class="btn-blue">查询</button>
+                    </span>
+                    <span>
+                        <button class="btn-blue">导出Excel</button>
+                    </span>
                 </li>
             </ul>
-            <div class="right">
-                <span>
-                    <button class="btn-blue">查询</button>
-                </span>
-                <span>
-                    <button class="btn-blue">导出Excel</button>
-                </span>
-            </div>
+            <div class="right"></div>
         </div>
         <div class="tool-bar">
             <button class="btn-plain" @click="addAccClick">添加账号</button>
-            <!-- <button class="btn-plain">赠送彩金</button>
-            <button class="btn-plain">人工扣款</button>
-            <button class="btn-plain">人工存款</button>
-            <button class="btn-plain">重置登录密码</button>
-            <button class="btn-plain">重置取款密码</button>
-            <button class="btn-plain">清空姓名</button>
-            <button class="btn-plain">清空银行卡</button>
-            <button class="btn-plain">批量禁用</button>
-            <button class="btn-plain">批量启用</button>-->
         </div>
 
         <Table
@@ -63,9 +66,9 @@
             @checkboxChange="checkboxChange"
             :haveCheckbox="false"
         >
-            <!-- 在线状态, 游戏账号, 游戏ID, 会员标签, 团队人数, 上级账号, 玩家金额 注册IP-登录iP,注册日期--登录日期 -->
+            <!-- 在线状态, 游戏账号, 游戏ID, 会员标签, 团队人数, 上级账号, 玩家金额, 注册IP->登录iP,注册日期->登录日期 -->
             <template v-slot:item="{row}">
-                <td>{{row.a}}</td>
+                <td :class="[row.a==='在线'?'green':'orange']">{{row.a}}</td>
                 <td>{{row.b}}</td>
                 <td>{{row.c}}</td>
                 <td>{{row.d}}</td>
@@ -329,8 +332,12 @@
             <div class="blacklist">
                 <div class="blacklist-inner">
                     <div class="infor">是否确定把该玩家加入黑名单！</div>
+                    <span class="textarea-remark">
+                        <span class="mr5">备注:</span>
+                        <textarea class="textarea" cols="40" rows="10"></textarea>
+                    </span>
                     <div class="btns">
-                        <button class="btn-plain-large" @click="show_add_black_list=false">取消</button>
+                        <button class="btn-plain-large mr100" @click="show_add_black_list=false">取消</button>
                         <button class="btn-blue-large">确认</button>
                     </div>
                 </div>
@@ -343,13 +350,13 @@
 export default {
     data() {
         return {
-            filter:{
-                account: '',
-                userid: '',
-                start_date: '',
-                end_date: '',
-                online_state: '',
-                registid: '',
+            filter: {
+                account: "",
+                userid: "",
+                start_date: "",
+                end_date: "",
+                online_state: "",
+                registid: ""
             },
             headers: [
                 { label: "在线状态" },
@@ -364,7 +371,21 @@ export default {
                 { label: "操作" }
             ],
             list: [
-                { a: "在线", b: "132****4654", c: "33542354234", d: "555555554234", e: "sd", f: "192.168.0.0", g: "df", h: "df", i: "192.168.0.0", j: "192.168.0.0", k: "2019/8/12 14：12：00", l: "2019/8/12 14：12：00", m: "2019/8/12 14：12：00" },
+                {
+                    a: "在线",
+                    b: "132****4654",
+                    c: "33542354234",
+                    d: "555555554234",
+                    e: "sd",
+                    f: "192.168.0.0",
+                    g: "df",
+                    h: "df",
+                    i: "192.168.0.0",
+                    j: "192.168.0.0",
+                    k: "2019/8/12 14：12：00",
+                    l: "2019/8/12 14：12：00",
+                    m: "2019/8/12 14：12：00"
+                },
                 { a: "离线", b: "132****4654", c: "3", d: "4" }
             ],
             online_state: "",
@@ -376,7 +397,7 @@ export default {
             pageNo: 1,
             pageSize: 25,
             total: 300,
-            
+
             show_detail: false,
             use_detail: false,
             add_acc: "",
@@ -418,7 +439,7 @@ export default {
             this.inner_mask_show = false;
         },
         updateNo(val) {
-            this.p
+            this.p;
         },
         updateSize(val) {}
     },
@@ -467,7 +488,7 @@ export default {
     padding: 6px 15px;
 }
 .tool-bar {
-    margin: 30px 0;
+    margin-bottom: 10px;
 }
 .table-td {
     /* width: 300px; */
@@ -522,26 +543,19 @@ export default {
 }
 .blacklist {
     min-width: 450px;
-    min-height: 260px;
+    min-height: 380px;
     position: absolute;
     top: 50%;
     z-index: 2;
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
+    padding: 20px;
     background-color: #fff;
     border-radius: 7px;
 }
 .blacklist-inner {
-    position: absolute;
-    top: 50%;
-    z-index: 2;
-    left: 50%;
-    top: 40%;
-    transform: translateX(-50%);
-    white-space: nowrap;
     text-align: center;
-    font-size: 20px;
 }
 .blacklist-inner .btns button {
     margin-top: 70px;
@@ -549,6 +563,17 @@ export default {
 }
 .blacklist-inner .btns .btn-plain-normal {
     margin-right: 60px;
+}
+.textarea-remark{
+    display: flex;
+    justify-content: center;
+    align-items: baseline;
+    margin-top: 10px;
+}
+.blacklist-inner .textarea{
+    margin-top: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
 }
 .table-opra span {
     font-size: 14px;
@@ -628,7 +653,7 @@ export default {
     color: rgb(83, 83, 83);
 }
 .list ul li:not(:last-child) {
-    margin-right: 45px;
+    margin-right: 40px;
 }
 .bg-red {
     padding: 4px 6px;
@@ -642,5 +667,13 @@ export default {
 }
 .confirm-btn .btn-blue {
     padding: 8px 14px;
+}
+.mr5{
+    margin-right: 5px;
+    position: relative;
+    top: 5px;
+}
+.mr100{
+    margin-right: 100px;
 }
 </style>

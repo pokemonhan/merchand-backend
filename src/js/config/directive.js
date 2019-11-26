@@ -129,7 +129,6 @@ export default {
                     break
                 default:
             }
-            console.log(el)
             el.addEventListener('keyup', () => {
                 el.value = el.value.replace(reg, '')
             })

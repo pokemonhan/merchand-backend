@@ -177,6 +177,13 @@
                         </template>
                     </Table>
                     <!-- <Page></Page> -->
+                    <Page
+                        :total="total"
+                        :pageNo.sync="pageNo"
+                        :pageSize.sync="pageSize"
+                        @updateNo="updateNo"
+                        @updateSize="updateSize"
+                    />
                 </div>
             </div>
             <div class="graph">
@@ -298,264 +305,293 @@ export default {
             promotion_list: [
                 { plant_form: "开元棋牌", rank: "1", number: "100" },
                 { plant_form: "龙城棋牌", rank: "2", number: "60" }
-            ]
+            ],
+            total: 0,
+            pageNo: 1,
+            pageSize: 25
         };
     },
     created() {},
-    methods: {},
-    mounted() {
-        let echarts = window.all.echarts;
-
-        // 今日曲线图
-        let first_recharge_chart = echarts.init(
-            document.getElementById("first_recharge")
-        );
-        first_recharge_chart.setOption({
-            xAxis: {
-                type: "category",
-                // data: ['', '', '', '', '', '', ''],
-                splitLine: {
-                    //去掉网格
-                    show: false
-                }
-            },
-            yAxis: {
-                type: "value",
-                axisTick: {
-                    // 去掉刻度线
-                    show: false
+    methods: {
+        // 今日首充 曲线图
+        todatyFirstRechargeChartDraw() {
+            let echarts = window.all.echarts;
+            let first_recharge_chart = echarts.init(
+                document.getElementById("first_recharge")
+            );
+            first_recharge_chart.setOption({
+                xAxis: {
+                    type: "category",
+                    // data: ['', '', '', '', '', '', ''],
+                    splitLine: {
+                        //去掉网格
+                        show: false
+                    }
                 },
-                splitLine: {
-                    // 去掉网格
-                    show: false
-                }
-            },
-            series: [
-                {
-                    type: "line",
-                    smooth: true,
-                    symbol: "none", //去掉折点
-                    // itemStyle : {
-                    //     color:'#67b5fd'
-                    // },
-                    lineStyle: {
-                        color: "#67b5fd"
+                yAxis: {
+                    type: "value",
+                    axisTick: {
+                        // 去掉刻度线
+                        show: false
                     },
+                    splitLine: {
+                        // 去掉网格
+                        show: false
+                    }
+                },
+                series: [
+                    {
+                        type: "line",
+                        smooth: true,
+                        symbol: "none", //去掉折点
+                        // itemStyle : {
+                        //     color:'#67b5fd'
+                        // },
+                        lineStyle: {
+                            color: "#67b5fd"
+                        },
 
-                    areaStyle: {
-                        normal: {
-                            color: new echarts.graphic.LinearGradient(
-                                0,
-                                0,
-                                0,
-                                1,
-                                [
-                                    { offset: 0, color: "#accfef" },
-                                    { offset: 1, color: "#fff" }
-                                ]
-                            )
-                        }
-                    },
-                    data: [820, 932, 901, 934, 1290, 1330, 1320]
-                }
-            ]
-        });
+                        areaStyle: {
+                            normal: {
+                                color: new echarts.graphic.LinearGradient(
+                                    0,
+                                    0,
+                                    0,
+                                    1,
+                                    [
+                                        { offset: 0, color: "#accfef" },
+                                        { offset: 1, color: "#fff" }
+                                    ]
+                                )
+                            }
+                        },
+                        data: [820, 932, 901, 934, 1290, 1330, 1320]
+                    }
+                ]
+            });
+        },
 
         // 登录统计 --人数统计
-        let login_chart = echarts.init(document.getElementById("login_num"));
-        login_chart.setOption({
-            tooltip: {
-                trigger: "item",
-                formatter: "{a} <br/>{b}: {c} ({d}%)"
-            },
-            legend: {
-                orient: "vertical",
-                x: "left",
-                data: [
-                    "直接访问",
-                    "邮件营销",
-                    "联盟广告",
-                    "视频广告",
-                    "搜索引擎"
-                ]
-            },
-            series: [
-                {
-                    name: "登录人数",
-                    type: "pie",
-                    radius: ["50%", "70%"],
-                    avoidLabelOverlap: true,
-                    label: {
-                        normal: {
-                            show: false,
-                            position: "center"
-                        },
-                        emphasis: {
-                            show: true,
-                            textStyle: {
-                                fontSize: "30",
-                                fontWeight: "bold"
-                            }
-                        }
-                    },
-                    //  右侧图标
-                    legend: {
-                        type: "scroll",
-                        orient: "vertical",
-                        right: 30,
-                        top: 20,
-                        bottom: 20,
-                        data: ['安卓','苹果','H5','PC'
-                     
-                    ],
-
-                        selected: [true, true ,true, true]
-                    },
-                    itemStyle: {
-                        normal: {
-                            color: function(params) {
-                                var colors = [
-                                    "#4c8bfd",
-                                    "#4cc013",
-                                    "#faab08",
-                                    "#fc4c4c"
-                                ];
-                                return colors[params.dataIndex];
-                            }
-                        }
-                    },
+        loginChartDraw() {
+            let echarts = window.all.echarts;
+            let login_chart = echarts.init(
+                document.getElementById("login_num")
+            );
+            login_chart.setOption({
+                tooltip: {
+                    trigger: "item",
+                    formatter: "{a} <br/>{b}: {c} ({d}%)"
+                },
+                legend: {
+                    orient: "vertical",
+                    x: "left",
                     data: [
-                        { value: 335, name: "安卓" },
-                        { value: 310, name: "苹果" },
-                        { value: 234, name: "H5" },
-                        { value: 135, name: "PC" }
+                        "直接访问",
+                        "邮件营销",
+                        "联盟广告",
+                        "视频广告",
+                        "搜索引擎"
                     ]
-                }
-            ]
-        });
+                },
+                series: [
+                    {
+                        name: "登录人数",
+                        type: "pie",
+                        radius: ["50%", "70%"],
+                        avoidLabelOverlap: true,
+                        label: {
+                            normal: {
+                                show: false,
+                                position: "center"
+                            },
+                            emphasis: {
+                                show: true,
+                                textStyle: {
+                                    fontSize: "30",
+                                    fontWeight: "bold"
+                                }
+                            }
+                        },
+                        //  右侧图标
+                        legend: {
+                            type: "scroll",
+                            orient: "vertical",
+                            right: 30,
+                            top: 20,
+                            bottom: 20,
+                            data: ["安卓", "苹果", "H5", "PC"],
+
+                            selected: [true, true, true, true]
+                        },
+                        itemStyle: {
+                            normal: {
+                                color: function(params) {
+                                    var colors = [
+                                        "#4c8bfd",
+                                        "#4cc013",
+                                        "#faab08",
+                                        "#fc4c4c"
+                                    ];
+                                    return colors[params.dataIndex];
+                                }
+                            }
+                        },
+                        data: [
+                            { value: 335, name: "安卓" },
+                            { value: 310, name: "苹果" },
+                            { value: 234, name: "H5" },
+                            { value: 135, name: "PC" }
+                        ]
+                    }
+                ]
+            });
+        },
+
         // 注册统计
-        let regist_chart = echarts.init(document.getElementById("regist_num"));
-        regist_chart.setOption({
-            // title: {
-            //     text: "某站点用户访问来源",
-            //     subtext: "纯属虚构",
-            //     x: "center"
-            // },
-            // tooltip: {
-            //     trigger: "item",
-            //     formatter: "{a} <br/>{b} : {c} ({d}%)"
-            // },
-            // legend: {
-            //     orient: "vertical",
-            //     left: "left",
-            //     data: [
-            //         "直接访问",
-            //         "邮件营销",
-            //         "联盟广告",
-            //         "视频广告",
-            //         "搜索引擎"
-            //     ]
-            // },
-            series: [
-                {
-                    name: "访问来源",
-                    type: "pie",
-                    radius: "55%",
-                    center: ["50%", "60%"],
-                    data: [
-                        { value: 335, name: "安卓" },
-                        { value: 310, name: "苹果" },
-                        { value: 234, name: "H5" },
-                        { value: 135, name: "Pc" }
-                    ],
-                    itemStyle: {
-                        normal: {
-                            color: function(params) {
-                                var colors = [
-                                    "#4c8bfd",
-                                    "#4cc013",
-                                    "#faab08",
-                                    "#fc4c4c"
-                                ];
-                                return colors[params.dataIndex];
+        registChartDraw() {
+            let echarts = window.all.echarts;
+            let regist_chart = echarts.init(
+                document.getElementById("regist_num")
+            );
+            regist_chart.setOption({
+                // title: {
+                //     text: "某站点用户访问来源",
+                //     subtext: "纯属虚构",
+                //     x: "center"
+                // },
+                // tooltip: {
+                //     trigger: "item",
+                //     formatter: "{a} <br/>{b} : {c} ({d}%)"
+                // },
+                // legend: {
+                //     orient: "vertical",
+                //     left: "left",
+                //     data: [
+                //         "直接访问",
+                //         "邮件营销",
+                //         "联盟广告",
+                //         "视频广告",
+                //         "搜索引擎"
+                //     ]
+                // },
+                series: [
+                    {
+                        name: "访问来源",
+                        type: "pie",
+                        radius: "55%",
+                        center: ["50%", "60%"],
+                        data: [
+                            { value: 335, name: "安卓" },
+                            { value: 310, name: "苹果" },
+                            { value: 234, name: "H5" },
+                            { value: 135, name: "Pc" }
+                        ],
+                        itemStyle: {
+                            normal: {
+                                color: function(params) {
+                                    var colors = [
+                                        "#4c8bfd",
+                                        "#4cc013",
+                                        "#faab08",
+                                        "#fc4c4c"
+                                    ];
+                                    return colors[params.dataIndex];
+                                }
                             }
                         }
                     }
-                }
-            ]
-        });
+                ]
+            });
+        },
+
         // 充提统计
-        let recharge_chart = echarts.init(document.getElementById("recharge"));
-        recharge_chart.setOption({
-            title: {
-                text: "充提统计"
-            },
-            tooltip: {
-                trigger: "axis",
-                axisPointer: {
-                    type: "shadow"
-                }
-            },
-            legend: {
-                data: ["前日充值", "前日提款"]
-            },
-            grid: {
-                left: "3%",
-                right: "4%",
-                bottom: "3%",
-                containLabel: true
-            },
-            xAxis: {
-                type: "category",
-                data: ["前日", "昨日", "今日"]
-            },
-            yAxis: {
-                type: "value",
-                // boundaryGap: [0, 0.01],
-                axisTick: {
-                    // 去掉刻度线
-                    show: false
+        rechargeChartDraw() {
+            let echarts = window.all.echarts;
+            let recharge_chart = echarts.init(
+                document.getElementById("recharge")
+            );
+
+            recharge_chart.setOption({
+                title: {
+                    text: "充提统计"
                 },
-                splitLine: {
-                    // 去掉网格
-                    show: false
-                }
-            },
-            series: [
-                {
-                    name: "充值",
-                    type: "bar",
-                    itemStyle: {
-                        normal: {
-                            color: "#4c8bfd"
-                        }
-                    },
-                    label: {
-                        normal: {
-                            position: "top",
-                            show: true
-                        }
-                    },
-                    data: [18203, 23489, 29034]
+                tooltip: {
+                    trigger: "axis",
+                    axisPointer: {
+                        type: "shadow"
+                    }
                 },
-                {
-                    name: "提款",
-                    type: "bar",
-                    itemStyle: {
-                        normal: {
-                            color: "#faaa0b"
-                        }
+                legend: {
+                    data: ["前日充值", "前日提款"]
+                },
+                grid: {
+                    left: "3%",
+                    right: "4%",
+                    bottom: "3%",
+                    containLabel: true
+                },
+                xAxis: {
+                    type: "category",
+                    data: ["前日", "昨日", "今日"]
+                },
+                yAxis: {
+                    type: "value",
+                    // boundaryGap: [0, 0.01],
+                    axisTick: {
+                        // 去掉刻度线
+                        show: false
                     },
-                    label: {
-                        normal: {
-                            position: "top",
-                            show: true
-                        }
+                    splitLine: {
+                        // 去掉网格
+                        show: false
+                    }
+                },
+                series: [
+                    {
+                        name: "充值",
+                        type: "bar",
+                        itemStyle: {
+                            normal: {
+                                color: "#4c8bfd"
+                            }
+                        },
+                        label: {
+                            normal: {
+                                position: "top",
+                                show: true
+                            }
+                        },
+                        data: [18203, 23489, 29034]
                     },
-                    data: [19325, 23438, 31000]
-                }
-            ]
-        });
+                    {
+                        name: "提款",
+                        type: "bar",
+                        itemStyle: {
+                            normal: {
+                                color: "#faaa0b"
+                            }
+                        },
+                        label: {
+                            normal: {
+                                position: "top",
+                                show: true
+                            }
+                        },
+                        data: [19325, 23438, 31000]
+                    }
+                ]
+            });
+        },
+        updateNo(val) {},
+        updateSize(val) {}
+    },
+    mounted() {
+        // let echarts = window.all.echarts;
+        this.todatyFirstRechargeChartDraw();        // 今日首冲
+        this.loginChartDraw();                      // 登录统计
+        this.registChartDraw();                     // 注册统计
+        this.rechargeChartDraw()                    // 充提统计
+
     }
 };
 </script>

@@ -5,11 +5,11 @@
             <ul class="left">
                 <li>
                     <span>会员账号</span>
-                    <Input style="width:100px" v-model="filter.account" />
+                    <Input limit="en-num" style="width:100px" v-model="filter.account" />
                 </li>
                 <li>
                     <span>会员ID</span>
-                    <Input class="w100" v-model="filter.id" />
+                    <Input limit="en-num" class="w100" v-model="filter.id" />
                 </li>
                 <li>
                     <span>申请时间</span>
@@ -17,7 +17,7 @@
                 </li>
                 <li>
                     <span>订单号</span>
-                    <Input class="w100" v-model="filter.orderid" />
+                    <Input limit="en-num" class="w100" v-model="filter.orderid" />
                 </li>
                 <li>
                     <span>出款类型</span>
@@ -96,7 +96,7 @@
             </table>
         </div>
         <Page
-            class="page"
+            class="table-page"
             :total="total"
             :pageNo.sync="pageNo"
             :pageSize.sync="pageSize"

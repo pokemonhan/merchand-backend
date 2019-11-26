@@ -1,23 +1,28 @@
 <template>
     <div class="container">
         <h4 style="margin:5px 0;">资金账变</h4>
+        <QuickQuery :date="quick_query" @update="quickDateUpdate($event)" />
         <div class="filter">
             <ul class="left">
                 <li>
                     <span>会员账号:</span>
-                    <Input class="w100" v-model="filter.account" />
+                    <Input limit="en-num" class="w100" v-model="filter.account" />
                 </li>
                 <li>
                     <span>会员ID:</span>
-                    <Input class="w100" v-model="filter.userid" />
+                    <Input limit="en-num" class="w100" v-model="filter.userid" />
                 </li>
                 <li>
-                    <span>充值时间:</span>
-                    <Date v-model="filter.date" />
+                    <span>账变时间:</span>
+                    <Date style="width:110px;" v-model="filter.date[0]" @update="timeUpdate()"/>
+                 
+                    <span style="margin:0 5px;">~</span>
+                    <Date style="width:110px;" v-model="filter.date[1]" @update="timeUpdate()" />
+
                 </li>
                 <li>
-                    <span>支付状态</span>
-                    <Select v-model="filter.status" :options="status_opt"></Select>
+                    <span>账变类型</span>
+                    <Select style="width:100px;" v-model="filter.status" :options="acc_change_opt"></Select>
                 </li>
             </ul>
             <div class="right">
@@ -33,13 +38,15 @@
                     <td>{{row.a3}}</td>
                     <td>{{row.a4}}</td>
                     <td>{{row.a5}}</td>
+                    <td>{{row.a5}}</td>
+                    <td>{{row.a5}}</td>
                     <td>{{row.a6}}</td>
                     <td>{{row.a7}}</td>
                     <td>{{row.a8}}</td>
                 </template>
             </Table>
             <Page
-                class="page"
+                class="table-page"
                 :total="total"
                 :pageNo.sync="pageNo"
                 :pageSize.sync="pageSize"
@@ -56,13 +63,15 @@ export default {
     props: {},
     data() {
         return {
+            quick_query:[],
             filter: {
                 account: "",
                 userid: "",
-                date: "",
+                date: [],
                 status: "3"
             },
-            status_opt: [
+            acc_change_opt: [
+                { label: "充值", value: "-1" },
                 { label: "取款", value: "0" },
                 { label: "转出", value: "1" },
                 { label: "转入", value: "2" },
@@ -76,12 +85,14 @@ export default {
             ],
             headers: [
                 { label: "流水编号" },
-                { label: "资金类型" },
                 { label: "账变类型" },
+                { label: "资金流向" },
                 { label: "会员账户" },
+                { label: "会员ID" },
                 { label: "帐变前金额" },
                 { label: "账变金额" },
                 { label: "账变后金额" },
+                { label: "冻结金额" },
                 { label: "账变时间" }
             ],
             list: [
@@ -112,6 +123,12 @@ export default {
         };
     },
     methods: {
+        quickDateUpdate(dates) {
+            this.filter.date=dates
+        },
+        timeUpdate() {
+            this.quick_query = this.filter.date
+        },
         updateNo(val) {},
         updateSize(val) {}
     },

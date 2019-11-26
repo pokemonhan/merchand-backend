@@ -24,6 +24,7 @@
         </div>
         <div class="page">
             <Page
+                class="table-page"
                 :total="total"
                 :pagerCount="pagerCount"
                 @updateNo="updateNo"

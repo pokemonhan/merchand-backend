@@ -99,7 +99,7 @@ export default {
                         self.$toast.warning(res.message);
                     }
                 }).catch(err=>{
-                    alter(err)
+                    alert(err)
                 })
             }
         }

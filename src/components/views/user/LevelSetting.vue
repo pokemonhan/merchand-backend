@@ -29,6 +29,7 @@
                 @updateNo="updateNo"
                 @updateSize="updateSize"
             />
+            
         </div>
         <div class="modal-mask" v-if="show_lev_modal">
             <div class="v-modal">
@@ -39,20 +40,20 @@
                     <ul class="form">
                         <li>
                             <span>等级名称</span>
-                            <Input class="w226" v-model="lev_name" />
+                            <Input v-model="lev.lev_name" />
                         </li>
 
                         <li>
                             <span>晋级经验:</span>
-                            <Input class="w226" v-model="up_experience" />
+                            <Input v-model="lev.up_experience" />
                         </li>
                         <li>
                             <span>晋升奖励:</span>
-                            <Input class="w226" v-model="up_bonus" />
+                            <Input v-model="lev.up_bonus" />
                         </li>
                         <li>
                             <span>周奖励:</span>
-                            <Input class="w226" v-model="week_bonus" />
+                            <Input v-model="lev.week_bonus" />
                         </li>
                     </ul>
                     <div style="margin-top:50px;text-align:center;">
@@ -85,23 +86,28 @@
                             <div class="experience flex">
                                 <div class="col1">
                                     <div>
-                                        <div> <input class="input" /> </div>
+                                        <div>
+                                            <Input limit="number" v-model="rule.charge_money" />
+                                        </div>
                                         <div>充值金额</div>
                                     </div>
 
                                     <div style="margin-top:30px;">
-                                        <div> <input class="input" /> </div>
+                                        <div>
+                                            <!-- <input class="input" v-model="rule.code_amount" /> -->
+                                            <Input class="w100" limit="number" v-model="rule.code_amount" />
+                                        </div>
                                         <div>打码量</div>
                                     </div>
                                 </div>
                                 <div class="col2">
-                                    <img src="../../../assets/image/user/arrow.png">
-                                    <img src="../../../assets/image/user/arrow.png">
+                                    <img src="../../../assets/image/user/arrow.png" />
+                                    <img src="../../../assets/image/user/arrow.png" />
                                 </div>
                                 <div class="col3 experience-set">
                                     <div>
-                                        <div>
-                                            <input class="input" />
+                                        <div class="w100">
+                                            <Input style="width:100px;" limit="number" />
                                         </div>
                                         <div>经验值</div>
                                     </div>
@@ -146,76 +152,16 @@ export default {
                 { label: "操作" }
             ],
             list: [
-                {
-                    a: "1",
-                    b: "VIP1",
-                    c: "0 ~ 1000",
-                    d: "----",
-                    e: "2019/12/15 12:12:00"
-                },
-                {
-                    a: "1",
-                    b: "VIP1",
-                    c: "0 ~ 1000",
-                    d: "----",
-                    e: "2019/12/15 12:12:00"
-                },
-                {
-                    a: "1",
-                    b: "VIP1",
-                    c: "0 ~ 1000",
-                    d: "----",
-                    e: "2019/12/15 12:12:00"
-                },
-                {
-                    a: "1",
-                    b: "VIP1",
-                    c: "0 ~ 1000",
-                    d: "----",
-                    e: "2019/12/15 12:12:00"
-                },
-                {
-                    a: "1",
-                    b: "VIP1",
-                    c: "0 ~ 1000",
-                    d: "----",
-                    e: "2019/12/15 12:12:00"
-                },
-                {
-                    a: "1",
-                    b: "VIP1",
-                    c: "0 ~ 1000",
-                    d: "----",
-                    e: "2019/12/15 12:12:00"
-                },
-                {
-                    a: "1",
-                    b: "VIP1",
-                    c: "0 ~ 1000",
-                    d: "----",
-                    e: "2019/12/15 12:12:00"
-                },
-                {
-                    a: "1",
-                    b: "VIP1",
-                    c: "0 ~ 1000",
-                    d: "----",
-                    e: "2019/12/15 12:12:00"
-                },
-                {
-                    a: "1",
-                    b: "VIP1",
-                    c: "0 ~ 1000",
-                    d: "----",
-                    e: "2019/12/15 12:12:00"
-                },
-                {
-                    a: "1",
-                    b: "VIP1",
-                    c: "0 ~ 1000",
-                    d: "----",
-                    e: "2019/12/15 12:12:00"
-                }
+                { a: "1", b: "VIP1", c: "0 ~ 1000", d: "----", e: "2019/12/15 12:12:00" },
+                { a: "1", b: "VIP1", c: "0 ~ 1000", d: "----", e: "2019/12/15 12:12:00" },
+                { a: "1", b: "VIP1", c: "0 ~ 1000", d: "----", e: "2019/12/15 12:12:00" },
+                { a: "1", b: "VIP1", c: "0 ~ 1000", d: "----", e: "2019/12/15 12:12:00" },
+                { a: "1", b: "VIP1", c: "0 ~ 1000", d: "----", e: "2019/12/15 12:12:00" },
+                { a: "1", b: "VIP1", c: "0 ~ 1000", d: "----", e: "2019/12/15 12:12:00" },
+                { a: "1", b: "VIP1", c: "0 ~ 1000", d: "----", e: "2019/12/15 12:12:00" },
+                { a: "1", b: "VIP1", c: "0 ~ 1000", d: "----", e: "2019/12/15 12:12:00" },
+                { a: "1", b: "VIP1", c: "0 ~ 1000", d: "----", e: "2019/12/15 12:12:00" },
+                { a: "1", b: "VIP1", c: "0 ~ 1000", d: "----", e: "2019/12/15 12:12:00" }
             ],
             total: 0,
             pagerCount: 0,
@@ -225,15 +171,19 @@ export default {
                 { label: "充值", value: 1 },
                 { label: "打码量", value: 2 }
             ],
-            show_lev_modal: false, // 添加编辑等级 _模态框
-            show_rule_modal: false, // 晋级规则_模态框
+            show_lev_modal: false,                  // 添加编辑等级 _模态框
+            show_rule_modal: false,                 // 晋级规则_模态框
             /* ----------  form ------------ */
-            lev_name: "", // 等级名称
-            exchange_a: "", // 额度转换a
-            exchange_b: "", // 额度转换b
-            up_experience: "", // 晋级经验
-            up_bonus: "", // 晋升奖励
-            week_bonus: "", // 周奖励
+            lev: {
+                lev_name: '',                       // 等级名称
+                up_experience: '',                  // 晋级经验
+                up_bonus: '',                       // 晋升奖励
+                week_bonus: ''                      // 周奖励
+            },
+            rule: {
+                charge_money: "",
+                code_amount: ""
+            },
             /* 删除 */
             show_del_modal: false
         };
@@ -245,12 +195,12 @@ export default {
             this.show_lev_modal = true;
         },
         showDeleteModal(row) {
-            console.log(row);
+            // console.log(row);
             this.show_del_modal = true;
         },
         editModalSave() {},
         delConfirm() {
-            console.log("我删除了.");
+            // console.log("我删除了.");
         }
     },
     mounted() {}
@@ -320,12 +270,12 @@ export default {
 .flex {
     display: flex;
 }
-.rule .input {
+/* .rule .input {
     width: 100px;
     border-radius: 5px;
     border: 1px solid #888;
     padding: 6px 8px;
-}
+} */
 .rule .t-center {
     text-align: center;
 }
@@ -334,16 +284,16 @@ export default {
     text-align: center;
     margin-top: 30px;
 }
-.rule .experience .col2{
+.rule .experience .col2 {
     margin-top: 22px;
 }
-.rule  .col2 img:first-child{
-    transform: rotate(15deg)
+.rule .col2 img:first-child {
+    transform: rotate(15deg);
 }
-.rule  .col2 img:nth-child(2){
-    transform: rotate(-15deg)
+.rule .col2 img:nth-child(2) {
+    transform: rotate(-15deg);
 }
-.rule .experience .col3{
+.rule .experience .col3 {
     position: absolute;
     top: 40px;
     left: 250px;

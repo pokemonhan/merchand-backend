@@ -18,16 +18,18 @@ const WashSetting = () => import('@/components/views/user/WashSetting.vue')     
 /* 会员管理 */
 
 /* 财务管理 */
-const IncomeReview = () => import('@/components/views/funds/IncomeReview.vue')              // 入款审核
+const IncomeOrder = () => import('@/components/views/funds/IncomeOrder.vue')                // 入款审核
 const ManualAccess = () => import('@/components/views/funds/ManualAccess.vue')              // 人工存取
 const PaymentReview = () => import('@/components/views/funds/PaymentReview.vue')            // 出款审核
-const PaymentList = () => import('@/components/views/funds/PaymentList.vue')                // 出款列表
+const PaymentOrder = () => import('@/components/views/funds/PaymentOrder.vue')              // 出款订单
 const FundChange = () => import('@/components/views/funds/FundChange.vue')                  // 资金账变
 /* 财务管理 */
 
 /* 公告管理 */
-const Marquee = () => import('@/components/views/announce/Marquee.vue')                     // 出款列表
-const SystemAnnounce = () => import('@/components/views/announce/SystemAnnounce.vue')       // 出款列表
+const Marquee = () => import('@/components/views/announce/Marquee.vue')                     // 跑马灯消息
+const SystemAnnounce = () => import('@/components/views/announce/SystemAnnounce.vue')       // 系统公告
+const LoginPopup = () => import('@/components/views/announce/LoginPopup.vue')               // 登录弹窗公告
+const Carousel = () => import('@/components/views/announce/Carousel.vue')                   // 轮播公告
 /* 公告管理 */
 Vue.use(Router)
 
@@ -89,8 +91,8 @@ export default new Router({
         /* ==================================== 财务管理 =========================*/
         // -- 入款审核
         {
-            path: '/funds/incomereview',
-            component: IncomeReview
+            path: '/funds/incomeorder',
+            component: IncomeOrder
         },
         //  -- 人工存取
         {
@@ -102,10 +104,10 @@ export default new Router({
             path: '/funds/paymentreview',
             component: PaymentReview
         },
-        // --出款列表
+        // --出款订单
         {
-            path: '/funds/paymentlist',
-            component: PaymentList
+            path: '/funds/Paymentorder',
+            component: PaymentOrder
         },
         // --资金账变
         {
@@ -124,6 +126,21 @@ export default new Router({
         {
             path: '/announce/systemannounce',
             component: SystemAnnounce
+        },
+        // 系统公告
+        {
+            path: '/announce/systemannounce',
+            component: SystemAnnounce
+        },
+        // 登录弹窗公告
+        {
+            path: '/announce/LoginPopup',
+            component: LoginPopup
+        },
+        // 轮播公告
+        {
+            path: '/announce/Carousel',
+            component: Carousel
         },
     ]
 })

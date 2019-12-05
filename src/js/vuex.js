@@ -6,15 +6,21 @@ Vue.use(Vuex);
 
 const state = {
     isShowLoading: false,
-    tab_nav_list:[]         // 顶部导航菜单
+    showMask: false,
+    tab_nav_list: []         // 顶部导航菜单
 };
+const getters = {}
 const mutations = {};
 for (let item in state) {
-    mutations['update'+item] = (state, value) => {
+    getters[item] = state => {
+        return state[item]
+    }
+    mutations['update' + item] = (state, value) => {
         state[item] = value
     }
 }
 export default new Vuex.Store({
     state,
+    getters,
     mutations
 })

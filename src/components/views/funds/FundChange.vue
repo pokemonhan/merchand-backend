@@ -1,33 +1,35 @@
 <template>
     <div class="container">
-        <h4 style="margin:5px 0;">资金账变</h4>
+        <!---------------------- 资金账变 ----------------------->
         <QuickQuery :date="quick_query" @update="quickDateUpdate($event)" />
-        <div class="filter">
+        <div class="filter p10">
             <ul class="left">
                 <li>
-                    <span>会员账号:</span>
+                    <span>会员账号</span>
                     <Input limit="en-num" class="w100" v-model="filter.account" />
                 </li>
                 <li>
-                    <span>会员ID:</span>
+                    <span>会员ID</span>
                     <Input limit="en-num" class="w100" v-model="filter.userid" />
                 </li>
                 <li>
-                    <span>账变时间:</span>
-                    <Date style="width:110px;" v-model="filter.date[0]" @update="timeUpdate()"/>
+                    <span>账变时间</span>
+                    <Date style="width:100px;" v-model="filter.date[0]" @update="timeUpdate()"/>
                  
                     <span style="margin:0 5px;">~</span>
-                    <Date style="width:110px;" v-model="filter.date[1]" @update="timeUpdate()" />
+                    <Date style="width:100px;" v-model="filter.date[1]" @update="timeUpdate()" />
 
                 </li>
                 <li>
                     <span>账变类型</span>
                     <Select style="width:100px;" v-model="filter.status" :options="acc_change_opt"></Select>
                 </li>
+                    <button class="btn-blue">查询</button>
+                    <button class="button-export">导出Excel</button>
+                    <button class="btn-red" @click="clearFilter">清空</button>
             </ul>
-            <div class="right">
-                <button class="btn-blue">查询</button>
-                <button class="btn-blue">导出excel</button>
+            <div>
+               
             </div>
         </div>
         <div style="margin-top:20px;">
@@ -68,20 +70,21 @@ export default {
                 account: "",
                 userid: "",
                 date: [],
-                status: "3"
+                status: "0"
             },
             acc_change_opt: [
-                { label: "充值", value: "-1" },
-                { label: "取款", value: "0" },
-                { label: "转出", value: "1" },
-                { label: "转入", value: "2" },
-                { label: "优惠", value: "3" },
-                { label: "签到", value: "4" },
-                { label: "抢红包", value: "5" },
-                { label: "首充送", value: "6" },
-                { label: "注册送", value: "7" },
-                { label: "幸运转盘", value: "8" },
-                { label: "有奖竞猜", value: "9" }
+                { label: "全部", value: "0" },
+                { label: "充值", value: "1" },
+                { label: "取款", value: "2" },
+                { label: "转出", value: "3" },
+                { label: "转入", value: "4" },
+                { label: "优惠", value: "4" },
+                { label: "签到", value: "5" },
+                { label: "抢红包", value: "6" },
+                { label: "首充送", value: "7" },
+                { label: "注册送", value: "8" },
+                { label: "幸运转盘", value: "9" },
+                { label: "有奖竞猜", value: "10" }
             ],
             headers: [
                 { label: "流水编号" },
@@ -129,6 +132,14 @@ export default {
         timeUpdate() {
             this.quick_query = this.filter.date
         },
+        clearFilter(){
+            this.filter = {
+                account: "",
+                userid: "",
+                date: [],
+                status: "0"
+            }
+        },
         updateNo(val) {},
         updateSize(val) {}
     },
@@ -137,11 +148,12 @@ export default {
 </script>
 
 <style scoped>
-.container {
-    padding: 20px 8px 20px 8px;
-    border-top-right-radius: 5px;
-    border-bottom-left-radius: 5px;
-    border-bottom-right-radius: 5px;
-    background: #fff;
+/* .container  在公共区 App.vue */
+.p10{
+    padding: 10px;
+}
+.button-export{
+    background: #4c8bfd;
+    color: #fff;
 }
 </style>

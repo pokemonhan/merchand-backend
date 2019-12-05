@@ -8,6 +8,7 @@
             @input="input"
             @keyup.enter="pressEnter"
             @keyup="keyup"
+            :maxlength="maxlength"
             :disabled="disabled"
         />
         <i v-if="icon" :class="['iconfont', icon]"></i>
@@ -33,7 +34,8 @@ export default {
             default: ""
         },
         placeholder: String,
-        value: String
+        value: String,
+        maxlength: [Number,String]
     },
     model: {
         prop: "value",
@@ -52,6 +54,11 @@ export default {
             }
         };
     },
+    watch: {
+        value(value){
+            this.val= value
+          }
+    },
     methods: {
         input() {
             this.$emit("input", this.val);
@@ -61,7 +68,7 @@ export default {
         },
         keyup() {
             this.regs[this.limit] && (this.val = this.val .toString() .replace(this.regs[this.limit], ""));
-            this.$emit("update", this.val);
+            this.$emit("keyup", this.val);
         }
     }
 };
@@ -74,6 +81,10 @@ export default {
     position: relative;
     /* min-height: 26px; */
     /* min-width: 100px; */
+    /* background: #fff; */
+}
+input::placeholder{
+    color:#ccc;
 }
 .large {
     height: 36px;

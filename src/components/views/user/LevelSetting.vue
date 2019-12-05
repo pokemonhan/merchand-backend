@@ -3,7 +3,7 @@
         <!-- 会员列表 -->
 
         <div>
-            <button class="btn-blue" @click="show_lev_modal=true">添加等级</button>
+            <button class="btn-blue" @click="levModShow('add')">添加等级</button>
             <button class="btn-blue" @click="show_rule_modal=true">晋级规则</button>
         </div>
 
@@ -17,102 +17,115 @@
                     <td>{{row.d}}</td>
                     <td>{{row.e}}</td>
                     <td>
-                        <span class="a" @click="showLevelEdit">编辑</span>
+                        <span class="a" @click="levModShow('edit')">编辑</span>
                         <span class="a" @click="showDeleteModal(row)">删除</span>
                     </td>
                 </template>
             </Table>
             <Page
-                class="page"
+                class="table-page"
                 :total="total"
-                :pagerCount="pagerCount"
+                :pageNo.sync="pageNo"
+                :pageSize.sync="pageSize"
                 @updateNo="updateNo"
                 @updateSize="updateSize"
             />
-            
         </div>
         <div class="modal-mask" v-if="show_lev_modal">
-            <div class="v-modal">
-                <div @click="show_lev_modal=false">
-                    <i class="iconfont iconcuowuguanbi-"></i>
+            <div class="v-modal lev-mod">
+                <div class="mod-head">
+                    <span>{{lev_modal_name}}</span>
+                    <i class="iconfont iconcuowuguanbi-" @click="show_lev_modal=false"></i>
                 </div>
-                <div class="center-box">
+                <div class="mod-body center-box">
                     <ul class="form">
                         <li>
                             <span>等级名称</span>
-                            <Input v-model="lev.lev_name" />
+                            <Input class="w200" v-model="lev.lev_name" />
                         </li>
 
                         <li>
                             <span>晋级经验:</span>
-                            <Input v-model="lev.up_experience" />
+                            <Input class="w88" v-model="lev.up_experience[0]" />
+                            <span style="margin:0 7px;">~</span>
+                            <Input class="w88" v-model="lev.up_experience[1]" />
                         </li>
                         <li>
                             <span>晋升奖励:</span>
-                            <Input v-model="lev.up_bonus" />
+                            <Input class="w200" v-model="lev.up_bonus" />
                         </li>
                         <li>
                             <span>周奖励:</span>
-                            <Input v-model="lev.week_bonus" />
+                            <Input class="w200" v-model="lev.week_bonus" />
+                        </li>
+                        <li style="margin-top:30px;">
+                            <button
+                                style="margin-right:80px;"
+                                class="btn-plain-large"
+                                @click="show_lev_modal=false"
+                            >取消</button>
+                            <button class="btn-blue-large" @click="editModalSave">保存</button>
                         </li>
                     </ul>
-                    <div style="margin-top:50px;text-align:center;">
-                        <button class="btn-plain-large mr100" @click="show_lev_modal=false">取消</button>
-                        <button class="btn-blue-large" @click="editModalSave">保存</button>
-                    </div>
                 </div>
             </div>
         </div>
+        <!-- 晋级规则_模态框 -->
         <div class="modal-mask" v-if="show_rule_modal">
-            <div class="v-modal">
-                <div @click="show_rule_modal=false">
-                    <i class="iconfont iconcuowuguanbi-"></i>
+            <div class="v-modal rule-mod">
+                <div class="mod-head">
+                    <span>添加账号 详情</span>
+                    <i class="iconfont iconcuowuguanbi-" @click="show_rule_modal=false"></i>
                 </div>
-                <div class="center-box">
-                    <ul class="form rule">
+                <div class="mod-body center-box">
+                    <ul class="rule">
                         <li class="flex">
-                            <span>晋级方式</span>
+                            <span>晋级方式:</span>
 
-                            <span class="flex">
-                                <Checkbox label="会员充值" />
+                            <span style="margin-left:10px;" class="flex">
+                                <Checkbox
+                                    label="会员充值"
+                                    v-model="rule.up_method[0]"
+                                    @update="UpMethodHandle(0)"
+                                />
                             </span>
-                            <span style="margin-left:30px;" class="flex">
-                                <Checkbox label="会员打码" />
+                            <span style="margin-left:10px;" class="flex">
+                                <Checkbox
+                                    label="会员打码"
+                                    v-model="rule.up_method[1]"
+                                    @update="UpMethodHandle(1)"
+                                />
+                            </span>
+                            <span style="margin-left:10px;" class="flex">
+                                <Checkbox
+                                    dot
+                                    label="充值+打码"
+                                    v-model="rule.up_method[2]"
+                                    @update="UpMethodHandle(2)"
+                                />
                             </span>
                         </li>
 
                         <li>
-                            <span>经验值设定:</span>
-                            <div class="experience flex">
-                                <div class="col1">
-                                    <div>
-                                        <div>
-                                            <Input limit="number" v-model="rule.charge_money" />
-                                        </div>
-                                        <div>充值金额</div>
-                                    </div>
-
-                                    <div style="margin-top:30px;">
-                                        <div>
-                                            <!-- <input class="input" v-model="rule.code_amount" /> -->
-                                            <Input class="w100" limit="number" v-model="rule.code_amount" />
-                                        </div>
-                                        <div>打码量</div>
-                                    </div>
-                                </div>
-                                <div class="col2">
-                                    <img src="../../../assets/image/user/arrow.png" />
-                                    <img src="../../../assets/image/user/arrow.png" />
-                                </div>
-                                <div class="col3 experience-set">
-                                    <div>
-                                        <div class="w100">
-                                            <Input style="width:100px;" limit="number" />
-                                        </div>
-                                        <div>经验值</div>
-                                    </div>
-                                </div>
-                            </div>
+                            <span>充值:</span>
+                            <Input class="re-code" v-model="rule.recharge_code[0]" />
+                            <span class="ml-10">+</span>
+                            <span>打码</span>
+                            <Input class="re-code" v-model="rule.recharge_code[1]" />
+                            <span class="ml-10">=</span>
+                            <span>1经验</span>
+                        </li>
+                        <li>
+                            <span>充值金额:</span>
+                            <Input class="w200 ml-10" v-model="rule.recharge" />
+                            <span class="ml-10">=</span>
+                            <span>1经验</span>
+                        </li>
+                        <li>
+                            <span>充值金额:</span>
+                            <Input class="w200 ml-10" v-model="rule.code" />
+                            <span class="ml-10">=</span>
+                            <span>1经验</span>
                         </li>
                     </ul>
                     <div style="margin-top:50px;text-align:center;">
@@ -127,6 +140,7 @@
             title="删除等级"
             content="是否删除该玩家等级"
             @cancel="show_del_modal=false"
+            @close="show_del_modal=false"
             @confirm="delConfirm"
         ></Modal>
     </div>
@@ -136,67 +150,160 @@
 export default {
     data() {
         return {
-            game_plant: "2",
+            game_plant: '2',
             game_plant_option: [
-                { label: "全部", value: "2" },
-                { label: "甲", value: "3" }
+                { label: '全部', value: '2' },
+                { label: '甲', value: '3' }
             ],
-            user_id: "",
+            user_id: '',
             headers: [
-                { label: "编号" },
-                { label: "等级称号" },
-                { label: "晋级条件" },
-                { label: "晋级彩金" },
-                { label: "周奖励" },
-                { label: "修改时间" },
-                { label: "操作" }
+                { label: '编号' },
+                { label: '等级称号' },
+                { label: '晋级条件' },
+                { label: '晋级彩金' },
+                { label: '周奖励' },
+                { label: '修改时间' },
+                { label: '操作' }
             ],
             list: [
-                { a: "1", b: "VIP1", c: "0 ~ 1000", d: "----", e: "2019/12/15 12:12:00" },
-                { a: "1", b: "VIP1", c: "0 ~ 1000", d: "----", e: "2019/12/15 12:12:00" },
-                { a: "1", b: "VIP1", c: "0 ~ 1000", d: "----", e: "2019/12/15 12:12:00" },
-                { a: "1", b: "VIP1", c: "0 ~ 1000", d: "----", e: "2019/12/15 12:12:00" },
-                { a: "1", b: "VIP1", c: "0 ~ 1000", d: "----", e: "2019/12/15 12:12:00" },
-                { a: "1", b: "VIP1", c: "0 ~ 1000", d: "----", e: "2019/12/15 12:12:00" },
-                { a: "1", b: "VIP1", c: "0 ~ 1000", d: "----", e: "2019/12/15 12:12:00" },
-                { a: "1", b: "VIP1", c: "0 ~ 1000", d: "----", e: "2019/12/15 12:12:00" },
-                { a: "1", b: "VIP1", c: "0 ~ 1000", d: "----", e: "2019/12/15 12:12:00" },
-                { a: "1", b: "VIP1", c: "0 ~ 1000", d: "----", e: "2019/12/15 12:12:00" }
+                {
+                    a: '1',
+                    b: 'VIP1',
+                    c: '0 ~ 1000',
+                    d: '----',
+                    e: '2019/12/15 12:12:00'
+                },
+                {
+                    a: '1',
+                    b: 'VIP1',
+                    c: '0 ~ 1000',
+                    d: '----',
+                    e: '2019/12/15 12:12:00'
+                },
+                {
+                    a: '1',
+                    b: 'VIP1',
+                    c: '0 ~ 1000',
+                    d: '----',
+                    e: '2019/12/15 12:12:00'
+                },
+                {
+                    a: '1',
+                    b: 'VIP1',
+                    c: '0 ~ 1000',
+                    d: '----',
+                    e: '2019/12/15 12:12:00'
+                },
+                {
+                    a: '1',
+                    b: 'VIP1',
+                    c: '0 ~ 1000',
+                    d: '----',
+                    e: '2019/12/15 12:12:00'
+                },
+                {
+                    a: '1',
+                    b: 'VIP1',
+                    c: '0 ~ 1000',
+                    d: '----',
+                    e: '2019/12/15 12:12:00'
+                },
+                {
+                    a: '1',
+                    b: 'VIP1',
+                    c: '0 ~ 1000',
+                    d: '----',
+                    e: '2019/12/15 12:12:00'
+                },
+                {
+                    a: '1',
+                    b: 'VIP1',
+                    c: '0 ~ 1000',
+                    d: '----',
+                    e: '2019/12/15 12:12:00'
+                },
+                {
+                    a: '1',
+                    b: 'VIP1',
+                    c: '0 ~ 1000',
+                    d: '----',
+                    e: '2019/12/15 12:12:00'
+                },
+                {
+                    a: '1',
+                    b: 'VIP1',
+                    c: '0 ~ 1000',
+                    d: '----',
+                    e: '2019/12/15 12:12:00'
+                }
             ],
             total: 0,
-            pagerCount: 0,
+            pageNo: 1,
+            pageSize: 25,
             //晋级方式
-            up_method: "",
+
+            up_method: '',
             up_method_opt: [
-                { label: "充值", value: 1 },
-                { label: "打码量", value: 2 }
+                { label: '充值', value: 1 },
+                { label: '打码量', value: 2 }
             ],
-            show_lev_modal: false,                  // 添加编辑等级 _模态框
-            show_rule_modal: false,                 // 晋级规则_模态框
+            show_lev_modal: false, // 添加编辑等级 _模态框
+            lev_modal_name: '', // 添加编辑等级 _模态框
+            show_rule_modal: false, // 晋级规则_模态框
             /* ----------  form ------------ */
             lev: {
-                lev_name: '',                       // 等级名称
-                up_experience: '',                  // 晋级经验
-                up_bonus: '',                       // 晋升奖励
-                week_bonus: ''                      // 周奖励
+                lev_name: '', // 等级名称
+                up_experience: [], // 晋级经验
+                up_bonus: '', // 晋升奖励
+                week_bonus: '' // 周奖励
             },
             rule: {
-                charge_money: "",
-                code_amount: ""
+                up_method: [0, 0, 0],
+                recharge_code: [],
+                recharge: '',
+                code: ''
             },
             /* 删除 */
             show_del_modal: false
-        };
+        }
     },
     methods: {
         updateNo(val) {},
         updateSize(val) {},
-        showLevelEdit() {
-            this.show_lev_modal = true;
+        levModShow(status) {
+            this.show_lev_modal = true
+            this.lev_modal_name = status === 'add' ? '添加等级' : '编辑等级'
+            if (status === 'add') {
+                this.lev = {
+                    lev_name: '', // 等级名称
+                    up_experience: '', // 晋级经验
+                    up_bonus: '', // 晋升奖励
+                    week_bonus: '' // 周奖励
+                }
+            }
+        },
+        UpMethodHandle(val) {
+            // 0.充值会员, 1.会员打码 2.充值+打码
+            switch (val) {
+                case 0:
+                    this.rule.up_method[2] = false
+                    break
+                case 1:
+                    this.rule.up_method[2] = false
+                    break
+                case 2:
+                    this.rule.up_method[0] = false
+                    this.rule.up_method[1] = false
+                default:
+                    console.log('val: ', val)
+                    break
+            }
+            this.rule.up_method = this.rule.up_method
+            this.rule = Object.assign({}, this.rule)
         },
         showDeleteModal(row) {
             // console.log(row);
-            this.show_del_modal = true;
+            this.show_del_modal = true
         },
         editModalSave() {},
         delConfirm() {
@@ -204,16 +311,17 @@ export default {
         }
     },
     mounted() {}
-};
+}
 </script>
 
 <style scoped>
-.container {
+/* container 公共区 */
+/* .container {
     padding: 20px 8px 20px 8px;
     background: #fff;
     border-radius: 5px;
     border-top-left-radius: 0;
-}
+} */
 
 .table {
     margin-top: 15px;
@@ -223,19 +331,17 @@ export default {
     display: flex;
     justify-content: center;
 }
-/* modal-mask  --在index.html区域中 */
-.v-modal {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+/* 公共区 .v-modal 在App.vue 区域中 */
+
+.lev-mod {
     width: 700px;
-    height: 400px;
-    padding: 30px 50px;
-    border-radius: 7px;
-    background: #fff;
+    height: 380px;
 }
-.modal-mask .iconcuowuguanbi- {
+.rule-mod {
+    width: 700px;
+    height: 380px;
+}
+/* .modal-mask .iconcuowuguanbi- {
     position: absolute;
     right: 12px;
     top: 12px;
@@ -246,7 +352,7 @@ export default {
 .modal-mask .iconcuowuguanbi-:hover {
     color: #749ff0;
     cursor: pointer;
-}
+} */
 
 .form > li {
     display: flex;
@@ -255,17 +361,26 @@ export default {
 }
 .form > li > span:first-child {
     min-width: 6em;
-    font-weight: bolder;
+    /* font-weight: bolder; */
     /* margin-right: 8px; */
 }
-
+.w88 {
+    width: 88px;
+}
+.w200 {
+    width: 200px;
+}
 .center-box {
+    /* height: 450px; */
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
 }
 .mr100 {
     margin-right: 100px;
+}
+.ml-10 {
+    margin-left: 10px;
 }
 .flex {
     display: flex;
@@ -276,26 +391,19 @@ export default {
     border: 1px solid #888;
     padding: 6px 8px;
 } */
-.rule .t-center {
-    text-align: center;
+.rule {
+    width: 360px;
 }
-.rule .experience {
-    position: relative;
-    text-align: center;
-    margin-top: 30px;
+.rule > li {
+    display: flex;
+    align-items: center;
+    margin-top: 20px;
 }
-.rule .experience .col2 {
-    margin-top: 22px;
+.rule > li:not(:first-child) > span:not(:first-child) {
+    margin-left: 10px;
 }
-.rule .col2 img:first-child {
-    transform: rotate(15deg);
-}
-.rule .col2 img:nth-child(2) {
-    transform: rotate(-15deg);
-}
-.rule .experience .col3 {
-    position: absolute;
-    top: 40px;
-    left: 250px;
+.rule > li .re-code {
+    width: 80px;
+    margin-left: 10px;
 }
 </style>

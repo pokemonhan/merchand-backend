@@ -36,74 +36,88 @@
                     </td>
                 </template>
             </Table>
-            <Page
-                class="page"
+           <Page
+                class="table-page"
                 :total="total"
-                :pagerCount="pagerCount"
+                :pageNo.sync="pageNo"
+                :pageSize.sync="pageSize"
                 @updateNo="updateNo"
                 @updateSize="updateSize"
             />
         </div>
-        <div class="modal-mask" v-if="edit_modal">
-            <div class="v-modal">
-                <div @click="edit_modal=false">
-                    <i class="iconfont iconcuowuguanbi-"></i>
+        <div class="modal-mask" v-if="show_modal">
+            <div class="v-modal edit-modal">
+                <div class="mod-head">
+                    <span>洗码设置</span>
+                    <i class="iconfont iconcuowuguanbi-" @click="show_modal=false"></i>
                 </div>
-                <div class="center-box">
-                    <ul class="form">
-                        <li>
-                            <span class="title1">打码额度</span>
-                            <span class="title2">奖励比例</span>
-                        </li>
-                        <li>
-                            <span>VIP1:</span>
-                            <Input class="w100" limit="number" v-model="wash_form.vip1.num" />
-                            <Input class="w100" limit="number" v-model="wash_form.vip1.bonust" />
-                        </li>
-                        <li>
-                            <span>VIP2:</span>
-                            <Input class="w100" limit="number" v-model="wash_form.vip2.num" />
-                            <Input class="w100" limit="number" v-model="wash_form.vip2.bonus" />
-                        </li>
-                        <li>
-                            <span>VIP3:</span>
-                            <Input class="w100" limit="number" v-model="wash_form.vip3.num" />
-                            <Input class="w100" limit="number" v-model="wash_form.vip3.bonus" />
-                        </li>
-                        <li>
-                            <span>VIP4:</span>
-                            <Input class="w100" limit="number" v-model="wash_form.vip4.num" />
-                            <Input class="w100" limit="number" v-model="wash_form.vip4.bonus" />
-                        </li>
-                        <li>
-                            <span>VIP5:</span>
-                            <Input class="w100" limit="number" v-model="wash_form.vip5.num" />
-                            <Input class="w100" limit="number" v-model="wash_form.vip5.bonus" />
-                        </li>
-                        <li>
-                            <span>VIP6:</span>
-                            <Input class="w100" limit="number" v-model="wash_form.vip6.num" />
-                            <Input class="w100" limit="number" v-model="wash_form.vip6.bonus" />
-                        </li>
-                        <li>
-                            <span>VIP7:</span>
-                            <Input class="w100" limit="number" v-model="wash_form.vip7.num" />
-                            <Input class="w100" limit="number" v-model="wash_form.vip7.bonus" />
-                        </li>
-                       
-                    </ul>
+                <div class="mod-body center-box">
+                    <table :class="['form-table', !is_edit?'ml-210':'']">
+                        <tr class="row1">
+                            <td>前一列对比数据</td>
+                            <td>编辑数据</td>
+                            <td v-if="is_edit">后一列对比数据</td>
+                        </tr>
+                        <tr class="code-amount row2">
+                            <td>
+                                <div>
+                                    <span>打码额度:</span>
+                                    <Input class="w100 ml-10" v-model="wash_form.code_numbers[0]" />
+                                    <i class="iconfont iconsousuo ml-10"></i>
+                                </div>
+                            </td>
+                            <td>
+                                <div>
+                                    <span>打码额度:</span>
+                                    <Input class="w100 ml-10" v-model="wash_form.code_numbers[1]" />
+                                    <i class="iconfont iconsousuo ml-10"></i>
+                                </div>
+                            </td>
+                            <td>
+                                <div v-if="is_edit">
+                                    <span>打码额度:</span>
+                                    <Input class="w100 ml-10" v-model="wash_form.code_numbers[2]" />
+                                    <i class="iconfont iconsousuo ml-10"></i>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="vip-data" v-for="n in 7" :key="n">
+                            <td>
+                                <span>VIP{{n}}:</span>
+                                <span class="ml-10">
+                                    {{aaaaaa}}
+                                </span>
+                            </td>
+                            <td>
+                                <div class="edit-form">
+                                    <span>VIP{{n}}:</span>
+                                    <Input class="w100 ml-10" v-model="aaaaaa" />
+                                    <span class="ml-10">%</span>
+                                </div>
+                            </td>
+                            <td  v-if="is_edit">
+                                <div class="edit-form">
+                                    <span>VIP{{n}}:</span>
+                                    <span class="ml-10">{{aaaaaa}}</span>
+                                    <span></span>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
                     <div style="margin-top:50px;text-align:center;">
-                        <button class="btn-plain-large mr" @click="edit_modal=false">取消</button>
+                        <button class="btn-plain-large mr" @click="show_modal=false">取消</button>
                         <button class="btn-blue-large" @click="editModalSave">保存</button>
                     </div>
                 </div>
             </div>
         </div>
+    
         <Modal
             :show="show_del_modal"
             title="删除等级"
             content="是否删除该打码记录"
             @cancel="show_del_modal=false"
+            @close="show_del_modal=false"
             @confirm="delConfirm"
         ></Modal>
     </div>
@@ -113,94 +127,107 @@
 export default {
     data() {
         return {
-            games: ["刺激棋牌", "经典棋牌", "电子游艺", "趣味竞猜"],
+            games: ['刺激棋牌', '经典棋牌', '电子游艺', '趣味竞猜'],
             active_game: 0,
 
             game_plant: 0,
             active_plant: 0,
-            plants: ["开元棋牌", "龙城棋牌", "财神棋牌", "欢乐棋牌"],
+            plants: ['开元棋牌', '龙城棋牌', '财神棋牌', '欢乐棋牌'],
             game_plant_option: [
-                { label: "全部", value: "2" },
-                { label: "甲", value: "3" }
+                { label: '全部', value: '2' },
+                { label: '甲', value: '3' }
             ],
-            user_id: "",
+            user_id: '',
             headers: [
-                { label: "编号" },
-                { label: "打码量范围" },
-                { label: "VIP1" },
-                { label: "VIP2" },
-                { label: "VIP3" },
-                { label: "VIP4" },
-                { label: "VIP5" },
-                { label: "VIP6" },
-                { label: "VIP7" },
-                { label: "操作" },
+                { label: '编号' },
+                { label: '打码量范围' },
+                { label: 'VIP1' },
+                { label: 'VIP2' },
+                { label: 'VIP3' },
+                { label: 'VIP4' },
+                { label: 'VIP5' },
+                { label: 'VIP6' },
+                { label: 'VIP7' },
+                { label: '操作' }
             ],
             list: [
-                { a: "1", b: "1000", c: "0.8%", d: "0.8%", e: "0.8%", f: "0.8%", g: "0.8%", h: "0.8%", i: "0.8%", },
-              
+                {
+                    a: '1',
+                    b: '1000',
+                    c: '0.8%',
+                    d: '0.8%',
+                    e: '0.8%',
+                    f: '0.8%',
+                    g: '0.8%',
+                    h: '0.8%',
+                    i: '0.8%'
+                }
             ],
             total: 0,
-            pagerCount: 0,
+            pageNo: 1,
+            pageSize: 25,
             //晋级方式
-            up_method: "",
+            up_method: '',
             up_method_opt: [
-                { label: "充值", value: 1 },
-                { label: "打码量", value: 2 }
+                { label: '充值', value: 1 },
+                { label: '打码量', value: 2 }
             ],
-            edit_modal: false,
+            show_modal: false,
             /* ----------  wash_form ------------ */
-            wash_form:{
-                'vip1':{ num: '', bonus: '' },
-                'vip2':{ num: '', bonus: '' },
-                'vip3':{ num: '', bonus: '' },
-                'vip4':{ num: '', bonus: '' },
-                'vip5':{ num: '', bonus: '' },
-                'vip6':{ num: '', bonus: '' },
-                'vip7':{ num: '', bonus: '' },
+            wash_form: {
+                code_numbers: [],
+                vip1: { num: '', bonus: '' },
+                vip2: { num: '', bonus: '' },
+                vip3: { num: '', bonus: '' },
+                vip4: { num: '', bonus: '' },
+                vip5: { num: '', bonus: '' },
+                vip6: { num: '', bonus: '' },
+                vip7: { num: '', bonus: '' }
             },
             /* 删除 */
-            show_del_modal: false
-        };
+            show_del_modal: false,
+            // modal_status: '',
+            is_edit:true,
+            aaaaaa: '0.8%'
+        }
     },
     methods: {
         actSort(index) {
-            this.active_game = index;
+            this.active_game = index
         },
-        addWash(){
-            this.edit_modal = true;
+        addWash() {
+            this.show_modal = true
+            // this.modal_status = 'add'
+            this.is_edit = false
         },
         updateNo(val) {},
         updateSize(val) {},
         showWashModal(row) {
-            this.edit_modal = true;
+            this.show_modal = true
+            // this.modal_status = 'edit'
+            this.is_edit = true
         },
         showDeleteModal(row) {
-            console.log(row);
-            this.show_del_modal = true;
+            console.log(row)
+            this.show_del_modal = true
         },
         editModalSave() {},
         delConfirm() {
-            console.log("我删除了.");
+            console.log('我删除了.')
         }
     },
     mounted() {}
-};
+}
 </script>
 
 <style scoped>
-.container {
-    padding: 20px 8px 20px 8px;
-    background: #fff;
-    border-top-right-radius: 5px;
-    border-bottom-left-radius: 5px;
-    border-bottom-right-radius: 5px;
-}
+/* .container 公共区 */
+
 .sort > span {
     padding: 4px 12px;
-    cursor:pointer;
+    cursor: pointer;
     /* border: 1px solid #000; */
-    transition: all .3s;
+    transition: all 0.3s;
 }
 .sort .actived {
     color: #4c8bfc;
@@ -240,53 +267,11 @@ export default {
     justify-content: center;
 }
 /* modal-mask  --在index.html区域中 */
-.v-modal {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 800px;
-    height: 550px;
-    padding: 30px 50px;
-    border-radius: 7px;
-    background: #fff;
-}
-.modal-mask .iconcuowuguanbi- {
-    position: absolute;
-    right: 12px;
-    top: 12px;
-    font-size: 35px;
-    color: #4c8bfd;
+.edit-modal {
+    width: 900px;
+    height: 620px;
 }
 
-.modal-mask .iconcuowuguanbi-:hover {
-    color: #749ff0;
-    cursor: pointer;
-}
-
-.form > li {
-    display: flex;
-    align-items: center;
-    margin-top: 20px;
-}
-.form .title1,
-.form .title2{
-    color: #48f;
-    padding: 0 10px;
-}
-.form .title1{
-    margin-left: 60px;
-    margin-right: 65px;
-}
-.form >li:not(:first-child) >span:first-child{
-    margin-right: 10px;
-}
-.form > li > .w100 {
-    margin-right: 52px;
-}
-.w100 {
-    width: 100px;
-}
 .center-box {
     position: absolute;
     left: 50%;
@@ -294,5 +279,44 @@ export default {
 }
 .mr {
     margin-right: 100px;
+}
+.ml-10{
+    margin-left: 10px;
+}
+.bold{
+    font-weight: 800;
+}
+/* 洗码编辑 */
+.form-table {
+    width: 700px;
+    table-layout: fixed;
+}
+.ml-210{
+    margin-left: 210px;
+}
+.form-table tr td {
+    height: 50px;
+}
+.form-table .row1 {
+    text-align: center;
+    font-size: 18px;
+    font-weight: bold;
+    color: #4c8bfd;
+
+}
+.code-amount td div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.code-amount td div {
+    font-weight: 800;
+}
+.edit-form {
+    display: flex;
+    align-items: center;
+}
+.vip-data td span:first-child{
+    margin-left: 40px;
 }
 </style>

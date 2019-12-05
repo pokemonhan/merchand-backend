@@ -1,271 +1,324 @@
 <template>
     <div class="container">
-        <h2>出款审核</h2>
+        <QuickQuery :date="quick_query" @update="qqUpd" />
+        <!-- <Date v-model="filter.dates[0]" @update="timeUpdate()" /> -->
         <div class="filter">
             <ul class="left">
                 <li>
                     <span>会员账号</span>
-                    <Input class="w100" limit="en-num" v-model="filter.user_account" />
-                </li>
-                <li>
-                    <span>会员ID</span>
-                    <Input class="w100" limit="en-num" v-model="filter.userid" />
-                </li>
-                <li>
-                    <span>申请时间</span>
-                    <Date />
+                    <Input class="w100" v-model="filter.account" />
                 </li>
                 <li>
                     <span>订单号</span>
-                    <Input class="w100" limit="en-num" v-model="filter.userid" />
+                    <Input class="w100" v-model="filter.order_id" />
+                </li>
+                <li>
+                    <span>申请时间</span>
+                    <Date v-model="filter.apply_dates[0]" @update="timeUpdate()" />
+                    <span style="margin:0 5px;">~</span>
+                    <Date v-model="filter.apply_dates[1]" @update="timeUpdate()" />
                 </li>
                 <li>
                     <span>出款类型</span>
-                    <Select
-                        style="width:100px;"
-                        v-model="filter.withdrawal_type"
-                        :options="withdrawal_type_opt"
-                    ></Select>
+                    <Select v-model="filter.payment_type" :options="payment_type_opt"></Select>
+                </li>
+                <li>
+                    <span>正式账号</span>
+                    <Select v-model="filter.offcial_acc" :options="official_opt"></Select>
+                </li>
+                <li>
+                    <span style="width:4em;">会员ID</span>
+                    <Input class="w100" v-model="filter.acc_id" />
+                </li>
+                <li>
+                    <span>审核人</span>
+                    <Input class="w100" v-model="filter.reviewer" />
+                </li>
+
+                <li>
+                    <span>审核时间</span>
+                    <Date v-model="filter.review_dates[0]" />
+                    <span style="margin:0 5px;">~</span>
+                    <Date v-model="filter.review_dates[1]" />
+                </li>
+                <li>
+                    <span>审核状态</span>
+                    <Select v-model="filter.review_status" :options="review_status_opt"></Select>
+                </li>
+
+                <li>
+                    <span>是否被稽核扣款</span>
+                    <Select v-model="filter.is_audit_withhold" :options="audit_withhold_opt"></Select>
+                </li>
+
+                <li>
+                    <button class="btn-blue">查询</button>
+                    <button class="btn-blue">导出</button>
+                    <button class="btn-red" @click="clearfilter">清空</button>
                 </li>
             </ul>
-            <div>
-                <button class="btn-blue">查询</button>
-                <button class="btn-blue">导出excel</button>
-            </div>
         </div>
-        <div style="margin-top:30px;"></div>
-        <div v-for="(row, index) in list" :key="index">
-            <table class="first-table">
-                <tr>
-                    <th @click="expand(index)">
-                        <i :class="['iconfont',is_show[index]?'iconjianshao':'icontianjia']"></i>
-                    </th>
-                    <th v-for="(th, th_index) in headers1" :key="th_index">{{th.label}}</th>
-                </tr>
-                <tr>
-                    <td></td>
+        <div class="table">
+            <TwoTable :column="table_list" :headers="table_headers">
+                <template v-slot:tdOne="{row,idx}">
                     <td>{{row.a1}}</td>
                     <td>{{row.a2}}</td>
                     <td>{{row.a3}}</td>
-                    <td>{{row.a4}}</td>
+                    <td>
+                        <i :class="['iconfont',icon_obj[row.a4]]"></i>
+                    </td>
                     <td>{{row.a5}}</td>
                     <td>{{row.a6}}</td>
+                    <td>{{row.a6}}</td>
+                    <td>{{row.a6}}</td>
+                    <td>{{row.a6}}</td>
+                    <td>
+                        <span
+                            v-if="!show_audit_button[idx]"
+                            class="a"
+                            @click="audiotButtonShow(idx)"
+                        >审核</span>
+                        <span v-else>
+                            <span class="a" @click="pass(row,idx)">通过</span>
+                            <span class="a" @click="refuse(row,idx)">拒绝</span>
+                        </span>
+                        <span class="a" @click="detail_show=true">查看稽核</span>
+                    </td>
+                </template>
+                <template v-slot:tdTwo="{row}">
                     <td>{{row.a7}}</td>
                     <td>{{row.a8}}</td>
-                    <td>
-                        <span class="a" @click="confShow(row,'pass')">通过</span>
-                        <span class="a" @click="confShow(row, 'reject')">拒绝</span>
-                        <span class="a" @click="seeAudit(row)">查看稽核</span>
-                    </td>
-                </tr>
-            </table>
-
-            <div class="second-table" :ref="'table_'+index">
-                <table>
-                    <tr>
-                        <th v-for="(item, index) in headers2" :key="index">{{item.label}}</th>
-                    </tr>
-                    <tr>
-                        <td>{{row.a1}}</td>
-                        <td>{{row.a2}}</td>
-                        <td>{{row.a3}}</td>
-                        <td>{{row.a4}}</td>
-                        <td>{{row.a5}}</td>
-                        <td>{{row.a6}}</td>
-                        <td>{{row.a7}}</td>
-                    </tr>
-                </table>
-            </div>
-            
-        </div>
-        
-        <div class="total-table">
-                <table>
-                    <tr>
-                        <th>合计:</th>
-                        <th>{{'200'}}</th>
-                        <th>出款统计</th>
-                         <th>{{'200'}}</th>
-                        <th>手续费统计:</th>
-                        <th>{{'20'}}</th>
-                    </tr>
-                    <tr>
-                        <th>总计:</th>
-                        <th>{{'200'}}</th>
-                        <th>出款统计</th>
-                         <th>{{'200'}}</th>
-                        <th>手续费统计:</th>
-                        <th>{{'20'}}</th>
-                    </tr>
-                </table>
-        </div>
-         <Page class="table-page" :total="total" :pageNo.sync="pageNo" :pageSize.sync="pageSize" @updateNo="updateNo" @updateSize="updateSize"/>
-        <Modal :show="show_conf!==''" :title="confirm.title" :content="confirm.content" @cancel="show_conf=''" @confirm="paymentConfirm"></Modal>
-        <div v-if="show_detail" class="modal-mask">
-            <div class="v-modal">
-                <PaymentReviewDetail :userid="'userid__34234324'" @close="show_detail=false" />
+                    <td>{{row.a9}}</td>
+                    <td :class="status_color_obj[row.a9].color">{{status_color_obj[row.a9].text}}</td>
+                    <td>{{row.a10}}</td>
+                    <td>{{row.a11}}</td>
+                    <td>{{row.a12}}</td>
+                </template>
+            </TwoTable>
+            <div class="total-table">
+                <ul>
+                    <li>
+                        <span>合计:</span>
+                    </li>
+                    <li>
+                        <span>出款金额:</span>
+                        <span>200.00</span>
+                    </li>
+                    <li>
+                        <span>稽核扣款:</span>
+                        <span>200.00</span>
+                    </li>
+                    <li>
+                        <span>实际出款金额</span>
+                        <span>200.00</span>
+                    </li>
+                    <li>
+                        <span>手续费统计</span>
+                        <span>200.00</span>
+                    </li>
+                </ul>
+                <ul>
+                    <li>
+                        <span>总计:</span>
+                    </li>
+                    <li>
+                        <span>出款金额:</span>
+                        <span>200.00</span>
+                    </li>
+                    <li>
+                        <span>稽核扣款:</span>
+                        <span>200.00</span>
+                    </li>
+                    <li>
+                        <span>实际出款金额</span>
+                        <span>200.00</span>
+                    </li>
+                    <li>
+                        <span>手续费统计</span>
+                        <span>200.00</span>
+                    </li>
+                </ul>
             </div>
         </div>
+        <Dialog :show.sync="detail_show" title="查看稽核">
+            <div class="dia-inner">
+                <PaymentReviewDetail :userid="userid"></PaymentReviewDetail>
+            </div>
+        </Dialog>
     </div>
 </template>
 
+
 <script>
-import PaymentReviewDetail from './PaymentReviewDetail.vue'
+import PaymentReviewDetail from './PaymentReviewDetail'
 export default {
-    components:{
-            'PaymentReviewDetail': PaymentReviewDetail
-        },
+    components: {
+        PaymentReviewDetail
+    },
     data() {
         return {
-          
+            quick_query: [],
             filter: {
-                user_account: "",
-                userid: "",
-                withdrawal_type: ""
+                account: '',        // 会员账号
+                order_id: '',       // 订单号
+                apply_dates: [],    // 申请时间
+                payment_type: '',   // 出款类型
+                offcial_acc: '',   // 正式账号
+                acc_id: '',         // 会员ID
+                reviewer: '',       // 审核人
+                review_dates: [],   // 审核时间
+                review_status: ''   // 审核状态
             },
-            withdrawal_type_opt: [
-                { label: "支付宝", value: 1 },
-                { label: "银行卡", value: 2 }
+            payment_type_opt: [
+                { label: '全部', value: '' },
+                { label: '支付宝', value: 1 },
+                { label: '银行卡', value: 2 }
             ],
-            headers1: [
-                { label: "订单号" },
-                { label: "会员账号" },
-                { label: "会员ID" },
-                { label: "出款金额" },
-                { label: "手续费" },
-                { label: "需求打码" },
-                { label: "当前打码" },
-                { label: "申请时间" },
-                { label: "操作" } // 9
+            official_opt: [
+                { label: '全部', value: '' },
+                { label: '是', value: '1' },
+                { label: '否', value: '0' }
             ],
-            headers2: [
-                { label: "账号余额" },
-                { label: "上级账号" },
-                { label: "存款总额" },
-                { label: "存款次数" },
-                { label: "今日出款次" },
-                { label: "操作人" },
-                { label: "备注" }
+          
+            review_status_opt: [
+                { label: '全部', value: '' },
+                { label: '通过', value: '1' },
+                { label: '拒绝', value: '0' }
             ],
-            is_show: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            list: [ { a1: "D20190920140", a2: "13245689654", a3: "5654654", a4: "100.00", a5: "10.0", a6: "1000", a7: "1000", a8: "2019/09/20 12:25:20" }, { a1: "D20190920140", a2: "13245689654", a3: "5654654", a4: "100.00", a5: "10.0", a6: "1000", a7: "1000", a8: "2019/09/20 12:25:20" } ],
-            total:0,
-            pageNo: 1,
-            pageSize: 25,
-            show_conf: '',
-           
-            confirm:{
-                title:'出款审核',
-                content:'',
+            audit_withhold_opt: [
+                { label: '全部', value: '' },
+                { label: '是', value: '1' },
+                { label: '否', value: '0' }
+            ],
+            // table
+            table_headers: [
+                [
+                    '订单号',
+                    '会员号',
+                    '会员ID',
+                    '正式账号',
+                    '出款金额',
+                    '稽核扣款',
+                    '实际出款',
+                    '手续费',
+                    '存款次数',
+                    '操作'
+                ],
+                [
+                    '今日出款次数',
+                    '申请时间',
+                    '状态',
+                    '账号余额',
+                    '上级账号',
+                    '存款总额',
+                    '操作时间',
+                    '操作人',
+                    '备注'
+                ]
+            ],
+            table_list: [
+                {
+                    a1: 'aD201909201252',
+                    a2: '13245678942',
+                    a3: '4561234',
+                    a4: '0',
+                    a5: '红牛商户',
+                    a6: '微信充值',
+                    a7: '100',
+                    a8: '99.9',
+                    a9: '1',
+                    a10: '2019/09/20 12:25:20',
+                    a11: '2019/09/20 12:25:20',
+                    a12: '2019/09/20 12:25:20'
+                },
+                {
+                    a1: 'aD201909201252',
+                    a2: '13245678942',
+                    a3: '4561234',
+                    a4: '1',
+                    a5: '红牛商户',
+                    a6: '微信充值',
+                    a7: '100',
+                    a8: '99.9',
+                    a9: '2',
+                    a10: '2019/09/20 12:25:20',
+                    a11: '2019/09/20 12:25:20',
+                    a12: '2019/09/20 12:25:20'
+                }
+            ],
+            icon_obj: {
+                '0': 'iconcha red',
+                '1': 'icongou green'
             },
-            show_detail: false,
-        };
+            status_color_obj: {
+                '0': {
+                    color: 'red',
+                    text: '拒绝'
+                },
+                '1': {
+                    color: 'green',
+                    text: '通过'
+                },
+                '2': {
+                    color: 'purple',
+                    text: '审核中'
+                }
+            },
+            show_audit_button: [],
+            detail_show: false,
+            userid: ''
+        }
     },
     methods: {
-        expand(i) {
-            this.is_show.splice(i, 1, !this.is_show[i]);
-            $(this.$refs["table_" + i]).slideToggle(200);
+        qqUpd(dates) {
+            //同步时间筛选值
+            this.filter.apply_dates = dates
+            this.filter = Object.assign(this.filter)
         },
-        updateNo(val){
+        timeUpdate() {
+            //同步快捷查询按钮状态
+            this.quick_query = this.filter.apply_dates
         },
-        updateSize(val){
-        },
-        paymentConfirm() {
-            if(this.show_conf==='pass'){
-                
-            }else if(this.show_conf==='refuse'){
-                 this.conf_title = '出款审核'
-                this.conf_content = '是否拒绝该订单'
+        clearfilter() {
+            this.filter = {
+                account: '', // 会员账号
+                order_id: '', // 订单号
+                apply_dates: [], // 申请时间
+                payment_type: '', // 出款类型
+                offcial_acc: '', // 正式账号
+                acc_id: '', // 会员ID
+                reviewer: '', // 审核人
+                review_dates: [], // 审核时间
+                review_status: '' // 审核状态
             }
         },
-        pass(row) {
-            this.show_conf = 'pass'
-            this.conf_title = '出款审核'
-            this.conf_content = '是否通过该订单'
+        audiotButtonShow(index) {
+            // this.show_audit_button.splice(index, 1, true)
+            this.$set(this.show_audit_button, index, true)
         },
-        refuse(row) {
-            this.show_conf = 'refuse'
+        pass(row, index) {
+            this.$set(this.show_audit_button, index, false)
         },
-        confShow(row,status){
-
-        },
-        seeAudit(row) {
-            this.show_detail = true
+        refuse(row, index) {
+            this.$set(this.show_audit_button, index, false)
         }
     },
     mounted() {}
-};
+}
 </script>
 
 <style scoped>
-.container {
-    padding: 20px 8px 20px 8px;
-    border-top-right-radius: 5px;
-    border-bottom-left-radius: 5px;
-    border-bottom-right-radius: 5px;
-    background: #fff;
+/* .filer .left 有全局样式 见App.vue */
+.filter {
+    padding-left: 10px;
+    padding-bottom: 10px;
 }
-table {
-    border-collapse: collapse;
-    width: 100%;
+.filter .left > li {
+    margin-top: 10px;
 }
-
-tbody tr:nth-child(2n) {
-    background: rgb(250, 249, 249);
-}
-tr td {
-    text-align: center;
-    padding: 8px 4px;
-    /* border: 1px solid rgb(238, 238, 238); */
-    font-size: 13px;
-}
-tbody tr:hover {
-    background: #eee;
-}
-.container .first-table th {
-    padding: 8px 6px;
-    /* border: 1px solid rgb(230, 229, 229); */
-    font-weight: 400;
-    color: #4c8bfc;
-    background: #e6f7ff;
-}
-.second-table{
-    display: none;
-    box-shadow: 0 -1px 7px -1px rgb(197, 222, 245) inset;
-
-}
-
-.container .second-table th {
-    padding: 2px 6px;
-    /* border: 1px solid rgb(230, 229, 229); */
-    font-weight: 400;
-    color: #6d93db;
-    background: #eef7fc;
-    
-}
-
-.total-table table tr td{
-    border: none;
-}
-.total-table table tr th{
-    padding: 6px 8px;
-    color: #6d93db;
-    background: #eef7fc;
-    font-weight: 400;
-}
-
-.v-modal{
-    width: 1000px;
+.dia-inner {
+    width: 900px;
     max-height: 80vh;
-    position: absolute;
-    top: 100px;
-    z-index: 3;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    padding: 40px;
-    background-color: #fff;
-    border-radius: 7px;
+    overflow: auto;
 }
-/* .w100  width:100px 已经放入公共区 (App.vue) */
 </style>

@@ -46,19 +46,19 @@
 </template>
 
 <script>
-import { mapState, mapMutations, mapGetters } from "vuex";
+import { mapState, mapMutations, mapGetters } from 'vuex'
 export default {
     data() {
         return {
             currentMenu: Number,
             menu_list: []
-        };
+        }
     },
     computed: {
-        ...mapState(["tab_nav_list"])
+        ...mapState(['tab_nav_list'])
     },
     methods: {
-        ...mapMutations(["updatetab_nav_list"]),
+        ...mapMutations(['updatetab_nav_list']),
         expandMenu(item, index) {
             // console.log("TCL: expandMenu -> item", item)
             // console.log("该元素item", item);
@@ -66,44 +66,44 @@ export default {
             // console.log("TCL: expandMenu -> 当前", this.currentMenu)
             if (item.path && true) {
                 if (this.$route.path !== item.path) {
-                    this.$router.push(item.path);
+                    this.$router.push(item.path)
                 }
 
-                let list = this.tab_nav_list;
+                let list = this.tab_nav_list
                 // 导航条没有该页面 就添加进去
                 if (this.tab_nav_list.indexOf(item) === -1) {
-                    list.push(item);
+                    list.push(item)
                     // // 保持不大于7个菜单导航
                     // if (list.length > 7) {
                     //     list.shift();
                     // }
                     // if(list.length)
-                    this.updatetab_nav_list(list);
+                    this.updatetab_nav_list(list)
                 }
 
                 // 没有 path 就是父级菜单,就下滑打开该菜单
             } else {
-                let ele = this.$refs[index];
-                item.children && $(ele).slideToggle(200);
+                let ele = this.$refs[index]
+                item.children && $(ele).slideToggle(200)
             }
-            this.currentMenu = index;
+            this.currentMenu = index
         },
         objToArr(obj) {
-            let list = [];
+            let list = []
             for (let key in obj) {
-                let item = obj[key];
+                let item = obj[key]
                 if (item.child) {
-                    item.child = objToArr(item.child);
+                    item.child = objToArr(item.child)
                 }
-                list.push(item);
+                list.push(item)
             }
-            return list;
+            return list
         }
     },
     watch: {
         $route: function(to, from) {
-            if (to.path === "/home") return;
-            let path = to.path;
+            if (to.path === '/home') return
+            let path = to.path
             // console.log("TCL: path", path);
             /*       1.同一父级,则 退出 2.不同父级,关闭以前,打开跳转的父级菜单 */
 
@@ -119,20 +119,20 @@ export default {
                     if (item.children) {
                         item.children.forEach(i => {
                             if (i.path === to.path) {
-                                return item.path;
+                                return item.path
                             }
-                        });
+                        })
                     }
-                });
+                })
             }
-            let father_path = getfather(this.menu_list);
+            let father_path = getfather(this.menu_list)
         }
     },
     mounted() {
         // console.log('aside');
-        this.menu_list = window.all.menu_list;
-        const self = this;
-        let { method, url, params } = this.$api.all_menu;
+        this.menu_list = window.all.menu_list
+        const self = this
+        let { method, url, params } = this.$api.all_menu
         // function objToArr(obj) {
         //     let list = [];
         //     for (let key in obj) {
@@ -149,42 +149,42 @@ export default {
             method,
             url,
             data: params
-        };
+        }
         this.$http(opt).then(res => {
             // console.log(res);
-            if (res && res.code === "200") {
+            if (res && res.code === '200') {
                 // self.menu_list = res.data;
                 function objToArr(obj) {
-                    let list = [];
+                    let list = []
                     for (let key in obj) {
-                        let item = obj[key];
+                        let item = obj[key]
                         if (item.child) {
-                            item.child = objToArr(item.child);
+                            item.child = objToArr(item.child)
                         }
-                        list.push(item);
+                        list.push(item)
                     }
-                    return list;
+                    return list
                 }
                 // console.log("list-list", objToArr(self.menu_list));
             }
-        });
+        })
         // 解决刷新时顶部tab_nav都消失的问题, 根据路由加载当前导航.
         setTimeout(() => {
-              if (self.tab_nav_list.length === 0) {
+            if (self.tab_nav_list.length === 0) {
                 self.menu_list.forEach((item, index) => {
                     if (item.children) {
                         item.children.forEach(item => {
                             if (item.path === self.$route.path) {
-                                let list = [item]; // 获取当前路由 item {name: name,path:'/***'}
-                                self.updatetab_nav_list(list);
+                                let list = [item] // 获取当前路由 item {name: name,path:'/***'}
+                                self.updatetab_nav_list(list)
                             }
-                        });
+                        })
                     }
-                });
+                })
             }
-        }, 100);
+        }, 100)
     }
-};
+}
 </script>
 
 <style scoped>
@@ -194,12 +194,20 @@ export default {
     box-sizing: border-box;
     background: #fff;
     /* text-align: center; */
-    border-radius: 6px;
+    /* border-radius: 6px; */
     cursor: pointer;
     overflow: auto;
+    /* border: 1px solid #48f; */
+    user-select: none;
+    -ms-overflow-style: none;
+    overflow: -moz-scrollbars-none;
 }
 .contain::-webkit-scrollbar {
     width: 3px;
+    color: #48f;
+}
+.contain::-webkit-scrollbar-thumb {
+    background: #d3e0f8;
 }
 /* 一级菜单 */
 .level-1 > li > .title {
@@ -231,12 +239,12 @@ export default {
 }
 li .title:hover {
     width: 100%;
-    background: linear-gradient(to right, #7678fa7e, #67b4fd7a);
-    /* border: 1px solid #000; */
+    background: #6791df;
+    color: #fff;
 }
 .active-menu {
-    background: linear-gradient(to right, #5a5efd, #67b5fd);
-    color: #000;
+    background: #4c8bfd;
+    color: #fff;
 }
 /* .contain > ul > li {
   

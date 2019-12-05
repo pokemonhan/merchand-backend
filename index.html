@@ -4,7 +4,8 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
-    <link rel="stylesheet" href="//at.alicdn.com/t/font_1154946_ndfq0e6imj9.css">
+    <!-- <link rel="icon" type="image/x-icon" href="/static/favicon.ico"> -->
+    <link rel="stylesheet" href="//at.alicdn.com/t/font_1154946_u41ant29jxi.css">
     <title>jianghu</title>
     <style>
         ::-webkit-scrollbar {
@@ -20,17 +21,26 @@
             background: rgba(0, 0, 0, 0.2);
         }
 
-        /* html {
-      font-size: calc(100vw/7.5)
-    }
-    
+        html {
+            font-size: calc(100vw/120)
+        }
+
+        /*     
     @media screen and (orientation: landscape) {
       html {
-        font-size: calc(100vh/7.5)
+        font-size: calc(100vh/120)
       }
     } */
+        @media screen and (max-width: 1200px) {
+
+            html,
+            #app {
+                font-size: 12px;
+            }
+        }
+
         html {
-            background: rgb(238, 240, 241);
+            /* background: #eeeeee; */
             color: #666;
         }
 
@@ -38,19 +48,23 @@
         body,
         #app {
             height: 100%;
+            /* width: 100%; */
+            background: #eee;
         }
-        #app{
+
+        #app {
             /* font-family: 'Avenir', Helvetica, Arial, sans-serif; */
             font-family: 'Microsoft YaHei', Helvetica, Arial, sans-serif;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
+            font-size: 14px;
         }
 
         * {
             padding: 0;
             margin: 0;
             box-sizing: border-box;
-            font-style: normal;
+            /* font-style: normal; */
             /* vertical-align: top; */
             /* text-underline: none; */
             text-decoration: none;
@@ -58,9 +72,13 @@
             outline: none
         }
 
-        ul,
-        li {
+        ul li {
             list-style: none;
+        }
+
+        textarea {
+            overflow: auto;
+            resize: none;
         }
     </style>
 </head>

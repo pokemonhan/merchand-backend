@@ -184,5 +184,6 @@ export default {
 .buttons{
     margin-left: 5px;
     margin-right: 5px;
+    border-radius: 5px;
 }
 </style>

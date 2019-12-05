@@ -28,7 +28,7 @@
                             @change="onChange(idx, $event)"
                         />
                     </td>
-                    <slot name="item" :row="col_row"></slot>
+                    <slot name="item" :row="col_row" :idx="idx"></slot>
                 </tr>
                 <slot name="tr"></slot>
             </tbody>
@@ -84,30 +84,33 @@ export default {
 </script>
 
 <style scoped>
-table {
+.table-container table {
     border-collapse: collapse;
     width: 100%;
 }
 
 tbody tr:nth-child(2n){
-    
-    background: rgb(250, 249, 249);
+    /* background: #F7F7F7FF; */
+    background: rgb(248, 252, 255);
+}
+
+tbody tr:hover {
+    background: rgb(230, 244, 253);
+}
+
+.table-container table th {
+    padding: 7px 4px;
+    border: 1px solid #6fa2fe;
+    font-weight: 400;
+    color: #ffffff;
+    background: #70a1fd;
 }
 tr td {
+    height: 40px;
     text-align: center;
-    padding: 7px 4px;
-    border: 1px solid rgb(235, 235, 235);
+    /* padding: 7px 4px; */
+    border: 1px solid #6fa2fe;
     font-size: 13px;
-}
-tbody tr:hover {
-    background: rgb(240, 240, 240);
-}
-.container table th {
-    padding: 7px 4px;
-    border: 1px solid rgb(235, 235, 235);
-    font-weight: 400;
-    color: #4c8bfc;
-    background: #e6f7ff;
 }
 .checkbox {
     transform: scale(1.5);

@@ -1,24 +1,25 @@
 <template>
     <div class="container">
-
-         <!-- 登录记录 -->
-        <div class="filter">
+        <!-- 登录记录 -->
+        <div class="filter p10">
             <ul class="left">
                 <li>
                     <span>会员账号</span>
-                    <Input style="width:130px;" limit="en-num" v-model="filter.account" />
+                    <Input style="width:100px;" limit="en-num" v-model="filter.account" />
                 </li>
                 <li>
-                    <span>游戏ID</span>
-                    <Input style="width:130px" limit="en-num" v-model="filter.game_id" />
+                    <span>会员ID</span>
+                    <Input style="width:100px" limit="en-num" v-model="filter.acc_id" />
                 </li>
                 <li>
                     <span>登录日期</span>
-                    <Date v-model="filter.date"/>
+                    <Date v-model="filter.dates[0]" />
+                    <span style="margin:5px;">~</span>
+                    <Date v-model="filter.dates[1]" />
                 </li>
                 <li>
                     <span>登录IP</span>
-                    <Input style="width:130px" limit="en-num" v-model="filter.login_ip" />
+                    <Input style="width:100px" limit="en-num" v-model="filter.login_ip" />
                 </li>
             </ul>
             <div class="right">
@@ -41,7 +42,14 @@
                     <td>{{row.d}}</td>
                 </template>
             </Table>
-             <Page class="page" :total="total" :pageNo.sync="pageNo" :pageSize.sync="pageSize" @updateNo="updateNo" @updateSize="updateSize"/>
+            <Page
+                class="page"
+                :total="total"
+                :pageNo.sync="pageNo"
+                :pageSize.sync="pageSize"
+                @updateNo="updateNo"
+                @updateSize="updateSize"
+            />
         </div>
     </div>
 </template>
@@ -56,58 +64,52 @@ export default {
             //     { label: "甲", value: "3" }
             // ],
             // user_id: "",
-            filter:{
+            filter: {
                 account: '',
-                game_id: '',
-                date: '',
+                acc_id: '',
+                dates: [],
                 login_ip: ''
             },
             headers: [
-                { label: "会员账号" },
-                { label: "会员ID" },
-                { label: "登录IP" },
-                { label: "登录网址" },
-                { label: "登录设备" },
-                { label: "登录日期" }
+                { label: '会员账号' },
+                { label: '会员ID' },
+                { label: '登录IP' },
+                { label: '登录网址' },
+                { label: '登录设备' },
+                { label: '登录日期' }
             ],
             list: [
                 {
-                    a: "1",
-                    b: "2",
-                    c: "192.168.1.1(中国.广州）",
-                    d: "2019/12/15 12:12:00"
+                    a: '1',
+                    b: '2',
+                    c: '192.168.1.1(中国.广州）',
+                    d: '2019/12/15 12:12:00'
                 },
                 {
-                    a: "1",
-                    b: "2",
-                    c: "192.168.1.1(中国.广州）",
-                    d: "2019/12/15 12:12:00"
+                    a: '1',
+                    b: '2',
+                    c: '192.168.1.1(中国.广州）',
+                    d: '2019/12/15 12:12:00'
                 }
             ],
             total: 0,
             pageNo: 1,
-            pageSize: 25,
-        };
+            pageSize: 25
+        }
     },
     methods: {
-      
         updateNo(val) {},
         updateSize(val) {}
     },
     mounted() {}
-};
+}
 </script>
 
 <style scoped>
-.container {
-    padding: 20px 8px 20px 8px;
-    background: #fff;
-    border-radius: 5px;
-    border-top-left-radius: 0;
-}
-.filter {
-    /* display: flex; */
-    line-height: 30px;
+/* .container .filter 公共区 App.vue */
+
+.p10 {
+    padding: 10px;
 }
 /* .filter > ul > li {
     margin-right: 15px;

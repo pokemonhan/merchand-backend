@@ -232,7 +232,7 @@ export default {
                 { a1: 'sdfdssd fds ', a2: '1', a3: '2019-02-03' },
                 { a1: 'sdfdssd fds ', a2: '1', a3: '2019-02-03' }
             ],
-            add_show: true,
+            add_show: false,
 
             tab_box_show: false,
             // 详情

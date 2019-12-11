@@ -72,11 +72,11 @@ let menuList = [
                     // path: '/game',
                     // icon: "iconmiaojie1029data",
                     children: [
-                        { name: "H5游戏管理", path: "aaaaaaa" },
-                        { name: "PC游戏管理", path: "aaaaaaa" },
-                        { name: "APP游戏管理", path: "aaaaaaa" },
-                        { name: "平台管理", path: "aaaaaaa" },
-                        { name: "分类管理", path: "aaaaaaa" },
+                        { name: "H5游戏管理", path: "/game/aaaaaaaa" },
+                        { name: "PC游戏管理", path: "/game/aa" },
+                        { name: "APP游戏管理", path: "/game/aaaaaaaaa" },
+                        { name: "平台管理", path: "/game/aaaaa" },
+                        { name: "分类管理", path: "/game/aaaaaa" },
                        
                     ]
                 },
@@ -85,8 +85,8 @@ let menuList = [
                     // path: '/activ',
                     // icon: "iconcalculator",
                     children: [
-                        { name: "静态活动", path: "aaaaaaaaa" },
-                        { name: "动态活动", path: "aaaaaaaaa" },
+                        { name: "静态活动", path: "/activ/aaaaaaaa" },
+                        { name: "动态活动", path: "/active/aaaaaaaaa" },
                     ]
                 },
                 {
@@ -94,9 +94,9 @@ let menuList = [
                     // path: '/pay',
                     // icon: "icongame",
                     children: [
-                        { name: "线下支付配置", path: "aaaaaaaaaa" },
-                        { name: "线上支付配置", path: "aaaaaaaaaa" },
-                        { name: "出款银行管理", path: "aaaaaaaaaa" },
+                        { name: "线下支付配置", path: "pay/aaaaaaaa" },
+                        { name: "线上支付配置", path: "pay/aaaaaaaaa" },
+                        { name: "出款银行管理", path: "pay/aaaaaaaaaaaaa" },
                         
                     ]
                 },
@@ -105,8 +105,8 @@ let menuList = [
                     // path: '/promot',
                     // icon: "iconnet",
                     children: [
-                        { name: "推广配置", path: "aaaaaaaaaa" },
-                        { name: "推广图片配置", path: "aaaaaaaaaa" },
+                        { name: "推广配置", path: "/promot/aaaaaaaaa" },
+                        { name: "推广图片配置", path: "/promot/aaaaaaaaaa" },
                     ]
                 },
                 {
@@ -114,12 +114,12 @@ let menuList = [
                     // path: '/setting',
                     // icon: "iconspeaker-5",
                     children: [
-                        { name: "管理员分组", path: "aaaaaaaaaa" },
-                        { name: "全域设置", path: "aaaaaaaaaa" },
-                        { name: "客服设置", path: "aaaaaaaaaa" },
-                        { name: "帮助设置", path: "aaaaaaaaaa" },
-                        { name: "操作记录", path: "aaaaaaaaaa" },
-                        { name: "银行卡反查中心", path: "aaaaaaaaaa" },
+                        { name: "管理员分组", path: "/setting/aaaaaaaa" },
+                        { name: "全域设置", path: "/setting/aaaaaaa" },
+                        { name: "客服设置", path: "/setting/aaaaaa" },
+                        { name: "帮助设置", path: "/setting/aaaaaaaaaaa" },
+                        { name: "操作记录", path: "/setting/aaaaaaaaaa" },
+                        { name: "银行卡反查中心", path: "/setting/aaaaaaaaa" },
                     ]
                 },
                 // {

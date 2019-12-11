@@ -51,7 +51,7 @@ const UserWash = () => import('@/components/views/report/UserWash.vue')         
 
 Vue.use(Router)
 
-export default new Router({
+const router = new Router({
     mode: 'history',
     routes: [
         {
@@ -220,8 +220,14 @@ export default new Router({
         },
     ]
 })
-
-
+router.beforeEach((to, from, next) => {
+    console.log(to.path);
+    console.log(from.path);
+    if(to.path!==from.path){
+        next()
+    }
+})
+export default router
 // const routes = new Router({
 //     routes: [
 //         {

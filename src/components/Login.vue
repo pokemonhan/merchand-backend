@@ -98,7 +98,8 @@ export default {
                     ? ''
                     : '请输入8-16个字母及数字组合'
             }
-            return this.pwdMsg ? false : true
+            // return this.pwdMsg ? false : true
+            return true
         },
         checkVerify(){
             console.log(this.verifyCode,'验证码');

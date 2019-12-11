@@ -50,7 +50,7 @@ module.exports = {
      */
 
     // productionSourceMap: true,
-    productionSourceMap: false,   // 关闭
+    productionSourceMap: true,   // 关闭
     // https://webpack.js.org/configuration/devtool/#production
     devtool: '#source-map',
 

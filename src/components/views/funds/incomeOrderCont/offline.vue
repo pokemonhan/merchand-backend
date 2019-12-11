@@ -32,7 +32,7 @@
                     <span>入款账号</span>
                     <Input class="w100" v-model="filter.income_acc" />
                 </li>
-                <li>
+                <li class="mt10">
                     <span>正式状态</span>
                     <Select
                         style="width:110px"
@@ -40,11 +40,11 @@
                         :options="formal_status_opt"
                     ></Select>
                 </li>
-                <li>
+                <li class="mt10">
                     <span>订单号</span>
                     <Input style="width:110px" limit="en-num" v-model="filter.order_id" />
                 </li>
-                <li>
+                <li class="mt10">
                     <button class="btn-blue">查询</button>
                     <button class="btn-blue">导出Excel</button>
                     <button class="btn-red" @click="clearClick">清空</button>
@@ -356,8 +356,8 @@ export default {
     /* margin-bottom: 10px; */
 }
 /*  */
-.filter ul li {
-    margin: 10px 10px 10px 0;
+.mt10{
+    margin-top: 10px;
 }
 /* .total-table ul {
     display: flex;

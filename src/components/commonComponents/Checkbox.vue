@@ -109,6 +109,7 @@ export default {
     cursor: pointer;
     width: 14px;
     height: 14px;
+    background: #fff;
 }
 .v-checkbox .item-label {
     margin-left: 5px;

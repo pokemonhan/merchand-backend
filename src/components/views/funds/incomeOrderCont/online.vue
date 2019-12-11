@@ -49,12 +49,12 @@
                     <span>商户编号</span>
                     <Input style="width:110px" limit="en-num" v-model="filter.vendor_num_id" />
                 </li>
-                <li>
+                <li class="mb10">
                     <span>商户</span>
                     <Input style="width:110px" limit="number" v-model="filter.vendor" />
                 </li>
                 <li style="margin-left:-10px"></li>
-                <li>
+                <li class="mb10">
                     <button class="btn-blue">查询</button>
                     <button class="btn-blue">导出Excel</button>
                     <button class="btn-red" @click="clearClick">清空</button>
@@ -465,6 +465,9 @@ export default {
 }
 .filter .left li {
     margin-top: 10px;
+    /* margin-bottom: 10px; */
+}
+.mb10{
     margin-bottom: 10px;
 }
 /* .right {

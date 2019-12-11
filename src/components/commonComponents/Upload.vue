@@ -9,8 +9,11 @@
                 @change="change"
             />
             <button :style="`width:${width}px`" class="btn" type="button" @click="chooseFile">
-                <i class="iconfont iconshangchuan"></i>
-                <span>{{title}}</span>
+                <i v-if="showIcon" class="iconfont iconshangchuan"></i>
+                <span>
+                    {{title}}
+                    <!-- <slot></slot> -->
+                </span>
             </button>
         </div>
     </div>
@@ -21,7 +24,11 @@
 export default {
     props: {
         title:String,
-        width:String
+        width:String,
+        showIcon:{
+            type: Boolean,
+            default: false
+        }
     },
     data() {
         return {}
@@ -47,11 +54,13 @@ export default {
     width: 100%;
 } */
 .iconshangchuan{
-    margin-right: 20px;
+    margin-right: 10px;
 }
 .v-upload-input {
     width: 100%;
     display: none;
 }
-
+.btn{
+    width: 100%;
+}
 </style>

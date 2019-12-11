@@ -66,7 +66,7 @@ export default {
                     document.body.scrollHeight -
                     e.target.getBoundingClientRect().bottom
                 this.sectionsDir =
-                    y < 30 * this.options.length
+                    y < 220
                         ? 'top-upfold'
                         : 'bottom-upfold'
                 $(ele).slideDown(200)
@@ -134,7 +134,7 @@ export default {
 .val-box {
     width: 100%;
     height: 30px;
-    line-height: 30px;
+    line-height: 28px;
     display: flex;
     flex-direction: row;
     justify-content: space-between;

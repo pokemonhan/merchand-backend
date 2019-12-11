@@ -4,7 +4,7 @@
             <div class="content">
                 <div class="left">
                     <div class="head-title">
-                        <span class="title">后台系统</span>
+                        <span class="title">商户后台</span>
                     </div>
                     <div class="detail">
                         <div class="up">
@@ -282,7 +282,7 @@ export default {
             }
         },
         passwordConf() {
-            this.err_tips = ['', '', '','']
+            this.err_tips = ['', '', '', '']
             if (this.checkPwd()) {
                 console.log('执行内容')
             }

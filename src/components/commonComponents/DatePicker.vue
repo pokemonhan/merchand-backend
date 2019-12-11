@@ -247,8 +247,8 @@
                     <div class="select-time" v-if="type==='datetime' || type==='datetimerange'">
                         <div @click="chooseTime" class="pointer">{{step===4 ? '选择日期' : '选择时间'}}</div>
                         <div>
-                            <button @click="clear" v-if="clearable">清空</button>
-                            <button @click="confirm">确定</button>
+                            <button class="btns-red" @click="clear" v-if="clearable">清空</button>
+                            <button class="btns-blue" @click="confirm">确定</button>
                         </div>
                     </div>
                     <div style="padding-left:150px;" v-else>
@@ -860,7 +860,7 @@ export default {
                 } else {
                     this.resultTime[0] =
                         this.type === 'datetime'
-                            ? window.all.tool.formatDate(new Date())
+                            ? window.all.tool.formatDate(new Date(), true)
                             : window.all.tool.formatDate(new Date(), false)
                     this.$emit('update', this.resultTime[0])
                 }
@@ -904,21 +904,21 @@ export default {
     -ms-user-select: none;
     user-select: none;
 }
-.v-date-picker.date {
+.date {
     width: 110px;
 }
-.v-date-picker.datetime {
+.datetime {
     width: 160px;
 }
-.v-date-picker.daterange {
+.daterange {
     width: 180px;
 }
-.v-date-picker.datetimerange {
+.datetimerange {
     width: 280px;
 }
-.v-date-picker .date-str {
-    /* font-size: 12px; */
-}
+/* .v-date-picker .date-str {
+    font-size: 12px;
+} */
 .date-current {
     width: 100%;
     height: 100%;

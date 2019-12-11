@@ -62,8 +62,13 @@
                         <li>
                             <span>选择图片</span>
                             <div class="upload-pic">
-                                <Upload width="170" title="App图片上传" @change="upPicChange($event)" />
-                                <button style="width:70px;" class="btn-blue" @click="preview()">预览</button>
+                                <Upload style="width:170px;" title="App图片上传" @change="upPicChange" />
+
+                                <button
+                                    style="width:70px;margin-left:10px;"
+                                    class="btn-blue"
+                                    @click="preview"
+                                >预览</button>
                             </div>
                         </li>
                         <li>
@@ -103,16 +108,11 @@
                 </div>
             </div>
         </Dialog>
-         <!-- 图片预览 -->
+        <!-- 图片预览 -->
         <Dialog :show.sync="pic_dia_show" title="预览图片">
-            <img width="800" :src="form.pic_src" alt="没有图片" />
+            <img class="max-w800" :src="form.pic_src" alt="未选择图片" />
         </Dialog>
-         <Modal
-            :show.sync="show_del_modal"
-            title="删除公告"
-            content="是否删除该公告"
-            @confirm="delConfirm"
-        ></Modal>
+        <Modal :show.sync="show_del_modal" title="删除公告" content="是否删除该公告" @confirm="delConfirm"></Modal>
     </div>
 </template>
 
@@ -171,7 +171,7 @@ export default {
             form: {
                 name: '',
                 link: '',
-                pic_src:'',
+                pic_src: '',
                 dates: [],
                 status: 'on'
             },
@@ -179,15 +179,15 @@ export default {
             is_edit: false,
             pic_dia_show: false,
             // form_pic_src: ''
-            show_del_modal: false,    // 删除公告
+            show_del_modal: false // 删除公告
         }
     },
     methods: {
         switchUpdate(row) {
             // console.log('row: ', row);
         },
-         initForm() {
-            this.form ={
+        initForm() {
+            this.form = {
                 name: '',
                 link: '',
                 dates: [],
@@ -205,7 +205,7 @@ export default {
             this.is_edit = true
             this.initForm()
         },
-        del(){
+        del() {
             this.show_del_modal = true
         },
         upPicChange(e) {
@@ -227,8 +227,8 @@ export default {
         preview(index) {
             this.pic_dia_show = true
         },
-        delConfirm(){
-            console.log(this.is_edit);
+        delConfirm() {
+            console.log(this.is_edit)
         }
     },
     created() {
@@ -260,7 +260,7 @@ export default {
     margin-top: 10px;
     padding: 10px;
 }
-.head-btns:not(:first-child){
+.head-btns:not(:first-child) {
     margin-left: 10px;
 }
 .w250 {
@@ -303,5 +303,8 @@ export default {
 }
 .ml50 {
     margin-left: 50px;
+}
+.max-w800 {
+    max-width: 800px;
 }
 </style>

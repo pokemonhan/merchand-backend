@@ -51,7 +51,6 @@ export default {
             document.body.addEventListener('mouseenter', function() {
                 play && audio.play()
                 play = false
-
                 // audio = null;
             })
         }
@@ -330,14 +329,14 @@ button:hover {
 }
 .btns-green {
     color: #fff;
-    background: #4c1;
+    background: #4cc013;
     box-shadow: 1px 1px 3px rgba(67, 204, 17, 0.2);
 }
 .btns-green:hover {
-    background: rgba(67, 204, 17, 0.808);
+    background: #42a80f;
 }
 .btns-gree:active {
-    background: #4c1;
+    background: #4cc013;
 }
 .btns-blue {
     color: #fff;
@@ -447,7 +446,7 @@ button:hover {
     background: #4c8bfd;
 }
 .bg-green {
-    background: #4dc213;
+    background: #4cc013;
 }
 .bg-red {
     background: #f44;
@@ -469,5 +468,15 @@ button:hover {
 }
 .total-table ul > li {
     margin-right: 100px;
+}
+.g-form > li{
+    display: flex;
+    align-items: center;
+}
+.g-form > li > span:first-child{
+    border: 1px solid #000;
+}
+.bold{
+    font-weight: bold;
 }
 </style>

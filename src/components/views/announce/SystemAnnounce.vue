@@ -124,7 +124,7 @@
             </div>
         </Dialog>
         <Dialog :show.sync="pic_dia_show" title="预览图片">
-             <img width="800" :src="src[curr_pic_idx]" alt="没有图片" />
+             <img class="max-w800" :src="src[curr_pic_idx]" alt="未选择图片" />
         </Dialog>
     </div>
 </template>
@@ -341,5 +341,8 @@ export default {
 }
 .ml50 {
     margin-left: 50px;
+}
+.max-w800{
+    max-width: 800px;
 }
 </style>

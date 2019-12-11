@@ -83,11 +83,7 @@
                             <span>晋级方式:</span>
 
                             <span style="margin-left:10px;" class="flex">
-                                <Checkbox
-                                    label="会员充值"
-                                    v-model="rule.up_method[0]"
-                                    @update="UpMethodHandle(0)"
-                                />
+                                <Checkbox label="会员充值" v-model="rule.up_method[0]" @update="UpMethodHandle(0)" />
                             </span>
                             <span style="margin-left:10px;" class="flex">
                                 <Checkbox

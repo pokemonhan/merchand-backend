@@ -47,23 +47,23 @@ let menuList = [
                     // icon: '',
                     children: [
                         {name:"发邮件", path:"/email/sendemail"},
-                        {name:"收件箱", path:"/email/recieveemail"},
-                        {name:"已发邮件", path:"/email/sentmail"},
+                        {name:"收件箱", path:"/email/receiveemail"},
+                        {name:"已发邮件", path:"/email/emailsent"},
                         {name:"短信推送", path:"/email/smspush"},
                     ]
                 },
                 {
                     name: "报表管理",
-                    // path: '/note',
+                    // path: '/report',
                     // icon: "iconaccount",
                     children: [
-                        { name: "个人报表", path: "aaaaa" },
-                        { name: "游戏报表", path: "aaaaa" },
-                        { name: "公司报表", path: "aaaaa" },
-                        { name: "会员稽核", path: "aaaaa" },
-                        { name: "平台注单", path: "aaaaa" },
-                        { name: "活动报表", path: "aaaaa" },
-                        { name: "会员洗码", path: "aaaaa" }
+                        { name: "个人报表", path: "/report/personalreport" },
+                        { name: "游戏报表", path: "/report/gamereport" },
+                        { name: "公司报表", path: "/report/companyreport" },
+                        { name: "会员稽核", path: "/report/memberaudit" },
+                        { name: "平台注单", path: "/report/platformbet" },
+                        { name: "活动报表", path: "/report/activereport" },
+                        { name: "会员洗码", path: "/report/userwash" }
                       
                     ]
                 },

@@ -25,7 +25,6 @@
                                 v-model="filter.online_state"
                                 :options="online_state_opt"
                                 style="width:100px;"
-                                @update="selectupdate"
                             ></Select>
                         </span>
                     </li>
@@ -36,7 +35,6 @@
                                 v-model="filter.online_state"
                                 :options="online_state_opt"
                                 style="width:100px;"
-                                @update="selectupdate"
                             ></Select>
                         </span>
                     </li>
@@ -191,7 +189,10 @@
                                     <span>管理银行卡:</span>
                                     <span class="a">重置</span>
                                 </li>
-                                <li>
+                               
+                            </ul>
+                            <ul style="margin-top:10px;">
+                                 <li>
                                     <span>清空支付宝:</span>
                                     <span class="a">重置</span>
                                 </li>
@@ -256,7 +257,7 @@
                         <div class="list">
                             <ul>
                                 <li>
-                                    <span>最多单笔存款:</span>
+                                    <span>最大单笔存款:</span>
                                     <span>{{'0.00'}}元</span>
                                 </li>
                                 <li>
@@ -465,7 +466,7 @@ export default {
     },
     methods: {
         selectupdate(val) {
-            this.$toast.info('你好')
+            // this.$toast.info('你好')
         },
 
         showDetail() {
@@ -484,7 +485,7 @@ export default {
             this.inner_mask_show = false
         },
         updateNo(val) {
-            this.p
+            // this.p
         },
         updateSize(val) {}
     },
@@ -496,7 +497,7 @@ export default {
 /* .container .red .green ---在 App.vue公共区 */
 /* .filter 部分样式在公共区 */
 .filter-group {
-    padding: 20px 10px;
+    padding: 10px 10px;
     background: #f2f2f2;
     /* border-radius: 5px; */
 }
@@ -711,4 +712,5 @@ export default {
 .mr50 {
     margin-right: 50px;
 }
+
 </style>

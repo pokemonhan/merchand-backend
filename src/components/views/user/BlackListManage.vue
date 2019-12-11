@@ -41,7 +41,7 @@
                     <td>{{row.d}}</td>
                     <td>{{row.e}}</td>
                     <td>
-                        <button class="btn-orange" @click="turnOnUser">启用</button>
+                        <button class="btn-green" @click="turnOnUser">启用</button>
                         <button class="btn-blue" @click="dtlShow(row)">详情</button>
                     </td>
                 </template>

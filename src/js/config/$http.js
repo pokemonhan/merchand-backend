@@ -10,7 +10,7 @@ let http = axios.create({
     baseURL: BASE_PATH,
     timeout: 10000,
     // retry: 3,
-    retryDelay: 1000,
+    // retryDelay: 1000,
     header:{
         'Content-Type': 'application/json; charset=utf-8',
         'Cache-Control': 'no-cache'

@@ -3,8 +3,9 @@
         <table>
             <thead>
                 <tr>
-                    <th v-if="haveCheckbox">
-                        <input type="checkbox" class="checkbox" v-model="all_checked" @change="onChange('all', $event)" />
+                    <th class="center-box" v-if="hadCheckbox">
+                        <!-- <input type="checkbox" class="checkbox" v-model="all_checked" @change="onChange(999999, $event)" /> -->
+                        <Checkbox class="checkbox" v-model="all_checked" @update="onChange(999999, all_checked)" />
                     </th>
                     <th v-for="(col, index) in headers" :key="index">
                         <!-- <div v-if="col.label.split(',').length!==0"></div> -->
@@ -20,13 +21,14 @@
             <tbody>
                 <tr v-for="(col_row, idx) in column" :key="idx">
                     <!-- <slot name="item" :row="row"></slot> -->
-                    <td v-if="haveCheckbox">
-                        <input
+                    <td v-if="hadCheckbox">
+                        <!-- <input
                             type="checkbox"
                             class="checkbox"
                             v-model="col_row.checked"
                             @change="onChange(idx, $event)"
-                        />
+                        /> -->
+                        <Checkbox class="checkbox" v-model="col_row.checked" @update="onChange(idx, col_row.checked)" />
                     </td>
                     <slot name="item" :row="col_row" :idx="idx"></slot>
                 </tr>
@@ -43,7 +45,7 @@ export default {
         css: Object,
         headers: Array,
         column: Array,
-        haveCheckbox: {
+        hadCheckbox: {
             type:Boolean,
             default:()=>false
         }
@@ -55,9 +57,9 @@ export default {
         };
     },
     methods: {
-        onChange(index, e) {
+        onChange(index, checked) {
             // 全选或全不选
-            if (index === "all") {
+            if (index === 999999) {
                 // this.check_list = this.check_list.map(item => e.target.checked)
                 this.column.forEach(item => {
                     item.checked = this.all_checked;
@@ -67,15 +69,21 @@ export default {
             }
             
             /**
-             *  @param {String,Number}  index               点击的哪个checkbox, 'all'全部;其他index 第几个
-             *  @param {Boolean}        e.target.checked    Boolean 是否选中
-             *  @param {Array}          this.check_list     存储 checkbox Array 的数组
+             *  @param {Number}     index               点击的哪个checkbox, 999999:全部;其他index: 第几个
+             *  @param {Boolean}    checked                Boolean 是否选中
+             *  
              *  */
-            this.$emit( "checkboxChange", index, e.target.checked, this.check_list );
+            // checked 已植入 this.column 中，可直接获取
+            this.$emit( "checkboxChange", index, checked );
+        }
+    },
+    watch:{
+        column(val){
+
         }
     },
     mounted() {
-        // 初始化 list 得checked都为false
+        // 初始化 column 使checked都为false
         this.column.forEach(item => {
             item.checked = false;
         });
@@ -112,10 +120,7 @@ tr td {
     border: 1px solid #6fa2fe;
     font-size: 13px;
 }
-.checkbox {
-    transform: scale(1.5);
-    position: relative;
-    top: 4px;
-}
-
+/* .checkbox {
+   
+} */
 </style>

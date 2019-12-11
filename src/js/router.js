@@ -8,8 +8,8 @@ import Login from '@/components/Login.vue'
 
 /* 会员管理 */
 // import UserList from '@/components/views/user/UserList.vue'
-const UserList = () => import('@/components/views/user/UserList.vue')                       //会员列表
-const LoginLog = () => import('@/components/views/user/LoginLog.vue')                       //登录记录
+const UserList = () => import('@/components/views/user/UserList.vue')                       // 会员列表
+const LoginLog = () => import('@/components/views/user/LoginLog.vue')                       // 登录记录
 
 const TabManage = () => import('@/components/views/user/TabManage.vue')                     // 标签管理
 const BlackListManage = () => import('@/components/views/user/BlackListManage.vue')         // 黑名单管理
@@ -31,6 +31,24 @@ const SystemAnnounce = () => import('@/components/views/announce/SystemAnnounce.
 const LoginPopup = () => import('@/components/views/announce/LoginPopup.vue')               // 登录弹窗公告
 const Carousel = () => import('@/components/views/announce/Carousel.vue')                   // 轮播公告
 /* 公告管理 */
+
+/* 邮件系统 */
+const SendEmail = () => import('@/components/views/email/SendEmail.vue')                     // 发邮件
+const ReceiveEmail = () => import('@/components/views/email/ReceiveEmail.vue')               // 收邮件
+const EmailSent = () => import('@/components/views/email/EmailSent.vue')                     // 已发邮件
+const SmsPush = () => import('@/components/views/email/SmsPush.vue')                         // 短信推送
+/* 邮件系统 */
+
+/* 报表管理 */
+const PersonalReport = () => import('@/components/views/report/PersonalReport.vue')           // 个人报表
+const GameReport = () => import('@/components/views/report/GameReport.vue')                   // 游戏报表
+const CompanyReport = () => import('@/components/views/report/CompanyReport.vue')             // 公司报表
+const MemberAudit = () => import('@/components/views/report/MemberAudit.vue')                 // 会员稽核
+const PlatformBet = () => import('@/components/views/report/PlatformBet.vue')                 // 平台注单
+const ActiveReport = () => import('@/components/views/report/ActiveReport.vue')               // 活动列表
+const UserWash = () => import('@/components/views/report/UserWash.vue')                       // 会员洗码
+/* 报表管理 */
+
 Vue.use(Router)
 
 export default new Router({
@@ -40,7 +58,7 @@ export default new Router({
             path: '/',
             component: HomePage
         },
-    
+
         {
             path: '/login',
             component: Login
@@ -134,13 +152,71 @@ export default new Router({
         },
         // 登录弹窗公告
         {
-            path: '/announce/LoginPopup',
+            path: '/announce/loginpopup',
             component: LoginPopup
         },
         // 轮播公告
         {
-            path: '/announce/Carousel',
+            path: '/announce/carousel',
             component: Carousel
+        },
+
+        /* -----------------------------------  邮件系统 ------------------------------------*/
+        // 发邮件
+        {
+            path: '/email/sendemail',
+            component: SendEmail
+        },
+        // 收件箱
+        {
+            path: '/email/receiveemail',
+            component: ReceiveEmail
+        },
+        // 已发邮件
+        {
+            path: '/email/emailsent',
+            component: EmailSent
+        },
+        // 短息推送
+        {
+            path: '/email/smspush',
+            component: SmsPush
+        },
+        /* -----------------------------------  邮件系统 ------------------------------------*/
+        // 个人报表
+        {
+            path: '/report/personalreport',
+            component: PersonalReport
+        },
+        // 游戏报表
+        {
+            path: '/report/gamereport',
+            component: GameReport
+        },
+        // 公司报表
+        {
+            path: '/report/companyreport',
+            component: CompanyReport
+        },
+        // 会员稽核
+        {
+            path: '/report/memberaudit',
+            component: MemberAudit
+        },
+        // 平台注单
+        {
+            path: '/report/platformbet',
+            component: PlatformBet
+        },
+        // 活动列表
+        {
+            path: '/report/activereport',
+            component: ActiveReport
+        },
+        // 会员洗码
+        {
+            path: '/report/userwash',
+            component: UserWash
         },
     ]
 })
@@ -178,7 +254,7 @@ export default new Router({
 //         // 懒加载
 //         component: () => r(file_name)
 //     })
-    
+
 // })
 // // console.log('"所有"路由',route_add)
 // routes.addRoutes(route_add)

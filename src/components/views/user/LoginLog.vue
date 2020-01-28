@@ -98,10 +98,17 @@ export default {
         }
     },
     methods: {
+        getList() {
+            let para = {
+                
+            }
+        },
         updateNo(val) {},
         updateSize(val) {}
     },
-    mounted() {}
+    mounted() {
+        this.getList()
+    }
 }
 </script>
 

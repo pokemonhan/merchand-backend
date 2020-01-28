@@ -198,7 +198,8 @@ export default {
         },
         marqueeDelConf() {
             console.log('确认删除')
-        }
+        },
+        
     },
     mounted() {}
 }

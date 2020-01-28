@@ -9,20 +9,20 @@
                 <!-- '编号','标签名称','禁止取款','禁止登录','禁止游戏','禁止推广','添加时间','操作' -->
                 <template v-slot:item="{row,idx}">
                     <td>{{idx+1}}</td>
-                    <td>{{row.a}}</td>
+                    <td>{{row.title}}</td>
                     <td>
-                        <i :class="['iconfont',row.b==='1'?'icongou green':'iconcha red']"></i>
+                        <i :class="['iconfont',row.no_withdraw===1?'icongou green':'iconcha red']"></i>
                     </td>
                     <td>
-                        <i :class="['iconfont',row.c==='1'?'icongou green':'iconcha red']"></i>
+                        <i :class="['iconfont',row.no_login===1?'icongou green':'iconcha red']"></i>
                     </td>
                     <td>
-                        <i :class="['iconfont',row.d==='1'?'icongou green':'iconcha red']"></i>
+                        <i :class="['iconfont',row.no_play===1?'icongou green':'iconcha red']"></i>
                     </td>
                     <td>
-                        <i :class="['iconfont',row.e==='1'?'icongou green':'iconcha red']"></i>
+                        <i :class="['iconfont',row.no_promote==='1'?'icongou green':'iconcha red']"></i>
                     </td>
-                    <td>{{row.f}}</td>
+                    <td>{{row.created_at}}</td>
                     <td>
                         <span class="a" @click="editTab">编辑</span>
                         <span class="a" @click="delTab">删除</span>
@@ -131,7 +131,7 @@ export default {
                     f: '2019/11/02 12:30:23'
                 }
             ],
-            total:0,
+            total:2,
             pageNo: 1,
             pageSize: 25,
             show_mask: false,
@@ -155,9 +155,24 @@ export default {
         delTab() {
             this.show_delete_tab_conf = true
         },
-        delTabConf() {}
+        delTabConf() {},
+        getList() {
+            let para = {
+
+            }
+            this.$http({
+                method: this.$api.user_tag_list.method,
+                url: this.$api.user_tag_list.url,
+            }).then(res=>{
+                console.log('res',res)
+                this.list = res.data
+                // ths.total = res.t
+            })
+        },
     },
-    mounted() {}
+    mounted() {
+        this.getList()
+    }
 }
 </script>
 

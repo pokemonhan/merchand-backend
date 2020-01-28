@@ -232,16 +232,17 @@ export default {
             this.logout_conf_show = true
         },
         logoutConf() {
-            let self = this
-            this.$http({
-                method: this.$api.logout.method,
-                url: this.$api.logout.url
-                // data: params
-            }).then(res => {
-                if (res.code === '200') {
-                    self.$toast('登出成功')
-                }
-            })
+            // return // TODO:
+            // let self = this
+            // this.$http({
+            //     method: this.$api.logout.method,
+            //     url: this.$api.logout.url
+            //     // data: params
+            // }).then(res => {
+            //     if (res.code === '200') {
+            //         self.$toast('登出成功')
+            //     }
+            // })
             window.all.tool.removeSession('token')
             this.$router.push('/login')
             this.logout_conf_show = false

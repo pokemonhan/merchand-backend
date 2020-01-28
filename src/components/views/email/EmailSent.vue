@@ -120,6 +120,7 @@ export default {
     },
     methods: {
         qqUpd(dates) {
+            console.log('时间‘',dates)
             //同步时间筛选值
             this.filter.dates = dates
             this.filter = Object.assign(this.filter)

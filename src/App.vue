@@ -72,8 +72,8 @@ export default {
 .app-content {
     max-width: 1200px;
     display: flex;
-    margin: 0 auto;
-    margin-top: 20px;
+    margin: 20px auto 0 auto;
+    /*margin-top: 20px;*/
 }
 .app-aside {
     width: 150px;
@@ -181,7 +181,6 @@ button:hover {
     box-sizing: border-box;
     border-radius: 3px;
     outline: none;
-    border: none;
     cursor: pointer;
     color: #4c8bfd;
     border: 1px solid #4c8bfd;
@@ -419,7 +418,7 @@ button:hover {
     color: red;
 }
 .w100 {
-    width: 110px;
+    width: 100px;
 }
 /* 字体颜色 */
 .orange {
@@ -453,6 +452,21 @@ button:hover {
 }
 .bg-gray {
     background: #f2f2f2;
+}
+.mt10 {
+    margin-top: 10px;
+}
+.ml5 {
+    margin-left: 5px;
+}
+.ml10 {
+    margin-left: 10px;
+}
+.ml20 {
+    margin-left: 20px;
+}
+.mt20 {
+    margin-top: 20px;
 }
 .p10 {
     padding: 10px;

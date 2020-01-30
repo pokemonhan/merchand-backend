@@ -64,7 +64,7 @@ let menuList = [
                         { name: "平台注单", path: "/report/platformbet" },
                         { name: "活动报表", path: "/report/activereport" },
                         { name: "会员洗码", path: "/report/userwash" }
-                      
+
                     ]
                 },
                 {
@@ -72,20 +72,20 @@ let menuList = [
                     // path: '/game',
                     // icon: "iconmiaojie1029data",
                     children: [
-                        { name: "H5游戏管理", path: "/game/aaaaaaaa" },
-                        { name: "PC游戏管理", path: "/game/aa" },
-                        { name: "APP游戏管理", path: "/game/aaaaaaaaa" },
-                        { name: "平台管理", path: "/game/aaaaa" },
-                        { name: "分类管理", path: "/game/aaaaaa" },
-                       
+                        { name: "H5游戏管理", path: "/game/h5" },
+                        { name: "PC游戏管理", path: "/game/pc" },
+                        { name: "APP游戏管理", path: "/game/app" },
+                        { name: "平台管理", path: "/game/plantform" },
+                        { name: "分类管理", path: "/game/sort" },
+
                     ]
                 },
                 {
                     name: "活动管理",
-                    // path: '/activ',
+                    // path: '/active',
                     // icon: "iconcalculator",
                     children: [
-                        { name: "静态活动", path: "/activ/aaaaaaaa" },
+                        { name: "静态活动", path: "/active/aaaaaaaa" },
                         { name: "动态活动", path: "/active/aaaaaaaaa" },
                     ]
                 },
@@ -97,16 +97,16 @@ let menuList = [
                         { name: "线下支付配置", path: "pay/aaaaaaaa" },
                         { name: "线上支付配置", path: "pay/aaaaaaaaa" },
                         { name: "出款银行管理", path: "pay/aaaaaaaaaaaaa" },
-                        
+
                     ]
                 },
                 {
                     name: "推广配置",
-                    // path: '/promot',
+                    // path: '/promote',
                     // icon: "iconnet",
                     children: [
-                        { name: "推广配置", path: "/promot/aaaaaaaaa" },
-                        { name: "推广图片配置", path: "/promot/aaaaaaaaaa" },
+                        { name: "推广配置", path: "/promote/aaaaaaaaa" },
+                        { name: "推广图片配置", path: "/promote/aaaaaaaaaa" },
                     ]
                 },
                 {

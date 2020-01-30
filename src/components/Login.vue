@@ -16,7 +16,7 @@
                                         class="input"
                                         type="text"
                                         placeholder="请输入账号"
-                                        v-model="account"
+                                        v-model="email"
                                     />
                                 </span>
                                 <div v-show="accMsg" class="err-item">{{accMsg}}</div>
@@ -30,6 +30,7 @@
                                         type="password"
                                         placeholder="请输入密码"
                                         v-model="password"
+                                        @keyup.enter="login"
                                     />
                                 </span>
                                 <div v-show="pwdMsg" class="err-item">{{pwdMsg}}</div>
@@ -37,24 +38,24 @@
                             <!-- <li class="err-item">
                                 <span>{{pwdMsg}}</span>
                             </li>-->
-                            <li>
-                                <div class="flex">
-                                      <span class="verify-input">
-                                    <i class="iconfont icondunpai"></i>
-                                    <input
-                                        class="input"
-                                        type="text"
-                                        placeholder="验证码"
-                                        v-model="verifyCode"
-                                    />
-                                </span>
-                                <span class="verify-img"></span>
-                                <span class="pic-change">换一张</span>
-                                </div>
-                                <div v-show="verifyMsg" class="err-item">{{verifyMsg}}</div>
-                            </li>
+<!--                            <li>-->
+<!--                                <div class="flex">-->
+<!--                                      <span class="verify-input">-->
+<!--                                    <i class="iconfont icondunpai"></i>-->
+<!--                                    <input-->
+<!--                                        class="input"-->
+<!--                                        type="text"-->
+<!--                                        placeholder="验证码"-->
+<!--                                        v-model="verifyCode"-->
+<!--                                    />-->
+<!--                                </span>-->
+<!--                                <span class="verify-img"></span>-->
+<!--                                <span class="pic-change">换一张</span>-->
+<!--                                </div>-->
+<!--                                <div v-show="verifyMsg" class="err-item">{{verifyMsg}}</div>-->
+<!--                            </li>-->
                             <li style="margin-top:40px;">
-                                <button class="login-btn" @click="login">登录</button>
+                                <button class="login-btn" @keyup="login" @click="login">登录</button>
                             </li>
                         </ul>
                     </div>
@@ -69,7 +70,7 @@ export default {
     name: 'Login',
     data() {
         return {
-            account: '',
+            email: '',
             password: '',
             verifyCode: '',
             unameReg: /^.{8,16}$/,
@@ -81,14 +82,14 @@ export default {
     },
     methods: {
         checkUname() {
-            if (!this.account) {
+            if (!this.email) {
                 this.accMsg = '账号不能为空'
             } else {
-                this.accMsg = this.unameReg.test(this.account)
+                this.accMsg = this.unameReg.test(this.email)
                     ? ''
                     : '请输入8-16个字符组合账号'
             }
-            return this.accMsg ? false : true
+            return !this.accMsg
         },
         checkPwd() {
             if (!this.password) {
@@ -102,7 +103,8 @@ export default {
             return true
         },
         checkVerify(){
-            console.log(this.verifyCode,'验证码');
+            
+            // console.log(this.verifyCode,'验证码');
           if(this.verifyCode){
               this.verifyMsg = ''
               return true
@@ -112,43 +114,35 @@ export default {
           }
         },
         login() {
-            let params = {
-                account: this.account,
+            let data = {
+                email: this.email,
                 password: this.password
             }
             // let {url, method} = this.$api.login
-            let self = this
-            if (this.checkUname() && this.checkPwd() && this.checkVerify()) {
+            // TODO:
+            if (this.checkUname() && this.checkPwd() && this.checkVerify()||true) {
+            // if (this.checkUname() && this.checkPwd() && this.checkVerify()) {
                 // this.$http.post('/headquarters-api/login',params).then(res=>{
-                console.log('我进来了')
                 this.$http({
                     method: this.$api.login.method,
                     url: this.$api.login.url,
-                    data: params
+                    data: data
                 })
                 .then(res => {
                     if (res && res.code === '200') {
-                        window.all.tool.setSession(
-                            'expires_at',
-                            res.data.expires_at
-                        )
-                        window.all.tool.setSession(
-                            'Authorization',
-                            res.data.token_type +
-                                ' ' +
-                                res.data.access_token
-                        )
-                        self.$toast.success('登陆成功')
-                        self.$router.push('/')
-                    } else {
-                        self.$toast.warning(res.message)
+                       let Authorization = res.data.token_type + ' ' + res.data.remember_token
+                        window.all.tool.setLocal('Authorization', Authorization)
+                        window.all.tool.setLocal('name', res.data.name)
+                        window.all.tool.setLocal('email', res.data.email)
+                        this.$toast.success('登陆成功')
+                        this.$router.push('/home')
                     }
-                })
-                .catch(err => {
-                    alert(err)
                 })
             }
         }
+    },
+    mounted() {
+        // localStorage.clear()
     }
 }
 </script>
@@ -190,8 +184,8 @@ export default {
     align-items: center;
     background: #fff;
 }
-.right > div {
-}
+/* .right > div {
+} */
 .title {
     font-size: 30px;
     color: #2882fe;

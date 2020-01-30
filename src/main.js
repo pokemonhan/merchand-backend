@@ -9,7 +9,7 @@ import tool from './js/tool'                  // 常用工具
 import plugins from './js/plugins.js'         // 1.公用组件, 2.指令,  3.axios
 
 import echarts from 'echarts'
-import wangeditor from 'wangeditor'             // wangeditor 富文本 ,使用见官网
+// import wangeditor from 'wangeditor'             // wangeditor 富文本 ,使用见官网————备用
 import menu_list from './js/menuList'           // 菜单目录
 
 import $ from 'jquery'                          // jquery
@@ -21,13 +21,13 @@ window.all = {
     router,
     menu_list,
     echarts,
-    wangeditor
+    // wangeditor
 };
 
 Vue.config.productionTip = false
 
 /* eslint-disable no-new */
-window._Vue_=new Vue({
+window.__vm__= new Vue({
     el: '#app',
     store,
     router,

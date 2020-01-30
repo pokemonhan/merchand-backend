@@ -1,4 +1,4 @@
-<template>
+<template xmlns:v-slot="http://www.w3.org/1999/XSL/Transform">
     <div class="contain">
         <ul class="row1">
             <!-- 今日盈利 -->

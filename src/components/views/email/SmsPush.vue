@@ -309,13 +309,14 @@ export default {
     margin-top: 20px;
 }
 .dia-inner {
-    position: relative;
-    left: 170px;
-    width: 700px;
+    /* position: relative; */
+    /* left: 170px; */
+    max-width: 80vw;
     min-height: 400px;
     /* display: flex; */
     /* justify-content: center; */
     /* align-items: center; */
+    overflow: auto;
 }
 .form > li {
     display: flex;

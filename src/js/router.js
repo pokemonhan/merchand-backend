@@ -49,6 +49,13 @@ const ActiveReport = () => import('@/components/views/report/ActiveReport.vue') 
 const UserWash = () => import('@/components/views/report/UserWash.vue')                       // 会员洗码
 /* 报表管理 */
 
+/* 游戏管理 */
+const H5 = () => import('@/components/views/game/H5.vue')                                     // H5游戏管理
+const PC = () => import('@/components/views/game/PC.vue')                                     // PC游戏管理
+const App = () => import('@/components/views/game/App.vue')                                   // APP 游戏管理
+const PlantForm = () => import('@/components/views/game/PlantForm.vue')                       // 平台管理
+const Sort = () => import('@/components/views/game/Sort.vue')                       // 分类管理
+/* 游戏管理 */
 Vue.use(Router)
 
 const router = new Router({
@@ -218,11 +225,33 @@ const router = new Router({
             path: '/report/userwash',
             component: UserWash
         },
+
+        /* -----------------------------------  游戏管理 ------------------------------------*/
+        {
+            path: '/game/h5',
+            component: H5
+        },
+        {
+            path: '/game/pc',
+            component: PC
+        },
+        {
+            path: '/game/app',
+            component: App
+        },
+        {
+            path: '/game/plantform',
+            component: PlantForm
+        },
+        {
+            path: '/game/sort',
+            component: Sort
+        },
     ]
 })
 router.beforeEach((to, from, next) => {
-    console.log(to.path);
-    console.log(from.path);
+    // console.log(to.path);
+    // console.log(from.path);
     if(to.path!==from.path){
         next()
     }

@@ -1,100 +1,430 @@
 export default {
-    /* 用户 ****************/
-    //登录
-    login: { url: '/headquarters-api/login', method: 'post' },
-    // 登出
-    logout: { url: '/headquarters-api/logout', method: 'get' },
+    /**
+     *
+     * 增  add
+     * 删  del
+     * 改  set
+     * 查  list
+     *
+     */
 
-/*    公共分类 ************/
+    /*=========================== 登录登出 ===========================--*/
 
-    // 全部菜单
-    all_menu: {
-        url: '/headquarters-api/menu/get-all-menu', method: 'get'
+    // 登录
+    login: {
+        url: '/merchant-api/login',
+        method: 'post'
+    },
+    // 2.登出
+    logout: {
+        url: '/merchant-api/logout',
+        method: 'get',
     },
 
-    // 管理个人菜单
-    current_admin_menu: {
-        url: '/headquarters-api/menu/current-admin-menu', method: 'get'
+    /*===========================   首页   ===========================--*/
+
+
+
+    /*=========================== 会员管理 ===========================--*/
+
+    // ----  会员列表
+    // 会员列表 - 列表查询 ---------
+    user_list: {
+        url: '/merchant-api/frontend-user/index',
+        method: 'post'
+    },
+    // 会员列表 - 登记记录
+    user_login_log_list: {
+        url: '/merchant-api/frontend-user/login-log',
+        method: 'post'
     },
 
-  
+    // 标签管理 - 列表 -------
+    tag_list: {
+        url: '/merchant-api/user-tags/index',
+        method: 'get'
+    },
+    // 标签管理 - 添加
+    tag_add: {
+        url: '/merchant-api/user-tags/do-add',
+        method: 'post'
+    },
+    // 标签管理 - 编辑
+    tag_edit: {
+        url: '/merchant-api/user-tags/edit',
+        method: 'post'
+    },
+    // 标签管理 - 删除
+    tag_del: {
+        url: '/merchant-api/user-tags/delete',
+        method: 'post'
+    },
 
-    /* 游戏 ***********/
-    /* 游戏种类-添加 */
-    game_type_add: {
-        url: '/headquarters-api/game-type/add-do', method: 'post'
+    // ------ 黑名单 ---------
+
+    // 黑名单 - 黑名单列表
+    black_list_list: {
+        url: '/merchant-api/frontend-user-black-list/index',
+        method: 'post'
     },
-    /* 游戏种类-编辑 */
-    game_type_edit: {
-        url: '/headquarters-api/game-type/edit-do', method: 'post'
+    // 黑名单 - 详情
+    black_list_detail_list: {
+        url: '/merchant-api/frontend-user-black-list/detail',
+        method: 'post'
     },
-    /* 游戏种类-列表-查看 */
+    //黑名单 - 移除
+    black_list_detail_remove: {
+        url: '/merchant-api/frontend-user-black-list/remove',
+        method: 'post'
+    },
+
+    // ---- 等级管理 - 晋级规则 --------
+    grade_config_list: {
+        url: '/merchant-api/user-grade/config',
+        method: 'post',
+    },
+    // ---- 等级管理 - 列表
+    grade_list: {
+        url: '/merchant-api/user-grade/index',
+        method: 'get',
+    },
+    // ---- 等级管理 - 添加
+    grade_add: {
+        url: '/merchant-api/user-grade/do-add',
+        method: 'post',
+    },
+    // ---- 等级管理 - 编辑
+    grade_set: {
+        url: '/merchant-api/user-grade/edit',
+        method: 'post',
+    },
+    // ---- 等级管理 - 删除
+    grade_del: {
+        url: '/merchant-api/user-grade/delete',
+        method: 'post',
+    },
+
+    // ---- 洗码设置 - 列表 -------
+    wash_code_list: {
+        url: '/merchant-api/commission/index',
+        method: 'post',
+    },
+    // ---- 洗码设置 - 添加
+    wash_code_add: {
+        url: '/merchant-api/commission/do-add',
+        method: 'post',
+    },
+    // ---- 洗码设置 - 编辑
+    wash_code_set: {
+        url: '/merchant-api/commission/edit',
+        method: 'post',
+    },
+    // ---- 洗码设置 - 删除
+    wash_code_del: {
+        url: '/merchant-api/commission/delete',
+        method: 'post',
+    },
+
+
+    /*=========================== 财务管理 ===========================--*/
+    // 入款订单
+
+    // 人工存取
+    // 出款审核
+    // 出款订单
+    // 资金账变
+
+    /*=========================== 公告管理 ===========================--*/
+    // 跑马灯消息
+    // 系统公告
+    // 登录弹窗公告
+    // 轮播公告
+
+    // /*=========================== 邮件系统 ===========================--*/
+    // 发邮件
+    email_send: {
+        url: '/merchant-api/email/send',
+        method: 'post'
+    },
+    // 收件箱
+    email_received: {
+        url: '/merchant-api/email/received-index',
+        method: 'get'
+    },
+
+
+    // 已发邮件
+    email_sent: {
+        url: '/merchant-api/email/send-index',
+        method: 'get'
+    },
+    // 短信推送
+
+    /*=========================== 报表管理 ===========================--*/
+
+    /*=========================== 游戏管理 ===========================--*/
+
+    // 游戏列表 - 公用接口 - 获取查询条件
+    game_search_condition_list: {
+        url: '/merchant-api/game/get-search-condition-data',
+        method: 'get',
+    },
+    // 游戏列表 - 公用接口 - 改变游戏状态
+    game_status: {
+        url: '/merchant-api/game/status',
+        method: 'post',
+    },
+    // 游戏列表 - 共用接口 - 设置游戏是否热门
+    game_hot_set: {
+        url: '/merchant-api/game/do-hot',
+        method: 'post',
+    },
+    // 游戏列表 - 公用接口 - 设置游戏是否维护
+    game_maintain_list: {
+        url: '/merchant-api/game/maintain',
+        method: 'post',
+    },
+    // 游戏列表 - 公用接口 - 设置游戏是否推荐
+    game_recommend: {
+        url: '/merchant-api/game/recommend',
+        method: 'post',
+    },
+
+    // H5游戏管理 - 列表
+    game_h5_list: {
+        url: '/merchant-api/game/h5-index',
+        method: 'get'
+    },
+
+    // PC游戏管理 - 列表
+    game_pc_list: {
+        url: '/merchant-api/game/pc-index',
+        method: 'get'
+    },
+    // APP游戏管理 - 列表
+    game_app_list: {
+        url: '/merchant-api/game/app-index',
+        method: 'get'
+    },
+
+
+    // 平台管理 - 列表
+    game_vendor: {
+        url: '/merchant-api/game-vendor/index',
+        method: 'get'
+    },
+    // 平台管理 - 更改状态与维护
+    game_vendor_status_set: {
+        url: '/merchant-api/game-vendor/status',
+        method: 'post'
+    },
+
+    // 平台管理 - 排序
+    game_vendor_sort_set: {
+        url: '/merchant-api/game-vendor/sort',
+        method: 'post'
+    },
+
+    // 分类管理 - 列表
     game_type_list: {
-        url: '/headquarters-api/game-type/index-do', method: 'get'
+        url: '/merchant-api/game-type/index',
+        method: 'get'
     },
-    /* 游戏种类-删除 */
-    game_type_delete: {
-        url: '/headquarters-api/game-type/del-do', method: 'post'
+    // 分类管理 - 更改状态
+    game_type_status_set: {
+        url: '/merchant-api/game-type/status',
+        method: 'post'
+    },
+
+    /*=========================== 活动管理 ===========================--*/
+
+
+
+
+    /*=========================== 金流管理 ===========================--*/
+
+    // 线下支付配置 - 添加
+    offline_finance_add: {
+        url: '/merchant-api/offline-finance/add-do',
+        method: 'post',
+    },
+    // 线下支付配置 - 获取线下分类列表
+    offline_finance_types_list: {
+        url: '/merchant-api/offline-finance/types',
+        method: 'get',
+    },
+    // 线下支付配置 - 获取银行列表
+    offline_finance_bank_list: {
+        url: '/merchant-api/bank/get-system-banks',
+        method: 'get',
+    },
+    // 线下支付配置 - 列表
+    offline_finance_list: {
+        url: '/merchant-api/offline-finance/index',
+        method: 'get',
+    },
+
+    // 线下支付配置 - 删除
+    offline_finance_del: {
+        url: '/merchant-api/offline-finance/del-do',
+        method: 'post',
+    },
+    // 线下支付配置 - 改变状态
+    offline_finance_status_set: {
+        url: '/merchant-api/offline-finance/status',
+        method: 'post',
+    },
+    // 线下支付配置 - 编辑
+    offline_finance_set: {
+        url: '/merchant-api/offline-finance/edit',
+        method: 'post',
+    },
+    // 线下支付配置 - 编辑线下金流获取前置数据 (标签选择的内容)
+    offline_finance_select_list: {
+        url: '/merchant-api/offline-finance/edit',
+        method: 'get',
+    },
+
+    // ---------------- 线上金流配置 ------------
+    // 线上金流配置 - 获取金流通道
+    offline_finance_channel_list: {
+        url: '/merchant-api/online-finance/get-channels',
+        method: 'get',
+    },
+    // 线上金流配置 - 获取金流通道
+    online_finance_add: {
+        url: '/merchant-api/online-finance/add-do',
+        method: 'post',
+    },
+    // 线上金流配置 - 列表
+    online_finance_list: {
+        url: '/merchant-api/online-finance/index',
+        method: 'get',
+    },
+    // 线上金流配置 - 获取编辑线上金流前置数据 (需要的标签选择内容)
+    online_finance_label_list: {
+        url: '/merchant-api/online-finance/edit',
+        method: 'get',
+    },
+    // 线上金流配置 - 编辑
+    online_finance_edit: {
+        url: '/merchant-api/online-finance/edit',
+        method: 'post',
+    },
+    // 线上金流配置 - 删除
+    online_finance_del: {
+        url: '/merchant-api/online-finance/del-do',
+        method: 'post',
+    },
+    // 线上金流配置 - 更改状态
+    online_finance_status_set: {
+        url: '/merchant-api/online-finance/status',
+        method: 'post',
     },
 
 
-    /* 游戏厂商-添加 */
-    game_vendor_add: {
-        url: '/headquarters-api/game-vendor/add-do', method: 'post'
+    /*=========================== 推广配置 ===========================--*/
+
+
+    /*=========================== 设置管理 ===========================--*/
+    // ---------- 管理员分组
+    // 管理员分组 -分组列表
+    admin_group_list: {
+        url: '/merchant-api/merchant-admin-group/detail',
+        method: 'get'
     },
-    /* 游戏厂商-编辑 */
-    game_vendor_edit: {
-        url: '/headquarters-api/game-vendor/edit-do', method: 'post'
+    // 管理员分组-分组添加
+    admin_group_add: {
+        url: '/merchant-api/merchant-admin-group/create',
+        method: 'post'
     },
-    /* 游戏厂商-列表-查看 */
-    game_vendor_list: {
-        url: '/headquarters-api/game-vendor/index-do', method: 'get'
+    // 管理员分组-分组编辑
+    admin_group_set: {
+        url: '/merchant-api/merchant-admin-group/create',
+        method: 'post'
     },
-    /* 游戏厂商-删除 */
-    game_vendor_delete: {
-        url: '/headquarters-api/game-vendor/del-do', method: 'post'
+    // 管理员分组-分组删除
+    admin_group_del: {
+        url: '/merchant-api/merchant-admin-group/delete',
+        method: 'post'
+    },
+    // 管理员分组-指定分组里的管理员列表
+    admin_group_users_list: {
+        url: '/merchant-api/merchant-admin-group/specific-group-users',
+        method: 'post'
+    },
+    // 管理员-管理员添加
+    admin_group_users_add: {
+        url: '/merchant-api/merchant-admin-user/create',
+        method: 'post'
+    },
+    // 管理员-管理员更换组
+    admin_group_users_group_set: {
+        url: '/merchant-api/merchant-admin-user/update-admin-group',
+        method: 'post'
+    },
+    // 管理员-管理员删除
+    admin_group_users_del: {
+        url: '/merchant-api/merchant-admin-user/delete-admin',
+        method: 'post'
+    },
+    // 管理员-管理员查找
+    admin_group_users_search_list: {
+        url: '/merchant-api/merchant-admin-user/search-admin',
+        method: 'post'
     },
 
-      /* 游戏 */
+    // 全域设置
 
-    /* 已开发管理 **********************/
-    /* 开发管理菜单操作相关需要的数据 */
-      // 管理个人菜单
-    menu_list: {
-        url: '/headquarters-api/menu', method: 'post'
+    // ------- 客服设置 ----------------
+    // 客服设置-列表
+    customer_service_list: {
+        url: '/merchant-api/costomer-service/index',
+        method: 'post'
     },
-   /*  菜单添加 */
-    menu_add: {
-        url: '/headquarters-api/menu/addu', method: 'post'
+    // 客服设置 - 添加
+    customer_service_add: {
+        url: '/merchant-api/costomer-service/do-add',
+        method: 'post'
     },
-    /* 菜单删除 */
-    menu_delete: {
-        url: '/headquarters-api/menu/delete', method: 'post'
-    },  
-    /* 编辑菜单 */
-    menu_edit: {
-        url: '/headquarters-api/menu/edit', method: 'post'
+    // 客服设置 - 编辑
+    customer_service_set: {
+        url: '/merchant-api/costomer-service/edit',
+        method: 'post'
     },
-    /* 菜单拖拽分组 */
-    menu_change: {
-        url: '/headquarters-api/menu/change-parent', method: 'post'
+    // 客服设置 - 删除
+    customer_service_del: {
+        url: '/merchant-api/costomer-service/delete',
+        method: 'post'
     },
 
-    /* 角色管理 ***********************/
-    /* 管理员角色列表 -查看 */
-    admin_role_list: {
-        url: '/headquarters-api/partner-admin-group/detail', method: 'get'
+    // ------------ 帮助设置 ---------
+    //  帮助设置 - 列表
+    help_center_list: {
+        url: '/merchant-api/help-center/index',
+        method: 'post'
     },
-    /* 管理员角色列表 - 添加 */
-    admin_role_add: {
-        url: '/headquarters-api/partner-admin-group/create', method: 'post'
+    // 帮助设置 - 添加
+    help_center_add: {
+        url: '/merchant-api/help-center/do-add',
+        method: 'post',
     },
-    /* 管理员角色列表 - 编辑 */
-    admin_role_edit: {
-        url: '/headquarters-api/partner-admin-group/edit', method: 'post'
+    // 帮助设置 - 编辑
+    help_center_set: {
+        url: '/merchant-api/help-center/edit',
+        method: 'post',
     },
-    /* 管理员角色列表 - 删除 */
-    admin_role_delete: {
-        url: '/headquarters-api/partner-admin-group/delete-access-group', method: 'post'
+    // 帮助设置 - 删除
+    help_center_del: {
+        url: '/merchant-api/help-center/delete',
+        method: 'post',
     },
-}
+
+    // 操作纪录
+    // 银行卡反查中心
+    bank_cards_del: {
+        url: '/merchant-api/bank-cards/delete',
+        method: 'post',
+    }
+
+};

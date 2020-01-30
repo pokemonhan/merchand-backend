@@ -77,7 +77,7 @@
 
 
 <script>
-import Detail from './ReceiveEmailDetail'
+import Detail from './EmailDetail'
 export default {
     components: {
         Detail: Detail

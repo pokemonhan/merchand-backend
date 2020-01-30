@@ -79,35 +79,41 @@
         <div class="tool-bar"></div>
         <!-- 在线状态, 游戏账号, 游戏ID, 会员标签, 团队人数, 上级账号, 玩家金额, 注册IP->登录iP,注册日期->登录日期 -->
 
-        <TwoTable :headers="headers" :column="list">
-            <template v-slot:tdOne="{row}">
-                <!-- <td></td> -->
-                <td :class="[row.a==='在线'?'green':'orange']">{{row.a}}</td>
-                <td>{{row.b}}</td>
-                <td>{{row.c}}</td>
-                <td>
-                    <i v-if="row.d==='1'" class="iconfont iconyuanquan red"></i>
-                    <i v-if="row.d==='0'" class="iconfont icongou green"></i>
-                </td>
-                <td>{{row.e}}</td>
-                <td>{{row.f}}</td>
-                <td>
-                    <div class="table-opra">
-                        <span style="margin-right:10px;" @click="showDetail">详情</span>
-                        <span @click="addBlackList">加入黑名单</span>
-                    </div>
-                </td>
+<!--        <TwoTable :headers="headers" :column="list">-->
+<!--            <template v-slot:tdOne="{row}">-->
+<!--                &lt;!&ndash; <td></td> &ndash;&gt;-->
+<!--                <td :class="[row.a==='在线'?'green':'orange']">{{row.a}}</td>-->
+<!--                <td>{{row.b}}</td>-->
+<!--                <td>{{row.c}}</td>-->
+<!--                <td>-->
+<!--                    <i v-if="row.d==='1'" class="iconfont iconyuanquan red"></i>-->
+<!--                    <i v-if="row.d==='0'" class="iconfont icongou green"></i>-->
+<!--                </td>-->
+<!--                <td>{{row.e}}</td>-->
+<!--                <td>{{row.f}}</td>-->
+<!--                <td>-->
+<!--                    <div class="table-opra">-->
+<!--                        <span style="margin-right:10px;" @click="showDetail">详情</span>-->
+<!--                        <span @click="addBlackList">加入黑名单</span>-->
+<!--                    </div>-->
+<!--                </td>-->
+<!--            </template>-->
+<!--            <template v-slot:tdTwo="{row}">-->
+<!--                <td>{{row.a}}</td>-->
+<!--                <td>{{row.b}}</td>-->
+<!--                <td>{{row.c}}</td>-->
+<!--                <td>{{row.d}}</td>-->
+<!--                <td>{{row.e}}</td>-->
+<!--                <td>{{row.f}}</td>-->
+<!--                &lt;!&ndash; <td>{{row.f}}</td> &ndash;&gt;-->
+<!--            </template>-->
+<!--        </TwoTable>-->
+        <Table :headers="headers" :column="list">
+            <template v-slot:item="{row}">
+                <td>{{row.status}}</td>
+                <td>{{row.mobile_hidden}}</td>
             </template>
-            <template v-slot:tdTwo="{row}">
-                <td>{{row.a}}</td>
-                <td>{{row.b}}</td>
-                <td>{{row.c}}</td>
-                <td>{{row.d}}</td>
-                <td>{{row.e}}</td>
-                <td>{{row.f}}</td>
-                <!-- <td>{{row.f}}</td> -->
-            </template>
-        </TwoTable>
+        </Table>
         <div class="page">
             <Page
                 :total="total"
@@ -399,23 +405,20 @@ export default {
                 registIP: ''
             },
             headers: [
-                [
                     '在线状态',
                     '会员账号',
                     '会员ID',
                     '正式账号',
                     '会员标签',
                     '团队人数',
-                    '操作'
-                ],
-                [
                     '上级账号',
                     '会员余额',
                     '注册IP',
                     '登录IP',
                     '注册日期',
-                    '登录日期'
-                ]
+                    '登录日期',
+                    '操作',
+
             ],
             list: [
                 {
@@ -484,12 +487,29 @@ export default {
         closeConfirm() {
             this.inner_mask_show = false
         },
+        getList() {
+            let para = {
+
+            }
+            let {method,url} = this.$api.user_list
+            this.$http({method,url}).then(res => {
+                console.log('res', res)
+                if(res && res.code === '200'){
+                    this.list = res.data.data
+                    this.total = res.data.total
+                }
+            })
+
+        },
+
         updateNo(val) {
             // this.p
         },
         updateSize(val) {}
     },
-    mounted() {}
+    mounted() {
+        this.getList()
+    }
 }
 </script>
 

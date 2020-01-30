@@ -113,76 +113,28 @@ export default {
             // menu_list = this.menu_list
 
             // /*** TODO
-            function getfather(array) {
-                array.forEach((item, index) => {
-                    // console.log("TCL: getfather -> item", item)
-                    if (item.children) {
-                        item.children.forEach(i => {
-                            if (i.path === to.path) {
-                                return item.path
-                            }
-                        })
-                    }
-                })
-            }
-            let father_path = getfather(this.menu_list)
+            // function getfather(array) {
+            //     array.forEach((item, index) => {
+            //         // console.log("TCL: getfather -> item", item)
+            //         if (item.children) {
+            //             item.children.forEach(i => {
+            //                 if (i.path === to.path) {
+            //                     return item.path
+            //                 }
+            //             })
+            //         }
+            //     })
+            // }
+            // let father_path = getfather(this.menu_list)
         }
     },
     mounted() {
         // console.log('aside');
         this.menu_list = window.all.menu_list
-        const self = this
-        let { method, url, params } = this.$api.all_menu
-        // function objToArr(obj) {
-        //     let list = [];
-        //     for (let key in obj) {
-        //         let item = obj[key];
-        //         if (item.child) {
-        //             item.child = objToArr(item.child);
-        //         }
-        //         list.push(item);
-        //     }
-        //     return list;
-        // }
 
-        let opt = {
-            method,
-            url,
-            data: params
-        }
-        this.$http(opt).then(res => {
-            // console.log(res);
-            if (res && res.code === '200') {
-                // self.menu_list = res.data;
-                function objToArr(obj) {
-                    let list = []
-                    for (let key in obj) {
-                        let item = obj[key]
-                        if (item.child) {
-                            item.child = objToArr(item.child)
-                        }
-                        list.push(item)
-                    }
-                    return list
-                }
-                // console.log("list-list", objToArr(self.menu_list));
-            }
-        })
-        // 解决刷新时顶部tab_nav都消失的问题, 根据路由加载当前导航.
-        setTimeout(() => {
-            if (self.tab_nav_list.length === 0) {
-                self.menu_list.forEach((item, index) => {
-                    if (item.children) {
-                        item.children.forEach(item => {
-                            if (item.path === self.$route.path) {
-                                let list = [item] // 获取当前路由 item {name: name,path:'/***'}
-                                self.updatetab_nav_list(list)
-                            }
-                        })
-                    }
-                })
-            }
-        }, 100)
+
+        
+
     }
 }
 </script>

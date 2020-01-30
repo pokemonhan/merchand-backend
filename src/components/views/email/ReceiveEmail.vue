@@ -1,6 +1,6 @@
 <template>
     <div class="container">
-        
+
         <!----------------        收件箱          ----->
         <QuickQuery :date="quick_query" @update="qqUpd" />
         <!-- filter 筛选 -->
@@ -71,7 +71,7 @@
 
 
 <script>
-import Detail from './ReceiveEmailDetail'
+import Detail from './EmailDetail'
 export default {
     components: {
         Detail: Detail
@@ -113,7 +113,7 @@ export default {
         },
         qqUpd(dates) {
             //同步时间筛选值
-            this.filter.dates = dates
+            this.filter.dates = dates;
             this.filter = Object.assign(this.filter)
         },
         clearFilter() {
@@ -128,7 +128,7 @@ export default {
             // console.log(this.list);
         },
         showDetail(row) {
-            console.log(row)
+            console.log(row);
             this.dia_show = true
         },
         modConf() {

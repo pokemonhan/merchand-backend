@@ -205,18 +205,18 @@ export default {
             audio.play()
         },
         accoutEnter() {
-            let ele = document.querySelector('.account-inner')
-            ele.style.display = 'block'
-            ele.style.maxHeight = '100px'
+            let ele = document.querySelector('.account-inner');
+            ele.style.display = 'block';
+            ele.style.maxHeight = '100px';
             // ele.style.overflow = 'visible'
             this.account_ishow = true
         },
         accountLeave() {
-            this.account_ishow = false
-            let ele = document.querySelector('.account-inner')
+            this.account_ishow = false;
+            let ele = document.querySelector('.account-inner');
             // todo
-            ele.style.maxHeight = '0'
-            ele.style.overflow = 'hidden'
+            ele.style.maxHeight = '0';
+            ele.style.overflow = 'hidden';
 
             let self = this
             setTimeout(() => {
@@ -232,7 +232,7 @@ export default {
             this.logout_conf_show = true
         },
         logoutConf() {
-            let self = this
+            let self = this;
             this.$http({
                 method: this.$api.logout.method,
                 url: this.$api.logout.url
@@ -241,48 +241,48 @@ export default {
                 if (res.code === '200') {
                     self.$toast('登出成功')
                 }
-            })
-            window.all.tool.removeSession('token')
-            this.$router.push('/login')
+            });
+            window.all.tool.removeSession('token');
+            this.$router.push('/login');
             this.logout_conf_show = false
         },
         cancel() {
             this.logout_conf_show = false
         },
         checkPwd() {
-            let { old_pwd, new_pwd, conf_pwd, verificCode } = this.form
-            let regExp = /^[0-9A-Za-z]{8,16}$/
+            let { old_pwd, new_pwd, conf_pwd, verificCode } = this.form;
+            let regExp = /^[0-9A-Za-z]{8,16}$/;
 
             // 原密码
             if (!regExp.test(old_pwd)) {
-                this.$set(this.err_tips, '0', '请输入8~16位英文字母+数字密码!')
+                this.$set(this.err_tips, '0', '请输入8~16位英文字母+数字密码!');
                 return false
 
                 // 新密码 验证
             } else if (!regExp.test(new_pwd)) {
-                this.$set(this.err_tips, '1', '请输入8~16位英文字母+数字密码!')
+                this.$set(this.err_tips, '1', '请输入8~16位英文字母+数字密码!');
                 return false
 
                 // 确认密码
             } else if (!regExp.test(conf_pwd)) {
-                this.$set(this.err_tips, '2', '请输入8~16位英文字母+数字密码!')
+                this.$set(this.err_tips, '2', '请输入8~16位英文字母+数字密码!');
                 return false
 
                 // 确认密码是否与原密码相同
             } else if (new_pwd !== conf_pwd) {
-                this.$set(this.err_tips, '2', '两次密码不同!')
+                this.$set(this.err_tips, '2', '两次密码不同!');
                 return false
 
                 // 验证码
             } else if (!verificCode) {
-                this.$set(this.err_tips, '3', '验证码不可为空!')
+                this.$set(this.err_tips, '3', '验证码不可为空!');
                 return false
             } else {
                 return true
             }
         },
         passwordConf() {
-            this.err_tips = ['', '', '', '']
+            this.err_tips = ['', '', '', ''];
             if (this.checkPwd()) {
                 console.log('执行内容')
             }

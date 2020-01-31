@@ -63,7 +63,7 @@ export default {
                 { label: '关闭', value: '0' }
             ],
             filter: {
-                sort: '3434',
+                sort: '',
                 status: ''
             },
             headers: ['编号','分类名称','是否启用'],

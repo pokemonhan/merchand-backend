@@ -54,8 +54,18 @@ const H5 = () => import('@/components/views/game/H5.vue')                       
 const PC = () => import('@/components/views/game/PC.vue')                                     // PC游戏管理
 const App = () => import('@/components/views/game/App.vue')                                   // APP 游戏管理
 const PlantForm = () => import('@/components/views/game/PlantForm.vue')                       // 平台管理
-const Sort = () => import('@/components/views/game/Sort.vue')                       // 分类管理
+const Sort = () => import('@/components/views/game/Sort.vue')                                 // 分类管理
 /* 游戏管理 */
+
+/* 活动管理 */
+const Static = () => import('@/components/views/active/Static.vue')                           // 静态活动
+const Dynamic = () => import('@/components/views/active/Dynamic.vue')                         // 动态活动
+/* 活动管理 */
+
+/* 404页面 */
+const Page404 = () => import('@/components/views/page404/page404.vue')
+'../components/views/page404/page404.vue'
+/* 404页面 */
 Vue.use(Router)
 
 const router = new Router({
@@ -246,6 +256,30 @@ const router = new Router({
         {
             path: '/game/sort',
             component: Sort
+        },
+
+        /* -----------------------------------  活动管理 ------------------------------------*/
+        {
+            path: '/active/static',
+            component: Static
+        },
+        {
+            path: '/active/dynamic',
+            component: Dynamic
+        },
+
+
+
+
+
+        /* -----------------------------------  404页面 ------------------------------------*/
+        {
+            path: '/page404',
+            component: Page404
+        },
+        {
+            path: '*',
+            redirect: '/page404'
         },
     ]
 })

@@ -686,7 +686,7 @@ export default {
 .row3 .header,
 .row4 .header {
     box-shadow: 1px 2px 3px #f0eded;
-    height: 45px;
+    /* height: 45px; */
     line-height: 45px;
     padding-left: 20px;
     /* border-top-left-radius: 3px; */
@@ -729,6 +729,7 @@ export default {
 .row2 .btn-active,
 .row3 .btn-active {
     padding: 5px 10px;
+    line-height: 15px;
     border-radius: 3px;
     background: #fff;
     color: #4c8bfd;
@@ -737,6 +738,7 @@ export default {
 
 .btn-plain-white {
     padding: 5px 10px;
+    line-height: 15px;
     border: 1px solid #fff;
     color: #fff;
     background: #70a2fd;
@@ -753,10 +755,10 @@ export default {
     background: #fff;
 }
 
-.row3 .contain {
-    /* padding-left: 20px;
-    padding-right: 20px; */
-}
+/* .row3 .contain {
+    padding-left: 20px;
+    padding-right: 20px;
+} */
 .row3 .number-title {
     color: #4c8bfd;
 }

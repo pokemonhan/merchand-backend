@@ -85,8 +85,8 @@ let menuList = [
                     // path: '/active',
                     // icon: "iconcalculator",
                     children: [
-                        { name: "静态活动", path: "/active/aaaaaaaa" },
-                        { name: "动态活动", path: "/active/aaaaaaaaa" },
+                        { name: "静态活动", path: "/active/static" },
+                        { name: "动态活动", path: "/active/dynamic" },
                     ]
                 },
                 {

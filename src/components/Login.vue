@@ -35,25 +35,7 @@
                                 </span>
                                 <div v-show="pwdMsg" class="err-item">{{pwdMsg}}</div>
                             </li>
-                            <!-- <li class="err-item">
-                                <span>{{pwdMsg}}</span>
-                            </li>-->
-<!--                            <li>-->
-<!--                                <div class="flex">-->
-<!--                                      <span class="verify-input">-->
-<!--                                    <i class="iconfont icondunpai"></i>-->
-<!--                                    <input-->
-<!--                                        class="input"-->
-<!--                                        type="text"-->
-<!--                                        placeholder="验证码"-->
-<!--                                        v-model="verifyCode"-->
-<!--                                    />-->
-<!--                                </span>-->
-<!--                                <span class="verify-img"></span>-->
-<!--                                <span class="pic-change">换一张</span>-->
-<!--                                </div>-->
-<!--                                <div v-show="verifyMsg" class="err-item">{{verifyMsg}}</div>-->
-<!--                            </li>-->
+
                             <li style="margin-top:40px;">
                                 <button class="login-btn" @keyup="login" @click="login">登录</button>
                             </li>

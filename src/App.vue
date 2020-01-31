@@ -417,9 +417,7 @@ button:hover {
 .a:active {
     color: red;
 }
-.w100 {
-    width: 100px;
-}
+
 /* 字体颜色 */
 .orange {
     color: #ff9900;
@@ -453,8 +451,23 @@ button:hover {
 .bg-gray {
     background: #f2f2f2;
 }
+.w100 {
+    width: 100px;
+}
+.w250 {
+    width: 250px;
+}
 .mt10 {
     margin-top: 10px;
+}
+.mt20 {
+    margin-top: 20px;
+}
+.mr20 {
+    margin-right: 20px;
+}
+.mr50 {
+    margin-right: 50px;
 }
 .ml5 {
     margin-left: 5px;
@@ -465,9 +478,7 @@ button:hover {
 .ml20 {
     margin-left: 20px;
 }
-.mt20 {
-    margin-top: 20px;
-}
+
 .p10 {
     padding: 10px;
 }

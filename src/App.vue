@@ -478,7 +478,10 @@ button:hover {
 .ml20 {
     margin-left: 20px;
 }
-
+.mv5 {
+    margin-left: 5px;
+    margin-right: 5px;
+}
 .p10 {
     padding: 10px;
 }

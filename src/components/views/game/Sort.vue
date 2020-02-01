@@ -69,14 +69,14 @@ export default {
             headers: ['编号','分类名称','是否启用'],
             list: [
                 {
-                    a1: '64646466',
+                    a1: true,
                     a2: 'sdfsdfdsf',
                     a3: '充支好礼',
                     a4: '1',
                     a5: '2019-02-02 21:30'
                 },
                 {
-                    a1: '64646466',
+                    a1: true,
                     a2: 'sdfsdfdsf',
                     a3: '充支好礼',
                     a4: '1',

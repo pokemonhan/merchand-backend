@@ -104,7 +104,7 @@ export default {
         $route: function(to, from) {
             if (to.path === '/home') return
             let path = to.path
-            // console.log("TCL: path", path);
+            console.log("TCL: path", path);
             /*       1.同一父级,则 退出 2.不同父级,关闭以前,打开跳转的父级菜单 */
 
             //1.同一父级,则 退出
@@ -177,9 +177,9 @@ export default {
     display: inline-block;
     /* display:none; */
     padding: 8px 10px;
-    padding-left: 40px;
+    padding-left: 30px;
     width: 100%;
-    font-size: 14px;
+    font-size: 13px;
     /* font-weight: 600; */
     /* border: 1px solid #000; */
 }

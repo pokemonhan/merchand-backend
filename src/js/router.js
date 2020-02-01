@@ -62,9 +62,15 @@ const Static = () => import('@/components/views/active/Static.vue')             
 const Dynamic = () => import('@/components/views/active/Dynamic.vue')                         // 动态活动
 /* 活动管理 */
 
+/* 金流管理 */
+const OfflinePay = () => import('@/components/views/pay/OfflinePay.vue')                      // 线下支付配置
+const OnlinePay = () => import('../components/views/pay/OnlinePay.vue')                        // 线上支付配置
+const ExportBank = () => import('../components/views/pay/ExportBank.vue')                      // 出款银行管理
+/* 金流管理 */
+
+
 /* 404页面 */
 const Page404 = () => import('@/components/views/page404/page404.vue')
-'../components/views/page404/page404.vue'
 /* 404页面 */
 Vue.use(Router)
 
@@ -267,6 +273,21 @@ const router = new Router({
             path: '/active/dynamic',
             component: Dynamic
         },
+
+        /* -----------------------------------  金流管理 ------------------------------------*/
+        {
+            path: '/pay/offlinepay',
+            component: OfflinePay
+        },
+        {
+            path: '/pay/onlinepay',
+            component: OnlinePay
+        },
+        {
+            path: '/pay/exportbank',
+            component: ExportBank
+        },
+       
 
 
 

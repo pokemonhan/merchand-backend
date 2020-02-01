@@ -7,7 +7,8 @@
             @mouseout="updateClearState(false)"
         >
             <input v-model="selectedValue" type="hidden" />
-            <span>{{selectedLabel}}</span>
+            <input class="show-input" v-model="showValue" :type="input?'text':'hidden'" @input="handleInput"/>
+            <span v-show="!input">{{selectedLabel}}</span>
             <i v-if="clearable && isClear" @click.stop="clear" class="iconfont icon-icon-test"></i>
             <span v-else :class="['drop-down', '', isShow ? 'icon-rotate' : '']"></span>
         </div>
@@ -15,7 +16,7 @@
             <li
                 v-for="(item, index) in options"
                 :key="index"
-                :class="[selectedValue===item.value ? 'active' : '']"
+                :class="[selectedValue===item.value ? 'active' : '','option']"
                 @click="select(item)"
             >{{item.label}}</li>
         </ul>
@@ -32,12 +33,12 @@
 export default {
     name: 'Select',
     props: {
-        options: {
-            // 可选选项
+        css: Object, // 自定义css
+        input: Boolean, // 是否像 input 可以输入 
+        options: {  // 选项内容
             type: Array,
             default: () => []
         },
-        css: Object, // 自定义css
         value: [Number, String], // 默认值
         clearable: Boolean // 是否可清空
     },
@@ -47,6 +48,7 @@ export default {
     },
     data() {
         return {
+            showValue: '',
             selectedValue: '',
             selectedLabel: '',
             index: 0,
@@ -58,17 +60,22 @@ export default {
     },
     methods: {
         showOptions(e) {
-            this.isShow = !this.isShow
+            
+            if(this.input) {
+                this.isShow = true
+            }else {
+                this.isShow = !this.isShow
+            }
             let ele = this.$refs.sections
             // console.log("TCL: showOptions -> ele", ele)
             if (this.isShow) {
-                let y =
-                    document.body.scrollHeight -
-                    e.target.getBoundingClientRect().bottom
-                this.sectionsDir =
-                    y < 220
-                        ? 'top-upfold'
-                        : 'bottom-upfold'
+                let scrollTop = document.documentElement.scrollTop
+                let scrollHeight = document.body.scrollHeight
+                let toBottom = e.target.getBoundingClientRect().bottom
+                let y = scrollHeight -scrollTop -toBottom
+
+                this.sectionsDir = y < 150 ? 'top-upfold' : 'bottom-upfold'
+
                 $(ele).slideDown(200)
             } else {
                 $(ele).slideUp(200)
@@ -81,6 +88,7 @@ export default {
             if (item.value === this.selectedValue) return
             this.selectedValue = item.value
             this.selectedLabel = item.label
+            this.showValue = item.value // input 展示的内容
             this.$emit('update', item.value, item)
         },
         clear() {
@@ -95,11 +103,22 @@ export default {
         },
         updateClearState(bool) {
             this.isClear = bool
+        },
+        handleInput() {
+            this.$emit('input', this.showValue)
         }
     },
     watch: {
         value(val) {
             this.selectedValue = this.val
+            this.options.forEach(item => {
+                if (item.value === this.value) {
+                    this.selectedLabel = item.label
+                }
+            })
+        },
+        options() {
+            if(!this.options) return
             this.options.forEach(item => {
                 if (item.value === this.value) {
                     this.selectedLabel = item.label
@@ -112,6 +131,7 @@ export default {
         this.options.forEach(item => {
             if (item.value === this.value) {
                 this.selectedLabel = item.label
+                this.showValue = item.value // input 展示的内容
             }
         })
     }
@@ -128,7 +148,7 @@ export default {
     /* display: inline-block; */
     box-sizing: border-box;
     cursor: pointer;
-    box-sizing: border-box;
+    /* box-sizing: border-box; */
     background: #fff;
 }
 .val-box {
@@ -141,9 +161,19 @@ export default {
     border: 1px solid #e2dcdc;
     border-radius: 4px;
     position: relative;
+    /* overflow: hidden; */
 }
 .v-select .val-box-active {
     border-color: #57a3f3;
+}
+.val-box .show-input {
+    height: 95%;
+    width: 98%;
+    margin-left: 1px;
+    padding-left: 6px;
+    padding-right: 23px;
+    border: none;
+    background: rgb(253, 254, 255);
 }
 .val-box .icon-icon-test {
     display: none;
@@ -169,14 +199,15 @@ export default {
     text-indent: 10px;
 }
 .val-box .drop-down {
-    width: 0;
-    height: 0;
-    margin-top: 10px;
-    margin-right: 4px;
+    position: absolute;
+    right: 4px;
+    top: 10px;
+    width: 10px;
+    height: 3px;
     border-left: 8px solid transparent;
     border-right: 8px solid transparent;
     border-top: 8px solid #4c8bfd;
-    transition: all 0.2s;
+    transition: transform 0.2s;
 }
 .sections {
     width: 100%;
@@ -187,7 +218,7 @@ export default {
     background-color: #fff;
     overflow-y: scroll;
     display: none;
-    z-index: 1;
+    z-index: 2;
 }
 .bottom-upfold {
     bottom: -5px;
@@ -212,6 +243,9 @@ export default {
 }
 .sections li:hover {
     background-color: rgb(243, 243, 243);
+}
+.option {
+    overflow: hidden;
 }
 </style>
 

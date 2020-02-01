@@ -1,6 +1,7 @@
 <template>
     <span :class="['v-input', size]">
         <input
+            :class="[,disabled?'disabled':'']"
             :type="type==='password'? 'password':'text'"
             ref="input"
             :placeholder="placeholder"
@@ -10,8 +11,10 @@
             @keyup="keyup"
             :maxlength="maxlength"
             :disabled="disabled"
+            :autocomplete="autocomplete"
         />
         <i v-if="icon" :class="['iconfont', icon]"></i>
+        
     </span>
 </template>
 
@@ -35,11 +38,14 @@ export default {
         },
         placeholder: String,
         value: String,
-        maxlength: [Number,String]
+        maxlength: [Number,String],
+        autocomplete:{
+            type: String,
+        }
     },
     model: {
         prop: "value",
-        event: "input"
+        event: "keyup" // 原来是input
     },
     data() {
         return {
@@ -49,14 +55,16 @@ export default {
                 "p-number": /[^\d.]/g,                   // 正数
                 "integer": /[^\-?\d]/g,                  // 整数
                 "p-integer": /\D/g,                      //  正整数
-                "no-zh-cn": /[\u4E00-\u9FA5]*/g,         // 没中文
-                "en-num": /[\W_]/g                       // 字母和数字
+                "no-zh-cn": /[\u4E00-\u9FA5]*/g,         // 非中文
+                "en-num": /[\W_]/g,                      // 字母和数字
+                "en": /[\W_0-9]/g,                      // 字母
+                "word": /[\W]/g                         // 字母数字下划线
             }
         };
     },
     watch: {
         value(value){
-            this.val= value
+            this.val = value
           }
     },
     methods: {
@@ -67,7 +75,8 @@ export default {
             this.$emit("enter");
         },
         keyup() {
-            this.regs[this.limit] && (this.val = this.val .toString() .replace(this.regs[this.limit], ""));
+            this.regs[this.limit] && (this.val = this.val.toString().replace(this.regs[this.limit], ""));
+            // console.log(this.val)
             this.$emit("keyup", this.val);
         }
     },
@@ -85,6 +94,9 @@ export default {
     /* min-height: 26px; */
     /* min-width: 100px; */
     /* background: #fff; */
+}
+.disabled {
+    cursor: not-allowed;
 }
 input::placeholder{
     color:#ccc;
@@ -108,7 +120,7 @@ input::placeholder{
 .v-input input {
     width: 100%;
     height: 100%;
-    border: none;
+    /* border: none; */
     outline: none;
     border-radius: 4px;
     box-sizing: border-box;

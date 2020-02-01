@@ -164,7 +164,10 @@ export default {
                 },
                 {
                     a1: 'D456123456789',
-                    a2: '13245678942',
+                    a2: [
+                        require('../../../assets/image/user/neko.png'),
+                        'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcRmHjVlVE9Ur6b1UlUBG1g5fmrvK7SDrCmEcOFmYEuNLMsWmHbB'
+                    ],
                     a3: '4561234',
                     a4: '100.00',
                     a5: '2019/09/20 12:25:20',
@@ -173,7 +176,10 @@ export default {
                 },
                 {
                     a1: 'D456123456789',
-                    a2: '13245678942',
+                    a2: [
+                        require('../../../assets/image/user/neko.png'),
+                        'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcRmHjVlVE9Ur6b1UlUBG1g5fmrvK7SDrCmEcOFmYEuNLMsWmHbB'
+                    ],
                     a3: '4561234',
                     a4: '100.00',
                     a5: '2019/09/20 12:25:20',

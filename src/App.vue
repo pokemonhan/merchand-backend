@@ -421,6 +421,9 @@ button:hover {
 .w100 {
     width: 110px;
 }
+.w90{
+    width: 99px;
+}
 /* 字体颜色 */
 .orange {
     color: #ff9900;

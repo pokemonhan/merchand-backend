@@ -3,6 +3,7 @@
         <!--  标签管理-->
         <div class="head">
             <button class="btn-blue" @click="add_tab">添加标签</button>
+            <button class="btn-green" @click="getList">查询</button>
         </div>
         <div class="table">
             <Table :headers="table_header" :column="list">
@@ -113,24 +114,7 @@ export default {
                 { label: '添加时间' },
                 { label: '操作' }
             ],
-            list: [
-                {
-                    a: '一般会员',
-                    b: '1',
-                    c: '1',
-                    d: '1',
-                    e: '1',
-                    f: '2019/11/02 12:30:23'
-                },
-                {
-                    a: '钻石会员',
-                    b: '0',
-                    c: '0',
-                    d: '0',
-                    e: '0',
-                    f: '2019/11/02 12:30:23'
-                }
-            ],
+            list: [],
             total:2,
             pageNo: 1,
             pageSize: 25,
@@ -156,13 +140,16 @@ export default {
             this.show_delete_tab_conf = true
         },
         delTabConf() {},
+        
         getList() {
+
             let para = {
 
             }
             this.$http({
                 method: this.$api.user_tag_list.method,
                 url: this.$api.user_tag_list.url,
+                // params: para
             }).then(res=>{
                 console.log('res',res)
                 this.list = res.data
@@ -171,7 +158,7 @@ export default {
         },
     },
     mounted() {
-        this.getList()
+        // this.getList()
     }
 }
 </script>

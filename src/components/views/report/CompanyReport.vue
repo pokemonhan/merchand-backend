@@ -1,6 +1,6 @@
 <template>
     <div class="container">
-        <QuickQuery :date="quick_query" @update="qqupd" />
+        <QuickQuery :date="quick_query" @update="qqUpd" />
 
         <div class="filter p10">
             <ul class="left"> 
@@ -12,8 +12,8 @@
                 </li>
                 <li>
                     <button class="btn-blue">查询</button>
-                    <button class="btn-blue">导出Excel</button>
-                    <button class="btn-red">清空</button>
+                    <button class="btn-blue" @click="exportExcel()">导出Excel</button>
+                    <button class="btn-red" @click="clearFilter">清空</button>
                 </li>
             </ul>
         </div>
@@ -41,11 +41,13 @@
 
 
 <script>
+
+
 export default {
   
     data() {
         return {
-            quicky_query:[],
+            quick_query:[],
             filter:{
                 dates:[],
             },
@@ -75,18 +77,41 @@ export default {
                     a6: '5000'
                 }
             ],
+            total:100,
+            pageNo:1,
+            pageSize:25,
         };
     },
     methods: {
         timeUpdate(){
             this.quick_query=this.filter.dates
         },
-        qqupd(dates){
+        qqUpd(dates){
             this.filter.dates=dates
             this.filter=Object.assign(this.filter)
         },
         updateNo(val){},
-        updateSize(val){}
+        updateSize(val){},
+        clearFilter(){
+            this.filter={
+                dates:[]
+            }
+        },
+        exportExcel(){
+            import('../../../js/config/Export2Excel').then(excel=>{
+                const tHeader=this.headers
+                const data=this.list.map(item=>{
+                    return[item.a1,item.a2,item.a3,item.a4,item.a5,item.a6]
+                })
+                excel.export_json_to_excel({
+                    header:tHeader,
+                    data,
+                    filename:excel,
+                    autoWidth:true,
+                    bookType:'xlsx'
+                })
+            })
+        }
     },
     mounted() {
 

@@ -167,7 +167,8 @@ export default {
         },
         blackListConfirm() {
             console.log('我确认了')
-        }
+        },
+        
     },
     mounted() {}
 }

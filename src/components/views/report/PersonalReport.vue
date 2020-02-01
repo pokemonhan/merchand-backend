@@ -9,17 +9,17 @@
                 </li>
                 <li>
                     <span>会员ID</span>
-                    <Input class="w100" v-model="filter.acount" />
+                    <Input class="w100" v-model="filter.user_id" />
                 </li>
                 <li>
                     <span>起止时间</span>
-                    <Date v-model="filter.dates[0]" @update="timeUpdate()" />
+                    <Date v-model="filter.dates[0]" />
                     <span class="ph5">~</span>
-                    <Date v-model="filter.dates[0]" @update="timeUpdate()" />
+                    <Date v-model="filter.dates[1]"  />
                 </li>
                 <li>
                     <button class="btn-blue">查询</button>
-                    <button class="btn-blue" style="margin-left:10px;">导出Excel</button>
+                    <button class="btn-blue" style="margin-left:10px;" @click="exportExcel()">导出Excel</button>
                 </li>
             </ul>
         </div>
@@ -60,6 +60,7 @@ export default {
         return {
             filter:{
                 account:'',
+                user_id:'',
                 dates:[],
             },
             headers:[
@@ -112,10 +113,27 @@ export default {
         };
     },
     methods: {
-       
+        updateNo(val){},
+        updateSize(val){},
+        exportExcel(){
+            import('../../../js/config/Export2Excel').then(excel=>{
+                const tHeader=this.headers
+                const data=this.list.map(item=>{
+                    return[item.a1,item.a2,item.a3,item.a4,item.a5,item.a6,item.a7,item.a8,item.a9,item.a10,item.a11,item.a12,]
+                })
+                excel.export_json_to_excel({
+                    header:tHeader,
+                    data,
+                    filename:excel,
+                    autoWidth:true,
+                    bookType:'xlsx'
+                })
+            })
+        }
+
     },
     mounted() {
-        this.getList()
+       
     },
 };
 </script>

@@ -1,5 +1,5 @@
 <template>
-    <div class="table-container" :class="css">
+    <div class="table-container v-table" :class="css">
         <table>
             <thead>
                 <tr>

@@ -18,28 +18,21 @@
                     <span style="margin:0 5px;">~</span>
                     <Date v-model="filter.apply_dates[1]" @update="timeUpdate()" />
                 </li>
-                <li>
-                    <span>出款类型</span>
-                    <Select v-model="filter.payment_type" :options="payment_type_opt"></Select>
-                </li>
-                <li>
-                    <span>正式账号</span>
-                    <Select v-model="filter.offcial_acc" :options="official_opt"></Select>
-                </li>
+
                 <li>
                     <span style="width:4em;">会员ID</span>
                     <Input class="w100" v-model="filter.acc_id" />
                 </li>
                 <li>
-                    <span>审核人</span>
-                    <Input class="w100" v-model="filter.reviewer" />
+                    <span>操作人</span>
+                    <Input class="w100" v-model="filter.operater" />
                 </li>
 
                 <li>
-                    <span>审核时间</span>
-                    <Date v-model="filter.review_dates[0]" />
+                    <span>操作时间</span>
+                    <Date v-model="filter.operater_dates[0]" />
                     <span style="margin:0 5px;">~</span>
-                    <Date v-model="filter.review_dates[1]" />
+                    <Date v-model="filter.operater_dates[1]" />
                 </li>
                 <li>
                     <span>审核状态</span>
@@ -59,42 +52,36 @@
             </ul>
         </div>
         <div class="table">
-            <TwoTable :column="table_list" :headers="table_headers">
-                <template v-slot:tdOne="{row,idx}">
+            <Table :headers="headers" :column="list">
+                <template v-slot:item="{row,idx}">
+                    <td>{{(pageNo-1)*pageSize+idx+1}}</td>
+                    <td
+                        :class="row.status?'green':'red'"
+                    >{{row.status===1?'开启':row.status===0?'关闭':'???'}}</td>
                     <td>{{row.a1}}</td>
                     <td>{{row.a2}}</td>
-                    <td>{{row.a3}}</td>
+                    <td>{{row.a2}}</td>
+                    <td>{{row.a2}}</td>
+                    <td>{{row.a2}}</td>
+                    <td>{{row.a2}}</td>
+                    <td>{{row.a2}}</td>
+                    <td :class="status_obj[row.status].color">{{status_obj[row.status].text}}</td>
                     <td>
-                        <i :class="['iconfont',icon_obj[row.a4]]"></i>
-                    </td>
-                    <td>{{row.a5}}</td>
-                    <td>{{row.a6}}</td>
-                    <td>{{row.a6}}</td>
-                    <td>{{row.a6}}</td>
-                    <td>{{row.a6}}</td>
-                    <td>
-                        <span
-                            v-if="!show_audit_button[idx]"
-                            class="a"
-                            @click="audiotButtonShow(idx)"
-                        >审核</span>
-                        <span v-else>
-                            <span class="a" @click="pass(row,idx)">通过</span>
-                            <span class="a" @click="refuse(row,idx)">拒绝</span>
-                        </span>
-                        <span class="a" @click="detail_show=true">查看稽核</span>
+                        <button :class="status_obj[row.status].class">审查</button>
+                        <button class="btns-blue" @click="checkAudit">查看稽核</button>
                     </td>
                 </template>
-                <template v-slot:tdTwo="{row}">
-                    <td>{{row.a7}}</td>
-                    <td>{{row.a8}}</td>
-                    <td>{{row.a9}}</td>
-                    <td :class="status_color_obj[row.a9].color">{{status_color_obj[row.a9].text}}</td>
-                    <td>{{row.a10}}</td>
-                    <td>{{row.a11}}</td>
-                    <td>{{row.a12}}</td>
-                </template>
-            </TwoTable>
+            </Table>
+
+            <Page
+                class="table-page"
+                :total="total"
+                :pageNo.sync="pageNo"
+                :pageSize.sync="pageSize"
+                @updateNo="updateNo"
+                @updateSize="updateSize"
+            />
+
             <div class="total-table">
                 <ul>
                     <li>
@@ -140,9 +127,9 @@
                 </ul>
             </div>
         </div>
-        <Dialog :show.sync="detail_show" title="查看稽核">
+        <Dialog :show.sync="dia_show" title="查看稽核">
             <div class="dia-inner">
-                <PaymentReviewDetail :userid="userid"></PaymentReviewDetail>
+                <PaymentReviewDetail v-if="dia_status==='checkAudit'" :userid="userid"></PaymentReviewDetail>
             </div>
         </Dialog>
     </div>
@@ -150,7 +137,7 @@
 
 
 <script>
-import PaymentReviewDetail from './PaymentReviewDetail'
+import PaymentReviewDetail from './paymentReviewCont/PaymentReviewDetail.vue'
 export default {
     components: {
         PaymentReviewDetail
@@ -159,15 +146,16 @@ export default {
         return {
             quick_query: [],
             filter: {
-                account: '',        // 会员账号
-                order_id: '',       // 订单号
-                apply_dates: [],    // 申请时间
-                payment_type: '',   // 出款类型
-                offcial_acc: '',   // 正式账号
-                acc_id: '',         // 会员ID
-                reviewer: '',       // 审核人
-                review_dates: [],   // 审核时间
-                review_status: ''   // 审核状态
+                account: '', // 会员账号
+                order_id: '', // 订单号
+                apply_dates: [], // 申请时间
+                payment_type: '', // 出款类型
+                offcial_acc: '', // 正式账号
+                acc_id: '', // 会员ID
+                operater: '', // 操作人
+                operater_dates: [], // 操作时间
+                review_status: '', // 审核状态
+                is_audit_withhold: '' // 是否被稽核扣款
             },
             payment_type_opt: [
                 { label: '全部', value: '' },
@@ -179,7 +167,7 @@ export default {
                 { label: '是', value: '1' },
                 { label: '否', value: '0' }
             ],
-          
+
             review_status_opt: [
                 { label: '全部', value: '' },
                 { label: '通过', value: '1' },
@@ -229,7 +217,23 @@ export default {
                     a9: '1',
                     a10: '2019/09/20 12:25:20',
                     a11: '2019/09/20 12:25:20',
-                    a12: '2019/09/20 12:25:20'
+                    a12: '2019/09/20 12:25:20',
+                    status: '0'
+                },
+                {
+                    a1: 'aD201909201252',
+                    a2: '13245678942',
+                    a3: '4561234',
+                    a4: '0',
+                    a5: '红牛商户',
+                    a6: '微信充值',
+                    a7: '100',
+                    a8: '99.9',
+                    a9: '1',
+                    a10: '2019/09/20 12:25:20',
+                    a11: '2019/09/20 12:25:20',
+                    a12: '2019/09/20 12:25:20',
+                    status: '1'
                 },
                 {
                     a1: 'aD201909201252',
@@ -243,20 +247,23 @@ export default {
                     a9: '2',
                     a10: '2019/09/20 12:25:20',
                     a11: '2019/09/20 12:25:20',
-                    a12: '2019/09/20 12:25:20'
+                    a12: '2019/09/20 12:25:20',
+                    status: '2'
                 }
             ],
             icon_obj: {
                 '0': 'iconcha red',
                 '1': 'icongou green'
             },
-            status_color_obj: {
+            status_obj: {
                 '0': {
                     color: 'red',
+                    button: 'btns-red',
                     text: '拒绝'
                 },
                 '1': {
                     color: 'green',
+                    button: 'btns-green',
                     text: '通过'
                 },
                 '2': {
@@ -264,8 +271,40 @@ export default {
                     text: '审核中'
                 }
             },
-            show_audit_button: [],
-            detail_show: false,
+            // show_audit_button: [],
+            headers: ['会员账号','会员ID','出款金额','稽核扣款','实际出款','出款手续费','申请时间','操作人','操作时间','状态','操作'],
+            list: [
+                {
+                    a1: '64646466',
+                    a2: 'sdfsdfdsf',
+                    a3: '充支好礼',
+                    a4: '1',
+                    a5: '2019-02-02 21:30',
+                    status:'0'
+                },
+                {
+                    a1: '64646466',
+                    a2: 'sdfsdfdsf',
+                    a3: '充支好礼',
+                    a4: '1',
+                    a5: '2019-02-02 21:30',
+                    status:'1'
+                },
+                {
+                    a1: '64646466',
+                    a2: 'sdfsdfdsf',
+                    a3: '充支好礼',
+                    a4: '1',
+                    a5: '2019-02-02 21:30',
+                    status:'2'
+                },
+            ],
+            total: 0,
+            pageNo: 1,
+            pageSize: 25,
+            // dialog
+            dia_show: false,
+            dia_status: '',
             userid: ''
         }
     },
@@ -288,20 +327,21 @@ export default {
                 offcial_acc: '', // 正式账号
                 acc_id: '', // 会员ID
                 reviewer: '', // 审核人
-                review_dates: [], // 审核时间
+                operater_dates: [], // 审核时间
                 review_status: '' // 审核状态
             }
         },
         audiotButtonShow(index) {
             // this.show_audit_button.splice(index, 1, true)
-            this.$set(this.show_audit_button, index, true)
+            // this.$set(this.show_audit_button, index, true)
         },
-        pass(row, index) {
-            this.$set(this.show_audit_button, index, false)
+        checkAudit() {
+            console.log('点击')
+            this.dia_status = 'checkAudit'
+            this.dia_show = true
         },
-        refuse(row, index) {
-            this.$set(this.show_audit_button, index, false)
-        }
+        updateNo(val) {},
+        updateSize(val) {}
     },
     mounted() {}
 }

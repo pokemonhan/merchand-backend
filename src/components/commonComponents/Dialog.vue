@@ -47,7 +47,11 @@ export default {
         //     this.$emit('update:show', false)
         //     this.$emit('confirm')
         // }
-    }
+    },
+    mounted() {
+        let appEle = document.getElementById('app')
+        appEle.style.overflow = this.show?'hidden':'auto'
+    },
 }
 </script>
 

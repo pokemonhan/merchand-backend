@@ -246,6 +246,9 @@ export default {
         del() {
             this.mod_show = true
         },
+        modConf() {
+
+        },
         updateNo(val) {},
         updateSize(val) {}
     },

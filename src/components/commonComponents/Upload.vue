@@ -4,7 +4,7 @@
             <input
                 class="v-upload-input"
                 type="file"
-                accept="image/png, image/jpg, image/gif"
+                :accept="accept"
                 ref="upload-input"
                 @change="change"
             />
@@ -23,6 +23,10 @@
 <script>
 export default {
     props: {
+        accept: {
+            type: String,
+            // default:()=>'image/png, image/jpg, image/gif'
+        },
         title:String,
         width:String,
         showIcon:{
@@ -62,5 +66,6 @@ export default {
 }
 .btn{
     width: 100%;
+    margin: none;
 }
 </style>

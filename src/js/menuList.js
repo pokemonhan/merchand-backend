@@ -105,8 +105,8 @@ let menuList = [
                     // path: '/promote',
                     // icon: "iconnet",
                     children: [
-                        { name: "推广配置", path: "/promote/aaaaaaaaa" },
-                        { name: "推广图片配置", path: "/promote/aaaaaaaaaa" },
+                        { name: "推广配置", path: "/promote/promoteconfig" },
+                        { name: "推广图片配置", path: "/promote/picconfig" },
                     ]
                 },
                 {

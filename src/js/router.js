@@ -64,11 +64,14 @@ const Dynamic = () => import('@/components/views/active/Dynamic.vue')           
 
 /* 金流管理 */
 const OfflinePay = () => import('@/components/views/pay/OfflinePay.vue')                      // 线下支付配置
-const OnlinePay = () => import('../components/views/pay/OnlinePay.vue')                        // 线上支付配置
-const ExportBank = () => import('../components/views/pay/ExportBank.vue')                      // 出款银行管理
+const OnlinePay = () => import('@/components/views/pay/OnlinePay.vue')                        // 线上支付配置
+const ExportBank = () => import('@/components/views/pay/ExportBank.vue')                      // 出款银行管理
 /* 金流管理 */
 
-
+/* 推广配置 */
+const PromoteConfig =() => import('@/components/views/promote/PromoteConfig.vue')
+const PicConfig =() => import('@/components/views/promote/PicConfig.vue')
+/* 推广配置 */
 /* 404页面 */
 const Page404 = () => import('@/components/views/page404/page404.vue')
 /* 404页面 */
@@ -287,6 +290,17 @@ const router = new Router({
             path: '/pay/exportbank',
             component: ExportBank
         },
+
+        /* -----------------------------------  推广配置 ------------------------------------*/
+        {
+            path: '/promote/promoteconfig',
+            component: PromoteConfig
+        },
+        {
+            path: '/promote/PicConfig',
+            component: PicConfig
+        },
+       
        
 
 

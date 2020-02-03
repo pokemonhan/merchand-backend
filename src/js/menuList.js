@@ -111,34 +111,17 @@ let menuList = [
                 },
                 {
                     name: "设置管理",
-                    // path: '/setting',
+                    // path: '/set',
                     // icon: "iconspeaker-5",
                     children: [
-                        { name: "管理员分组", path: "/setting/aaaaaaaa" },
-                        { name: "全域设置", path: "/setting/aaaaaaa" },
-                        { name: "客服设置", path: "/setting/aaaaaa" },
-                        { name: "帮助设置", path: "/setting/aaaaaaaaaaa" },
-                        { name: "操作记录", path: "/setting/aaaaaaaaaa" },
-                        { name: "银行卡反查中心", path: "/setting/aaaaaaaaa" },
+                        { name: "管理员分组", path: "/set/adminsort" },
+                        { name: "全域设置", path: "/set/allareaset" },
+                        { name: "客服设置", path: "/set/serviceset" },
+                        { name: "帮助设置", path: "/set/helpset" },
+                        { name: "操作记录", path: "/set/operatrecord" },
+                        { name: "银行卡反查中心", path: "/set/bankcenter" },
                     ]
                 },
-                // {
-                //     name: "代理推广",
-                //     // path: '/agentpromotion',
-                //     icon: "iconconnections",
-                //     children: [
-                //         { name: "代理配置", path: "/agentpromotion/agentsetting" },
-                //         { name: "佣金记录", path: "/agentpromotion/commissionrecord" }
-                //     ]
-                // },
-                // {
-                //     name: "系统设置",
-                //     // path: '/systemset',
-                //     icon: "iconshezhi2",
-                //     children: [
-                //         { name: "管理员设置", path: "/systemset/adminsetting" },
-                //         { name: "系统日志", path: "/systemset/systemlog" }
-                //     ]
-                // }
+               
             ]
 export default menuList

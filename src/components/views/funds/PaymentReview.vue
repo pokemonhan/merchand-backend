@@ -67,20 +67,14 @@
                     <td>{{row.a2}}</td>
                     <td :class="status_obj[row.status].color">{{status_obj[row.status].text}}</td>
                     <td>
-                        <button :class="status_obj[row.status].class">审查</button>
+                        <button
+                            :class="status_obj[row.status].button"
+                            @click="statusShow(row)"
+                        >{{status_obj[row.status].text}}</button>
                         <button class="btns-blue" @click="checkAudit">查看稽核</button>
                     </td>
                 </template>
             </Table>
-
-            <Page
-                class="table-page"
-                :total="total"
-                :pageNo.sync="pageNo"
-                :pageSize.sync="pageSize"
-                @updateNo="updateNo"
-                @updateSize="updateSize"
-            />
 
             <div class="total-table">
                 <ul>
@@ -126,10 +120,20 @@
                     </li>
                 </ul>
             </div>
+            <Page
+                class="table-page"
+                :total="total"
+                :pageNo.sync="pageNo"
+                :pageSize.sync="pageSize"
+                @updateNo="updateNo"
+                @updateSize="updateSize"
+            />
         </div>
         <Dialog :show.sync="dia_show" title="查看稽核">
             <div class="dia-inner">
-                <PaymentReviewDetail v-if="dia_status==='checkAudit'" :userid="userid"></PaymentReviewDetail>
+                <PaymentReviewStatus v-if="dia_status==='statusShow'" :row="curr_row" />
+                <PaymentReviewDetail v-if="dia_status==='checkAudit'" :userid="userid" />
+
             </div>
         </Dialog>
     </div>
@@ -137,9 +141,12 @@
 
 
 <script>
+import PaymentReviewStatus from './paymentReviewCont/PaymentReviewStatus'
 import PaymentReviewDetail from './paymentReviewCont/PaymentReviewDetail.vue'
+
 export default {
     components: {
+        PaymentReviewStatus,
         PaymentReviewDetail
     },
     data() {
@@ -205,51 +212,9 @@ export default {
                 ]
             ],
             table_list: [
-                {
-                    a1: 'aD201909201252',
-                    a2: '13245678942',
-                    a3: '4561234',
-                    a4: '0',
-                    a5: '红牛商户',
-                    a6: '微信充值',
-                    a7: '100',
-                    a8: '99.9',
-                    a9: '1',
-                    a10: '2019/09/20 12:25:20',
-                    a11: '2019/09/20 12:25:20',
-                    a12: '2019/09/20 12:25:20',
-                    status: '0'
-                },
-                {
-                    a1: 'aD201909201252',
-                    a2: '13245678942',
-                    a3: '4561234',
-                    a4: '0',
-                    a5: '红牛商户',
-                    a6: '微信充值',
-                    a7: '100',
-                    a8: '99.9',
-                    a9: '1',
-                    a10: '2019/09/20 12:25:20',
-                    a11: '2019/09/20 12:25:20',
-                    a12: '2019/09/20 12:25:20',
-                    status: '1'
-                },
-                {
-                    a1: 'aD201909201252',
-                    a2: '13245678942',
-                    a3: '4561234',
-                    a4: '1',
-                    a5: '红牛商户',
-                    a6: '微信充值',
-                    a7: '100',
-                    a8: '99.9',
-                    a9: '2',
-                    a10: '2019/09/20 12:25:20',
-                    a11: '2019/09/20 12:25:20',
-                    a12: '2019/09/20 12:25:20',
-                    status: '2'
-                }
+                { a1: 'aD201909201252', a2: '13245678942', a3: '4561234', a4: '0', a5: '红牛商户', a6: '微信充值', a7: '100', a8: '99.9', a9: '1', a10: '2019/09/20 12:25:20', a11: '2019/09/20 12:25:20', a12: '2019/09/20 12:25:20', status: '0' },
+                { a1: 'aD201909201252', a2: '13245678942', a3: '4561234', a4: '0', a5: '红牛商户', a6: '微信充值', a7: '100', a8: '99.9', a9: '1', a10: '2019/09/20 12:25:20', a11: '2019/09/20 12:25:20', a12: '2019/09/20 12:25:20', status: '1' },
+                { a1: 'aD201909201252', a2: '13245678942', a3: '4561234', a4: '1', a5: '红牛商户', a6: '微信充值', a7: '100', a8: '99.9', a9: '2', a10: '2019/09/20 12:25:20', a11: '2019/09/20 12:25:20', a12: '2019/09/20 12:25:20', status: '2' }
             ],
             icon_obj: {
                 '0': 'iconcha red',
@@ -259,20 +224,33 @@ export default {
                 '0': {
                     color: 'red',
                     button: 'btns-red',
-                    text: '拒绝'
+                    text: '已拒绝'
                 },
                 '1': {
                     color: 'green',
                     button: 'btns-green',
-                    text: '通过'
+                    text: '已通过'
                 },
                 '2': {
                     color: 'purple',
+                    button: 'btns-yellow',
                     text: '审核中'
                 }
             },
             // show_audit_button: [],
-            headers: ['会员账号','会员ID','出款金额','稽核扣款','实际出款','出款手续费','申请时间','操作人','操作时间','状态','操作'],
+            headers: [
+                '会员账号',
+                '会员ID',
+                '出款金额',
+                '稽核扣款',
+                '实际出款',
+                '出款手续费',
+                '申请时间',
+                '操作人',
+                '操作时间',
+                '状态',
+                '操作'
+            ],
             list: [
                 {
                     a1: '64646466',
@@ -280,7 +258,7 @@ export default {
                     a3: '充支好礼',
                     a4: '1',
                     a5: '2019-02-02 21:30',
-                    status:'0'
+                    status: '0'
                 },
                 {
                     a1: '64646466',
@@ -288,7 +266,7 @@ export default {
                     a3: '充支好礼',
                     a4: '1',
                     a5: '2019-02-02 21:30',
-                    status:'1'
+                    status: '1'
                 },
                 {
                     a1: '64646466',
@@ -296,14 +274,15 @@ export default {
                     a3: '充支好礼',
                     a4: '1',
                     a5: '2019-02-02 21:30',
-                    status:'2'
-                },
+                    status: '2'
+                }
             ],
             total: 0,
             pageNo: 1,
             pageSize: 25,
             // dialog
-            dia_show: false,
+            curr_row: {},
+            dia_show: true,
             dia_status: '',
             userid: ''
         }
@@ -334,6 +313,10 @@ export default {
         audiotButtonShow(index) {
             // this.show_audit_button.splice(index, 1, true)
             // this.$set(this.show_audit_button, index, true)
+        },
+        statusShow() {
+            this.dia_status = 'statusShow'
+            this.dia_show = true
         },
         checkAudit() {
             console.log('点击')

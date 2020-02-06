@@ -33,7 +33,7 @@
                     </td>
                 </template>
             </Table>
-             <Page 
+            <Page 
                 class="table-page" 
                 :total="total" 
                 :pageNo.sync="pageNo" 
@@ -81,8 +81,7 @@ export default {
                     a4: '500',
                     a5: '500000000',
                     a6: '50000/40000',
-                    a7: '800000',
-                   
+                    a7: '800000',                   
                 },
                 {
                     a1: '2019/10/30',
@@ -91,8 +90,7 @@ export default {
                     a4: '500',
                     a5: '500000000',
                     a6: '50000/40000',
-                    a7: '800000',
-                    
+                    a7: '800000',                   
                 },
             ],
             total:55,
@@ -116,7 +114,7 @@ export default {
                 excel.export_json_to_excel({
                     header:tHeader,
                     data,
-                    filename:excel,
+                    filename:'',
                     autoWidth:true,
                     bookType:'xlsx'
                 })

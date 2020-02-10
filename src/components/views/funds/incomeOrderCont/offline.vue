@@ -7,42 +7,40 @@
             <ul class="left">
                 <li>
                     <span>会员账号</span>
-                    <Input style="width:100px" limit="en-num" v-model="filter.account" />
+                    <Input limit="en-num" v-model="filter.account" />
                 </li>
                 <li>
                     <span>会员ID</span>
-                    <Input style="width:100px" limit="en-num" v-model="filter.id" />
+                    <Input limit="en-num" v-model="filter.id" />
                 </li>
 
                 <li>
                     <span>时间范围</span>
-                    <Date style="width:110px" v-model="filter.start_date" @update="timeUpdate()" />
+                    <Date v-model="filter.start_date" @update="timeUpdate()" />
                     <span style="margin:0 5px;">~</span>
-                    <Date style="width:110px" v-model="filter.end_date" @update="timeUpdate()" />
+                    <Date v-model="filter.end_date" @update="timeUpdate()" />
                 </li>
                 <li>
                     <span>审核状态</span>
                     <Select
-                        style="width:110px"
                         v-model="filter.review_status"
                         :options="review_status_opt"
                     ></Select>
                 </li>
                 <li>
                     <span>入款账号</span>
-                    <Input class="w100" v-model="filter.income_acc" />
+                    <Input v-model="filter.income_acc" />
                 </li>
                 <li class="mt10">
                     <span>正式状态</span>
                     <Select
-                        style="width:110px"
                         v-model="filter.formal_status"
                         :options="formal_status_opt"
                     ></Select>
                 </li>
                 <li class="mt10">
                     <span>订单号</span>
-                    <Input style="width:110px" limit="en-num" v-model="filter.order_id" />
+                    <Input limit="en-num" v-model="filter.order_id" />
                 </li>
                 <li class="mt10">
                     <button class="btn-blue">查询</button>

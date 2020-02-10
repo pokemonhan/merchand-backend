@@ -6,15 +6,15 @@
                 <ul class="left">
                     <li>
                         <span>会员账号</span>
-                        <Input style="width:100px;" limit="en-num" v-model="filter.account" />
+                        <Input  limit="en-num" v-model="filter.account" />
                     </li>
                     <li>
                         <span>会员ID</span>
-                        <Input style="width:100px;" limit="en-num" v-model="filter.userid" />
+                        <Input  limit="en-num" v-model="filter.userid" />
                     </li>
                     <li>
                         <span>注册日期</span>
-                        <Date style="width:100px;" v-model="filter.start_date" />
+                        <Date  v-model="filter.start_date" />
                         <span style="margin:0 5px;">至</span>
                         <Date v-model="filter.end_date" />
                     </li>
@@ -24,7 +24,7 @@
                             <Select
                                 v-model="filter.online_state"
                                 :options="online_state_opt"
-                                style="width:100px;"
+                                
                             ></Select>
                         </span>
                     </li>
@@ -34,7 +34,7 @@
                             <Select
                                 v-model="filter.online_state"
                                 :options="online_state_opt"
-                                style="width:100px;"
+                                
                             ></Select>
                         </span>
                     </li>
@@ -49,18 +49,18 @@
                             <Select
                                 v-model="filter.online_state"
                                 :options="online_state_opt"
-                                style="width:100px;"
+                                
                                 @update="selectupdate"
                             ></Select>
                         </span>
                     </li>
                     <li>
                         <span>登录IP</span>
-                        <Input style="width:100px;" limit="number" v-model="filter.loginIP" />
+                        <Input  limit="number" v-model="filter.loginIP" />
                     </li>
                     <li>
                         <span class="w4e">注册IP</span>
-                        <Input style="width:100px;" limit="number" v-model="filter.registIP" />
+                        <Input  limit="number" v-model="filter.registIP" />
                     </li>
                     <li>
                         <span>

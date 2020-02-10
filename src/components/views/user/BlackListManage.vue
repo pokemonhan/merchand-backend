@@ -6,21 +6,21 @@
             <ul class="left">
                 <li>
                     <span>会员账号</span>
-                    <Input style="width:110px" limit="en-num" v-model="filter.account" />
+                    <Input limit="en-num" v-model="filter.account" />
                 </li>
                 <li>
                     <span>会员ID</span>
-                    <Input style="width:110px" limit="en-num" v-model="filter.user_id" />
+                    <Input limit="en-num" v-model="filter.user_id" />
                 </li>
                 <li>
                     <span>进入黑名单时间</span>
-                    <Date style="width:95px;" v-model="filter.start_date" @update="timeUpdate()" />
+                    <Date v-model="filter.start_date" @update="timeUpdate()" />
                     <span style="margin:0 5px;">~</span>
-                    <Date style="width:95px;" v-model="filter.end_date" @update="timeUpdate()" />
+                    <Date v-model="filter.end_date" @update="timeUpdate()" />
                 </li>
                 <li>
                     <span>进入黑名单次数</span>
-                    <Input style="width:110px" limit="en-num" v-model="filter.times" />
+                    <Input limit="en-num" v-model="filter.times" />
                 </li>
             </ul>
             <div class="right">

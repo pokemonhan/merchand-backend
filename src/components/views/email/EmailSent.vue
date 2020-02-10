@@ -7,11 +7,11 @@
             <ul class="left">
                 <li>
                     <span>收件人</span>
-                    <Input class="w100" v-model="filter.recipient" />
+                    <Input v-model="filter.recipient" />
                 </li>
                 <li>
                     <span>发件人</span>
-                    <Input class="w100" v-model="filter.sender" />
+                    <Input v-model="filter.sender" />
                 </li>
                 <li>
                     <span>发件时间</span>

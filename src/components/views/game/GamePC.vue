@@ -1,6 +1,6 @@
 <template>
     <div class="container">
-        <!-- 分类管理 -->
+        <!-- h5游戏管理 -->
 
         <div>
             <button
@@ -13,12 +13,12 @@
         <div class="filter p10 mt10">
             <ul class="left">
                 <li>
-                    <span>分类名称</span>
-                    <Input v-model="filter.sort" />
+                    <span>游戏平台</span>
+                    <Select v-model="filter.plant" :options="plant_opt"></Select>
                 </li>
                 <li>
-                    <span>启用状态</span>
-                    <Select v-model="filter.status" :options="status_opt" ></Select>
+                    <span>游戏名称</span>
+                    <Input v-model="filter.name" />
                 </li>
                 <li>
                     <button class="btn-blue">查询</button>
@@ -30,7 +30,14 @@
             <Table :headers="headers" :column="list">
                 <template v-slot:item="{row,idx}">
                     <td>{{(pageNo-1)*pageSize+idx+1}}</td>
+                    <td
+                        :class="row.status?'green':'red'"
+                    >{{row.status===1?'开启':row.status===0?'关闭':'???'}}</td>
                     <td>{{row.a1}}</td>
+                    <td>
+                        <button class="btns-blue">上移</button>
+                        <button class="btns-blue">下移</button>
+                    </td>
                     <td>
                         <Switchbox class="switch-select" v-model="row.a1" />
                     </td>
@@ -52,24 +59,25 @@ export default {
     data() {
         return {
             buttons: [
-                { label: 'H5分类管理', value: '1' },
-                { label: 'PC分类管理', value: '2' },
-                { label: 'APP分类管理', value: '3' }
+                { label: '热门游戏', value: '1' },
+                { label: '刺激棋牌', value: '2' },
+                { label: '经典棋牌', value: '3' },
+                { label: '电子游艺', value: '4' },
+                { label: '竞技竞猜', value: '5' }
             ],
             curr_btn: '1',
-            status_opt: [
+            plant_opt: [
                 { label: '全部', value: '' },
-                { label: '开启', value: '1' },
-                { label: '关闭', value: '0' }
+                { label: '测试', value: '1' }
             ],
             filter: {
-                sort: '',
-                status: ''
+                plant: '',
+                name: ''
             },
-            headers: ['编号','分类名称','是否启用'],
+            headers: ['编号', '游戏平台', '游戏名称', '排序', '是否热门'],
             list: [
                 {
-                    a1: true,
+                    a1: false,
                     a2: 'sdfsdfdsf',
                     a3: '充支好礼',
                     a4: '1',
@@ -96,11 +104,11 @@ export default {
         updateNo(val) {},
         updateSize(val) {}
     },
-    mounted() {
-        
-    }
+    mounted() {}
 }
-</script> <style scoped>
+</script>
+
+<style scoped>
 
 /* .p10 全局样式 */
 .switch-select {

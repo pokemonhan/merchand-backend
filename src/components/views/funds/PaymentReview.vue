@@ -1,16 +1,18 @@
 <template>
     <div class="container">
+        <!-- 入款审核 -->
+
         <QuickQuery :date="quick_query" @update="qqUpd" />
         <!-- <Date v-model="filter.dates[0]" @update="timeUpdate()" /> -->
         <div class="filter">
             <ul class="left">
                 <li>
                     <span>会员账号</span>
-                    <Input class="w100" v-model="filter.account" />
+                    <Input v-model="filter.account" />
                 </li>
                 <li>
                     <span>订单号</span>
-                    <Input class="w100" v-model="filter.order_id" />
+                    <Input v-model="filter.order_id" />
                 </li>
                 <li>
                     <span>申请时间</span>
@@ -21,11 +23,11 @@
 
                 <li>
                     <span style="width:4em;">会员ID</span>
-                    <Input class="w100" v-model="filter.acc_id" />
+                    <Input v-model="filter.acc_id" />
                 </li>
                 <li>
                     <span>操作人</span>
-                    <Input class="w100" v-model="filter.operater" />
+                    <Input v-model="filter.operater" />
                 </li>
 
                 <li>
@@ -282,7 +284,7 @@ export default {
             pageSize: 25,
             // dialog
             curr_row: {},
-            dia_show: true,
+            dia_show: false,
             dia_status: '',
             userid: ''
         }

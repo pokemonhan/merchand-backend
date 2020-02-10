@@ -6,7 +6,7 @@
             <ul class="left">
                 <li>
                     <span>银行名称</span>
-                    <Input class="w100" v-model="filter.acc" />
+                    <Input v-model="filter.acc" />
                 </li>
                 <li>
                     <span>状态</span>

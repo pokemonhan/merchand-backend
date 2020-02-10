@@ -6,9 +6,9 @@
             <ul class="left">
                 <li>
                     <span>发送时间</span>
-                    <Input class="w100" v-model="filter.dates[0]" />
+                    <Input v-model="filter.dates[0]" />
                     <span style="margin: 0 5px;">~</span>
-                    <Input class="w100" v-model="filter.dates[1]" />
+                    <Input v-model="filter.dates[1]" />
                 </li>
                 <li>
                     <button class="btn-blue">查询</button>

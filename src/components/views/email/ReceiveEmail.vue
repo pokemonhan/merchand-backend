@@ -8,7 +8,7 @@
             <ul class="left">
                 <li>
                     <span>发件人</span>
-                    <Input class="w100" v-model="filter.sender" />
+                    <Input v-model="filter.sender" />
                 </li>
                 <li>
                     <span>收件时间</span>
@@ -142,12 +142,7 @@ export default {
 </script>
 
 <style scoped>
-.w100 {
-    width: 100px;
-}
-.p10 {
-    padding: 10px;
-}
+
 .tab-control {
     /* width: 100%; */
     display: flex;

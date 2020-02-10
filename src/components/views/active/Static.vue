@@ -14,7 +14,7 @@
             <ul class="left">
                 <li>
                     <span>活动标题</span>
-                    <Input class="w100" v-model="filter.title" />
+                    <Input v-model="filter.title" />
                 </li>
                
                 <li>
@@ -164,10 +164,10 @@ export default {
         
     }
 }
-</script> <style scoped>
-.w100 {
-    width: 100px;
-}
+</script>
+
+<style scoped>
+
 /* .p10 全局样式 */
 .switch-select {
     transform: scale(0.8);

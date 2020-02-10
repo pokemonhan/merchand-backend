@@ -112,10 +112,10 @@ export default {
     },
     mounted() {}
 }
-</script> <style scoped>
-.w100 {
-    width: 100px;
-}
+</script>
+
+<style scoped>
+
 /* .p10 全局样式 */
 .switch-select {
     transform: scale(0.8);

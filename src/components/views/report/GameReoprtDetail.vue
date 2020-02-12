@@ -3,89 +3,95 @@
         <div class="filter p10">
             <ul class="left">
                 <li>
-                    <span>活动名称</span>
+                    <span>游戏名称</span>
                     <Input class="w100" v-model="filter.acount" />
                 </li>
                 <li>
-                    <span>日期范围</span>
+                    <span>起止时间</span>
                     <Date v-model="filter.dates[0]" />
                     <span class="ph5">~</span>
-                    <Date v-model="filter.dates[1]"  />
+                    <Date v-model="filter.dates[1]" />
                 </li>
                 <li>
                     <button class="btn-blue">查询</button>
-                    <button class="btn-blue" style="margin-left:10px;" @click="exportExcel()">导出Excel</button> 
+                    <button class="btn-blue" style="margin-left:10px;" @click="exportExcel()">导出Excel</button>
                 </li>
-            </ul>   
+            </ul>
         </div>
         <div class="table">
-            <Table :headers="headers" :column="list" >
-                <template v-slot:item="{row}">
+            <Table :headers="headers" :column="list">
+                <template v-slot:item="{row}"> 
                     <td>{{row.a1}}</td>
                     <td>{{row.a2}}</td>
                     <td>{{row.a3}}</td>
                     <td>{{row.a4}}</td>
                     <td>{{row.a5}}</td>
-                    <td>
-                        <span class="a" @click="show_detail=true" >参与详情</span>
-                    </td>
+                    <td>{{row.a6}}</td>
+                    <td>{{row.a7}}</td>
                 </template>
             </Table>
         </div>
-        <Page  
+        <Page
             class="table-page"
             :total="total"
             :pageNo.sync="pageNo"
             :pageSize.sync="pageSize"
             @updateNo="updateNo"
-            @updateSize="updateSize" 
-        />
-        <Dialog :show.sync="show_detail" title="参与详情" >
-            <div class="dia-inner">
-                <ActiveReportDetail></ActiveReportDetail>
-            </div>
-        </Dialog>
+            @updateSize="updateSize"
+            />
     </div>
 </template>
 
 
 <script>
-import ActiveReportDetail from './ActiveReportDetail'
 export default {
-    components:{
-        ActiveReportDetail
-    },
+  
     data() {
         return {
             filter:{
-                acount:'',
+                account:'',
                 dates:[],
             },
             headers:[
-                '编号',
                 '日期',
-                '活动类型',
-                '参与人数',
-                '领取金额',
-                '详情',
+                '游戏名称',
+                '有效下注',
+                '游戏税收',
+                '总投注额',
+                '佣金/返利',
+                '游戏盈亏'
             ],
             list:[
                 {
-
+                    a1: '2019/10/30',
+                    a2: '开元棋盘',
+                    a3: '10000',
+                    a4: '100',
+                    a5: '50000',
+                    a6: '500/400',
+                    a7: '50000'
+                },
+                {
+                    a1: '2019/10/30',
+                    a2: '开元棋盘',
+                    a3: '10000',
+                    a4: '100',
+                    a5: '50000',
+                    a6: '500/400',
+                    a7: '50000'
                 },
             ],
-            total:50,
+            total:66,
             pageNo:1,
             pageSize:25,
-            show_detail:false,
         };
     },
     methods: {
-        exportExcel(){
+         exportExcel(){
             import('../../../js/config/Export2Excel').then(excel=>{
                 const tHeader=this.headers
                 const data=this.list.map(item=>{
-                    return[item.a1,item.a2,item.a3,item.a4,item.a5]
+                    return[item.a1,item.a2,item.a3,item.a4,item.a5,item.a6,item.a7]
                 })
                 excel.export_json_to_excel({
                     header:tHeader,
@@ -96,6 +102,8 @@ export default {
                 })
             })
         },
+        updateNo(val){},
+        updateSize(val){},
     },
     mounted() {
 
@@ -104,5 +112,14 @@ export default {
 </script>
 
 <style scoped>
-
+    .ph5 {
+    padding-left: 5px;
+    padding-right: 5px;
+    }
+    .p10{
+        padding: 10px;
+    }
+    .table{
+        margin-top: 20px;
+    }
 </style>

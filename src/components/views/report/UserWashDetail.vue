@@ -82,6 +82,7 @@ export default {
 <style scoped>
     
     
+    
     .table{
         margin-top: 20px;
     }

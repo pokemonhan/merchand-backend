@@ -110,8 +110,21 @@
 <!--        </TwoTable>-->
         <Table :headers="headers" :column="list">
             <template v-slot:item="{row}">
-                <td>{{row.status}}</td>
-                <td>{{row.mobile_hidden}}</td>
+                <td>{{row.is_online}}</td>
+                <td>{{row.mobile}}</td>
+                <td>{{row.guid}}</td>
+                <td>{{row.is_tester}}</td>
+                <td>{{row.user_tag}}</td>
+                <td>{{row.total_members}}</td>
+                <td>{{row.parent_mobile}}</td>
+                <td>{{row.balance}}</td>
+                <td>{{row.register_ip}}</td>
+                <td>{{row.last_login_ip}}</td>
+                <td>{{row.created_at}}</td>
+                <td></td>
+                <td>
+                    <button class="btn-blue">编辑</button>
+                </td>
             </template>
         </Table>
         <div class="page">

@@ -469,6 +469,9 @@ button:hover {
     padding-left: 5px;
     padding-right: 5px;
 }
+.mr10 {
+    margin-right: 10px;
+}
 .mr20 {
     margin-right: 20px;
 }
@@ -483,6 +486,9 @@ button:hover {
 }
 .ml20 {
     margin-left: 20px;
+}
+.ml50 {
+    margin-left: 50px;
 }
 .mv5 {
     margin-left: 5px;

@@ -5,8 +5,6 @@ import router from '../router'
 // 如果指令是 [npm run build --  inner]  那么inner 就是 HOST的内容 
 // ps:默认为 inner。  prod.env.js中设置
 let HOST = process.env.HOST
-console.log('HOST: ', HOST);
-
 
 let hostList = {
     inner: location.protocol + '//api.jianghu.local',    // 测试站内网
@@ -36,16 +34,9 @@ let http = axios.create({
         return status >= 100 && status <= 600;
     },
 })
-// let data={
-//     a:'a',
-//     b: 'b',
-// }
-// http.post('/merchant-api/login',data).then(res=>{
-//     console.log('res: ', res);
 
-// })
+
 // 请求预设 ---
-
 http.interceptors.request.use(req => {
     let Authorization = window.all.tool.getLocal('Authorization')
     // let expires = new Date(window.all.tool.getLocal('expires_at')).getTime()

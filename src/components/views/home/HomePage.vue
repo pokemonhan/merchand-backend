@@ -125,7 +125,7 @@
                 </div>
                 <div class="contain">
                     <div class="row3-number">
-                        <div clss="act-people-number">
+                        <div class="act-people-number">
                             <div class="number-title">参与活动人数</div>
                             <div class="number">{{'0'}}</div>
                         </div>

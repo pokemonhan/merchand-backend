@@ -11,28 +11,25 @@
         <div class="game-plant">
             <span>选择游戏平台:</span>
             <button
-                :class="active_plant===index?'btn-blue':'btn-plain'"
                 v-for="(game_plant, index) in plants"
                 :key="index"
-                @click="active_plant=index"
+                :class="[active_plant===index?'btn-blue':'btn-plain']"
+                @click="choose_platform(index)"
             >{{game_plant}}</button>
             <button style="margin-left:40px;" class="btn-blue" @click="addWash">添加洗码规则</button>
         </div>
         <div class="table">
             <Table :headers="headers" :column="list">
-                <template v-slot:item="{row}">
-                    <td style="height:30px">{{row.b}}</td>
-                    <td>{{row.a}}</td>
-                    <td>{{row.b}}</td>
-                    <td>{{row.c}}</td>
-                    <td>{{row.d}}</td>
-                    <td>{{row.e}}</td>
-                    <td>{{row.f}}</td>
-                    <td>{{row.g}}</td>
-                    <td>{{row.h}}</td>
+                <template v-slot:item="{row,idx}">
+                    <td style="height:30px">{{idx+1}}</td>
+                    <td>{{row.bet}}</td>
+
+                    <td v-for="(item,index) in row.percent_data" :key="index" >
+                        {{item.percent*100}}%
+                    </td>
                     <td>
-                        <span class="a" @click="showWashModal(row)">编辑</span>
-                        <span class="a" @click="showDeleteModal(row)">删除</span>
+                        <span class="a" @click="editWashModal(row)">编辑</span>
+                        <span class="a" @click="delWashModal(row)">删除</span>
                     </td>
                 </template>
             </Table>
@@ -128,27 +125,27 @@ export default {
     data() {
         return {
             games: ['刺激棋牌', '经典棋牌', '电子游艺', '趣味竞猜'],
-            active_game: 0,
+            active_game: 2,
 
-            game_plant: 0,
-            active_plant: 0,
+            // game_plant: 0,
+            active_plant: 1,
             plants: ['开元棋牌', '龙城棋牌', '财神棋牌', '欢乐棋牌'],
             game_plant_option: [
                 { label: '全部', value: '2' },
                 { label: '甲', value: '3' }
             ],
             user_id: '',
-            headers: [
-                { label: '编号' },
-                { label: '打码量范围' },
-                { label: 'VIP1' },
-                { label: 'VIP2' },
-                { label: 'VIP3' },
-                { label: 'VIP4' },
-                { label: 'VIP5' },
-                { label: 'VIP6' },
-                { label: 'VIP7' },
-                { label: '操作' }
+            headers: ['编号','打码量','操作'
+                // { label: '编号' },
+                // { label: '打码量' },
+                // { label: 'VIP1' },
+                // { label: 'VIP2' },
+                // { label: 'VIP3' },
+                // { label: 'VIP4' },
+                // { label: 'VIP5' },
+                // { label: 'VIP6' },
+                // { label: 'VIP7' },
+                // { label: '操作' }
             ],
             list: [
                 {
@@ -175,14 +172,14 @@ export default {
             show_modal: false,
             /* ----------  wash_form ------------ */
             wash_form: {
-                code_numbers: [],
-                vip1: { num: '', bonus: '' },
-                vip2: { num: '', bonus: '' },
-                vip3: { num: '', bonus: '' },
-                vip4: { num: '', bonus: '' },
-                vip5: { num: '', bonus: '' },
-                vip6: { num: '', bonus: '' },
-                vip7: { num: '', bonus: '' }
+                // code_numbers: [],
+                // vip1: { num: '', bonus: '' },
+                // vip2: { num: '', bonus: '' },
+                // vip3: { num: '', bonus: '' },
+                // vip4: { num: '', bonus: '' },
+                // vip5: { num: '', bonus: '' },
+                // vip6: { num: '', bonus: '' },
+                // vip7: { num: '', bonus: '' }
             },
             /* 删除 */
             show_del_modal: false,
@@ -193,7 +190,12 @@ export default {
     },
     methods: {
         actSort(index) {
-            this.active_game = index
+            this.active_game = index;
+            this.getList()
+        },
+        choose_platform(index){
+            this.active_plant=index;
+            this.getList()
         },
         addWash() {
             this.show_modal = true
@@ -202,21 +204,51 @@ export default {
         },
         updateNo(val) {},
         updateSize(val) {},
-        showWashModal(row) {
+        editWashModal(row) {
             this.show_modal = true
             // this.modal_status = 'edit'
             this.is_edit = true
+            this.wash_form=Object.assign({},row)
+
         },
-        showDeleteModal(row) {
+        delWashModal(row) {
             console.log(row)
             this.show_del_modal = true
         },
         editModalSave() {},
         delConfirm() {
             console.log('我删除了.')
-        }
+        },
+        getList(){
+            let para={
+                gameTypeId:this.active_game,
+                gameVendorId:this.active_plant,
+            };
+            // let self=this
+            let params = window.all.tool.rmEmpty(para)
+            let {method,url}=this.$api.wash_code_list;
+            this.$http({method:method,url:url,params:params}).then(res=>{
+                console.log("res",res)
+                if(res && res.code =='200'){
+                    this.list=res.data
+                    // { label: '编号' }
+                    let vip_list = []
+                    vip_list = (res.data && res.data[0] && res.data[0].percent_data) ||[]
+                    let vip_head= vip_list.map(item=>{
+                        return item.grade_name
+                    })
+                    this.headers= Array.concat(['编号','打码量'], vip_head, '操作')
+                }else{
+                    if(res && res.message !==''){
+                        this.toast.error(res.message)
+                    }
+                }
+            })
+        },
     },
-    mounted() {}
+    mounted() {
+        this.getList()
+    }
 }
 </script>
 

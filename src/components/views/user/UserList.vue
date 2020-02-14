@@ -123,7 +123,8 @@
                 <td>{{row.created_at}}</td>
                 <td></td>
                 <td>
-                    <button class="btn-blue">编辑</button>
+                    <button class="btn-blue" @click="userDetail(row)">详情</button>
+                    <button class="btn-blue" @click="addBlackList(row)" >加入黑名单</button>
                 </td>
             </template>
         </Table>
@@ -140,7 +141,7 @@
             <div class="v-modal">
                 <!-- // mask 内容 -------------- -->
                 <div class="mod-head">
-                    <span>添加账号 详情</span>
+                    <span>详情</span>
                     <i class="iconfont iconcuowuguanbi-" @click="closeUserList()"></i>
                 </div>
                 <div class="mod-body">
@@ -485,7 +486,7 @@ export default {
             // this.$toast.info('你好')
         },
 
-        showDetail() {
+        userDetail(row) {
             this.show_detail = true
         },
         addBlackList() {

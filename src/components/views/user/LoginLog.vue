@@ -5,11 +5,11 @@
             <ul class="left">
                 <li>
                     <span>会员账号</span>
-                    <Input style="width:100px;" limit="en-num" v-model="filter.account" />
+                    <Input style="width:100px;" limit="en-num" v-model="filter.mobile" />
                 </li>
                 <li>
                     <span>会员ID</span>
-                    <Input style="width:100px" limit="en-num" v-model="filter.acc_id" />
+                    <Input style="width:100px" limit="en-num" v-model="filter.uniqueld" />
                 </li>
                 <li>
                     <span>登录日期</span>
@@ -19,12 +19,12 @@
                 </li>
                 <li>
                     <span>登录IP</span>
-                    <Input style="width:100px" limit="en-num" v-model="filter.login_ip" />
+                    <Input style="width:100px" limit="en-num" v-model="filter.lastLoginIp" />
                 </li>
             </ul>
             <div class="right">
                 <span>
-                    <button class="btn-blue">查询</button>
+                    <button class="btn-blue" @click="getList">查询</button>
                 </span>
                 <span>
                     <button class="btn-blue">导出Excel</button>
@@ -34,12 +34,12 @@
         <div class="table">
             <Table :headers="headers" :column="list">
                 <template v-slot:item="{row}">
-                    <td style="height:30px">{{row.b}}</td>
-                    <td>{{row.a}}</td>
-                    <td>{{row.b}}</td>
-                    <td>{{row.b}}</td>
-                    <td>{{row.c}}</td>
-                    <td>{{row.d}}</td>
+                    <td style="height:30px">{{row.mobile}}</td>
+                    <td>{{row.uid}}</td>
+                    <td>{{row.last_login_ip}}</td>
+                    <td>{{row}}</td>
+                    <td>{{row.last_login_device}}</td>
+                    <td>{{row.create_at}}</td>
                 </template>
             </Table>
             <Page
@@ -65,8 +65,8 @@ export default {
             // ],
             // user_id: "",
             filter: {
-                account: '',
-                acc_id: '',
+                mobile: '',
+                uniqueld: '',
                 dates: [],
                 login_ip: ''
             },
@@ -78,20 +78,7 @@ export default {
                 { label: '登录设备' },
                 { label: '登录日期' }
             ],
-            list: [
-                {
-                    a: '1',
-                    b: '2',
-                    c: '192.168.1.1(中国.广州）',
-                    d: '2019/12/15 12:12:00'
-                },
-                {
-                    a: '1',
-                    b: '2',
-                    c: '192.168.1.1(中国.广州）',
-                    d: '2019/12/15 12:12:00'
-                }
-            ],
+            list: [],
             total: 0,
             pageNo: 1,
             pageSize: 25
@@ -99,9 +86,31 @@ export default {
     },
     methods: {
         updateNo(val) {},
-        updateSize(val) {}
+        updateSize(val) {},
+        getList(){
+            let para={
+                mobile:this.filter.mobile,
+                uniqueld:this.filter.uniqueld,
+                createAt:[this.filter.dates[0],this.filter.dates[1]],
+                lastLoginIp:this.filter.lastLoginIp
+            }
+            let params = window.all.tool.rmEmpty(para)
+            let {method,url}=this.$api.user_login_log_list;
+            this.$http({method:method,url:url,params:params}).then(res=>{
+                console.log("res",res)
+                if(res && res.code=='200'){
+                    this.list=res.data
+                }else{
+                    if(res && res.message !==''){
+                        this.toast.error(res.message)
+                    }
+                }
+            })
+        },
     },
-    mounted() {}
+    mounted() {
+        this.getList()
+    }
 }
 </script>
 

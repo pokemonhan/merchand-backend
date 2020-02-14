@@ -258,8 +258,12 @@ export default {
             this.$http({method,url,data}).then(res=>{
                 if(res && res.code){
                     this.$toast.success(res && res.message);
-                    this.show_lev_modal=false;
+                    this.show_lev_modal = false;
                     this.getList();
+                }else{
+                    if(res && res.message !== ""){
+
+                    }
                 }
             })
         },
@@ -341,13 +345,14 @@ export default {
             this.$http({method,url,data}).then(res=>{
                 if(res && res.code==='200'){
                     this.$toast.success(res && res.message);
+                    this.show_del_modal=false;
                     this.getList();
                 }else{
                     if(res && res.message !==''){
-
                     }
                 }
             })
+            
         },
         levRule(){
             this.show_lev_rule=true;

@@ -20,7 +20,11 @@
         </div>
         <div class="table">
             <Table :headers="headers" :column="list">
+<<<<<<< HEAD
                 <template v-slot:item="{row}">
+=======
+                <template v-slot:item="{row}"> 
+>>>>>>> test
                     <td>{{row.a1}}</td>
                     <td>{{row.a2}}</td>
                     <td>{{row.a3}}</td>

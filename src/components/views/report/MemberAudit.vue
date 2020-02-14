@@ -5,11 +5,19 @@
       <ul class="left">
         <li>
           <span>会员账号</span>
+<<<<<<< HEAD
           <Input v-model="filter.account" />
         </li>
         <li>
           <span>会员ID</span>
           <Input v-model="filter.userid" />
+=======
+          <Input class="w90" v-model="filter.account" />
+        </li>
+        <li>
+          <span>会员ID</span>
+          <Input class="w90" v-model="filter.userid" />
+>>>>>>> test
         </li>
         <li>
           <span>生成日期</span>
@@ -19,7 +27,11 @@
         </li>
         <li>
           <span>状态</span>
+<<<<<<< HEAD
           <Select v-model="filter.user_state" :options="filter.user_state_opt"></Select>
+=======
+          <Select v-model="filter.user_state" :options="filter.user_state_opt" style="width:100px;"></Select>
+>>>>>>> test
         </li>
         <li>
           <button class="btn-blue" @click="getList()">查询</button>

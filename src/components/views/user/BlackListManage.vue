@@ -6,11 +6,19 @@
             <ul class="left">
                 <li>
                     <span>会员账号</span>
+<<<<<<< HEAD
                     <Input limit="en-num" v-model="filter.account" />
                 </li>
                 <li>
                     <span>会员ID</span>
                     <Input limit="en-num" v-model="filter.user_id" />
+=======
+                    <Input style="width:110px" limit="en-num" v-model="filter.mobile" />
+                </li>
+                <li>
+                    <span>会员ID</span>
+                    <Input style="width:110px" limit="en-num" v-model="filter.guid" />
+>>>>>>> test
                 </li>
                 <li>
                     <span>进入黑名单时间</span>
@@ -20,26 +28,30 @@
                 </li>
                 <li>
                     <span>进入黑名单次数</span>
+<<<<<<< HEAD
                     <Input limit="en-num" v-model="filter.times" />
+=======
+                    <Input style="width:110px" limit="en-num" v-model="filter.black_num" />
+>>>>>>> test
                 </li>
             </ul>
             <div class="right">
-                <button class="btn-blue" @click="search">查询</button>
+                <button class="btn-blue" @click="getList">查询</button>
                 <button class="btn-blue" @click="clearAll">清空</button>
             </div>
         </div>
         <div class="table">
             <Table :headers="headers" :column="list">
                 <template v-slot:item="{row}">
-                    <td>{{row.b}}</td>
-                    <td>{{row.a}}</td>
-                    <td>{{row.b}}</td>
-                    <td>{{row.b}}</td>
-                    <td>{{row.b}}</td>
-                    <td>{{row.c}}</td>
-                    <td>{{row.b}}</td>
-                    <td>{{row.d}}</td>
-                    <td>{{row.e}}</td>
+                    <td>{{row.mobile}}</td>
+                    <td>{{row.guid}}</td>
+                    <td>{{row.account}}</td>
+                    <td>{{row.register_time}}</td>
+                    <td>{{row.last_login_time}}</td>
+                    <td>{{row.create_at}}</td>
+                    <td>{{row.last_login_ip}}</td>
+                    <td>{{row.black_num}}</td>
+                    <td>{{row.remark}}</td>
                     <td>
                         <button class="btn-green" @click="turnOnUser">启用</button>
                         <button class="btn-blue" @click="dtlShow(row)">详情</button>
@@ -88,13 +100,13 @@ export default {
         return {
             quick_query: [],
             filter: {
-                account: '',
-                user_id: '',
+                mobile: '',
+                guid: '',
                 start_date: '',
                 end_date: '',
-                times: ''
+                black_num: ''
             },
-            user_id: '',
+            guid: '',
             headers: [
                 '会员账号',
                 '会员ID',
@@ -108,22 +120,7 @@ export default {
                 '操作'
             ],
 
-            list: [
-                {
-                    a: '13245678998',
-                    b: '100.00',
-                    c: '2019/11/02 12:30:23',
-                    d: '2019/12/15 12:12:00',
-                    e: '冻结'
-                },
-                {
-                    a: '1',
-                    b: '2',
-                    c: '192.168.1.1(中国.广州）',
-                    d: '2019/12/15 12:12:00',
-                    e: '冻结'
-                }
-            ],
+            list: [],
             total: 0,
             pageSize: 20,
             pageNo: 1,
@@ -146,15 +143,19 @@ export default {
             // 同步快捷查询时间
             this.quick_query = [this.filter.start_date, this.filter.end_date]
         },
-        search() {},
+        getList() {
+            let para={
+                
+            }
+        },
         clearAll() {
             console.log(this.filter)
             this.filter = {
-                account: '',
+                mobile: '',
                 user_id: '',
                 start_date: '',
                 end_date: '',
-                times: ''
+                black_num: ''
             }
         },
         updateNo(val) {},
@@ -169,7 +170,9 @@ export default {
             console.log('我确认了')
         }
     },
-    mounted() {}
+    mounted() {
+        this.getList()
+    }
 }
 </script>
 

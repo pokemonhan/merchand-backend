@@ -1,12 +1,19 @@
 <template>
     <div class="container">
+<<<<<<< HEAD
         <!-- 游戏报表 -->
 
+=======
+>>>>>>> test
         <div class="filter p10">
             <ul class="left">
                 <li>
                     <span>平台名称</span>
+<<<<<<< HEAD
                     <Input v-model="filter.account" />
+=======
+                    <Input class="w100" v-model="filter.account" />
+>>>>>>> test
                 </li>
                <li>
                    <span style="margin-left:10px ">起始时间</span>

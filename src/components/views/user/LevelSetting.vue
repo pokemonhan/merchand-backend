@@ -3,23 +3,24 @@
         <!-- 会员列表 -->
 
         <div>
-            <button class="btn-blue" @click="levModShow('add')">添加等级</button>
-            <button class="btn-blue" @click="show_rule_modal=true">晋级规则</button>
+            <button class="btn-blue" @click="addLev">添加等级</button>
+            <button class="btn-blue" @click="levRule">晋级规则</button>
         </div>
 
         <div class="table">
             <Table :headers="headers" :column="list">
-                <template v-slot:item="{row}">
-                    <td style="height:30px">{{row.b}}</td>
-                    <td>{{row.a}}</td>
-                    <td>{{row.b}}</td>
-                    <td>{{row.c}}</td>
-                    <td>{{row.d}}</td>
-                    <td>{{row.e}}</td>
+                <template v-slot:item="{row,idx}">
+                    <td style="height:30px">{{idx+1}}</td>
+                    <td>{{row.name}}</td>
+                    <td>{{row.experience_min}}~{{row.experience_max}}</td>
+                    <td>{{row.grade_gift}}</td>
+                    <td>{{row.week_gift}}</td>
+                    <td>{{row.updated_at}}</td>
                     <td>
-                        <span class="a" @click="levModShow('edit')">编辑</span>
-                        <span class="a" @click="showDeleteModal(row)">删除</span>
+                        <span class="a" @click="editLev(row)">编辑</span>
+                        <span class="a" @click="delLev(row)">删除</span>
                     </td>
+                    
                 </template>
             </Table>
             <Page
@@ -41,22 +42,22 @@
                     <ul class="form">
                         <li>
                             <span>等级名称</span>
-                            <Input class="w200" v-model="lev.lev_name" />
+                            <Input class="w200" v-model="lev.name"  />
                         </li>
 
                         <li>
                             <span>晋级经验:</span>
-                            <Input class="w88" v-model="lev.up_experience[0]" />
+                            <Input class="w88" v-model="lev.experience_min" limit='number'/>
                             <span style="margin:0 7px;">~</span>
-                            <Input class="w88" v-model="lev.up_experience[1]" />
+                            <Input class="w88" v-model="lev.experience_max" limit='number' />
                         </li>
                         <li>
-                            <span>晋升奖励:</span>
-                            <Input class="w200" v-model="lev.up_bonus" />
+                            <span>晋级奖励:</span>
+                            <Input class="w200" v-model="lev.grade_gift" limit='number'/>
                         </li>
                         <li>
                             <span>周奖励:</span>
-                            <Input class="w200" v-model="lev.week_bonus" />
+                            <Input class="w200" v-model="lev.week_gift" limit='number'/>
                         </li>
                         <li style="margin-top:30px;">
                             <button
@@ -64,18 +65,18 @@
                                 class="btn-plain-large"
                                 @click="show_lev_modal=false"
                             >取消</button>
-                            <button class="btn-blue-large" @click="editModalSave">保存</button>
+                            <button class="btn-blue-large" @click="diaCfm">保存</button>
                         </li>
                     </ul>
                 </div>
             </div>
         </div>
         <!-- 晋级规则_模态框 -->
-        <div class="modal-mask" v-if="show_rule_modal">
+        <div class="modal-mask" v-if="show_lev_rule">
             <div class="v-modal rule-mod">
                 <div class="mod-head">
-                    <span>添加账号 详情</span>
-                    <i class="iconfont iconcuowuguanbi-" @click="show_rule_modal=false"></i>
+                    <span>晋级规则</span>
+                    <i class="iconfont iconcuowuguanbi-" @click="show_lev_rule=false"></i>
                 </div>
                 <div class="mod-body center-box">
                     <ul class="rule">
@@ -83,7 +84,12 @@
                             <span>晋级方式:</span>
 
                             <span style="margin-left:10px;" class="flex">
-                                <Checkbox label="会员充值" v-model="rule.up_method[0]" @update="UpMethodHandle(0)" />
+                                <Checkbox 
+                                    label="会员充值" 
+                                    v-model="rule.up_method[0]" 
+                                    @update="UpMethodHandle(0)" 
+                                    />
+
                             </span>
                             <span style="margin-left:10px;" class="flex">
                                 <Checkbox
@@ -113,12 +119,12 @@
                         </li>
                         <li>
                             <span>充值金额:</span>
-                            <Input class="w200 ml-10" v-model="rule.recharge" />
+                            <Input class="w200 ml-10" v-model="rule.recharge"/>
                             <span class="ml-10">=</span>
                             <span>1经验</span>
                         </li>
                         <li>
-                            <span>充值金额:</span>
+                            <span>会员打码:</span>
                             <Input class="w200 ml-10" v-model="rule.code" />
                             <span class="ml-10">=</span>
                             <span>1经验</span>
@@ -126,7 +132,7 @@
                     </ul>
                     <div style="margin-top:50px;text-align:center;">
                         <button class="btn-plain-large mr100" @click="show_rule_modal=false">取消</button>
-                        <button class="btn-blue-large" @click="editModalSave">保存</button>
+                        <button class="btn-blue-large" @click="levRuleCfm">保存</button>
                     </div>
                 </div>
             </div>
@@ -155,84 +161,14 @@ export default {
             headers: [
                 { label: '编号' },
                 { label: '等级称号' },
-                { label: '晋级条件' },
+                { label: '晋级经验' },
                 { label: '晋级彩金' },
                 { label: '周奖励' },
                 { label: '修改时间' },
-                { label: '操作' }
+                { label: '操作' },
+                
             ],
-            list: [
-                {
-                    a: '1',
-                    b: 'VIP1',
-                    c: '0 ~ 1000',
-                    d: '----',
-                    e: '2019/12/15 12:12:00'
-                },
-                {
-                    a: '1',
-                    b: 'VIP1',
-                    c: '0 ~ 1000',
-                    d: '----',
-                    e: '2019/12/15 12:12:00'
-                },
-                {
-                    a: '1',
-                    b: 'VIP1',
-                    c: '0 ~ 1000',
-                    d: '----',
-                    e: '2019/12/15 12:12:00'
-                },
-                {
-                    a: '1',
-                    b: 'VIP1',
-                    c: '0 ~ 1000',
-                    d: '----',
-                    e: '2019/12/15 12:12:00'
-                },
-                {
-                    a: '1',
-                    b: 'VIP1',
-                    c: '0 ~ 1000',
-                    d: '----',
-                    e: '2019/12/15 12:12:00'
-                },
-                {
-                    a: '1',
-                    b: 'VIP1',
-                    c: '0 ~ 1000',
-                    d: '----',
-                    e: '2019/12/15 12:12:00'
-                },
-                {
-                    a: '1',
-                    b: 'VIP1',
-                    c: '0 ~ 1000',
-                    d: '----',
-                    e: '2019/12/15 12:12:00'
-                },
-                {
-                    a: '1',
-                    b: 'VIP1',
-                    c: '0 ~ 1000',
-                    d: '----',
-                    e: '2019/12/15 12:12:00'
-                },
-                {
-                    a: '1',
-                    b: 'VIP1',
-                    c: '0 ~ 1000',
-                    d: '----',
-                    e: '2019/12/15 12:12:00'
-                },
-                {
-                    a: '1',
-                    b: 'VIP1',
-                    c: '0 ~ 1000',
-                    d: '----',
-                    e: '2019/12/15 12:12:00'
-                }
-            ],
+            list: [],
             total: 0,
             pageNo: 1,
             pageSize: 25,
@@ -245,41 +181,123 @@ export default {
             ],
             show_lev_modal: false, // 添加编辑等级 _模态框
             lev_modal_name: '', // 添加编辑等级 _模态框
-            show_rule_modal: false, // 晋级规则_模态框
+            show_lev_rule: false, // 晋级规则_模态框
             /* ----------  form ------------ */
             lev: {
-                lev_name: '', // 等级名称
-                up_experience: [], // 晋级经验
-                up_bonus: '', // 晋升奖励
-                week_bonus: '' // 周奖励
+                
+                name: '', // 等级名称
+                experience_min: '',
+                experience_max: '',
+                grade_gift: '', // 晋升奖励
+                week_gift: '', // 周奖励
             },
             rule: {
-                up_method: [0, 0, 0],
+                up_method: [],
                 recharge_code: [],
                 recharge: '',
                 code: ''
             },
             /* 删除 */
-            show_del_modal: false
+            show_del_modal: false,
+            curr_row:{},
         }
     },
     methods: {
         updateNo(val) {},
         updateSize(val) {},
-        levModShow(status) {
-            this.show_lev_modal = true
-            this.lev_modal_name = status === 'add' ? '添加等级' : '编辑等级'
-            if (status === 'add') {
-                this.lev = {
-                    lev_name: '', // 等级名称
-                    up_experience: '', // 晋级经验
-                    up_bonus: '', // 晋升奖励
-                    week_bonus: '' // 周奖励
-                }
+        diaCfm(){
+            if(this.dia_status==="addLev"){
+                this.addCfm()
+            }
+            if(this.dia_status==="editLev"){
+                this.editCfm()
             }
         },
+        initLev(){
+            console.log('initial');
+            this.lev = {
+                name: '', // 等级名称
+                experience_min: '',
+                experience_max: '',
+                grade_gift: '', // 晋升奖励
+                week_gift: '', // 周奖励
+            };
+        },
+        checkLev(){
+            if(this.lev.name===''){
+                this.$toast.warning("等级名称不可为空");
+                return false;
+            }
+            if(this.lev.experience_min===''){
+                this.$toast.warning("最小晋级经验不能为空");
+                return false;
+            }
+            if(this.lev.experience_max===''){
+                this.$toast.warning("最大晋级经验不能为空");
+                return false;
+            }
+            return true
+        },
+        addLev() {
+           this.initLev();
+           this.lev_modal_name="添加等级";
+           this.dia_status="addLev";
+           this.show_lev_modal=true;
+        },
+        addCfm(){
+            if(!this.checkLev()) return;
+            console.log("lev",this.lev)
+            let data={
+                name:this.lev.name,
+                experience_min:this.lev.experience_min,
+                experience_max:this.lev.experience_max,
+                grade_gift:this.lev.grade_gift,
+                week_gift:this.lev.week_gift,
+            };
+            let{url,method}=this.$api.grade_add;
+            this.$http({method,url,data}).then(res=>{
+                if(res && res.code){
+                    this.$toast.success(res && res.message);
+                    this.show_lev_modal = false;
+                    this.getList();
+                }else{
+                    if(res && res.message !== ""){
+
+                    }
+                }
+            })
+        },
+        editLev(row){
+            this.lev_modal_name="编辑详情";
+            this.dia_status="editLev";
+            this.show_lev_modal=true;
+            this.lev=Object.assign({},row)
+        },
+        editCfm(){
+            
+            let data={
+                id:this.lev.id,
+                name: this.lev.name,
+                experience_min:this.lev.experience_min,
+                experience_max:this.lev.experience_max,
+                grade_gift:this.lev.grade_gift,
+                week_gift:this.lev.week_gift,
+            };
+            let{url,method}=this.$api.grade_set;
+            this.$http({method,url,data}).then(res=>{
+                if(res && res.code==='200'){
+                    this.$toast.success(res && res.message);
+                    this.show_lev_modal=false;
+                    this.getList();
+                }else{
+                    if(res && res.message !==""){
+                        this.$toast.error(res.message);
+                    }
+                }
+            })
+        },
         UpMethodHandle(val) {
-            // 0.充值会员, 1.会员打码 2.充值+打码
+            // 0.充值会员, 1.会员打码 2.充值+打码 
             switch (val) {
                 case 0:
                     this.rule.up_method[2] = false
@@ -297,16 +315,69 @@ export default {
             this.rule.up_method = this.rule.up_method
             this.rule = Object.assign({}, this.rule)
         },
-        showDeleteModal(row) {
+        // typOpt(){
+        //     let recharge=this.rule.up_method[0]
+        //     let bet=this.rule.up_method[1]
+        //     let rechargeAndBet=this.rule.up_method[2]
+        //     if(recharge && bet){
+        //         return 3
+        //     }else if(recharge){
+        //         return 1
+        //     }else if(bet){
+        //         return 2
+        //     }else if(rechargeAndBet){
+        //         return 4
+        //     }
+        //     return 99
+        //     console.log()
+        // },
+        delLev(row) {
             // console.log(row);
-            this.show_del_modal = true
+            this.show_del_modal = true;
+            this.curr_row=row;
         },
-        editModalSave() {},
         delConfirm() {
-            // console.log("我删除了.");
-        }
+            let data={
+                id:this.curr_row.id
+            }
+            console.log(data)
+            let{url,method}=this.$api.grade_del;
+            this.$http({method,url,data}).then(res=>{
+                if(res && res.code==='200'){
+                    this.$toast.success(res && res.message);
+                    this.show_del_modal=false;
+                    this.getList();
+                }else{
+                    if(res && res.message !==''){
+                    }
+                }
+            })
+            
+        },
+        levRule(){
+            this.show_lev_rule=true;
+        },
+        levRuleCfm(){
+            // let data={
+            //     type:this.rule.up_method;
+            //     recharge:this.rule.recharge_code
+            // }
+        },
+        getList(){
+            let data={
+
+            }
+            let{method,url}=this.$api.grade_list;
+            this.$http({method,url}).then(res=>{
+                if(res && res.code=='200'){
+                    this.list=res.data;
+                }
+            })
+        },
     },
-    mounted() {}
+    mounted() {
+        this.getList()
+    }
 }
 </script>
 

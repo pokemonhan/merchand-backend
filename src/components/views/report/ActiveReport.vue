@@ -1,12 +1,19 @@
 <template>
     <div class="container">
+<<<<<<< HEAD
         <!-- 活动报表 -->
         
+=======
+>>>>>>> test
         <div class="filter p10">
             <ul class="left">
                 <li>
                     <span>活动名称</span>
+<<<<<<< HEAD
                     <Input v-model="filter.acount" />
+=======
+                    <Input class="w100" v-model="filter.acount" />
+>>>>>>> test
                 </li>
                 <li>
                     <span>日期范围</span>

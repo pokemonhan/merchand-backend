@@ -5,16 +5,25 @@
             <ul class="left">
                 <li>
                     <span>会员账号</span>
+<<<<<<< HEAD
                     <Input v-model="filter.acount" />
                 </li>
                 <li>
                     <span>会员ID</span>
                     <Input v-model="filter.user_id" />
+=======
+                    <Input class="w100" v-model="filter.acount" />
+                </li>
+                <li>
+                    <span>会员ID</span>
+                    <Input class="w100" v-model="filter.user_id" />
+>>>>>>> test
                 </li>
                 <li>
                     <span>起止时间</span>
                     <Date v-model="filter.dates[0]" />
                     <span class="ph5">~</span>
+<<<<<<< HEAD
                     <Date v-model="filter.dates[1]" />
                 </li>
                 <li>
@@ -24,12 +33,23 @@
                         style="margin-left:10px;"
                         @click="exportExcel()"
                     >导出Excel</button>
+=======
+                    <Date v-model="filter.dates[1]"  />
+                </li>
+                <li>
+                    <button class="btn-blue">查询</button>
+                    <button class="btn-blue" style="margin-left:10px;" @click="exportExcel()">导出Excel</button>
+>>>>>>> test
                 </li>
             </ul>
         </div>
         <div class="table">
             <Table :headers="headers" :column="list">
+<<<<<<< HEAD
                 <template v-slot:item="{row}">
+=======
+                <template v-slot:item="{row}"> 
+>>>>>>> test
                     <td>{{row.a1}}</td>
                     <td>{{row.a2}}</td>
                     <td>{{row.a3}}</td>
@@ -59,6 +79,7 @@
 
 <script>
 export default {
+<<<<<<< HEAD
     data() {
         return {
             filter: {
@@ -82,6 +103,32 @@ export default {
             ],
             list: [
                 {
+=======
+  
+    data() {
+        return {
+            filter:{
+                account:'',
+                user_id:'',
+                dates:[],
+            },
+            headers:[
+              '日期',
+              '会员账号', 
+              '会员ID', 
+              '入款金额/笔数', 
+              '出款金额/笔数', 
+              '总投注/笔数', 
+              '优惠金额', 
+              '有效投注额', 
+              '佣金/返利', 
+              '活动金额', 
+              '游戏盈亏', 
+              '实际盈亏'  
+            ],
+            list:[
+              {
+>>>>>>> test
                     a1: '2019/10/30',
                     a2: '13245678942',
                     a3: '4563287',
@@ -94,7 +141,11 @@ export default {
                     a10: '500',
                     a11: '5000',
                     a12: '555'
+<<<<<<< HEAD
                 },
+=======
+                },  
+>>>>>>> test
                 {
                     a1: '2019/10/30',
                     a2: '13245678942',
@@ -108,6 +159,7 @@ export default {
                     a10: '500',
                     a11: '5000',
                     a12: '555'
+<<<<<<< HEAD
                 }
             ],
             total: 60,
@@ -149,6 +201,39 @@ export default {
     },
     mounted() {}
 }
+=======
+                } ,
+            ],
+            total:60,
+            pageNo:1,
+            pageSize:25,
+        };
+    },
+    methods: {
+        updateNo(val){},
+        updateSize(val){},
+        exportExcel(){
+            import('../../../js/config/Export2Excel').then(excel=>{
+                const tHeader=this.headers
+                const data=this.list.map(item=>{
+                    return[item.a1,item.a2,item.a3,item.a4,item.a5,item.a6,item.a7,item.a8,item.a9,item.a10,item.a11,item.a12,]
+                })
+                excel.export_json_to_excel({
+                    header:tHeader,
+                    data,
+                    filename:excel,
+                    autoWidth:true,
+                    bookType:'xlsx'
+                })
+            })
+        }
+
+    },
+    mounted() {
+       
+    },
+};
+>>>>>>> test
 </script>
 
 <style scoped>
@@ -156,10 +241,17 @@ export default {
     padding-left: 5px;
     padding-right: 5px;
 }
+<<<<<<< HEAD
 .p10 {
     padding: 10px;
 }
 .table {
+=======
+.p10{
+    padding: 10px;
+}
+.table{
+>>>>>>> test
     margin-top: 20px;
 }
 </style>

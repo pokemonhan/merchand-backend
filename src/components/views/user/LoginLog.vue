@@ -87,26 +87,28 @@ export default {
     methods: {
         updateNo(val) {},
         updateSize(val) {},
-        getList(){
-            let para={
-                mobile:this.filter.mobile,
-                uniqueld:this.filter.uniqueld,
-                createAt:[this.filter.dates[0],this.filter.dates[1]],
-                lastLoginIp:this.filter.lastLoginIp
+        getList() {
+            let para = {
+                mobile: this.filter.mobile,
+                uniqueld: this.filter.uniqueld,
+                createAt: [this.filter.dates[0], this.filter.dates[1]],
+                lastLoginIp: this.filter.lastLoginIp
             }
             let params = window.all.tool.rmEmpty(para)
-            let {method,url}=this.$api.user_login_log_list;
-            this.$http({method:method,url:url,params:params}).then(res=>{
-                console.log("res",res)
-                if(res && res.code=='200'){
-                    this.list=res.data
-                }else{
-                    if(res && res.message !==''){
-                        this.toast.error(res.message)
+            let { method, url } = this.$api.user_login_log_list
+            this.$http({ method: method, url: url, params: params }).then(
+                res => {
+                    console.log('res', res)
+                    if (res && res.code == '200') {
+                        this.list = res.data
+                    } else {
+                        if (res && res.message !== '') {
+                            this.toast.error(res.message)
+                        }
                     }
                 }
-            })
-        },
+            )
+        }
     },
     mounted() {
         this.getList()

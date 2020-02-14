@@ -5,19 +5,11 @@
             <ul class="left">
                 <li>
                     <span>会员账号</span>
-<<<<<<< HEAD
-                    <Input limit="en-num" v-model="filter.account" />
-                </li>
-                <li>
-                    <span>会员ID</span>
-                    <Input limit="en-num" v-model="filter.acc_id" />
-=======
                     <Input style="width:100px;" limit="en-num" v-model="filter.mobile" />
                 </li>
                 <li>
                     <span>会员ID</span>
                     <Input style="width:100px" limit="en-num" v-model="filter.uniqueld" />
->>>>>>> test
                 </li>
                 <li>
                     <span>登录日期</span>
@@ -27,11 +19,7 @@
                 </li>
                 <li>
                     <span>登录IP</span>
-<<<<<<< HEAD
-                    <Input limit="en-num" v-model="filter.login_ip" />
-=======
                     <Input style="width:100px" limit="en-num" v-model="filter.lastLoginIp" />
->>>>>>> test
                 </li>
             </ul>
             <div class="right">

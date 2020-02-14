@@ -80,17 +80,8 @@ export default {
 </script>
 
 <style scoped>
-<<<<<<< HEAD
-.table {
-    margin-top: 20px;
-}
-</style>
-=======
-    
-    
     
     .table{
         margin-top: 20px;
     }
 </style>
->>>>>>> test

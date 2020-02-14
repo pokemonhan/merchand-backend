@@ -6,19 +6,11 @@
                 <ul class="left">
                     <li>
                         <span>会员账号</span>
-<<<<<<< HEAD
-                        <Input v-model="filter.account" />
-                    </li>
-                    <li>
-                        <span>会员ID</span>
-                        <Input v-model="filter.userid" />
-=======
                         <Input class="w100" v-model="filter.account" />
                     </li>
                     <li>
                         <span>会员ID</span>
                         <Input class="w100" v-model="filter.userid" />
->>>>>>> test
                     </li>
                     <li>
                         <span>派彩时间</span>
@@ -28,11 +20,7 @@
                     </li>
                     <li>
                         <span>派彩状态</span>
-<<<<<<< HEAD
-                        <Select v-model="filter.payOut_status" :options="filter.user_payOut_status" ></Select>
-=======
                         <Select v-model="filter.payOut_status" :options="filter.user_payOut_status" style="width:100px;" ></Select>
->>>>>>> test
                     </li>
                 </ul>
             </div>
@@ -40,19 +28,11 @@
                 <ul class="left">
                     <li>
                         <span>游戏平台</span>
-<<<<<<< HEAD
-                        <Input  v-model="filter.gaming" />
-                    </li>
-                    <li>
-                        <span>注单号</span>
-                        <Input  v-model="filter.order_num" />
-=======
                         <Input class="w100" v-model="filter.gaming" />
                     </li>
                     <li>
                         <span>注单号</span>
                         <Input class="w100" v-model="filter.order_num" />
->>>>>>> test
                     </li>
                     <li>
                         <span>注单时间</span>

@@ -6,19 +6,11 @@
             <ul class="left">
                 <li>
                     <span>会员账号</span>
-<<<<<<< HEAD
-                    <Input limit="en-num" v-model="filter.account" />
-                </li>
-                <li>
-                    <span>会员ID</span>
-                    <Input limit="en-num" v-model="filter.user_id" />
-=======
                     <Input style="width:110px" limit="en-num" v-model="filter.mobile" />
                 </li>
                 <li>
                     <span>会员ID</span>
                     <Input style="width:110px" limit="en-num" v-model="filter.guid" />
->>>>>>> test
                 </li>
                 <li>
                     <span>进入黑名单时间</span>
@@ -28,11 +20,7 @@
                 </li>
                 <li>
                     <span>进入黑名单次数</span>
-<<<<<<< HEAD
-                    <Input limit="en-num" v-model="filter.times" />
-=======
                     <Input style="width:110px" limit="en-num" v-model="filter.black_num" />
->>>>>>> test
                 </li>
             </ul>
             <div class="right">

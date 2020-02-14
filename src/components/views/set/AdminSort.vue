@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 <template>
     <div class="container">
         <div class="filter p10">
@@ -565,5 +564,3 @@ export default {
     margin-top: 20px;
 }
 </style>
-=======
->>>>>>> test

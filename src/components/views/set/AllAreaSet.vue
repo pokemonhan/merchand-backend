@@ -1,6 +1,5 @@
 <template>
     <div class="container">
-<<<<<<< HEAD
         <!-- 全域设置 -->
         <div class="head-set">
             <div class="set-label">设置选项:</div>
@@ -309,30 +308,4 @@ export default {
     display: flex;
     justify-content: center;
 }
-=======
-        <div class="filter">
-            <span style="font-size:18px;font-weight:bold">设定选项</span>
-            <button></button>
-        </div>
-    </div>
-</template>
-
-<script>
-export default {
-    data(){
-        return{
-
-        }
-    },
-    methods:{
-
-    },
-    mounted(){
-
-    },
-}
-</script>
-<style scoped>
-
->>>>>>> test
 </style>

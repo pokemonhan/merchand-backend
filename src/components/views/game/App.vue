@@ -35,7 +35,7 @@
                     >{{row.status===1?'开启':row.status===0?'关闭':'???'}}</td>
                     <td>{{row.a1}}</td>
                     <td>
-                        <button class="btns-blue">上移</button>
+                        <button class = "btns-blue">上移</button>
                         <button class="btns-blue">下移</button>
                     </td>
                     <td>

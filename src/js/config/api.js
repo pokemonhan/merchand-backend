@@ -7,6 +7,12 @@ export default {
      * 查  list
      *
      */
+    /*=========================== 公共分类 ===========================--*/
+    // 公共分类 - 上传图片-保存至书库，获取图片存储路径
+    update_picture_database: {
+        url: '/merchant-api/upload',
+        method:'post'
+    },
 
     /*=========================== 登录登出 ===========================--*/
 
@@ -187,6 +193,11 @@ export default {
     // 游戏列表 - 公用接口 - 设置游戏是否推荐
     game_recommend: {
         url: '/merchant-api/game/recommend',
+        method: 'post',
+    },
+    // 游戏列表 - 公用接口 - 图片上传
+    picture_update: {
+        url:'/merchant-api/game/upload',
         method: 'post',
     },
 

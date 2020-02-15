@@ -30,8 +30,8 @@ export default {
     data() {
         return {
             buttons: [],
-            curr_type_id: '',
-            isHot: true
+            curr_type_id: '', // TODO  ''
+            isHot: true // TODO => TRUE
         }
     },
     methods: {

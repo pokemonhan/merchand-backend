@@ -27,30 +27,52 @@
                 <template v-slot:item="{row}">
                     <td>{{row.vendor && row.vendor.name}}</td>
                     <td>{{row.games && row.games.name}}</td>
-                    <td>{{row.icon}}</td>
+                    <td>
+                        <img
+                            :src="protocol+'//pic.jianghu.local/'+row.icon"
+                            alt
+                            style="max-width:100px;max-height:100px"
+                        />
+                    </td>
                     <td>
                         {{row.sort}}
-                        <button class="btns-blue">上移</button>
-                        <button class="btns-blue">下移</button>
+                        <button class="btns-blue" @click="moveUp(row.sort)">上移</button>
+                        <button class="btns-blue" @click="moveDown(row.sort)">下移</button>
                     </td>
                     <td>
-                        <Switchbox class="switch-select" :value="row.is_maintain"  @update="switchMaintain($event,row)" />
+                        <Switchbox
+                            class="switch-select"
+                            :value="row.is_maintain"
+                            @update="switchMaintain($event,row)"
+                        />
                     </td>
                     <td>
-                        <Switchbox class="switch-select" :value="row.status" @update="switchStatus($event,row)" />
+                        <Switchbox
+                            class="switch-select"
+                            :value="row.status"
+                            @update="switchStatus($event,row)"
+                        />
                     </td>
                     <td>
-                        <Switchbox class="switch-select" :value="row.is_hot" @update="switchHot($event,row)" />
+                        <Switchbox
+                            class="switch-select"
+                            :value="row.is_hot"
+                            @update="switchHot($event,row)"
+                        />
                     </td>
                     <td>
-                        <Switchbox class="switch-select" :value="row.is_recommend" @update="switchRecommend($event,row)" />
+                        <Switchbox
+                            class="switch-select"
+                            :value="row.is_recommend"
+                            @update="switchRecommend($event,row)"
+                        />
                     </td>
                     <td>
                         <Upload
                             style="width:100px;margin:0 auto;"
                             title="上传图片"
-                            @change="upPicChange"
-                            type='file'
+                            @change="upPicChange($event, row)"
+                            type="file"
                         />
                     </td>
                 </template>
@@ -73,6 +95,7 @@ export default {
     },
     data() {
         return {
+            protocol: window.location.protocol,
             select: {},
             plant_opt: [],
             status_opt: [
@@ -100,7 +123,7 @@ export default {
             total: 0,
             pageNo: 1,
             pageSize: 25,
-            basket:[],//图片路径
+            basket: []
         };
     },
 
@@ -132,57 +155,57 @@ export default {
             });
             return all.concat(back_list);
         },
-        switchMaintain(val,row){
-            let data={
-               id:row. id,
-               is_maintain:val ? 1 : 0
-            }
-            let{url,method}=this.$api.game_maintain_list
-            this.$http({method,url,data}).then(res=>{
-                if(res && res.code==='200'){
-                    this.$toast.success(res && res.message)
-                    this.getList()
+        switchMaintain(val, row) {
+            let data = {
+                id: row.id,
+                is_maintain: val ? 1 : 0
+            };
+            let { url, method } = this.$api.game_maintain_list;
+            this.$http({ method, url, data }).then(res => {
+                if (res && res.code === "200") {
+                    this.$toast.success(res && res.message);
+                    this.getList();
                 }
-            })
+            });
         },
-        switchStatus(val,row){
-            let data={
-                id:row.id,
-                status:val ? 1 : 0
-            }
-            let{url,method}=this.$api.game_status
-            this.$http({method,url,data}).then(res=>{
-                if(res && res.code==='200'){
-                    this.$toast.success(res && res.message)
-                    this.getList()
+        switchStatus(val, row) {
+            let data = {
+                id: row.id,
+                status: val ? 1 : 0
+            };
+            let { url, method } = this.$api.game_status;
+            this.$http({ method, url, data }).then(res => {
+                if (res && res.code === "200") {
+                    this.$toast.success(res && res.message);
+                    this.getList();
                 }
-            })
+            });
         },
-        switchHot(val,row){
-            let data={
-                id:row.id,
-                is_hot:val ? 1 : 0
-            }
-            let{url,method}=this.$api.game_hot_set
-            this.$http({method,url,data}).then(res=>{
-                if(res && res.code==='200'){
-                    this.$toast.success(res && res.message)
-                    this.getList()
+        switchHot(val, row) {
+            let data = {
+                id: row.id,
+                is_hot: val ? 1 : 0
+            };
+            let { url, method } = this.$api.game_hot_set;
+            this.$http({ method, url, data }).then(res => {
+                if (res && res.code === "200") {
+                    this.$toast.success(res && res.message);
+                    this.getList();
                 }
-            })
+            });
         },
-        switchRecommend(val,row){
-            let data={
-                id:row.id,
-                is_recommend:val ? 1 : 0
-            }
-            let{url,method}=this.$api.game_recommend
-            this.$http({method,url,data}).then(res=>{
-                if(res && res.code==='200'){
-                    this.$toast.success(res && res.message)
-                    this.getList()
+        switchRecommend(val, row) {
+            let data = {
+                id: row.id,
+                is_recommend: val ? 1 : 0
+            };
+            let { url, method } = this.$api.game_recommend;
+            this.$http({ method, url, data }).then(res => {
+                if (res && res.code === "200") {
+                    this.$toast.success(res && res.message);
+                    this.getList();
                 }
-            })
+            });
         },
         getList() {
             let para = {
@@ -198,7 +221,7 @@ export default {
 
             let { url, method } = this.$api.game_h5_list;
             this.$http({ method, url, params }).then(res => {
-                // console.log('列表👌👌👌👌: ', res)
+                console.log("列表👌👌👌👌: ", res);
                 if (res && res.code === "200") {
                     this.total = res.data.length;
                     this.list = res.data;
@@ -209,25 +232,53 @@ export default {
                 }
             });
         },
-        getPicPath(){
-            
-        },
-        upPicChange() {
-            let data={
-                id:this.row.id,
-                icon
-            }
-            let{url,method}=this.$api.picture_update
-            this.$http({method,url,data}).then(res=>{
-                if(res && res.code=='200'){
-                    console.log(res)
-                    this.$toast.success(res && res.message)
-                    this.getList()
+        upPicChange(e, row) {
+            console.log("row: ", row);
+            console.log("event: ", e);
+            let reader = new FileReader();
+            let pic = e.target.files[0];
+            let basket = "GameManagement/H5GamePicture";
+            var icon = "";
+            let form = new FormData();
+            form.append("file", pic, pic.name);
+            form.append("basket", basket);
+            let { url, method } = this.$api.update_picture_database;
+            let data = form;
+            let headers = { "Content-Type": "multipart/form-data" };
+            this.$http({ method, url, data, headers }).then(res => {
+                if (res && res.code == "200") {
+                    // returnData=res.data
+                    this.updatePicture(res.data, row.id);
                 }
-            })
+            });
+        },
+        updatePicture(data, id) {
+            console.log("id: ", id);
+            if (!data) return;
+            console.log(data);
+            let para = {
+                id: id,
+                icon: data.path
+            };
+            console.log(para);
+            let { url, method } = this.$api.picture_update;
+            this.$http({ method, url, data: para }).then(res => {
+                console.log("res", res);
+                // TODO
+                this.getList();
+            });
         },
         updateNo(val) {},
-        updateSize(val) {}
+        updateSize(val) {},
+        moveUp() {
+            
+        },
+        moveDown() {
+            
+        },
+        swapNode() {
+
+        },
     },
     watch: {
         type_id(to, from) {
@@ -242,6 +293,7 @@ export default {
         }
         this.getList();
         this.getSelectOpt();
+        // this.upPicChange();
     }
 };
 </script>

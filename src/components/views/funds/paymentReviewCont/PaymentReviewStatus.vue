@@ -46,11 +46,11 @@
                          <td :class="status_obj[status].color">{{status_obj[status].text}}</td>
                          <td>申请时间</td>
                          <td>{{'2019/02/24 23:00:00'}}</td>
-                         <td>操作时间</td>
+                         <td>审核时间</td>
                          <td>{{'50'}}</td>
                      </tr>
                      <tr>
-                         <td>操作人:</td>
+                         <td>审核人:</td>
                          <td colspan="5">{{'13245689654'}}</td>
                          
                      </tr>

@@ -195,6 +195,11 @@ export default {
         url: '/merchant-api/game/recommend',
         method: 'post',
     },
+    //游戏列表-公用接口-排序
+    game_order:{
+        url:'/merchant-api/game/sort',
+        method:'post'
+    },
     // 游戏列表 - 公用接口 - 图片上传
     picture_update: {
         url:'/merchant-api/game/upload',

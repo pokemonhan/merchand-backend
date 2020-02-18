@@ -18,13 +18,13 @@
                 </li>
                 <li>
                     <button class="btn-blue" @click="getList">查询</button>
-                    <button class="btn-blue">确定</button>
+                    <button class="btn-blue" @click="sortCfm">确定</button>
                 </li>
             </ul>
         </div>
         <div class="table mt20">
             <Table :headers="headers" :column="list">
-                <template v-slot:item="{row}">
+                <template v-slot:item="{row,idx}">
                     <td>{{row.vendor && row.vendor.name}}</td>
                     <td>{{row.games && row.games.name}}</td>
                     <td>
@@ -36,8 +36,8 @@
                     </td>
                     <td>
                         {{row.sort}}
-                        <button class="btns-blue" @click="moveUp(row.sort)">上移</button>
-                        <button class="btns-blue" @click="moveDown(row.sort)">下移</button>
+                        <button class="btns-blue" @click="move(row,idx,'moveUp')">上移</button>
+                        <button class="btns-blue" @click="move(row,idx,'moveDown')">下移</button>
                     </td>
                     <td>
                         <Switchbox
@@ -143,6 +143,33 @@ export default {
                 }
             });
         },
+        // 排序确认 提交
+        sortCfm() {
+            let length = this.list && this.list.length;
+            if (!length) return;
+            let param = this.list.map((item, index) => {
+                return {
+                    id: item.id,
+                    sort: length - index
+                };
+            });
+            param = JSON.stringify(param);
+            let data = {
+                sorts: param
+            };
+            // console.log("想要的数据", data);
+            this.$http({
+                method: this.$api.game_order.method,
+                url: this.$api.game_order.url,
+                data: data
+            }).then(res => {
+                if (res && res.code == "200") {
+                    // console.log("我成功啦", res);
+                    alert("执行成功")
+                    this.getList();
+                }
+            });
+        },
         backToSelOpt(list = []) {
             let all = [
                 {
@@ -219,7 +246,7 @@ export default {
             // console.log(para);
             let params = window.all.tool.rmEmpty(para);
 
-            let { url, method } = this.$api.game_h5_list;
+            let { url, method } = this.$api.game_pc_list;
             this.$http({ method, url, params }).then(res => {
                 console.log("列表👌👌👌👌: ", res);
                 if (res && res.code === "200") {
@@ -270,15 +297,28 @@ export default {
         },
         updateNo(val) {},
         updateSize(val) {},
-        moveUp() {
-            
-        },
-        moveDown() {
-            
-        },
-        swapNode() {
+        /**
+         * @param {string} row 后端的排序
+         * @param {string} index 前端的排序
+         * @param {stirng} moveUp ,moveDown 上移或者下移
+         * @param {stirng} moveUp ,moveDown 上移或者下移
+         */
+        move(row, index, moving) {
+            if (index === 0 && moving === "moveUp") return;
+            if (index === this.list.length - 1 && moving === "moveDown") return;
+            let mov = moving === "moveUp" ? -1 : 1;
+            console.log("执行");
 
-        },
+            if (moving === "moveUp") {
+                this.list.splice(index, 1);
+                this.list.splice(index + mov, 0, row);
+            } else {
+                this.list.splice(index, 1);
+                this.list.splice(index + mov, 0, row);
+            }
+            this.list = this.list.slice();
+            // console.log("菜单‘，", this.list);
+        }
     },
     watch: {
         type_id(to, from) {
@@ -293,7 +333,6 @@ export default {
         }
         this.getList();
         this.getSelectOpt();
-        // this.upPicChange();
     }
 };
 </script>

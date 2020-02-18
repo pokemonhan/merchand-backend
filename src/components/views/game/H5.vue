@@ -20,8 +20,8 @@
 </template>
 
 <script>
-import HotGame from './TypeDetail/HotGame.vue'
-import TypeGame from './TypeDetail/TypeGame.vue'
+import HotGame from './H5GameTypeDetail/HotGame.vue'
+import TypeGame from './H5GameTypeDetail/TypeGame.vue'
 export default {
     components: {
         HotGame,

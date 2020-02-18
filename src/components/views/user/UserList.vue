@@ -397,7 +397,7 @@
                     </span>
                     <div class="btns">
                         <button class="btn-plain-large mr50" @click="show_add_black_list=false">取消</button>
-                        <button class="btn-blue-large">确认</button>
+                        <button class="btn-blue-large" @click="addBlackListCfm()">确认</button>
                     </div>
                 </div>
             </div>
@@ -491,6 +491,9 @@ export default {
         },
         addBlackList() {
             this.show_add_black_list = true
+        },
+        addBlackListCfm(){
+            
         },
         closeUserList() {
             this.show_detail = false

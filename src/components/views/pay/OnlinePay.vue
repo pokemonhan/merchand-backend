@@ -6,11 +6,11 @@
             <ul class="left">
                 <li>
                     <span>商户号</span>
-                    <Input class="w100" v-model="filter.merchant_num" />
+                    <Input v-model="filter.merchant_num" />
                 </li>
                 <li>
                     <span>创建人</span>
-                    <Input class="w100" v-model="filter.person" />
+                    <Input v-model="filter.person" />
                 </li>
                 <li>
                     <span>添加日期</span>
@@ -20,11 +20,11 @@
                 </li>
                 <li>
                     <span>前端名称</span>
-                    <Input class="w100" v-model="filter.front_name" />
+                    <Input v-model="filter.front_name" />
                 </li>
                 <li>
                     <span>商户编号</span>
-                    <Input class="w100" v-model="filter.merchant_code" />
+                    <Input v-model="filter.merchant_code" />
                 </li>
             </ul>
         </div>
@@ -32,13 +32,13 @@
             <ul class="left">
                 <li>
                     <span>更新人</span>
-                    <Input class="w100" v-model="filter.update_person" />
+                    <Input v-model="filter.update_person" />
                 </li>
                 <li>
                     <span>更新日期</span>
-                    <Input class="w100" v-model="filter.update_dates[0]" />
+                    <Input v-model="filter.update_dates[0]" />
                     <span class="mv5">~</span>
-                    <Input class="w100" v-model="filter.update_dates[1]" />
+                    <Input v-model="filter.update_dates[1]" />
                 </li>
                 <li>
                     <button class="btn-blue">查询</button>

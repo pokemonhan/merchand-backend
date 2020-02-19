@@ -14,7 +14,7 @@
 
 <script>
 export default {
-    name: "Toast",
+    name: 'Toast',
     props: {
         message: {
             type: String,
@@ -22,7 +22,7 @@ export default {
         },
         type: {
             type: String,
-            default: () => "info"
+            default: () => 'info'
         },
         duration: {
             type: Number,
@@ -32,15 +32,15 @@ export default {
     data() {
         return {
             show: false
-        };
+        }
     },
     mounted() {
-        this.show = true;
-        setTimeout( ()=>{
+        this.show = true
+        setTimeout(() => {
             this.show = false
-        }, this.duration-400)
+        }, this.duration - 400)
     }
-};
+}
 </script>
 
 <style scoped>

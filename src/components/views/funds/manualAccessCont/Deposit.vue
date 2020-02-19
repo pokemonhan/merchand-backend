@@ -7,11 +7,11 @@
             <ul class="left">
                 <li>
                     <span>会员账号</span>
-                    <Input class="w100" limit="en-num" v-model="filter.account" />
+                    <Input limit="en-num" v-model="filter.account" />
                 </li>
                 <li>
                     <span>会员ID</span>
-                    <Input class="w100" limit="en-num" v-model="filter.account_id" />
+                    <Input limit="en-num" v-model="filter.account_id" />
                 </li>
                 <li>
                     <span>充值时间</span>
@@ -205,9 +205,7 @@ export default {
 .left li{
     margin-top: 10px;
 }
-.w100{
-    width: 100px;
-}
+
 .dia-inner{
     width: 700px;
     height: 350px;
@@ -226,9 +224,9 @@ export default {
     text-align: right;
     margin-right: 10px;
 }
-.w250{
+/* .w250{
     width: 250px;
-}
+} */
 .dia-buttons{
     margin-top: 50px;
     text-align: center;

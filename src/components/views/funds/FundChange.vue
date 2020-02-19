@@ -6,23 +6,23 @@
             <ul class="left">
                 <li>
                     <span>会员账号</span>
-                    <Input limit="en-num" class="w100" v-model="filter.account" />
+                    <Input limit="en-num" v-model="filter.account" />
                 </li>
                 <li>
                     <span>会员ID</span>
-                    <Input limit="en-num" class="w100" v-model="filter.userid" />
+                    <Input limit="en-num" v-model="filter.userid" />
                 </li>
                 <li>
                     <span>账变时间</span>
-                    <Date style="width:100px;" v-model="filter.date[0]" @update="timeUpdate()"/>
+                    <Date v-model="filter.date[0]" @update="timeUpdate()"/>
                  
                     <span style="margin:0 5px;">~</span>
-                    <Date style="width:100px;" v-model="filter.date[1]" @update="timeUpdate()" />
+                    <Date v-model="filter.date[1]" @update="timeUpdate()" />
 
                 </li>
                 <li>
                     <span>账变类型</span>
-                    <Select style="width:100px;" v-model="filter.status" :options="acc_change_opt"></Select>
+                    <Select v-model="filter.status" :options="acc_change_opt"></Select>
                 </li>
                     <button class="btn-blue">查询</button>
                     <button class="button-export">导出Excel</button>

@@ -14,7 +14,7 @@
             <ul class="left">
                 <li>
                     <span>分类名称</span>
-                    <Input class="w100" v-model="filter.sort" />
+                    <Input v-model="filter.sort" />
                 </li>
                 <li>
                     <span>启用状态</span>
@@ -101,9 +101,7 @@ export default {
     }
 }
 </script> <style scoped>
-.w100 {
-    width: 100px;
-}
+
 /* .p10 全局样式 */
 .switch-select {
     transform: scale(0.8);

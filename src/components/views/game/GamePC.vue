@@ -11,7 +11,7 @@
                 @click="selectBtn(item)"
             >{{item.name}}</button>
         </div>
-      
+
         <div class="hot-game">
             <HotGame v-if="isHot" />
             <TypeGame v-else :type_id="curr_type_id" />
@@ -64,7 +64,7 @@ export default {
                     // this.getList()
                 }
             })
-        },
+        }
         // updateNo(val) {},
         // updateSize(val) {}
     },

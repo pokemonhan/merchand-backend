@@ -14,9 +14,9 @@
                 </li>
                 <li>
                     <span>进入黑名单时间</span>
-                    <Date style="width:95px;" v-model="filter.start_date" @update="timeUpdate()" />
+                    <Date v-model="filter.start_date" @update="timeUpdate()" />
                     <span style="margin:0 5px;">~</span>
-                    <Date style="width:95px;" v-model="filter.end_date" @update="timeUpdate()" />
+                    <Date v-model="filter.end_date" @update="timeUpdate()" />
                 </li>
                 <li>
                     <span>进入黑名单次数</span>

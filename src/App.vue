@@ -375,12 +375,10 @@ button:hover {
 
 .filter {
     display: flex;
-    /* line-height: 30px; */
     align-items: center;
     justify-content: space-between;
     /* white-space: nowrap; */
     font-size: 13px;
-    /* line-height: 30px; */
     background: #f2f2f2;
 }
 
@@ -395,7 +393,11 @@ button:hover {
     align-items: center;
     margin-right: 10px;
 }
-
+.filter .v-input,
+.filter .v-date-picker,
+.filter .v-select {
+    width: 8.3rem;
+}
 .filter .left > li > span:first-child {
     margin-right: 4px;
 }
@@ -454,6 +456,10 @@ button:hover {
 .w100 {
     width: 100px;
 }
+.w200 {
+    width: 200px;
+    
+}
 .w250 {
     width: 250px;
 }
@@ -462,6 +468,13 @@ button:hover {
 }
 .mt20 {
     margin-top: 20px;
+}
+.ph5 {
+    padding-left: 5px;
+    padding-right: 5px;
+}
+.mr10 {
+    margin-right: 10px;
 }
 .mr20 {
     margin-right: 20px;
@@ -477,6 +490,9 @@ button:hover {
 }
 .ml20 {
     margin-left: 20px;
+}
+.ml50 {
+    margin-left: 50px;
 }
 .mv5 {
     margin-left: 5px;

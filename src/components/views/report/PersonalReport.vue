@@ -55,7 +55,6 @@
 
 <script>
 export default {
-  
     data() {
         return {
             filter:{
@@ -107,7 +106,7 @@ export default {
                     a12: '555'
                 } ,
             ],
-            total:60,
+            total:0,
             pageNo:1,
             pageSize:25,
         };

@@ -6,11 +6,11 @@
             <ul class="left filter-item">
                 <li>
                     <span>会员账号</span>
-                    <Input limit="en-num" style="width:100px" v-model="filter.account" />
+                    <Input limit="en-num" v-model="filter.account" />
                 </li>
                 <li>
                     <span>会员ID</span>
-                    <Input limit="en-num" class="w100" v-model="filter.acc_id" />
+                    <Input limit="en-num" v-model="filter.acc_id" />
                 </li>
                 <li>
                     <span>审核时间</span>
@@ -20,11 +20,11 @@
                 </li>
                 <li>
                     <span>审核人</span>
-                    <Input class="w100" v-model="filter.auditor" />
+                    <Input v-model="filter.auditor" />
                 </li>
                 <li>
                     <span>操作人</span>
-                    <Input class="w100" v-model="filter.operator" />
+                    <Input v-model="filter.operator" />
                 </li>
               
                 <li>
@@ -33,7 +33,7 @@
                 </li>
                 <li>
                     <span>订单号</span>
-                    <Input class="w100" v-model="filter.order_id" />
+                    <Input v-model="filter.order_id" />
                 </li>
               
                 <li>

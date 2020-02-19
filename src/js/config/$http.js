@@ -2,10 +2,20 @@
 import axios from 'axios'
 import router from '../router'
 
-// isPro = process.env.NODE_ENV==='process.env.NODE_ENV'
-const BASE_PATH = location.protocol + '//api.jianghu.local'
-// const BASE_PATH = '/api'
+// 如果指令是 [npm run build --  inner]  那么inner 就是 HOST的内容 
+// ps:默认为 inner。  prod.env.js中设置
+let HOST = process.env.HOST
 
+let hostList = {
+    inner: location.protocol + '//api.jianghu.local',    // 测试站内网
+    outer: location.protocol + '//api.397017.com',       // 测试外围
+    harris: location.protocol + '//api.jianghu.me',      // harris
+    ethan: location.protocol + '//api.jianghu.ethan',    // ethan
+}
+// 有数据,但匹配不到就直接使用HOST地址 
+const BASE_PATH = hostList[HOST] || HOST
+// const BASE_PATH = hostList[HOST]
+// console.log('BASE_PATH: ', process.env);
 let http = axios.create({
     baseURL: BASE_PATH,
     timeout: 10000,
@@ -24,16 +34,9 @@ let http = axios.create({
         return status >= 100 && status <= 600;
     },
 })
-// let data={
-//     a:'a',
-//     b: 'b',
-// }
-// http.post('/merchant-api/login',data).then(res=>{
-//     console.log('res: ', res);
 
-// })
+
 // 请求预设 ---
-
 http.interceptors.request.use(req => {
     let Authorization = window.all.tool.getLocal('Authorization')
     // let expires = new Date(window.all.tool.getLocal('expires_at')).getTime()

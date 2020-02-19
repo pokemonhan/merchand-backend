@@ -8,7 +8,7 @@
                 </li>
                 <li>
                     <span>公告标题</span>
-                    <Input class="w100" v-model="filter.header" />
+                    <Input v-model="filter.header" />
                 </li>
                 <li>
                     <button class="btn-blue">查询</button>

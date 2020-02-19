@@ -903,16 +903,20 @@ export default {
     user-select: none;
 }
 .date {
-    width: 110px;
+    /* width: 110px; */
+    min-width: 110px;
 }
 .datetime {
-    width: 160px;
+    /* width: 160px; */
+    min-width: 160px;
 }
 .daterange {
-    width: 180px;
+    /* width: 180px; */
+    min-width: 180px;
 }
 .datetimerange {
-    width: 280px;
+    /* width: 280px; */
+    min-width: 280px;
 }
 /* .v-date-picker .date-str {
     font-size: 12px;

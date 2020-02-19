@@ -392,7 +392,7 @@ export default {
     display: none;
     width: 100px;
     position: absolute;
-    right: -23px;
+    right: -10px;
     top: 40px;
     border-radius: 3px;
     box-shadow: 1px 1px 3px 1px rgba(0, 0, 0, 0.212);
@@ -441,9 +441,7 @@ export default {
 .w250 {
     width: 250px;
 }
-.w100 {
-    width: 100px;
-}
+
 .err-tips {
     position: absolute;
     top: 31px;

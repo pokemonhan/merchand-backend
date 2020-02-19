@@ -20,8 +20,8 @@
 </template>
 
 <script>
-import HotGame from './H5GameTypeDetail/HotGame.vue'
-import TypeGame from './H5GameTypeDetail/TypeGame.vue'
+import HotGame from './TypeDetail/HotGame.vue'
+import TypeGame from './TypeDetail/TypeGame.vue'
 export default {
     components: {
         HotGame,
@@ -30,8 +30,8 @@ export default {
     data() {
         return {
             buttons: [],
-            curr_type_id: '', // TODO  ''
-            isHot: true // TODO => TRUE
+            curr_type_id: '',
+            isHot: true
         }
     },
     methods: {
@@ -64,7 +64,7 @@ export default {
                     // this.getList()
                 }
             })
-        },
+        }
         // updateNo(val) {},
         // updateSize(val) {}
     },

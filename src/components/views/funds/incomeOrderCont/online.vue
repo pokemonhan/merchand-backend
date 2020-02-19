@@ -9,17 +9,17 @@
                 </li>
                 <li>
                     <span>会员ID</span>
-                    <Input style="width:110px" limit="en-num" v-model="filter.acc_id" />
+                    <Input limit="en-num" v-model="filter.acc_id" />
                 </li>
                 <li>
                     <span>时间范围</span>
-                    <Date style="width:110px" v-model="filter.start_date" @update="timeUpdate()" />
+                    <Date v-model="filter.start_date" @update="timeUpdate()" />
                     <span style="margin:0 5px;">~</span>
-                    <Date style="width:110px" v-model="filter.end_date" @update="timeUpdate()" />
+                    <Date v-model="filter.end_date" @update="timeUpdate()" />
                 </li>
                 <li>
                     <span>商户号</span>
-                    <Input style="width:110px" limit="number" v-model="filter.vendor_num" />
+                    <Input limit="number" v-model="filter.vendor_num" />
                 </li>
                 <li>
                     <span>支付状态</span>
@@ -28,7 +28,7 @@
 
                 <li>
                     <span>支付方式</span>
-                    <Select style="width:100px" v-model="filter.pay_way" :options="pay_way_opt"></Select>
+                    <Select v-model="filter.pay_way" :options="pay_way_opt"></Select>
                 </li>
                 <li>
                     <span>正式账号</span>
@@ -39,19 +39,19 @@
                 </li>
                 <li>
                     <span>系统订单号</span>
-                    <Input style="width:110px" limit="en-num" v-model="filter.system_id" />
+                    <Input limit="en-num" v-model="filter.system_id" />
                 </li>
                 <li>
                     <span>商户订单号</span>
-                    <Input style="width:110px" limit="en-num" v-model="filter.vendor_order_id" />
+                    <Input limit="en-num" v-model="filter.vendor_order_id" />
                 </li>
                 <li>
                     <span>商户编号</span>
-                    <Input style="width:110px" limit="en-num" v-model="filter.vendor_num_id" />
+                    <Input limit="en-num" v-model="filter.vendor_num_id" />
                 </li>
                 <li class="mb10">
                     <span>商户</span>
-                    <Input style="width:110px" limit="number" v-model="filter.vendor" />
+                    <Input limit="number" v-model="filter.vendor" />
                 </li>
                 <li style="margin-left:-10px"></li>
                 <li class="mb10">

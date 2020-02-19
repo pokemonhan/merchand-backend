@@ -1,5 +1,5 @@
 <template>
-    <div class="container" >
+    <div class="container">
         <div class="filter p10">
             <ul class="left">
                 <li>
@@ -27,61 +27,59 @@
                 </template>
             </Table>
         </div>
-        <Page class="table-page" :total="total" :pageNo.sync="pageNo" :pageSize.sync="pageSize" @update="updateNo" @updateSize="updateSize" />
+        <Page
+            class="table-page"
+            :total="total"
+            :pageNo.sync="pageNo"
+            :pageSize.sync="pageSize"
+            @update="updateNo"
+            @updateSize="updateSize"
+        />
     </div>
 </template>
 
 <script>
 export default {
-    data(){
-        return{
-            filter:{
-                dates:[],
+    data() {
+        return {
+            filter: {
+                dates: []
             },
-            headers:[
-                '游戏名称',
-                '下注额度',
-                '有效投注',
-                '洗码金额',
-                '日期',
-            ],
-            list:[
+            headers: ['游戏名称', '下注额度', '有效投注', '洗码金额', '日期'],
+            list: [
                 {
                     a1: 'a'
-                },
+                }
             ],
-            total:50,
-            pageNo:1,
-            pageSize:25,
+            total: 50,
+            pageNo: 1,
+            pageSize: 25
         }
     },
-    methods:{
-        updateNo(val){},
-        updateSize(val){},
-        exportExcel(){
-            import('../../../js/config/Export2Excel').then(excel=>{
-                const tHeader=this.headers
-                const data=this.list.map(item=>{
-                    return[item.a1,item.a2,item.a3,item.a4,item.a5]
+    methods: {
+        updateNo(val) {},
+        updateSize(val) {},
+        exportExcel() {
+            import('../../../js/config/Export2Excel').then(excel => {
+                const tHeader = this.headers
+                const data = this.list.map(item => {
+                    return [item.a1, item.a2, item.a3, item.a4, item.a5]
                 })
                 excel.export_json_to_excel({
-                    header:tHeader,
+                    header: tHeader,
                     data,
-                    filename:'',
-                    autoWidth:true,
-                    bookType:'xlsx'
+                    filename: '',
+                    autoWidth: true,
+                    bookType: 'xlsx'
                 })
             })
-        },
+        }
     },
-    mounted(){
-
-    }
+    mounted() {}
 }
 </script>
+
 <style scoped>
-    
-    
     
     .table{
         margin-top: 20px;

@@ -72,11 +72,11 @@ let menuList = [
                     // path: '/game',
                     // icon: "iconmiaojie1029data",
                     children: [
-                        { name: "H5游戏管理", path: "/game/h5" },
-                        { name: "PC游戏管理", path: "/game/pc" },
-                        { name: "APP游戏管理", path: "/game/app" },
+                        { name: "H5游戏管理", path: "/game/gameh5" },
+                        { name: "PC游戏管理", path: "/game/gamepc" },
+                        { name: "APP游戏管理", path: "/game/gameapp" },
                         { name: "平台管理", path: "/game/plantform" },
-                        { name: "分类管理", path: "/game/sort" },
+                        { name: "分类管理", path: "/game/gamesort" },
 
                     ]
                 },

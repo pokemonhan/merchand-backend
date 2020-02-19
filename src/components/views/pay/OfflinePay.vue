@@ -10,17 +10,17 @@
                 </li>
                 <li>
                     <span>入款账号</span>
-                    <Input class="w100" v-model="filter.account" />
+                    <Input v-model="filter.account" />
                 </li>
                 <li>
                     <span>收款姓名</span>
-                    <Input class="w100" v-model="filter.name" />
+                    <Input v-model="filter.name" />
                 </li>
                 <li>
                     <span>添加日期</span>
-                    <Input class="w100" v-model="filter.add_dates[0]" />
+                    <Input v-model="filter.add_dates[0]" />
                     <span style="margin:0 5px;">~</span>
-                    <Input class="w100" v-model="filter.add_dates[0]" />
+                    <Input v-model="filter.add_dates[0]" />
                 </li>
             </ul>
         </div>
@@ -32,9 +32,9 @@
                 </li>
                 <li>
                     <span>更新日期:</span>
-                    <Input class="w100" v-model="filter.update_dates[0]" />
+                    <Input v-model="filter.update_dates[0]" />
                     <span style="margin:0 5px;">~</span>
-                    <Input class="w100" v-model="filter.update_dates[1]" />
+                    <Input v-model="filter.update_dates[1]" />
                 </li>
                 <li>
                     <button class="btn-blue">查询</button>

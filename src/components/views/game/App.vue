@@ -20,8 +20,8 @@
 </template>
 
 <script>
-import HotGame from './PCGameTypeDetail/HotGame.vue'
-import TypeGame from './PCGameTypeDetail/TypeGame.vue'
+import HotGame from './AppGameTypeDetail/HotGame.vue'
+import TypeGame from './AppGameTypeDetail/TypeGame.vue'
 export default {
     components: {
         HotGame,
@@ -76,3 +76,4 @@ export default {
 
 <style scoped>
 </style>
+

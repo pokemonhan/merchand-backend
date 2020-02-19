@@ -60,7 +60,7 @@ export default {
                         this.vendor_opt = this.vendor_opt.concat(array)
                     }
 
-                    // 获取 table 内容
+                    // 获取 table 内    容
                     // this.getList()
                 }
             })

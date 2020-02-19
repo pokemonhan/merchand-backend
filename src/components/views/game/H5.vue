@@ -11,7 +11,7 @@
                 @click="selectBtn(item)"
             >{{item.name}}</button>
         </div>
-
+      
         <div class="hot-game">
             <HotGame v-if="isHot" />
             <TypeGame v-else :type_id="curr_type_id" />
@@ -20,8 +20,8 @@
 </template>
 
 <script>
-import HotGame from './PCGameTypeDetail/HotGame.vue'
-import TypeGame from './PCGameTypeDetail/TypeGame.vue'
+import HotGame from './H5GameTypeDetail/HotGame.vue'
+import TypeGame from './H5GameTypeDetail/TypeGame.vue'
 export default {
     components: {
         HotGame,
@@ -64,7 +64,7 @@ export default {
                     // this.getList()
                 }
             })
-        }
+        },
         // updateNo(val) {},
         // updateSize(val) {}
     },

@@ -94,7 +94,7 @@ let menuList = [
                     // path: '/pay',
                     // icon: "icongame",
                     children: [
-                        { name: "线下支付配置", path: "/pay/offlinepay" },
+                        { name: "线下金流配置", path: "/pay/offlinepay" },
                         { name: "线上金流配置", path: "/pay/onlinepay" },
                         { name: "出款银行管理", path: "/pay/exportbank" },
 

@@ -273,7 +273,7 @@ const router = new Router({
             component: PlantForm
         },
         {
-            path: '/game/sort',
+            path: '/game/gamesort',
             component: Sort
         },
 

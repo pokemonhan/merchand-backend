@@ -142,17 +142,10 @@ export default {
     padding-left: 5px;
     padding-right: 5px;
 }
-<<<<<<< HEAD
-.p10 {
-    padding: 10px;
-}
-.table {
-=======
 .p10{
     padding: 10px;
 }
 .table{
->>>>>>> test
     margin-top: 20px;
 }
 </style>

@@ -396,7 +396,7 @@ button:hover {
 .filter .v-input,
 .filter .v-date-picker,
 .filter .v-select {
-    width: 150px;
+    width: 8.3rem;
 }
 .filter .left > li > span:first-child {
     margin-right: 4px;
@@ -455,6 +455,10 @@ button:hover {
 }
 .w100 {
     width: 100px;
+}
+.w200 {
+    width: 200px;
+    
 }
 .w250 {
     width: 250px;

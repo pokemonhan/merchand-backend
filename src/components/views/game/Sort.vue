@@ -21,7 +21,7 @@
                     <Select v-model="filter.status" :options="status_opt" ></Select>
                 </li>
                 <li>
-                    <button class="btn-blue">查询</button>
+                    <button class="btn-blue" @click="getList" >查询</button>
                     <button class="btn-blue">确定</button>
                 </li>
             </ul>
@@ -67,22 +67,7 @@ export default {
                 status: ''
             },
             headers: ['编号','分类名称','是否启用'],
-            list: [
-                {
-                    a1: true,
-                    a2: 'sdfsdfdsf',
-                    a3: '充支好礼',
-                    a4: '1',
-                    a5: '2019-02-02 21:30'
-                },
-                {
-                    a1: true,
-                    a2: 'sdfsdfdsf',
-                    a3: '充支好礼',
-                    a4: '1',
-                    a5: '2019-02-02 21:30'
-                }
-            ],
+            list: [],
             total: 0,
             pageNo: 1,
             pageSize: 25
@@ -94,7 +79,21 @@ export default {
         },
 
         updateNo(val) {},
-        updateSize(val) {}
+        updateSize(val) {},
+        getList(){
+            let para = {
+                status:this.filter.status,
+                device:this.curr_btn,
+                name:this.filter.sort,
+            }
+            console.log('查询条件：',para)
+            let params=window.all.tool.rmEmpty(para);
+            let {url,method}=this.$api.game_type_list;
+            this.$http({method,url,params}).then(res=>{
+                console.log('返回数据：',res)
+            })
+        },
+        
     },
     mounted() {
         

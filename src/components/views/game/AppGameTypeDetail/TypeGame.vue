@@ -143,33 +143,6 @@ export default {
                 }
             });
         },
-        // 排序确认 提交
-        sortCfm() {
-            let length = this.list && this.list.length;
-            if (!length) return;
-            let param = this.list.map((item, index) => {
-                return {
-                    id: item.id,
-                    sort: length - index
-                };
-            });
-            param = JSON.stringify(param);
-            let data = {
-                sorts: param
-            };
-            // console.log("想要的数据", data);
-            this.$http({
-                method: this.$api.game_order.method,
-                url: this.$api.game_order.url,
-                data: data
-            }).then(res => {
-                if (res && res.code == "200") {
-                    // console.log("我成功啦", res);
-                    alert("执行成功");
-                    this.getList();
-                }
-            });
-        },
         backToSelOpt(list = []) {
             let all = [
                 {
@@ -318,7 +291,34 @@ export default {
             }
             this.list = this.list.slice();
             // console.log("菜单‘，", this.list);
-        }
+        },
+        // 排序确认 提交
+        sortCfm() {
+            let length = this.list && this.list.length;
+            if (!length) return;
+            let param = this.list.map((item, index) => {
+                return {
+                    id: item.id,
+                    sort: length - index
+                };
+            });
+            param = JSON.stringify(param);
+            let data = {
+                sorts: param
+            };
+            // console.log("想要的数据", data);
+            this.$http({
+                method: this.$api.game_order.method,
+                url: this.$api.game_order.url,
+                data: data
+            }).then(res => {
+                if (res && res.code == "200") {
+                    // console.log("我成功啦", res);
+                    this.$toast.success(res && res.message);
+                    this.getList();
+                }
+            });
+        },
     },
     watch: {
         type_id(to, from) {

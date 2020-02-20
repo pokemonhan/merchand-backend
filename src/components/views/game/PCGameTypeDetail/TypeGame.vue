@@ -264,7 +264,7 @@ export default {
             console.log("event: ", e);
             let reader = new FileReader();
             let pic = e.target.files[0];
-            let basket = "GameManagement/H5GamePicture";
+            let basket = "GameManagement/PCGamePicture";
             var icon = "";
             let form = new FormData();
             form.append("file", pic, pic.name);

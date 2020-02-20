@@ -241,6 +241,12 @@ export default {
         method: 'post'
     },
 
+    //平台管理 - 图片上传
+    game_plant_picture_update: {
+        url: '/merchant-api/game-vendor/upload',
+        method: 'post'
+    },
+
     // 分类管理 - 列表
     game_type_list: {
         url: '/merchant-api/game-type/index',

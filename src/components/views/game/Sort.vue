@@ -22,7 +22,7 @@
                 </li>
                 <li>
                     <button class="btn-blue" @click="getList" >查询</button>
-                    <button class="btn-blue">确定</button>
+                    <!-- <button class="btn-blue">确定</button> -->
                 </li>
             </ul>
         </div>
@@ -30,9 +30,9 @@
             <Table :headers="headers" :column="list">
                 <template v-slot:item="{row,idx}">
                     <td>{{(pageNo-1)*pageSize+idx+1}}</td>
-                    <td>{{row.a1}}</td>
+                    <td>{{row.game_type && row.game_type.name}}</td>
                     <td>
-                        <Switchbox class="switch-select" v-model="row.a1" />
+                        <Switchbox class="switch-select" :value="row.status" @update="switchStatus($event,row)" />
                     </td>
                 </template>
             </Table>
@@ -76,27 +76,51 @@ export default {
     methods: {
         selectBtn(item) {
             this.curr_btn = item.value
+            this.getList();
         },
 
         updateNo(val) {},
         updateSize(val) {},
+        switchStatus(val,row){
+            let data={
+                id:row.id,
+                status:val ? 1 : 0
+            }
+            // console.log(data)
+            let {url,method} = this.$api.game_type_status_set;
+            this.$http({method,url,data}).then(res=>{
+                // console.log(res)
+                if(res && res.code=='200'){
+                    this.$toast.success(res && res.message);
+                    this.getList();
+                }
+            })
+        },
         getList(){
             let para = {
                 status:this.filter.status,
                 device:this.curr_btn,
                 name:this.filter.sort,
             }
-            console.log('查询条件：',para)
+            // console.log('查询条件：',para)
             let params=window.all.tool.rmEmpty(para);
             let {url,method}=this.$api.game_type_list;
             this.$http({method,url,params}).then(res=>{
-                console.log('返回数据：',res)
+                // console.log('返回数据：',res)
+                if(res && res.code=='200'){
+                    this.total=res.data.total;
+                    this.list=res.data && res.data.data
+                }else{
+                    if(res && res.message !== ""){
+                        this.$toast.error(res.message)
+                    }
+                }
             })
         },
         
     },
     mounted() {
-        
+        this.getList();
     }
 }
 </script> <style scoped>

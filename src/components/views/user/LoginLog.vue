@@ -100,7 +100,7 @@ export default {
                 res => {
                     console.log('res', res)
                     if (res && res.code == '200') {
-                        this.list = res.data
+                        this.list = res.data.data
                     } else {
                         if (res && res.message !== '') {
                             this.toast.error(res.message)

@@ -143,6 +143,18 @@ export default {
                 }
             });
         },
+        backToSelOpt(list = []) {
+            let all = [
+                {
+                    label: "全部",
+                    value: ""
+                }
+            ];
+            let back_list = list.map(item => {
+                return { label: item.name, value: item.id };
+            });
+            return all.concat(back_list);
+        },
         // 排序确认 提交
         sortCfm() {
             let length = this.list && this.list.length;
@@ -169,18 +181,6 @@ export default {
                     this.getList();
                 }
             });
-        },
-        backToSelOpt(list = []) {
-            let all = [
-                {
-                    label: "全部",
-                    value: ""
-                }
-            ];
-            let back_list = list.map(item => {
-                return { label: item.name, value: item.id };
-            });
-            return all.concat(back_list);
         },
         switchMaintain(val, row) {
             let data = {
@@ -274,6 +274,7 @@ export default {
             let headers = { "Content-Type": "multipart/form-data" };
             this.$http({ method, url, data, headers }).then(res => {
                 if (res && res.code == "200") {
+                    // console.log("返回数据",res)
                     // returnData=res.data
                     this.updatePicture(res.data, row.id);
                 }

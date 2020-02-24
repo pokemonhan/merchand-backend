@@ -315,8 +315,8 @@ export default {
     },
     // 线上金流配置 - 获取金流通道
     online_finance_add: {
-        url: '/merchant-api/online-finance/add-do',
-        method: 'post',
+        url: '/merchant-api/online-finance/get-channels',
+        method: 'get',
     },
     // 线上金流配置 - 列表
     online_finance_list: {

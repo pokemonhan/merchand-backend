@@ -14,9 +14,9 @@
                 </li>
                 <li>
                     <span>添加日期</span>
-                    <Date v-model="filter.dates[0]" />
+                    <Date v-model="filter.add_dates[0]" />
                     <span class="mv5">~</span>
-                    <Date v-model="filter.dates[1]" />
+                    <Date v-model="filter.add_dates[1]" />
                 </li>
                 <li>
                     <span>前端名称</span>
@@ -36,33 +36,35 @@
                 </li>
                 <li>
                     <span>更新日期</span>
-                    <Input v-model="filter.update_dates[0]" />
+                    <Date v-model="filter.update_dates[0]" />
                     <span class="mv5">~</span>
-                    <Input v-model="filter.update_dates[1]" />
+                    <Date v-model="filter.update_dates[1]" />
                 </li>
                 <li>
-                    <button class="btn-blue">查询</button>
+                    <button class="btn-blue" @click="getList">查询</button>
                     <button class="btn-blue" @click="add">新增线下入款</button>
                 </li>
             </ul>
         </div>
         <div class="table">
             <Table :headers="headers" :column="list">
-                <template v-slot:item="{row,idx}">
-                    <td>{{(pageNo-1)*pageSize+idx+1}}</td>
-                    <td
-                        :class="row.status?'green':'red'"
-                    >{{row.status===1?'开启':row.status===0?'关闭':'???'}}</td>
-                    <td>{{row.a1}}</td>
-                    <td>{{row.a2}}</td>
-                    <td>{{row.a3}}</td>
-                    <td>{{row.a4}}</td>
-                    <td>{{row.a5}}</td>
-                    <td>{{row.a6}}</td>
-                    <td>{{row.a7}}</td>
-                    <td>{{row.a8}}</td>
+                <template v-slot:item="{row}">
+                    <td>{{row.channel && row.channel.name}}</td>
+                    <td>{{row.merchant_code}}</td>
+                    <td>{{row.merchant_no}}</td>
+                    <td>{{row.encrypt_mode}}</td>
+                    <td>{{row.frontend_name}}</td>
+                    <td>{{row.min}}~{{row.max}}</td>
+                    <td>{{row.author && row.author.name}}</td>
+                    <td>{{row.created_at}}</td>
+                    <td>{{row.last_editor && row.last_editor.name}}</td>
+                    <td>{{row.updated_at}}</td>
                     <td>
-                        <Switchbox v-model="row.status" />
+                        <Switchbox
+                            class="switch-select"
+                            :value="row.status"
+                            @update="switchStatus($event,row)"
+                        />
                     </td>
                     <td>
                         <button class="btns-blue" @click="edit(row)">编辑</button>
@@ -137,11 +139,12 @@
                     <!-- 2. 证书 -->
                     <li v-if="form.secret_method!=='secret'">
                         <span>上传证书</span>
+                        <Input v-model="form.certificate_path" style="width:125px;" />
                         <Upload
-                            style="width:250px;"
+                            style="width:125px;"
                             title="上传证书"
                             v-model="form.certificate"
-                            @change="upLoadChange"
+                            @change="upLoadChange($event,form)"
                         />
                         <!-- <input type="file"> -->
                     </li>
@@ -157,9 +160,31 @@
                         <span>终端号:</span>
                         <Input class="w250" v-model="form.terminal" />
                     </li>
-                    <li>
+                    <li v-clickoutside="tagListShow">
                         <span>标签选择:</span>
-                        <Input class="w250" v-model="form.tag" />
+                        <div class="tag-choose" @click="tag_show=true">
+                            <span
+                                class="el-tag"
+                                v-for="(item,index) in showTag"
+                                :key="index"
+                                @click="closeTag(item,index)"
+                            >{{item.label}}</span>
+                        </div>
+                    </li>
+                    <li @click.stop>
+                        <p
+                            v-show="tag_show"
+                            v-for="(item) in all_tag"
+                            :key="item.value"
+                            class="allTag-list"
+                        >
+                            <input
+                                type="checkbox"
+                                v-model="form.formtag[item.value]"
+                                @change="tagChange(item)"
+                            />
+                            {{item.label}}
+                        </p>
                     </li>
                     <li>
                         <span>支付限额:</span>
@@ -181,7 +206,7 @@
                     </li>
                     <li class="center-box">
                         <button class="btn-plain mr50" @click="dia_show=false">取消</button>
-                        <button class="btn-blue">确认</button>
+                        <button class="btn-blue" @click="diaCfm">确认</button>
                     </li>
                 </ul>
             </div>
@@ -193,7 +218,6 @@
             @cancel="mod_show=false"
             @confirm="modConf"
         ></Modal>
-        
     </div>
 </template>
 <script>
@@ -201,44 +225,45 @@ export default {
     data() {
         return {
             filter: {
-                merchant_num: '',
-                person: '',
-                dates: [],
-                front_name: '',
-                merchant_code: '',
-                update_person: '',
+                merchant_num: "",
+                person: "",
+                add_dates: [],
+                update_dates: [],
+                front_name: "",
+                merchant_code: "",
+                update_person: "",
                 update_dates: []
             },
 
             headers: [
-                '入款方式',
-                '商户号',
-                '商户编号',
-                '密钥方式',
-                '前端名称',
-                '支付限额',
-                '创建人',
-                '创建时间',
-                '最后更新人',
-                '最后更新时间',
-                '状态',
-                '操作'
+                "入款方式",
+                "商户号",
+                "商户编号",
+                "密钥方式",
+                "前端名称",
+                "支付限额",
+                "创建人",
+                "创建时间",
+                "最后更新人",
+                "最后更新时间",
+                "状态",
+                "操作"
             ],
             list: [
                 {
-                    a1: '64646466',
-                    a2: 'sdfsdfdsf',
-                    a3: '充支好礼',
-                    a4: '1',
-                    a5: '2019-02-02 21:30',
+                    a1: "64646466",
+                    a2: "sdfsdfdsf",
+                    a3: "充支好礼",
+                    a4: "1",
+                    a5: "2019-02-02 21:30",
                     status: true
                 },
                 {
-                    a1: '64646466',
-                    a2: 'sdfsdfdsf',
-                    a3: '充支好礼',
-                    a4: '1',
-                    a5: '2019-02-02 21:30',
+                    a1: "64646466",
+                    a2: "sdfsdfdsf",
+                    a3: "充支好礼",
+                    a4: "1",
+                    a5: "2019-02-02 21:30",
                     status: false
                 }
             ],
@@ -248,61 +273,232 @@ export default {
 
             // dialog
             dia_show: false,
-            dia_status: '',
-            dia_title: '',
+            dia_status: "",
+            dia_title: "",
             form: {
-                pay_method: '',
-                front_name: '',
-                merchant_num: '',
-                merchant_code: '', // 商户编码
-                secret_method: 'secret',
-                certificate: '',
-                url: '',
-                third_href: '',
-                terminal: '',
-                tag: '',
+                pay_method: "",
+                front_name: "",
+                merchant_num: "",
+                merchant_code: "", // 商户编码
+                secret_method: "secret",
+                merchant_key: "",
+                merchant_public: "",
+                merchant_private: "",
+                certificate: "",
+                certificate_path: "",
+                url: "",
+                third_href: "",
+                terminal: "",
+                tag: "",
                 pay_limit: [],
-                income_charge: '',
-                specifcation: '',
-                mark: ''
+                income_charge: "",
+                specifcation: "",
+                mark: "",
+                formtag: []
             },
             pay_method: [
-                { label: '支付宝', value: 0 },
-                { label: '微信', value: 0 }
+                { label: "支付宝", value: 0 },
+                { label: "微信", value: 1 }
             ],
             // modal
             mod_show: false,
-        }
+            select: {},
+            all_tag: [],
+            tag_show: false,
+            showTag: []
+        };
     },
     methods: {
+        getSelectOpt() {
+            let { url, method } = this.$api.online_finance_add;
+            this.$http({ url, method }).then(res => {
+                // console.log(res)
+                if (res && res.code == "200") {
+                    this.select = res.data;
+                    this.pay_method = this.backToSelOpt(res.data);
+                }
+            });
+        },
+        backToSelOpt(list = []) {
+            let all = [
+                {
+                    label: "全部",
+                    value: ""
+                }
+            ];
+            let back_list = list.map(item => {
+                return { label: item.name, value: item.id };
+            });
+            return all.concat(back_list);
+        },
+        diaCfm() {
+            if (this.dia_status == "add") {
+                this.addCfm();
+            }
+            if (this.dia_status == "edit") {
+                this.editCfm();
+            }
+        },
+        upLoadChange(e, form) {
+            console.log("form:", form);
+            console.log("event:", e);
+            let certificate = e.target.files[0];
+            let basket = "pay/onlinepay/certificate";
+            let formList = new FormData();
+            formList.append("file", certificate, certificate.name);
+            formList.append("basket", basket);
+            let { url, method } = this.$api.update_picture_database;
+            let data = formList;
+            let headers = { "Content-Type": "multipart/form-data" };
+            this.$http({ method, url, data, headers }).then(res => {
+                if (res && res.code == "200") {
+                    // console.log("路劲返回：", res);
+                    this.form.certificate_path = res.data.path;
+                }
+            });
+        },
+        addClearAll() {
+            this.form = {
+                pay_method: "",
+                front_name: "",
+                merchant_num: "",
+                merchant_code: "",
+                secret_method: "",
+                merchant_key: "",
+                merchant_public: "",
+                merchant_private: "",
+                certificate_path: "",
+                url: "",
+                third_href: "",
+                terminal: "",
+                pay_limit: [],
+                income_charge: "",
+                specifcation: "",
+                mark: "",
+                formtag: []
+            };
+            this.showTag = [];
+        },
         add() {
-            this.dia_status = 'add'
-            this.title = '新增线下入款'
-            this.dia_show = true
+            this.dia_status = "add";
+            this.dia_title = "新增线下入款";
+            this.dia_show = true;
+            this.addClearAll();
         },
+        addCfm() {},
         edit() {
-            this.dia_status = 'edit'
-            this.dia_title = '编辑'
-            this.dia_show = true
+            this.dia_status = "edit";
+            this.dia_title = "编辑";
+            this.dia_show = true;
         },
+        editCfm() {},
         del() {
-            this.mod_show = true
+            this.mod_show = true;
         },
-        modConf() {
-
-        },
+        modConf() {},
         updateNo(val) {},
         updateSize(val) {},
 
-        secretUpd() {
-            // this.
+        secretUpd() {},
+        switchStatus(val, row) {
+            let data = {
+                id: row.id,
+                status: val ? 1 : 0
+            };
+            let { url, method } = this.$api.online_finance_status_set;
+            this.$http({ method, url, data }).then(res => {
+                if (res && res.code == "200") {
+                    this.$toast.success(res && res.message);
+                    this.getList();
+                }
+            });
         },
-        upLoadChange(e) {
-            console.log(e)
+        getTagList() {
+            let { url, method } = this.$api.tag_list;
+            this.$http({ url, method }).then(res => {
+                if (res && res.code == "200") {
+                    console.log("标签列表", res);
+                    if (
+                        res.data &&
+                        res.data.data &&
+                        Array.isArray(res.data.data)
+                    ) {
+                        let arr = [];
+                        for (var i = 0; i < res.data.data.length; i++) {
+                            let item = res.data.data[i];
+                            // console.log(item);
+                            arr.push({ label: item.title, value: item.id });
+                        }
+                        // console.log(arr);
+                        this.all_tag = arr;
+                        // console.log('all_tag: ', all_tag);
+                    }
+                }
+            });
+        },
+        tagListShow() {
+            this.tag_show = false;
+        },
+        closeTag(item, index) {
+            this.form.formtag[item.value] = false;
+            this.showTag.splice(index, 1);
+        },
+        tagChange() {
+            console.log(this.form.formtag);
+            let show_arr = [];
+            for (let key in this.form.formtag) {
+                // this.form.formtag[key]
+                let item = this.form.formtag[key];
+                console.log("item: ", item);
+                if (item) {
+                    show_arr.push(key);
+                }
+                console.log("show_arr: ", show_arr);
+                this.showTag = this.all_tag.filter(item => {
+                    // console.log("item: ", item);
+                    return show_arr.indexOf(String(item.value)) !== -1;
+                });
+                // console.log("this.showTag: ", this.showTag);
+            }
+        },
+        getList() {
+            let para = {
+                merchant_code: this.filter.merchant_num,
+                front_name: this.filter.front_name,
+                created_at: [
+                    this.filter.add_dates[0],
+                    this.filter.add_dates[1]
+                ],
+                updated_at: [
+                    this.filter.update_dates[0],
+                    this.filter.update_dates[1]
+                ],
+                author_name: this.filter.person,
+                last_editor_name: this.filter.update_person
+            };
+            let params = window.all.tool.rmEmpty(para);
+            let { method, url } = this.$api.online_finance_list;
+            this.$http({ method: method, url: url, params: params }).then(
+                res => {
+                    console.log("返回数据", res);
+                    if (res && res.code == "200") {
+                        this.list = res.data.data;
+                        this.total = res.data.total;
+                    } else {
+                        if (res && res.message !== "") {
+                            this.toast.error(res.message);
+                        }
+                    }
+                }
+            );
         }
     },
-    mounted() {}
-}
+    mounted() {
+        this.getList();
+        this.getSelectOpt();
+        this.getTagList();
+    }
+};
 </script>
 
 <style scoped>
@@ -334,5 +530,27 @@ export default {
 .center-box {
     display: flex;
     justify-content: center;
+}
+.tag-choose {
+    width: 250px;
+    min-height: 30px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+.el-tag {
+    background-color: #ecf5ff;
+    display: inline-block;
+    height: 32px;
+    padding: 0 10px;
+    line-height: 30px;
+    font-size: 12px;
+    color: #409eff;
+    border: 1px solid #d9ecff;
+    border-radius: 4px;
+    box-sizing: border-box;
+    white-space: nowrap;
+}
+.allTag-list {
+    margin-left: 95px;
 }
 </style>

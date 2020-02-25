@@ -87,7 +87,11 @@
                 <ul class="form">
                     <li>
                         <span>支付方式:</span>
-                        <Select style="width:250px" v-model="form.pay_method" :options="pay_method"></Select>
+                        <Select
+                            style="width:250px"
+                            v-model="form.pay_method"
+                            :options="pay_method_opt"
+                        ></Select>
                     </li>
                     <li>
                         <span>前端名称:</span>
@@ -108,7 +112,7 @@
                             class="mr50"
                             label="密钥方式"
                             :value="form.secret_method"
-                            val="secret"
+                            val="1"
                             v-model="form.secret_method"
                             @update="secretUpd"
                         />
@@ -116,28 +120,28 @@
                             class="radio-right"
                             label="证书方式"
                             :value="form.secret_method"
-                            val="certificate"
+                            val="2"
                             v-model="form.secret_method"
                             @update="secretUpd"
                         />
                     </li>
 
                     <!-- 1. 密钥方式 -->
-                    <li v-if="form.secret_method==='secret'">
+                    <li v-if="form.secret_method==='1'">
                         <span>商户密钥:</span>
                         <Input class="w250" v-model="form.merchant_key" />
                     </li>
-                    <li v-if="form.secret_method==='secret'">
+                    <li v-if="form.secret_method==='1'">
                         <span>商户公钥:</span>
                         <Input class="w250" v-model="form.merchant_public" />
                     </li>
-                    <li v-if="form.secret_method==='secret'">
+                    <li v-if="form.secret_method==='1'">
                         <span>商户私钥:</span>
                         <Input class="w250" v-model="form.merchant_private" />
                     </li>
 
                     <!-- 2. 证书 -->
-                    <li v-if="form.secret_method!=='secret'">
+                    <li v-if="form.secret_method=='2'">
                         <span>上传证书</span>
                         <Input v-model="form.certificate_path" style="width:125px;" />
                         <Upload
@@ -296,10 +300,7 @@ export default {
                 mark: "",
                 formtag: []
             },
-            pay_method: [
-                { label: "支付宝", value: 0 },
-                { label: "微信", value: 1 }
-            ],
+            pay_method_opt: [],
             // modal
             mod_show: false,
             select: {},
@@ -310,12 +311,11 @@ export default {
     },
     methods: {
         getSelectOpt() {
-            let { url, method } = this.$api.online_finance_add;
+            let { url, method } = this.$api.online_finance_channel_list;
             this.$http({ url, method }).then(res => {
-                // console.log(res)
+                console.log(res);
                 if (res && res.code == "200") {
-                    this.select = res.data;
-                    this.pay_method = this.backToSelOpt(res.data);
+                    this.pay_method_opt = this.backToSelOpt(res.data);
                 }
             });
         },
@@ -385,7 +385,37 @@ export default {
             this.dia_show = true;
             this.addClearAll();
         },
-        addCfm() {},
+        addCfm() {
+            let data = {
+                channel_id: this.form.pay_method,
+                frontend_name: this.form.front_name,
+                merchant_code: this.form.merchant_num,
+                merchant_no: this.form.merchant_code,
+                encrypt_mode: this.form.secret_method,
+                merchant_secret: this.form.merchant_key,
+                public_key: this.form.merchant_public,
+                private_key: this.form.merchant_private,
+                certificate: this.form.certificate,
+                request_url: this.form.url,
+                vendor_url: this.form.third_href,
+                app_id: this.form.terminal,
+                tags: JSON.stringify(
+                    this.showTag.map(item => {
+                        return String(item.value);
+                    })
+                ),
+                min: this.form.pay_limit[0],
+                max: this.form.pay_limit[1],
+                handle_fee: this.form.income_charge,
+                desc: this.form.specifcation,
+                backend_remark: this.form.mark
+            };
+            console.log("请求数据：", data);
+            let { url, method } = this.$api.online_finance_add;
+            this.$http({ method, url, data }).then(res => {
+                console.log("添加返回数据：", res);
+            });
+        },
         edit() {
             this.dia_status = "edit";
             this.dia_title = "编辑";
@@ -417,7 +447,7 @@ export default {
             let { url, method } = this.$api.tag_list;
             this.$http({ url, method }).then(res => {
                 if (res && res.code == "200") {
-                    console.log("标签列表", res);
+                    // console.log("标签列表", res);
                     if (
                         res.data &&
                         res.data.data &&
@@ -480,7 +510,7 @@ export default {
             let { method, url } = this.$api.online_finance_list;
             this.$http({ method: method, url: url, params: params }).then(
                 res => {
-                    console.log("返回数据", res);
+                    // console.log("返回数据", res);
                     if (res && res.code == "200") {
                         this.list = res.data.data;
                         this.total = res.data.total;

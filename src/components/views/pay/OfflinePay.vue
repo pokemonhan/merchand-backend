@@ -256,7 +256,6 @@ export default {
             this.$http({ url, method }).then(res => {
                 // console.log('下拉数据：',res);
                 if (res && res.code == "200") {
-                    this.select = res.data;
                     this.type_opt = this.backToSelOpt(res.data);
                     this.inconm_opt = this.backToSelOpt(res.data);
                 }

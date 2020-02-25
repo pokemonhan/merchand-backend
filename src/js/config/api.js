@@ -133,8 +133,8 @@ export default {
 
 
     /*=========================== 财务管理 ===========================--*/
-    // 入款订单
-
+    // ----入款订单 - 列表
+    
     // 人工存取
     // 出款审核
     // 出款订单
@@ -309,14 +309,14 @@ export default {
 
     // ---------------- 线上金流配置 ------------
     // 线上金流配置 - 获取金流通道
-    offline_finance_channel_list: {
+    online_finance_channel_list: {
         url: '/merchant-api/online-finance/get-channels',
         method: 'get',
     },
-    // 线上金流配置 - 获取金流通道
+    // 线上金流配置 - 添加
     online_finance_add: {
-        url: '/merchant-api/online-finance/get-channels',
-        method: 'get',
+        url: '/merchant-api/online-finance/add-do',
+        method: 'post',
     },
     // 线上金流配置 - 列表
     online_finance_list: {

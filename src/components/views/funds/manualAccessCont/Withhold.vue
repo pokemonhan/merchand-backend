@@ -27,8 +27,8 @@
                     <Select v-model="filter.withhold_type" :options="withhold_opt"></Select>
                 </li>
                 <li class="right">
-                    <button class="btn-blue">查询</button>
-                    <button class="btn-blue">导出Excel</button>
+                    <button class="btn-blue" @click="getList" >查询</button>
+                    <button class="btn-blue" @click="exportExccel()" >导出Excel</button>
                     <button class="btn-red" @click="clearFilter">清空</button>
                     <button class="btn-blue" @click="dia_show=true">人工扣款</button>
                 </li>
@@ -37,18 +37,18 @@
         <div class="table">
             <Table :headers="headers" :column="list">
                 <template v-slot:item="{row}">
-                    <td>{{row.a1}}</td>
-                    <td>{{row.a2}}</td>
-                    <td>{{row.a3}}</td>
-                    <td>{{row.a4}}</td>
+                    <td>{{row.order_no}}</td>
+                    <td>{{row.user && row.user.mobile}}</td>
+                    <td>{{row.user && row.user.guid}}</td>
+                    <td>{{row.type}}</td>
                     <td>
-                        <i :class="icon_obj[row.a5]"></i>
+                        <i :class="icon_obj[row.user && row.user.is_tester]"></i>
                     </td>
-                    <td>{{row.a6}}</td>
-                    <td>{{row.a6}}</td>
-                    <td>{{row.a6}}</td>
-                    <td>{{row.a6}}</td>
-                    <td>{{row.a7}}</td>
+                    <td>{{row.money}}</td>
+                    <td>{{row.balance}}</td>
+                    <td>{{row.created_at}}</td>
+                    <td>{{row.admin && row.admin.name}}</td>
+                    <td>{{row.remark}}</td>
                 </template>
             </Table>
             <Page
@@ -91,20 +91,12 @@
                 </ul>
                 <div class="dia-buttons">
                     <button class="btn-plain-large" @click="dia_show=false">取消</button>
-                    <button class="btn-blue-large ml50">确定</button>
+                    <button class="btn-blue-large ml50" @click="withHoldCfm" >确定</button>
                 </div>
             </div>
         </Dialog>
     </div>
 </template>
-
-
-
-
-
-
-
-
 <script>
 export default {
     props: {},
@@ -144,33 +136,7 @@ export default {
                 '备注'
             ],
             list: [
-                {
-                    a1: 'D456123456789',
-                    a2: '13245678942',
-                    a3: '4561234',
-                    a4: '100.00',
-                    a5: '0',
-                    a6: 'admin',
-                    a7: '备注'
-                },
-                {
-                    a1: 'D456123456789',
-                    a2: '13245678942',
-                    a3: '4561234',
-                    a4: '100.00',
-                    a5: '1',
-                    a6: 'admin',
-                    a7: '备注'
-                },
-                {
-                    a1: 'D456123456789',
-                    a2: '13245678942',
-                    a3: '4561234',
-                    a4: '100.00',
-                    a5: '1',
-                    a6: 'admin',
-                    a7: '备注'
-                }
+               {}
             ],
             total: 0,
             pageNo: 1,
@@ -211,9 +177,77 @@ export default {
             let a = 5
             console.log(a)
         },
-        withholdUpdateSize(val) {}
+        withholdUpdateSize(val) {},
+        getList(){
+            let para={
+                mobile:this.filter.account,
+                guid:this.filter.game_id,
+                created_at:[this.filter.dates[0],this.filter.dates[1]],
+                is_tester:this.filter.offcial_acc,
+                type:this.filter.withhold_type,
+            };
+            let params=window.all.tool.rmEmpty(para);
+            let {method,url}=this.$api.founds_manualaccess_artificial_charge_recording;
+            this.$http({method:method,url:url,params:params}).then(res=>{
+                // console.log('返回数据：',res)
+                if(res && res.code=='200'){
+                    this.list=res.data.data;
+                    this.total=res.data.total;
+                }else{
+                    if(res && res.message !==""){
+                        this.toast.error(res.message)
+                    }
+                }
+            })
+        },
+        exportExccel(){
+            import("../../../../js/config/Export2Excel").then(excel => {
+                const tHeaders = this.headers;
+                const data = this.list.map(item => {
+                    return [
+                        item.order_no,
+                        item.user.mobile,
+                        item.user.guid,
+                        item.type,
+                        item.user.is_tester,
+                        item.money,
+                        item.balance,
+                        item.created_at,
+                        item.admin.name,
+                        item.remark,
+                    ];
+                });
+                excel.export_json_to_excel({
+                    header: tHeaders,
+                    data,
+                    filename: excel,
+                    autoWidth: true,
+                    bookType: "xlsx"
+                });
+            });   
+        },
+        withHoldCfm(){
+            let data={
+               user:this.form.account,
+               type:this.form.withhold_type,
+               money:this.form.withhold_amount,
+               remark:this.form.remark,
+            }
+            console.log(data)
+            let {url,method}=this.$api.founds_manualaccess_artificial_charge;
+            this.$http({method,url,data}).then(res=>{
+                // console.log('返回数据',res)
+                if(res && res.code=='200'){
+                    this.$toast.success(res && res.message);
+                    this.dia_show=false;
+                    this.getList();
+                }
+            })
+        },
     },
-    mounted() {}
+    mounted() {
+        this.getList();
+    }
 }
 </script>
 <style scoped>

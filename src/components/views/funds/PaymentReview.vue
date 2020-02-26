@@ -26,12 +26,12 @@
                     <Input v-model="filter.acc_id" />
                 </li>
                 <li>
-                    <span>操作人</span>
+                    <span>审核人</span>
                     <Input v-model="filter.operater" />
                 </li>
 
                 <li>
-                    <span>操作时间</span>
+                    <span>审核时间</span>
                     <Date v-model="filter.operater_dates[0]" />
                     <span style="margin:0 5px;">~</span>
                     <Date v-model="filter.operater_dates[1]" />
@@ -47,7 +47,7 @@
                 </li>
 
                 <li>
-                    <button class="btn-blue">查询</button>
+                    <button class="btn-blue" @click="getLsit" >查询</button>
                     <button class="btn-blue">导出</button>
                     <button class="btn-red" @click="clearfilter">清空</button>
                 </li>
@@ -55,18 +55,16 @@
         </div>
         <div class="table">
             <Table :headers="headers" :column="list">
-                <template v-slot:item="{row,idx}">
-                    <td>{{(pageNo-1)*pageSize+idx+1}}</td>
-                    <td
-                        :class="row.status?'green':'red'"
-                    >{{row.status===1?'开启':row.status===0?'关闭':'???'}}</td>
-                    <td>{{row.a1}}</td>
-                    <td>{{row.a2}}</td>
-                    <td>{{row.a2}}</td>
-                    <td>{{row.a2}}</td>
-                    <td>{{row.a2}}</td>
-                    <td>{{row.a2}}</td>
-                    <td>{{row.a2}}</td>
+                <template v-slot:item="{row}">
+                    <td>{{row.user && row.user.mobile}}</td>
+                    <td>{{row.user && row.user.id}}</td>
+                    <td>{{row.amount}}</td>
+                    <td>{{row.audit_fee}}</td>
+                    <td>{{row.amount_received}}</td>
+                    <td>{{row.handing_fee}}</td>
+                    <td>{{row.created_at}}</td>
+                    <td>{{row.reviewer_id}}</td>
+                    <td>{{row.review_at}}</td>
                     <td :class="status_obj[row.status].color">{{status_obj[row.status].text}}</td>
                     <td>
                         <button
@@ -135,7 +133,6 @@
             <div class="dia-inner">
                 <PaymentReviewStatus v-if="dia_status==='statusShow'" :row="curr_row" />
                 <PaymentReviewDetail v-if="dia_status==='checkAudit'" :userid="userid" />
-
             </div>
         </Dialog>
     </div>
@@ -326,9 +323,36 @@ export default {
             this.dia_show = true
         },
         updateNo(val) {},
-        updateSize(val) {}
+        updateSize(val) {},
+        getLsit(){
+           let para={
+               mobile:this.filter.account,
+               order_no:this.filter.order_no,
+               created_at:[this.filter.apply_dates[0],this.filter.apply_dates[1]],
+               guid:this.filter.acc_id,
+               review:this.filter.operater,
+               review_at:[this.filter.operater_dates[0],this.filter.operater_dates[1]],
+               status:this.filter.review_status,
+               is_audit:this.filter.is_audit_withhold,
+           };
+           let params=window.all.tool.rmEmpty(para);
+           let {method,url}=this.$api.founds_interface_list;
+           this.$http({method:method,url:url,params:params}).then(res=>{
+            //    console.log(res)
+                if(res && res.code=='200'){
+                    this.list=res.data.data;
+                    this.total=res.data.total;
+                }else{
+                    if(res && res.message !==""){
+                        this.toast.error(res.message)
+                    }
+                }
+           }) 
+        },
     },
-    mounted() {}
+    mounted() {
+        this.getLsit();
+    }
 }
 </script>
 

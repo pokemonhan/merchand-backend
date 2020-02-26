@@ -52,33 +52,33 @@
                 </li>
                 <li style="margin-left:-10px"></li>
                 <li class="mb10">
-                    <button class="btn-blue">查询</button>
-                    <button class="btn-blue">导出Excel</button>
+                    <button class="btn-blue" @click="getList" >查询</button>
+                    <button class="btn-blue" @click="exportExcel()" >导出Excel</button>
                     <button class="btn-red" @click="clearClick">清空</button>
                 </li>
             </ul>
         </div>
         <div class="table">
-            <Table :column="list" :headers="headers" >
+            <Table :column="list" :headers="headers">
                 <template v-slot:item="{row}">
-                    <td>{{row.a1}}</td>
-                    <td>{{row.a2}}</td>
-                    <td>{{row.a3}}</td>
-                    <td>{{row.a4}}</td>
-                    <td>{{row.a5}}</td>
+                    <td>{{row.order_no}}</td>
+                    <td>{{row.platform_no}}</td>
+                    <td>{{row.user && row.user.mobile}}</td>
+                    <td>{{row.user && row.user.id}}</td>
+                    <td>{{row.parent && row.parent.mobile}}</td>
                     <td>
-                        <i v-if="row.a6==='1'" class="iconfont icongou green"></i>
-                        <i v-if="row.a6==='0'" class="iconfont iconcha red"></i>
+                        <i v-if="row.user && row.user.is_tester==='1'" class="iconfont icongou green"></i>
+                        <i v-if="row.user && row.user.is_tester==='0'" class="iconfont iconcha red"></i>
                     </td>
-                    <td>{{row.a7}}</td>
-                    <td>{{row.a8}}</td>
-                    <td>{{row.a9}}</td>
-                    <td>{{row.a10}}</td>
-                    <td>{{row.a11}}</td>
-                    <td>{{row.a12}}</td>
-                    <td :class="[row.a13==='1'?'green': 'red']">{{row.a13==='1'?'已支付':'未支付'}}</td>
-                    <td>{{row.a14}}</td>
-                    <td>{{row.a15}}</td>
+                    <td>{{row.snap_merchant_no}}</td>
+                    <td>{{row.snap_merchant_code}}</td>
+                    <td>{{row.snap_merchant}}</td>
+                    <td>{{row.snap_finance_type}}</td>
+                    <td>{{row.money}}</td>
+                    <td>{{row.arrive_money}}</td>
+                    <td :class="[row.status==='1'?'green': 'red']">{{row.status==='1'?'已支付':'未支付'}}</td>
+                    <td>{{row.created_at}}</td>
+                    <td>{{row.updated_at}}</td>
                     <td>
                         <span class="a" @click="showDetail(row)">详情</span>
                         <span class="a" @click="manualDepositclick(row)">手动入款</span>
@@ -94,58 +94,30 @@
                         <span>{{'400.00'}}</span>
                     </th>
                     <th>
-                        <span>充值金额: </span>
+                        <span>充值金额:</span>
                         <span>{{'200.00'}}</span>
                     </th>
-                     <th>
-                        <span>实际到账: </span>
+                    <th>
+                        <span>实际到账:</span>
                         <span>{{'200.00'}}</span>
                     </th>
                 </tr>
                 <tr>
                     <th>
-                        <span>合计:</span>
+                        <span>总计:</span>
                         <span>{{'400.00'}}</span>
                     </th>
                     <th>
-                        <span>实际到账: </span>
+                        <span>实际到账:</span>
                         <span>{{'200.00'}}</span>
                     </th>
-                     <th>
-                        <span>实际到账: </span>
+                    <th>
+                        <span>实际到账:</span>
                         <span>{{'200.00'}}</span>
                     </th>
                 </tr>
             </table>
         </div>
-        <!-- <div class="total-table">
-            <ul>
-                <li>
-                    <span>合计:</span>
-                </li>
-                <li>
-                    <span>充值金额:</span>
-                    <span>200.00</span>
-                </li>
-                <li>
-                    <span>实际到账</span>
-                    <span>200.00</span>
-                </li>
-            </ul>
-            <ul>
-                <li>
-                    <span>总计:</span>
-                </li>
-                <li>
-                    <span>充值金额:</span>
-                    <span>200.00</span>
-                </li>
-                <li>
-                    <span>实际到账</span>
-                    <span>200.00</span>
-                </li>
-            </ul>
-        </div> -->
         <Page
             class="table-page"
             :total="total"
@@ -164,7 +136,7 @@
                 </div>
                 <div>
                     <button class="btn-plain" @click="dialog_show=false">取消</button>
-                    <button class="btn-blue btn-conf">确认</button>
+                    <button class="btn-blue btn-conf" @click="manualDepositCfm">确认</button>
                 </div>
             </div>
         </Dialog>
@@ -222,12 +194,7 @@ export default {
                 { label: "已支付", value: 1 },
                 { label: "未支付", value: 2 }
             ],
-            pay_way_opt: [
-                { label: "全部", value: "" },
-                { label: "微信充值", value: 1 },
-                { label: "支付宝充值", value: 2 },
-                { label: "京东充值", value: 3 }
-            ],
+            pay_way_opt: [],
             official_opt: [
                 { label: "全部", value: "" },
                 { label: "是", value: 1 },
@@ -251,42 +218,7 @@ export default {
                 "到账时间",
                 "操作"
             ],
-            list: [
-                {
-                    a1: "D4547879",
-                    a2: "D4564578",
-                    a3: "12345679512",
-                    a4: "4561234",
-                    a5: "13256689796",
-                    a6: "1",
-                    a7: "ASDFASDSD",
-                    a8: "4561346",
-                    a9: "红牛商户",
-                    a10: "微信支付",
-                    a11: "100.00",
-                    a12: "99.9",
-                    a13: "1",
-                    a14: "2019/09/20 12:25:20",
-                    a15: "2019/09/20 :12:26:10"
-                },
-                {
-                    a1: "D4547879",
-                    a2: "D4564578",
-                    a3: "12345679512",
-                    a4: "4561234",
-                    a5: "13256689796",
-                    a6: "1",
-                    a7: "ASDFASDSD",
-                    a8: "4561346",
-                    a9: "红牛商户",
-                    a10: "微信支付",
-                    a11: "100.00",
-                    a12: "99.9",
-                    a13: "1",
-                    a14: "2019/09/20 12:25:20",
-                    a15: "2019/09/20 :12:26:10"
-                },
-            ],
+            list: [],
             color: {
                 "1": "green",
                 "2": "purple",
@@ -307,6 +239,21 @@ export default {
             this.filter.start_date = dates[0];
             this.filter.end_date = dates[1];
             this.filter = Object.assign(this.filter);
+        },
+        exportExcel(){
+            import('../../../../js/config/Export2Excel').then(excel=>{
+                const tHeaders=this.headers
+                const data=this.list.map(item=>{
+                    return[item.order_no,item,platform_no,item.user.mobile,item.user.id,item.parent.mobile,item.user.is_tester,item.snap_merchant_no,item.snap_merchant_code,item.snap_merchant,item.snap_finance_type,item.money,item.arrive_money,item.status,item.created_at,item.updated_at]
+                })
+                excel.export_json_to_excel({
+                    header:tHeaders,
+                    data,
+                    filename:excel,
+                    autoWidth:true,
+                    bookType:'xlsx'
+                })
+            })
         },
         clearClick() {
             this.filter = {
@@ -357,7 +304,9 @@ export default {
         manualDepositclick(row, is_confirm) {
             this.dialog_show = true;
         },
+        manualDepositCfm(){
 
+        },
         showDetail(row) {
             this.is_show_online_detail = true;
             this.$nextTick(() => {
@@ -433,13 +382,68 @@ export default {
                 );
             });
         },
-        getPayMethodSel(){
-            let {url,method}=this.$api
+        getPayMethodSel() {
+            let params = {
+                is_online: 1
+            };
+            // console.log("请求数据", param);
+
+            let { url, method } = this.$api.founds_incomeorder_pay_method;
+            this.$http({ method, url, params }).then(res => {
+                // console.log("返回数据", res);
+                if(res && res.code=='200'){
+                    this.pay_way_opt =this.backToSelOpt(res.data);
+                }
+            });
+        },
+        backToSelOpt(list=[]){
+            let all=[
+                {
+                    label:'全部',
+                    value:""
+                }
+            ];
+            let back_list=list.map(item=>{
+                return{label:item.name,value:item.id};
+            });
+            return all.concat(back_list);
+        },
+        getList(){
+            let para={
+                is_online:1,
+                mobile:this.filter.account,
+                guid:this.filter.acc_id,
+                created_at:[this.filter.start_date,this.filter.end_date],
+                snap_merchant_code:this.filter.vendor_num,
+                status:this.filter.pay_status,
+                finance_type_id:this.filter.pay_way,
+                is_tester:this.filter.official_acc,
+                order_no:this.filter.system_id,
+                platform_no:this.filter.vendor_order_id,
+                snap_merchant_no:this.filter.vendor_num_id,
+                snap_merchant:this.filter.vendor,
+            };
+            let params =window.all.tool.rmEmpty(para);
+            let {method,url} =this.$api.founds_incomeorder_list;
+            this.$http({method:method,url:url,params:params}).then(res=>{
+                // console.log("列表返回数据",res)
+                if(res && res.code=='200'){
+                    this.list=res.data.data
+                    this.total=res.data.total;
+                }else{
+                    if(res && res.mseeage !==""){
+                        this.toast.error(res.message);
+                    }
+                }
+            })
         },
         updateNo(val) {},
         updateSize(val) {}
     },
-    mounted() {}
+    mounted() {
+        this.getPayMethodSel();
+        this.getList();
+    }
 };
 </script>
 
@@ -504,11 +508,11 @@ table {
     border-collapse: collapse;
     width: 100%;
 }
-.table{
+.table {
     width: 100%;
     overflow-x: auto;
 }
-.table .v-table{
+.table .v-table {
     width: 2000px;
 }
 .total-table table tr th {

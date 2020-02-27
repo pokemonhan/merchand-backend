@@ -3,18 +3,18 @@
         <!-- 客服设置 -->
         <div class="bg-gray p10">
             <button
-                :class="curr_service==='qq_wechat'?'btn-blue-large':'btn-plain-large'"
-                @click="serviceClick('qq_wechat')"
+                :class="type===1?'btn-blue-large':'btn-plain-large'"
+                @click="serviceClick(1)"
             >QQ/微信客服</button>
             <button
-                :class="curr_service==='online'?'btn-blue-large':'btn-plain-large'"
-                @click="serviceClick('online')"
+                :class="type===2?'btn-blue-large':'btn-plain-large'"
+                @click="serviceClick(2)"
             >在线客服</button>
             <button class="btn-blue-large ml50" @click="addService">添加客服</button>
         </div>
         <div class="mt20">
-            <QQwechatService ref="qqWechat" v-show="curr_service==='qq_wechat'" />
-            <OnlineService ref="online" v-show="curr_service==='online'" />
+            <QQwechatService ref="qqWechat" v-show="type===1" :date="QQDate" />
+            <OnlineService ref="online" v-show="type===2" :data="onlineDate" />
         </div>
     </div>
 </template>
@@ -29,30 +29,37 @@ export default {
     },
     data() {
         return {
-            curr_service: 'qq_wechat',
+            type: 1,
             filter: {
                 acc: ''
-            }
+            },
+            QQDate: [],
+            onlineDate: []
         }
     },
     methods: {
         serviceClick(val) {
-            this.curr_service = val
+            this.type = val
+
         },
         addService() {
-            switch (this.curr_service) {
-                case 'qq_wechat':
+            switch (this.type) {
+                case 1:
                     this.$refs.qqWechat.addclick()
-                    break;
-                case 'online':
+                    break
+                case 2:
                     this.$refs.online.addclick()
                     break
                 default:
-                    break;
+                    break
             }
-        }
+        },
+        
+        
     },
-    mounted() {}
+    mounted() {
+        // this.getList()
+    }
 }
 </script>
 

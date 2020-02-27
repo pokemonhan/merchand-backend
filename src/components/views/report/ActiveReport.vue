@@ -71,12 +71,8 @@ export default {
                 '领取金额',
                 '详情',
             ],
-            list:[
-                {
-
-                },
-            ],
-            total:50,
+            list:[ ],
+            total:0,
             pageNo:1,
             pageSize:25,
             show_detail:false,
@@ -98,6 +94,12 @@ export default {
                 })
             })
         },
+        updateSize(val) {
+
+        },
+        updateNo(val) {
+
+        }
     },
     mounted() {
 

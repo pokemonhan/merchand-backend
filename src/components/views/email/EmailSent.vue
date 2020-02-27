@@ -169,4 +169,8 @@ export default {
 .pointer{
     cursor: pointer;
 }
+.dia-inner {
+    max-width: 1200px;
+    /* border: 1px solid #000; */
+}
 </style>

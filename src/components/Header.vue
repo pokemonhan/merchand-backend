@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div id="header">
+        <div class="header">
             <div class="content">
                 <div class="left">
                     <div class="head-title">
@@ -293,20 +293,23 @@ export default {
 </script>
 
 <style scoped>
-#header {
+.header {
     display: flex;
     align-items: center;
     min-height: 70px;
     background: #4c8bfd;
-    font-size: 13px;
+    /* font-size: 13px; */
 }
 .content {
     /* height: 100%; */
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
-    width: 1200px;
     align-items: center;
+
+    min-width: 1200px;
+    max-width: 2220px;
+    width: 100%;
     /* white-space: nowrap; */
     margin: 0 auto;
     color: #fff;

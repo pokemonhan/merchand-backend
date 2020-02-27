@@ -1,16 +1,17 @@
 <template>
     <div v-if="show" class="dialog-mask">
-        <transition name="dialog-animate">
-            <div v-if="show" class="v-dialog">
-                <div class="dialog-header">
-                    <!-- <i v-if="icon" :class="['iconfont', icon]"></i> -->
-                    <span v-text="title"></span>
-                    <i @click="close" class="iconfont iconcuowuguanbi-"></i>
+        <transition name="fade-transform">
+            <div v-if="dialog" class="v-dialog">
+                <div>
+                    <div class="dialog-header">
+                        <!-- <i v-if="icon" :class="['iconfont', icon]"></i> -->
+                        <span v-text="title"></span>
+                        <i @click="close" class="iconfont iconcuowuguanbi-"></i>
+                    </div>
+                    <div class="dialog-body">
+                        <slot></slot>
+                    </div>
                 </div>
-                <div class="dialog-body">
-                    <slot></slot>
-                </div>
-              
             </div>
         </transition>
     </div>
@@ -28,17 +29,18 @@ export default {
             type: String,
             default: () => '我是标题'
         },
-        icon: String,
-     
+        icon: String
     },
     data() {
-        return {}
+        return {
+            dialog: true
+        }
     },
     methods: {
         close() {
             this.$emit('update:show', false)
             this.$emit('close')
-        },
+        }
         // cancel() {
         //     this.$emit('update:show', false)
         //     this.$emit('cancel')
@@ -48,14 +50,40 @@ export default {
         //     this.$emit('confirm')
         // }
     },
-    mounted() {
-        let appEle = document.getElementById('app')
-        appEle.style.overflow = this.show?'hidden':'auto'
+    watch: {
+        show(val) {
+            // 当有遮罩时, 禁止滚动
+            document.body.style.overflow = val ? 'hidden' : 'auto'
+
+            setTimeout(() => {
+                this.dialog = val
+            }, 100)
+        }
     },
+    mounted() {
+        setTimeout(() => {
+            this.dialog = this.show
+        }, 100)
+    }
 }
 </script>
 
 <style scoped>
+/* fade-transform */
+.fade-transform-leave-active,
+.fade-transform-enter-active {
+    transition: all 0.4s;
+}
+
+.fade-transform-enter {
+    opacity: 0;
+    transform: translateY(-30px);
+}
+
+.fade-transform-leave-to {
+    opacity: 0;
+    transform: translateY(-30px);
+}
 /* 背景遮罩层 */
 .dialog-mask {
     position: fixed;
@@ -63,17 +91,25 @@ export default {
     bottom: 0;
     left: 0;
     right: 0;
-    z-index: 1000;
+    z-index: 10;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
     background-color: rgba(0, 0, 0, 0.6);
+    overflow: hidden;
 }
 .v-dialog {
     /* min-width: 160px;
     min-height: 90px; */
-    position: absolute;
+    /* position: absolute;
     z-index: 2;
     left: 50%;
     top: 50%;
-    transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%); */
+    /* width: 100%;
+    height: 100%; */
+
     min-width: 400px;
     min-height: 220px;
     background-color: #fff;

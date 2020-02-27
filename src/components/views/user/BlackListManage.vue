@@ -6,11 +6,11 @@
             <ul class="left">
                 <li>
                     <span>会员账号</span>
-                    <Input style="width:110px" limit="en-num" v-model="filter.mobile" />
+                    <Input style="width:100px" limit="en-num" v-model="filter.mobile" />
                 </li>
                 <li>
                     <span>会员ID</span>
-                    <Input style="width:110px" limit="en-num" v-model="filter.guid" />
+                    <Input style="width:100px" limit="en-num" v-model="filter.guid" />
                 </li>
                 <li>
                     <span>进入黑名单时间</span>
@@ -20,7 +20,7 @@
                 </li>
                 <li>
                     <span>进入黑名单次数</span>
-                    <Input style="width:110px" limit="en-num" v-model="filter.black_num" />
+                    <Input style="width:100px" limit="en-num" v-model="filter.black_num" />
                 </li>
             </ul>
             <div class="right">
@@ -95,18 +95,7 @@ export default {
                 black_num: ''
             },
             guid: '',
-            headers: [
-                '会员账号',
-                '会员ID',
-                '账户余额',
-                '注册时间',
-                '最后登录时间',
-                '进入黑名单时间',
-                '最后登录IP',
-                '进入黑名单次数',
-                '备注',
-                '操作'
-            ],
+            headers: [ '会员账号', '会员ID', '账户余额', '注册时间', '最后登录时间', '进入黑名单时间', '最后登录IP', '进入黑名单次数', '备注', '操作' ],
 
             list: [],
             total: 0,

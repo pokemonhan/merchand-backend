@@ -9,6 +9,7 @@
             @input="input"
             @keyup.enter="pressEnter"
             @keyup="keyup"
+            @change="change"
             :maxlength="maxlength"
             :disabled="disabled"
             :autocomplete="autocomplete"
@@ -45,7 +46,7 @@ export default {
     },
     model: {
         prop: "value",
-        event: "keyup" // 原来是input
+        event: "update" // 原来是input
     },
     data() {
         return {
@@ -70,6 +71,10 @@ export default {
     methods: {
         input() {
             this.$emit("input", this.val);
+            this.$emit("update", this.val);
+        },
+        change() {
+            this.$emit("update", this.val)
         },
         pressEnter() {
             this.$emit("enter");
@@ -78,6 +83,7 @@ export default {
             this.regs[this.limit] && (this.val = this.val.toString().replace(this.regs[this.limit], ""));
             // console.log(this.val)
             this.$emit("keyup", this.val);
+            this.$emit("update", this.val);
         }
     },
     mounted() {
@@ -92,7 +98,7 @@ export default {
     /* width: 100%; */
     position: relative;
     /* min-height: 26px; */
-    /* min-width: 100px; */
+    min-width: 80px;
     /* background: #fff; */
 }
 .disabled {

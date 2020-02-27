@@ -1,5 +1,3 @@
-代码如下:
-
 const slider = (function() {
   var Slider = {};
     // the constructed function,timeManager,as such that's a manager about managing the setInterval

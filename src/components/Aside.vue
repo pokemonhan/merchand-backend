@@ -3,17 +3,16 @@
         <ul class="level-1">
             <li v-for="(lev1, lev1_index) in menu_list" :key="lev1_index">
                 <span
-                    :class="['title',$route.path == lev1.path?'active-menu':'']"
+                    :class="['title',$route.path == lev1.path&&(!lev1.children)?'active-menu':'',curr_ul(lev1)?'lev1-active':'']"
                     @click="expandMenu(lev1,lev1_index)"
                 >
-                    <!-- <span></span> -->
-                    <!-- name 改label,children 改child-->
-                    <!-- <i :class="['icon-left','iconfont', lev1.icon]"></i> -->
+                    <i :class="['iconfont '+lev1.icon, 'mr5']"></i>
                     <span class="title-name">{{lev1.name}}</span>
                     <span v-if="lev1.children" class="iconfont iconup right"></span>
                 </span>
+
                 <!-- 二级菜单 -->
-                <ul :ref="lev1_index" class="level2">
+                <ul :ref="lev1_index" :class="['level2',curr_ul(lev1)?'active-ul':'']">
                     <li v-for="(lev2, lev2_index) in lev1.children" :key="lev2_index">
                         <!-- 标题 -->
                         <span
@@ -50,94 +49,165 @@ import { mapState, mapMutations, mapGetters } from 'vuex'
 export default {
     data() {
         return {
-            currentMenu: Number,
-            menu_list: []
+            screenWidth: document.body.clientWidth, // 屏幕高度
+            menu_list: [],
+            chain: [], // 父子级关系，格式[0,2,3]// 第下标 0 个的第 2 个子级 的第3个子子级
+            count: 0
         }
     },
     computed: {
         ...mapState(['tab_nav_list'])
     },
     methods: {
-        ...mapMutations(['updatetab_nav_list']),
+        ...mapMutations(['updateTab_nav_list']),
+
+        // 是否是当前路由的父级 ul, 是返回true
+        curr_ul(lev1) {
+            if (lev1.children) {
+                // 子项有当前路由返回true
+                let havePath = lev1.children.find(item => {
+                    return item.path === this.$route.path
+                })
+                return havePath ? true : false
+            }
+            return false
+        },
         expandMenu(item, index) {
-            // console.log("TCL: expandMenu -> item", item)
             // console.log("该元素item", item);
             // console.log("这个index", index);
-            // console.log("TCL: expandMenu -> 当前", this.currentMenu)
-            if (item.path && true) {
-                if (this.$route.path !== item.path) {
-                    this.$router.push(item.path)
-                }
+            if (!item.children) {
+                this.$router.push(item.path)
 
                 let list = this.tab_nav_list
                 // 导航条没有该页面 就添加进去
-                if (this.tab_nav_list.indexOf(item) === -1) {
-                    list.push(item)
-                    // // 保持不大于7个菜单导航
-                    // if (list.length > 7) {
-                    //     list.shift();
-                    // }
-                    // if(list.length)
-                    this.updatetab_nav_list(list)
+                let isHadTab = list.find(tab => tab.path === item.path)
+                if (!isHadTab) {
+                    list.push({
+                        label: item.name,
+                        path: item.path
+                    })
+                    this.updateTab_nav_list(list)
                 }
 
-                // 没有 path 就是父级菜单,就下滑打开该菜单
+                // 没有 children 就是父级菜单,就下滑打开该菜单
             } else {
                 let ele = this.$refs[index]
-                item.children && $(ele).slideToggle(200)
+                $(ele).slideToggle(200)
             }
-            this.currentMenu = index
         },
-        objToArr(obj) {
-            let list = []
-            for (let key in obj) {
+
+        objToArr(obj, pre_idx = '') {
+            // let list = []
+            return Object.keys(obj).map((key, index) => {
                 let item = obj[key]
-                if (item.child) {
-                    item.child = objToArr(item.child)
+
+                let template = {
+                    id: item.id,
+                    label: item.label,
+                    en_name: item.en_name,
+                    path: item.route,
+                    display: item.display,
+                    pre_idx: pre_idx + index,
+                    // type: '',
+                    level: item.level
                 }
-                list.push(item)
+
+                // TODO: 后期改为以其他关键字作为匹配. 设置icon
+                let curr_menu = window.all.menu_list.filter(
+                    menu => menu.label === item.label
+                )
+                if (curr_menu.length) {
+                    template.icon = curr_menu[0].icon
+                }
+                if (item.child) {
+                    template.children = this.objToArr(
+                        item.child,
+                        pre_idx + index + '-'
+                    )
+                }
+                return template
+            })
+            // }
+            // return list
+        },
+        getMenuList() {
+            this.menu_list = window.all.tool.getLocal('menu')||window.all.menu_list
+            return
+            if(!window.all.tool.getLocal('Authorization')){
+                return
             }
-            return list
+            if (window.all.tool.getLocal('menu')) {
+                this.menu_list = window.all.tool.getLocal('menu')||window.all.menu_list
+            } else {
+                let { method, url } = this.$api.current_admin_menu
+
+                this.$http({ method, url }).then(res => {
+                    if (res && res.code === '200') {
+                        let menu = this.objToArr(res.data)
+                        this.menu_list = menu
+                        window.all.tool.setLocal('menu', menu)
+                    }
+                })
+            }
+        },
+        // 获取当前路由的父级或祖先级
+        getFather() {
+            let curr_path = this.$route.path
+            let menu = this.menu_list
+            if (!menu) return
+            // console.log('menu: ', menu);
+            // 获取父子级关系 如 1-1-1
+            let chain_temp = ''
+            let getPreChain = function(arr, pre_fix = '') {
+                arr.forEach((item, index) => {
+                    if (item.children) {
+                        let pre = pre_fix !== '' ? pre_fix + '-' + index : index
+                        getPreChain(item.children, pre)
+                    } else {
+                        if (item.path === curr_path) {
+                            pre_fix =
+                                pre_fix !== '' ? pre_fix + '-' + index : index
+                            chain_temp = pre_fix
+                        }
+                    }
+                })
+            }
+            getPreChain(menu)
+            this.chain = (chain_temp || '').split('-')
+            // console.log('menu: ', menu)
+            // console.log('锁链', this.chain)
         }
     },
     watch: {
         $route: function(to, from) {
-            if (to.path === '/home') return
-            let path = to.path
+            // if (to.path === '/home') return
             // console.log("TCL: path", path);
             /*       1.同一父级,则 退出 2.不同父级,关闭以前,打开跳转的父级菜单 */
-
             //1.同一父级,则 退出
-
             //取 path 的父级
             // menu_list = this.menu_list
-
-            // /*** TODO
-            // function getfather(array) {
-            //     array.forEach((item, index) => {
-            //         // console.log("TCL: getfather -> item", item)
-            //         if (item.children) {
-            //             item.children.forEach(i => {
-            //                 if (i.path === to.path) {
-            //                     return item.path
-            //                 }
-            //             })
-            //         }
-            //     })
-            // }
-            // let father_path = getfather(this.menu_list)
+            /*** TODO:
+             *
+             */
+            // 当前没有菜单就 localStorage找
+            // this.getFather()
+            if (from.path === '/login') {
+                this.getMenuList()
+            }
         }
     },
     mounted() {
-        // console.log('aside');
-        this.menu_list = window.all.menu_list
+        this.getMenuList()
         let self = this
         let setHeight = function() {
             let height = document.documentElement.clientHeight // 可视 页面高度
             let ele = self.$refs.contain
-            let offsetTop = ele.offsetTop
+            // console.log('ele: ', ele);
 
-            ele.style.height = height - offsetTop - 10 + 'px'
+            if (ele) {
+                let offsetTop = ele.offsetTop
+                ele.style.height = height - offsetTop - 10 + 'px'
+            }
         }
         setHeight()
         // onresize调节尺寸时, 同步设置 菜单高度
@@ -148,16 +218,16 @@ export default {
 
 <style scoped>
 .contain {
-    width: 150px;
-    max-height: 92vh;
+    /* width: 150px; */
+    /* max-height: 92vh; */
+    min-width: 145px;
     box-sizing: border-box;
-    background: #fff;
-    /* text-align: center; */
-    /* border-radius: 6px; */
+    border-top: 2px solid #4c8bfd;
     cursor: pointer;
     overflow: auto;
-    /* border: 1px solid #48f; */
-    user-select: none;
+    background: #fff;
+
+    /* user-select: none; */
     -ms-overflow-style: none;
     overflow: -moz-scrollbars-none;
 }
@@ -173,21 +243,47 @@ export default {
     display: inline-block;
     padding: 10px 0;
     width: 100%;
-    font-size: 14px;
+    font-size: 15px;
     font-weight: 600;
+    text-align: center;
+    border-top: 1px solid rgb(253, 253, 253);
     /* color: rgb(63, 62, 62); */
 }
+
 /* 二级菜单 */
 /* .level2 {
 } */
+
+/* 激活的ul */
+
+.lev1-active {
+    border-left: 3px solid #2569e9;
+    color: #4c8bfd;
+    transition: border 0.2s;
+}
+.active-ul {
+    border-left: 3px solid #2569e9;
+    transition: border 0.2s;
+}
+
 .level2 > li > .title {
     display: inline-block;
-    /* display:none; */
-    padding: 8px 10px;
-    padding-left: 30px;
+    /* padding: 8px 0; */
+    padding-top: 8px;
+    padding-bottom: 8px;
+    padding-left: 20px;
     width: 100%;
-    font-size: 12px;
+    font-size: 13px;
+    text-align: center;
     /* font-weight: 600; */
+    /* border: 1px solid #000; */
+}
+.level2 > li > .title span {
+    display: inline-block;
+    min-width: 100px;
+    text-align: left;
+    margin-left: 10px;
+    /* padding-left: 20px; */
     /* border: 1px solid #000; */
 }
 .level3 > li .title {
@@ -213,9 +309,11 @@ li .title:hover {
     margin-right: 8px;
     margin-top: 4px;
 }
-.title-name {
-    margin-left: 16px;
-}
+
+/* 菜单 - 标题文字 lev1 */
+/* .title-name {
+    margin-left: 1.23rem;
+} */
 .icon-left {
     margin-left: 21px;
 }

@@ -79,35 +79,6 @@
         <div class="tool-bar"></div>
         <!-- 在线状态, 游戏账号, 游戏ID, 会员标签, 团队人数, 上级账号, 玩家金额, 注册IP->登录iP,注册日期->登录日期 -->
 
-<!--        <TwoTable :headers="headers" :column="list">-->
-<!--            <template v-slot:tdOne="{row}">-->
-<!--                &lt;!&ndash; <td></td> &ndash;&gt;-->
-<!--                <td :class="[row.a==='在线'?'green':'orange']">{{row.a}}</td>-->
-<!--                <td>{{row.b}}</td>-->
-<!--                <td>{{row.c}}</td>-->
-<!--                <td>-->
-<!--                    <i v-if="row.d==='1'" class="iconfont iconyuanquan red"></i>-->
-<!--                    <i v-if="row.d==='0'" class="iconfont icongou green"></i>-->
-<!--                </td>-->
-<!--                <td>{{row.e}}</td>-->
-<!--                <td>{{row.f}}</td>-->
-<!--                <td>-->
-<!--                    <div class="table-opra">-->
-<!--                        <span style="margin-right:10px;" @click="showDetail">详情</span>-->
-<!--                        <span @click="addBlackList">加入黑名单</span>-->
-<!--                    </div>-->
-<!--                </td>-->
-<!--            </template>-->
-<!--            <template v-slot:tdTwo="{row}">-->
-<!--                <td>{{row.a}}</td>-->
-<!--                <td>{{row.b}}</td>-->
-<!--                <td>{{row.c}}</td>-->
-<!--                <td>{{row.d}}</td>-->
-<!--                <td>{{row.e}}</td>-->
-<!--                <td>{{row.f}}</td>-->
-<!--                &lt;!&ndash; <td>{{row.f}}</td> &ndash;&gt;-->
-<!--            </template>-->
-<!--        </TwoTable>-->
         <Table :headers="headers" :column="list">
             <template v-slot:item="{row}">
                 <td>{{row.is_online}}</td>
@@ -137,13 +108,18 @@
                 @updateSize="updateSize"
             />
         </div>
-        <div class="modal-mask" v-if="show_detail">
+        <!-- <div class="modal-mask" v-if="show_detail">
             <div class="v-modal">
-                <!-- // mask 内容 -------------- -->
+              
                 <div class="mod-head">
                     <span>详情</span>
                     <i class="iconfont iconcuowuguanbi-" @click="closeUserList()"></i>
                 </div>
+                
+            </div>
+        </div> -->
+        <Dialog class="modal-mask" :show.sync="show_detail" title="详情">
+            <div class="dia-inner">
                 <div class="mod-body">
                     <!-- 个人资料信息-图片 -->
                     <div class="row1 pic">
@@ -345,7 +321,8 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </Dialog>
+        <!-- dia_show: true -->
         <div v-if="inner_mask_show" class="modal-mask">
             <div class="confirm v-modal">
                 <div class="mod-head">
@@ -383,12 +360,8 @@
                 </div>
             </div>
         </div>
-        <div class="modal-mask" v-if="show_add_black_list">
-            <div class="v-modal">
-                <div class="mod-head">
-                    <span>加入黑名单</span>
-                    <i class="iconfont iconcuowuguanbi-" @click="show_add_black_list=false"></i>
-                </div>
+        <Dialog :show.sync="show_add_black_list" title="加入黑名单">
+            <div class="dia-inner">
                 <div class="blacklist-inner">
                     <div class="infor">是否确定把该玩家加入黑名单！</div>
                     <span class="textarea-remark">
@@ -401,7 +374,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </Dialog>
     </div>
 </template>
 
@@ -666,10 +639,9 @@ export default {
 } */
 .modal-mask .mod-body {
     min-width: 800px;
-    padding: 20px 40px;
 }
 
-.v-modal .mod-body .row1 {
+.mod-body .row1 {
     display: flex;
 }
 .mod-body .user-info tr td {

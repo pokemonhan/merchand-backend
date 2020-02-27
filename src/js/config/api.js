@@ -27,6 +27,12 @@ export default {
         method: 'get',
     },
 
+    /*===========================   菜单   ===========================--*/
+    // 获取商户个人菜单 ,也是所有菜单
+    current_admin_menu: {
+        url: '/merchant-api/menu/current-admin-menu',
+        method: 'get'
+    },
     /*===========================   首页   ===========================--*/
 
 
@@ -446,7 +452,7 @@ export default {
     },
     // 管理员分组-分组编辑
     admin_group_set: {
-        url: '/merchant-api/merchant-admin-group/create',
+        url: '/merchant-api/merchant-admin-group/edit',
         method: 'post'
     },
     // 管理员分组-分组删除

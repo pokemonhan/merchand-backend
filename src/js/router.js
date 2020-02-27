@@ -69,8 +69,8 @@ const ExportBank = () => import('../components/views/pay/ExportBank.vue')       
 /* 金流管理 */
 
 /* 推广配置 */
-const PromoteConfig =() => import('../components/views/promote/PromoteConfig.vue')             // 推广配置
-const PicConfig =() => import('../components/views/promote/PicConfig.vue')                     // 推广图片配置
+const PromoteConfig = () => import('../components/views/promote/PromoteConfig.vue')             // 推广配置
+const PicConfig = () => import('../components/views/promote/PicConfig.vue')                     // 推广图片配置
 /* 推广配置 */
 
 /* 设置管理 */
@@ -86,13 +86,19 @@ const BankCenter = () => import('../components/views/set/BankCenter.vue')       
 const Page404 = () => import('../components/views/page404/page404.vue')
 /* 404页面 */
 Vue.use(Router)
+// 解决 路由 NavigationDuplicated 报错问题
+const originalPush = Router.prototype.push
+Router.prototype.push = function push(location) {
+    return originalPush.call(this, location).catch(err => err)
+}
 
 const router = new Router({
     mode: 'history',
     routes: [
         {
             path: '/',
-            component: HomePage
+            // component: 
+            redirect:'/login'
         },
 
         {
@@ -335,8 +341,8 @@ const router = new Router({
             path: '/set/bankcenter',
             component: BankCenter
         },
-       
-       
+
+
 
 
 
@@ -356,7 +362,7 @@ const router = new Router({
 router.beforeEach((to, from, next) => {
     // console.log(to.path);
     // console.log(from.path);
-    if(to.path!==from.path){
+    if (to.path !== from.path) {
         next()
     }
 })

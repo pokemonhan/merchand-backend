@@ -124,7 +124,7 @@ export default {
         }
     },
     mounted() {
-        // localStorage.clear()
+        localStorage.clear()
     }
 }
 </script>

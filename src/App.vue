@@ -7,7 +7,10 @@
             <Aside class="app-aside"></Aside>
             <div class="app-main">
                 <TabNav class="tab-nav"></TabNav>
-                <router-view class="router-view"/>
+                <!-- <router-view class="router-view"/> -->
+                <transition name="fade-transform" mode="out-in">
+                    <router-view class="router-view" />
+                </transition>
             </div>
         </div>
         <div id="toast-box"></div>
@@ -70,10 +73,12 @@ export default {
     width: 100%;
 }
 .app-content {
-    max-width: 1200px;
+    /* max-width: 1200px; */
     display: flex;
+     min-width: 1200px;
+    max-width: 2220px;
     margin: 20px auto 0 auto;
-    /*margin-top: 20px;*/
+    /* float: left; */
 }
 .app-aside {
     width: 150px;
@@ -81,8 +86,9 @@ export default {
 }
 .app-main {
     margin-left: 10px;
-    /* width: 100%; */
-    width: 1040px;
+    margin-right: 10px;
+    width: 100%;
+    /* width: 1040px; */
     overflow: hidden;
 }
 /* .router-view{
@@ -91,15 +97,112 @@ export default {
 .tab-nav {
     width: 100%;
 }
+/* fade-transform */
+.fade-transform-leave-active,
+.fade-transform-enter-active {
+    transition: all 0.4s;
+}
+
+.fade-transform-enter {
+    opacity: 0;
+    transform: translateX(-30px);
+}
+
+.fade-transform-leave-to {
+    opacity: 0;
+    transform: translateX(30px);
+}
 #toast-box {
     position: fixed;
     top: 10px;
     left: 50%;
+    z-index: 10002;
 }
 </style>
 
 <style>
 /* ----------------------    公共样式    全局-------------------------------------------------- */
+@media screen and (max-width: 1200px) {
+    /* .app-content {
+        font-size: 12px;
+    } */
+    html {
+        /* color: rgb(110, 38, 243); */
+
+        font-size: 12px;
+    }
+
+    .app-aside {
+        width: 150px;
+    }
+}
+
+@media screen and (min-width: 1201px) and (max-width: 1400px) {
+    /*  .app-content {
+        max-width: 1200px;
+    } */
+    html {
+        /* color: rgb(243, 120, 38); */
+        font-size: 12px;
+    }
+    .app-aside {
+        width: 165px;
+    }
+}
+@media screen and (min-width: 1401px) and (max-width: 1600px) {
+    /*  .app-content {
+        max-width: 1400px;
+    } */
+    .app-aside {
+        width: 180px;
+    }
+    html {
+        /* width: 1240px; */
+        font-size: 13px;
+        /* color: rgb(192, 192, 5); */
+    }
+}
+@media screen and (min-width: 1601px) and (max-width: 1900px) {
+    /*  .app-content {
+        max-width: 1600px;
+    } */
+    html {
+        /* width: 1440px; */
+        font-size: 14px;
+
+        /* color: green; */
+    }
+    .app-aside {
+        width: 195px;
+    }
+}
+@media screen and (min-width: 1901px) and (max-width: 2300px) {
+    /*  .app-content {
+        max-width: 1900px;
+    } */
+    html {
+        /* width: 1740px; */
+        /* color: turquoise; */
+        font-size: 15px;
+    }
+    .app-aside {
+        width: 210px;
+    }
+}
+
+@media screen and (min-width: 2301px) {
+    /*   .app-content {
+        max-width: 2300px;
+    } */
+    html {
+        /* width: 2140px; */
+        /* color: purple !important; */
+        font-size: 15px;
+    }
+    .app-aside {
+        width: 225px;
+    }
+}
 .textarea {
     padding: 10px;
     /* min-height: 130px; */
@@ -111,7 +214,8 @@ export default {
     padding: 20px 8px 20px 8px;
     background: #fff;
     border: 1px solid #4c8bfd;
-    width: 1040px;
+    /* width: 1040px; */
+    max-width: 2220px;
 }
 /* 背景遮罩层 */
 .modal-mask {
@@ -396,7 +500,8 @@ button:hover {
 .filter .v-input,
 .filter .v-date-picker,
 .filter .v-select {
-    width: 8.3rem;
+    /* width: 8.3rem; */
+    width: 100px;
 }
 .filter .left > li > span:first-child {
     margin-right: 4px;

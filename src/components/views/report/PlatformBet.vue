@@ -132,6 +132,7 @@ export default {
   
     data() {
         return {
+            quick_query: [],
             filter:{
                 account:'',
                 userid:'',

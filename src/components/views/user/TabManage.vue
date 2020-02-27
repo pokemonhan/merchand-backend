@@ -40,12 +40,17 @@
                 @updateSize="updateSize"
             />
         </div>
-        <div class="modal-mask" v-if="mod_show">
+        <!-- <div class="modal-mask" v-if="mod_show">
             <div class="v-modal">
                 <div class="mod-head">
                     <span>{{mask_head}}</span>
                     <i class="iconfont iconcuowuguanbi-" @click="mod_show=false"></i>
                 </div>
+                
+            </div>
+        </div> -->
+        <Dialog class="modal-mask" :show.sync="mod_show" title="编辑">
+            <div class="dia-inner">
                 <div class="mod-body">
                     <ul class="form">
                         <li>
@@ -75,7 +80,7 @@
                     </ul>
                 </div>
             </div>
-        </div>
+        </Dialog>
         <!-- <div class="modal-mask" v-if="mod_show">
 				<div class="v-modal">
 					<div @click="mod_show=false">
@@ -286,22 +291,14 @@ export default {
     color: red;
 }
 /* .modal-mask   已转移到公共css*/
-.v-modal {
-    min-width: 500px;
-    height: 400px;
-    position: absolute;
-    top: 100px;
-    z-index: 3;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    background-color: #fff;
-    border-radius: 7px;
-}
+
 /* .modal-mask .iconcuowuguanbi- {
     公共区样式
 } */
-
+.mod-body {
+    min-width: 600px;
+    min-height: 400px;
+}
 .form {
     /* display: flex; */
     /* justify-content: center; */
@@ -331,7 +328,7 @@ export default {
     min-width: 450px;
     min-height: 260px;
     position: absolute;
-    top: 50%;
+
     z-index: 2;
     left: 50%;
     top: 50%;
@@ -341,7 +338,7 @@ export default {
 }
 .del-label .inner {
     position: absolute;
-    top: 50%;
+
     z-index: 2;
     left: 50%;
     top: 40%;

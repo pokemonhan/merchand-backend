@@ -47,7 +47,7 @@
                     <td>{{row.a7}}</td>
                     <td>
                         <button class="btns-blue" @click="edit">编辑</button>
-                        <button class="btns-red" @click="show_conf=true">删除</button>
+                        <button class="btns-red" @click="del(row)">删除</button>
                     </td>
                 </template>
             </Table>
@@ -126,6 +126,9 @@
         <Dialog :show.sync="pic_dia_show" title="预览图片">
              <img class="max-w800" :src="src[curr_pic_idx]" alt="未选择图片" />
         </Dialog>
+        <Modal :show.sync="mod_show" title="删除" content="是否删除该公告" @cancel="mod_show=false" @confirm="modConf"></Modal>
+        
+        
     </div>
 </template>
 
@@ -194,7 +197,9 @@ export default {
             },
             src: [],
             pic_dia_show: false,
-            curr_pic_idx: -1
+            curr_pic_idx: -1,
+            // model
+            mod_show: false,
         }
     },
     methods: {
@@ -242,7 +247,12 @@ export default {
         edit() {
             this.dia_show = true
             this.initForm()
-        }
+        },
+        del() {
+            this.mod_show = true
+        },
+        modConf() {
+        },
     },
     mounted() {}
 }
@@ -301,12 +311,12 @@ export default {
     margin-top: 20px;
 }
 /* .modal-mask ---在 App.vue公共区 */
-.dia-inner {
+/* .dia-inner {
     width: 660px;
     min-height: 450px;
     display: flex;
     justify-content: center;
-}
+} */
 .form > li {
     display: flex;
     align-items: baseline;

@@ -2,12 +2,12 @@ let menuList = [
                 {
                     name: "首页",
                     path: "/home",
-                    // icon: "iconhome"
+                    icon: "iconhome"
                 },
                 {
                     name: "会员管理",
                     // path: '/user',
-                    // icon: "iconaccount",
+                    icon: "iconaccount",
                     children: [
                         { name: "会员列表", path: "/user/userlist" },
                         { name: "登录记录", path: "/user/loginlog" },
@@ -20,7 +20,7 @@ let menuList = [
                 {
                     name: "财务管理",
                     // path: '/funds',
-                    // icon: "iconmoneybag",
+                    icon: "iconmoneybag",
                     children: [
                         { name: "入款订单", path: "/funds/incomeorder" },
                         { name: "人工存取", path: "/funds/manualaccess" },
@@ -32,7 +32,7 @@ let menuList = [
                 {
                     name: "公告管理",
                     // path: '/announce',
-                    // icon: "iconyunyingzhongxin",
+                    icon: "iconyunyingzhongxin",
                     children: [
                         { name: "跑马灯消息", path: "/announce/marquee" },
                         { name: "系统公告", path: "/announce/systemannounce" },
@@ -44,7 +44,7 @@ let menuList = [
                 {
                     name: "邮件系统",
                     // path: 'email',
-                    // icon: '',
+                    icon: 'icon185078emailmailstreamline',
                     children: [
                         {name:"发邮件", path:"/email/sendemail"},
                         {name:"收件箱", path:"/email/receiveemail"},
@@ -55,7 +55,7 @@ let menuList = [
                 {
                     name: "报表管理",
                     // path: '/report',
-                    // icon: "iconaccount",
+                    icon: "iconaccount",
                     children: [
                         { name: "个人报表", path: "/report/personalreport" },
                         { name: "游戏报表", path: "/report/gamereport" },
@@ -70,7 +70,7 @@ let menuList = [
                 {
                     name: "游戏管理",
                     // path: '/game',
-                    // icon: "iconmiaojie1029data",
+                    icon: "iconmiaojie1029data",
                     children: [
                         { name: "H5游戏管理", path: "/game/gameh5" },
                         { name: "PC游戏管理", path: "/game/gamepc" },
@@ -83,7 +83,7 @@ let menuList = [
                 {
                     name: "活动管理",
                     // path: '/active',
-                    // icon: "iconcalculator",
+                    icon: "iconcalculator",
                     children: [
                         { name: "静态活动", path: "/active/static" },
                         { name: "动态活动", path: "/active/dynamic" },
@@ -92,7 +92,7 @@ let menuList = [
                 {
                     name: "金流管理",
                     // path: '/pay',
-                    // icon: "icongame",
+                    icon: "icongame",
                     children: [
                         { name: "线下金流配置", path: "/pay/offlinepay" },
                         { name: "线上金流配置", path: "/pay/onlinepay" },
@@ -103,7 +103,7 @@ let menuList = [
                 {
                     name: "推广配置",
                     // path: '/promote',
-                    // icon: "iconnet",
+                    icon: "iconnet",
                     children: [
                         { name: "推广配置", path: "/promote/promoteconfig" },
                         { name: "推广图片配置", path: "/promote/picconfig" },
@@ -112,7 +112,7 @@ let menuList = [
                 {
                     name: "设置管理",
                     // path: '/set',
-                    // icon: "iconspeaker-5",
+                    icon: "iconspeaker-5",
                     children: [
                         { name: "管理员分组", path: "/set/adminsort" },
                         { name: "全域设置", path: "/set/allareaset" },

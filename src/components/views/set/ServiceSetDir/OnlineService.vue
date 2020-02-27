@@ -3,8 +3,8 @@
         <Table :headers="headers" :column="list">
             <template v-slot:item="{row}">
                 <!-- '客服名称','客服类型','客服号码','聊天链接','操作' -->
-                <td>{{row.a1}}</td>
-                <td>{{row.a1}}</td>
+                <td>{{row.link}}</td>
+                <td>{{row.content}}</td>
 
                 <td>
                     <button class="btns-blue" @click="editClick(row)">编辑</button>
@@ -12,7 +12,7 @@
                 </td>
             </template>
         </Table>
-
+<!-- 
         <Page
             class="table-page"
             :total="total"
@@ -20,7 +20,7 @@
             :pageSize.sync="pageSize"
             @updateNo="updateNo"
             @updateSize="updateSize"
-        />
+        /> -->
         <Dialog :show.sync="dia_show" :title="dia_title">
             <div class="dia-inner">
                 <div class="form">
@@ -35,14 +35,14 @@
                                 class="radio-left"
                                 label="专业版"
                                 :value="form.status"
-                                val="on"
+                                :val="3"
                                 v-model="form.status"
                             />
                             <Radio
                                 class="radio-right ml20"
                                 label="企业版"
                                 :value="form.status"
-                                val="off"
+                                :val="4"
                                 v-model="form.status"
                             />
                         </li>
@@ -123,11 +123,31 @@ export default {
             this.mod_show = true
         },
         modConf() {},
+        getList() {
+            let para = {
+                type: 2,
+                pageSize: this.pageSize,
+                page: this.pageNo
+            }
+            let params = window.all.tool.rmEmpty(para)
+        
+            let { url, method } = this.$api.customer_service_list
+            this.$http({ method, url, params }).then(res => {
+                console.log('列表👌👌👌👌: ', res)
+                if (res && res.code === '200') {
+                    // this.total = res.data.t
+                    this.list = res.data
+        
+                }
+            })
+        },
         qrcodeClick() {},
         updateNo(val) {},
         updateSize(val) {}
     },
-    mounted() {}
+    mounted() {
+        this.getList()
+    }
 }
 </script>
 

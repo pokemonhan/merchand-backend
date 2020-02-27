@@ -150,7 +150,7 @@ export default {
                 pageSize: this.pageSize,
                 page: this.pageNo
             }
-            let { url, method } = this.$api.admin_group_user_list
+            let { url, method } = this.$api.admin_group_users_list
             this.$http({ method, url, params }).then(res => {
                 // console.log('成语列表呢res: ', res)
                 if (res && res.code === '200') {
@@ -238,7 +238,7 @@ export default {
                     password: this.addForm.pwd,
                     group_id: this.group_id
                 }
-                let { method, url } = this.$api.admin_user_add
+                let { method, url } = this.$api.admin_group_users_add
                 this.$http({ method, url, data }).then(res => {
                     if (res && res.code === '200') {
                         this.$toast.success(res.message)
@@ -311,8 +311,10 @@ export default {
                 }
             })
         },
-
+        // 禁用/启用
         modConf() {
+            this.$toast('功能未做')
+            return 
             let data = {
                 id: this.curr_row.id,
                 status: this.curr_row.status ? 0 : 1
@@ -326,10 +328,6 @@ export default {
                     this.$toast.success(res && res.message)
                     this.mod_show=false
                     this.getList()
-                } else {
-                    if (res && res.message !== '') {
-                        this.$toast.error(res.message)
-                    }
                 }
             })
         },
@@ -344,7 +342,7 @@ export default {
 
     watch: {
         group_id(val) {
-            console.log('val: ', val)
+            // console.log('val: ', val)
             this.getList()
         }
     },

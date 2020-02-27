@@ -143,7 +143,7 @@ export default {
     /* height: 22px; */
     /* height: 100%; */
     /* width: 110px; */
-    /* min-width: 110px; */
+    min-width: 80px;
     position: relative;
     /* margin: 0 5px; */
     /* display: inline-block; */

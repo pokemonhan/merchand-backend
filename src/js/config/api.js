@@ -140,10 +140,94 @@ export default {
 
     /*=========================== 财务管理 ===========================--*/
     // ----入款订单 - 列表
+    founds_incomeorder_list:{
+        url:'/merchant-api/recharge-order/index',
+        method:'get'
+    },
+
+    // ----入款订单 - 获取支付方式
+    founds_incomeorder_pay_method:{
+        url:'/merchant-api/recharge-order/get-finance-types',
+        method:'get'
+    },
+
+    // ---- 入款订单 - 手动入款
+    founds_incomeorder_Manual_deposit:{
+        url:'/merchant-api/recharge-order/handle-success',
+        method:'post'
+    },
     
-    // 人工存取
-    // 出款审核
-    // 出款订单
+    // ---- 入款订单 - 审核通过
+    founds_incomeorder_examination_passed:{
+        url:'/merchant-api/recharge-order/check-pass',
+        method:'post'
+    },
+
+    // ----入款订单 - 审核拒绝
+    founds_incomeorder_examination_rejected:{
+        url:'/merchant-api/recharge-order/check-refuse',
+        method:'post'
+    },
+
+    // ----人工存取 - 人工充值
+    founds_manualaccess_artificial_recharge:{
+        url:'/merchant-api/handle-save-buckle/handle-save',
+        method:'post'
+    },
+
+    // ---- 人工存取 - 人工存款记录
+    founds_manualaccess_artificial_recharge_recording:{
+        url:'/merchant-api/handle-save-buckle/save-index',
+        method:'get'
+    },
+
+    // ---- 人工存取 - 人工扣款
+    founds_manualaccess_artificial_charge:{
+        url:'/merchant-api/handle-save-buckle/handle-buckle',
+        method:'post'
+    },
+
+    // ---- 人工存取 - 人工扣款记录
+    founds_manualaccess_artificial_charge_recording:{
+        url:'/merchant-api/handle-save-buckle/buckle-index',
+        method:'get'
+    },
+
+    // ---- 出款审核 - 列表
+    founds_interface_list:{
+        url:'/merchant-api/withdraw-order/check-index',
+        method:'get'
+    },
+
+    // ---- 出款审核 - 审核通过
+    founds_interface_examination_passed:{
+        url:'/merchant-api/withdraw-order/check-pass',
+        method:'post'
+    },
+
+    // ---- 出款审核 - 审核拒绝
+    founds_interface_examination_rejected:{
+        url:'/merchant-api/withdraw-order/check-refuse',
+        method:'post'
+    },
+
+    // ---- 出款订单 - 列表
+    founds_paymentorder_list:{
+        url:'/merchant-api/withdraw-order/out-index',
+        method:'get'
+    },
+
+    // ---- 出款订单 - 出款通过
+    founds_paymentorder_examination_passed:{
+        url:'/merchant-api/withdraw-order/out-success',
+        method:'post'
+    },
+
+    // ---- 出款订单 - 出款拒绝
+    founds_paymentorder_examination_rejected:{
+        url:'/merchant-api/withdraw-order/out-refuse',
+        method:'post'
+    },
     // 资金账变
 
     /*=========================== 公告管理 ===========================--*/

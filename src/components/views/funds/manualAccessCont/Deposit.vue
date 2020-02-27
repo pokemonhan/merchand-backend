@@ -3,7 +3,7 @@
         <!-- ----------------------   人工存款  -------------------------------->
         <QuickQuery :date="quick_query" @update="qqUpd" />
 
-        <div class="filter" >
+        <div class="filter">
             <ul class="left">
                 <li>
                     <span>会员账号</span>
@@ -28,8 +28,8 @@
                     <Select v-model="filter.charge_type" :options="charge_type_opt"></Select>
                 </li>
                 <li>
-                    <button class="btn-blue">查询</button>
-                    <button class="btn-blue">导出Excel</button>
+                    <button class="btn-blue" @click="getList">查询</button>
+                    <button class="btn-blue" @click="exportExcel()">导出Excel</button>
                     <button class="btn-red" @click="clearAll">清空</button>
                     <button class="btn-blue" @click="dia_show=true">人工充值</button>
                 </li>
@@ -37,22 +37,21 @@
             <div class="right"></div>
         </div>
         <div class="table">
-            <Table :headers="theads" :column="list">
-
+            <Table :headers="headers" :column="list">
                 <!-- '订单号','会员账号','会员ID','充值类型','正式账号','充值金额','账户余额','充值时间','操作人','备注' -->
                 <template v-slot:item="{row}">
-                    <td>{{row.a1}}</td>
-                    <td>{{row.a2}}</td>
-                    <td>{{row.a3}}</td>
-                    <td>{{row.a4}}</td>
+                    <td>{{row.order_no}}</td>
+                    <td>{{row.user && row.user.mobile}}</td>
+                    <td>{{row.user && row.user.guid}}</td>
+                    <td>{{row.type}}</td>
                     <td>
-                        <i :class="icon_obj[row.a5]"></i>
+                        <i :class="icon_obj[row.user && row.user.is_tester]"></i>
                     </td>
-                    <td>{{row.a6}}</td>
-                    <td>{{row.a6}}</td>
-                    <td>{{row.a6}}</td>
-                    <td>{{row.a6}}</td>
-                    <td>{{row.a7}}</td>
+                    <td>{{row.money}}</td>
+                    <td>{{row.balance}}</td>
+                    <td>{{row.created_at}}</td>
+                    <td>{{row.admin && row.admin.name}}</td>
+                    <td>{{row.remark}}</td>
                 </template>
             </Table>
             <Page
@@ -73,7 +72,11 @@
                     </li>
                     <li>
                         <span>存款类型</span>
-                        <Select style="width:250px;" v-model="form.deposit_type" :options="deposit_type_opt" ></Select>
+                        <Select
+                            style="width:250px;"
+                            v-model="form.deposit_type"
+                            :options="deposit_type_opt"
+                        ></Select>
                     </li>
                     <li>
                         <span>存款金额</span>
@@ -81,12 +84,17 @@
                     </li>
                     <li>
                         <span>备注</span>
-                        <textarea style="width:250px;height:100px;" name="textarea" class="textarea" v-model="form.remark"></textarea>
+                        <textarea
+                            style="width:250px;height:100px;"
+                            name="textarea"
+                            class="textarea"
+                            v-model="form.remark"
+                        ></textarea>
                     </li>
                 </ul>
                 <div class="dia-buttons">
                     <button class="btn-plain-large" @click="dia_show=false">取消</button>
-                    <button class="btn-blue-large ml50">确定</button>
+                    <button class="btn-blue-large ml50" @click="addCfm" >确定</button>
                 </div>
             </div>
         </Dialog>
@@ -101,94 +109,148 @@ export default {
         return {
             quick_query: [],
             filter: {
-                account: '',
-                account_id: '',
+                account: "",
+                account_id: "",
                 dates: [],
-                official_account: '',
-                charge_type: ''
+                official_account: "",
+                charge_type: ""
             },
             official_opt: [
-                { label: '全部', value: '' },
-                { label: '是', value: '1' },
-                { label: '否', value: '0' }
+                { label: "全部", value: "" },
+                { label: "是", value: "1" },
+                { label: "否", value: "0" }
             ],
             charge_type_opt: [
-                { label: '全部', value: '' },
-                { label: '优惠赠送', value: '1' },
-                { label: '洗码增送', value: '2' }
+                { label: "全部", value: "" },
+                { label: "优惠赠送", value: "1" },
+                { label: "洗码增送", value: "2" }
             ],
             icon_obj: {
-                '1': 'iconfont icongou green',
-                '0': 'iconfont iconyuanquan red'
+                "1": "iconfont icongou green",
+                "0": "iconfont iconyuanquan red"
             },
-            theads:['订单号','会员账号','会员ID','充值类型','正式账号','充值金额','账户余额','充值时间','操作人','备注'],
-            list: [
-                {
-                    a1: 'D456123456789',
-                    a2: '13245678942',
-                    a3: '4561234',
-                    a4: '100.00',
-                    a5: '1',
-                    a6: 'admin',
-                    a7: '备注'
-                },
-                {
-                    a1: 'D456123456789',
-                    a2: '13245678942',
-                    a3: '4561234',
-                    a4: '100.00',
-                    a5: '0',
-                    a6: 'admin',
-                    a7: '备注'
-                },
-                {
-                    a1: 'D456123456789',
-                    a2: '13245678942',
-                    a3: '4561234',
-                    a4: '100.00',
-                    a5: '0',
-                    a6: 'admin',
-                    a7: '备注'
-                }
+            headers: [
+                "订单号",
+                "会员账号",
+                "会员ID",
+                "充值类型",
+                "正式账号",
+                "充值金额",
+                "账户余额",
+                "充值时间",
+                "操作人",
+                "备注"
             ],
+            list: [],
             total: 0,
             pageNo: 1,
             pageSize: 25,
             // 人工充值 添加-dialog
             dia_show: false,
-            form:{
-
-            },
-            deposit_type_opt:[  // 目前就一个
-                {label:'优惠存款',value:0}
+            form: {},
+            deposit_type_opt: [
+                // 目前就一个
+                { label: "优惠存款", value: "1"}
             ]
-
-        }
+        };
     },
     methods: {
         qqUpd(dates) {
             //同步时间筛选值
-            this.filter.dates = dates
-            this.filter = Object.assign(this.filter)
+            this.filter.dates = dates;
+            this.filter = Object.assign(this.filter);
         },
         clearAll() {
             this.filter = {
-                account: '',
-                account_id: '',
+                account: "",
+                account_id: "",
                 dates: [],
-                official_account: '',
-                charge_type: ''
-            }
+                official_account: "",
+                charge_type: ""
+            };
         },
         timeUpdate() {
             //同步快捷查询时间
-            this.quick_query = this.filter.dates
+            this.quick_query = this.filter.dates;
+        },
+        getList() {
+            let para = {
+                mobile: this.filter.account,
+                guid: this.filter.account_id,
+                created_at: [this.filter.dates[0], this.filter.dates[1]],
+                is_tester: this.filter.official_account,
+                type: this.filter.charge_type
+            };
+            let params = window.all.tool.rmEmpty(para);
+            let {
+                method,
+                url
+            } = this.$api.founds_manualaccess_artificial_recharge_recording;
+            this.$http({ method: method, url: url, params: params }).then(
+                res => {
+                    // console.log("返回数据：", res);
+                    if (res && res.code == "200") {
+                        this.list = res.data.data;
+                        this.total = res.data.total;
+                    } else {
+                        if (res && res.message !== "") {
+                            this.toast.error(res.message);
+                        }
+                    }
+                }
+            );
+        },
+        exportExcel() {
+            import("../../../../js/config/Export2Excel").then(excel => {
+                const tHeaders = this.headers;
+                const data = this.list.map(item => {
+                    return [
+                        item.order_no,
+                        item.user.mobile,
+                        item.user.guid,
+                        item.type,
+                        item.user.is_tester,
+                        item.money,
+                        item.balance,
+                        item.created_at,
+                        item.admin.name,
+                        item.remark,
+                    ];
+                });
+                excel.export_json_to_excel({
+                    header: tHeaders,
+                    data,
+                    filename: excel,
+                    autoWidth: true,
+                    bookType: "xlsx"
+                });
+            });
+        },
+        addCfm(){
+            let data={
+               user:this.form.account,
+               type:this.form.deposit_type,
+               money:this.form.deposit_amount,
+               remark:this.form.remark,
+            }
+            console.log(data)
+            let {url,method}=this.$api.founds_manualaccess_artificial_recharge;
+            this.$http({method,url,data}).then(res=>{
+                // console.log('返回数据',res)
+                if(res && res.code=='200'){
+                    this.$toast.success(res && res.message);
+                    this.dia_show=false;
+                    this.getList();
+                }
+            })
         },
         updateNo(val) {},
         updateSize(val) {}
     },
-    mounted() {}
-}
+    mounted() {
+        this.getList();
+    }
+};
 </script>
 
 
@@ -196,30 +258,29 @@ export default {
 
 <style scoped>
 /* .filter 部分样式为全局 App.vue中 */
-.filter{
+.filter {
     /* margin-top: 10px; */
     margin-bottom: 10px;
     padding-bottom: 10px;
     padding-left: 10px;
 }
-.left li{
+.left li {
     margin-top: 10px;
 }
 
-.dia-inner{
+.dia-inner {
     width: 700px;
     height: 350px;
-   
 }
 .dia-inner .form {
     width: 360px;
     margin: 0 auto;
 }
-.dia-inner .form li{
+.dia-inner .form li {
     display: flex;
     margin-top: 20px;
 }
-.form li >span:first-child{
+.form li > span:first-child {
     min-width: 80px;
     text-align: right;
     margin-right: 10px;
@@ -227,11 +288,11 @@ export default {
 /* .w250{
     width: 250px;
 } */
-.dia-buttons{
+.dia-buttons {
     margin-top: 50px;
     text-align: center;
 }
-.ml50{
+.ml50 {
     margin-left: 50px;
 }
 </style>

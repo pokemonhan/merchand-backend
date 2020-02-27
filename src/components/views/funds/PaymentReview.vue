@@ -129,7 +129,7 @@
                 @updateSize="updateSize"
             />
         </div>
-        <Dialog :show.sync="dia_show" title="查看稽核">
+        <Dialog :show.sync="dia_show" :title="dia_title">
             <div class="dia-inner">
                 <PaymentReviewStatus v-if="dia_status==='statusShow'" :row="curr_row" />
                 <PaymentReviewDetail v-if="dia_status==='checkAudit'" :userid="userid" />
@@ -210,15 +210,6 @@ export default {
                     '备注'
                 ]
             ],
-            table_list: [
-                { a1: 'aD201909201252', a2: '13245678942', a3: '4561234', a4: '0', a5: '红牛商户', a6: '微信充值', a7: '100', a8: '99.9', a9: '1', a10: '2019/09/20 12:25:20', a11: '2019/09/20 12:25:20', a12: '2019/09/20 12:25:20', status: '0' },
-                { a1: 'aD201909201252', a2: '13245678942', a3: '4561234', a4: '0', a5: '红牛商户', a6: '微信充值', a7: '100', a8: '99.9', a9: '1', a10: '2019/09/20 12:25:20', a11: '2019/09/20 12:25:20', a12: '2019/09/20 12:25:20', status: '1' },
-                { a1: 'aD201909201252', a2: '13245678942', a3: '4561234', a4: '1', a5: '红牛商户', a6: '微信充值', a7: '100', a8: '99.9', a9: '2', a10: '2019/09/20 12:25:20', a11: '2019/09/20 12:25:20', a12: '2019/09/20 12:25:20', status: '2' }
-            ],
-            icon_obj: {
-                '0': 'iconcha red',
-                '1': 'icongou green'
-            },
             status_obj: {
                 '0': {
                     color: 'red',
@@ -283,7 +274,8 @@ export default {
             curr_row: {},
             dia_show: false,
             dia_status: '',
-            userid: ''
+            userid: '',
+            dia_title:''
         }
     },
     methods: {
@@ -316,11 +308,13 @@ export default {
         statusShow() {
             this.dia_status = 'statusShow'
             this.dia_show = true
+            this.dia_title='出款订单审核'
         },
         checkAudit() {
             console.log('点击')
             this.dia_status = 'checkAudit'
             this.dia_show = true
+            this.dia_title='查看稽核'
         },
         updateNo(val) {},
         updateSize(val) {},
@@ -342,10 +336,6 @@ export default {
                 if(res && res.code=='200'){
                     this.list=res.data.data;
                     this.total=res.data.total;
-                }else{
-                    if(res && res.message !==""){
-                        this.toast.error(res.message)
-                    }
                 }
            }) 
         },

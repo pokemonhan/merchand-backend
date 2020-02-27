@@ -5,6 +5,10 @@
         <div class="filter">
             <ul class="left filter-item">
                 <li>
+                    <span>订单号</span>
+                    <Input v-model="filter.order_no" />
+                </li>
+                <li>
                     <span>会员账号</span>
                     <Input limit="en-num" v-model="filter.account" />
                 </li>
@@ -13,114 +17,89 @@
                     <Input limit="en-num" v-model="filter.acc_id" />
                 </li>
                 <li>
-                    <span>审核时间</span>
-                    <Date v-model="filter.rewiew_dates[0]" @update="timeUpdate()" />
-                    <span style="margin: 0 5px;">~</span>
-                    <Date v-model="filter.rewiew_dates[1]" @update="timeUpdate()" />
+                    <span>出款方式</span>
+                    <Select v-model="filter.payment_type" :options="type_opt"></Select>
                 </li>
                 <li>
-                    <span>审核人</span>
-                    <Input v-model="filter.auditor" />
-                </li>
-                <li>
-                    <span>操作人</span>
-                    <Input v-model="filter.operator" />
-                </li>
-              
-                <li>
-                    <span>正式账号</span>
-                    <Select style="width:100px;" v-model="filter.official_acc" :options="official_acc_opt"></Select>
-                </li>
-                <li>
-                    <span>订单号</span>
-                    <Input v-model="filter.order_id" />
-                </li>
-              
-                <li>
-                    <span>操作时间</span>
-                    <Date v-model="filter.operate_dates[0]" @update="timeUpdate()" />
-                    <span style="margin:0 5px;">~</span>
-                    <Date v-model="filter.operate_dates[1]" @update="timeUpdate()" />
-                </li>
-                  <li>
-                    <span>出款类型</span>
-                    <Select v-model="filter.payment_type" :options="[{label:'测试账号',value:0},]"></Select>
+                    <span>出款状态</span>
+                    <Select
+                        v-model="filter.payment_status"
+                        :options="payment_status_opt"
+                    ></Select>
                 </li>
                 <li>
                     <span>是否被稽核扣款</span>
                     <Select v-model="filter.is_audit_withhold" :options="is_audit_withhold_opt"></Select>
                 </li>
                 <li>
-                    <button class="btn-blue">查询</button>
+                    <span>审核人</span>
+                    <Input v-model="filter.auditor" />
+                </li>
+                <li>
+                    <span>审核时间</span>
+                    <Date v-model="filter.review_dates[0]" @update="timeUpdate()" />
+                    <span style="margin: 0 5px;">~</span>
+                    <Date v-model="filter.review_dates[1]" @update="timeUpdate()" />
+                </li>
+                <li>
+                    <button class="btn-blue" @click="getList" >查询</button>
                     <button class="btn-blue">导出excel</button>
                     <button class="btn-red" @click="clearAll">清空</button>
                 </li>
             </ul>
         </div>
         <div class="table">
-            <TwoTable :column="table_list" :headers="table_headers">
-                <template v-slot:tdOne="{row}">
-                    <td>{{row.a1}}</td>
-                    <td>{{row.a2}}</td>
-                    <td>{{row.a3}}</td>
-                    <td>{{row.a4}}</td>
-                    <td>{{row.a5}}</td>
-                    <td>{{row.a6}}</td>
-                    <td>{{row.a7}}</td>
-                    <td>{{row.a8}}</td>
-                    <td>{{row.a9}}</td>
-                    <td>{{row.a9}}</td>
+            <Table :column="list" :headers="headers">
+                <template v-slot:item="{row}">
+                    <td>{{row.order_no}}</td>
+                    <td>{{row.user && row.user.mobile}}</td>
+                    <td>{{row.user && row.user.guid}}</td>
+                    <td>{{row.account_type}}</td>
+                    <td>{{row.amount}}</td>
+                    <td>{{row.audit_fee}}</td>
+                    <td>{{row.amount_received}}</td>
+                    <td>{{row.handing_fee}}</td>
+                    <td>{{row.created_at}}</td>
+                    <td>{{row.reviewer && row.reviewer.name}}</td>
                     <td>
-                        <span class="a" @click="pass(row)">确认出款</span>
-                        <span class="a" @click="refuse(row)">拒绝出款</span>
+                        <span :class="color_obj[row.status].color">{{color_obj[row.status].text}}</span>
+                    </td>
+                    <td>
+                        <button 
+                            :class="status_obj[row.status].button"
+                            @click="statusShow(row)"
+                        >{{status_obj[row.status].text}}</button>
                     </td>
                 </template>
-                <template v-slot:tdTwo="{row}">
-                    <td>{{row.a7}}</td>
-                    <td>
-                        <span :class="color_obj[row.a7].color">{{color_obj[row.a7].text}}</span>
-                    </td>
-                    <td >
-                        <i :class="icon_obj[row.a8]"></i>
-                    </td>
-                    <td>{{row.a8}}</td>
-                    <td>{{row.a8}}</td>
-                    <td>{{row.a8}}</td>
-                    <td>{{row.a8}}</td>
-                    <td>{{row.a9}}</td>
-                    <td>{{row.a10}}</td>
-                    <td>{{row.a11}}</td>
-                    <td>{{row.a12}}</td>
-                </template>
-            </TwoTable>
-             <div class="total-table">
-            <ul>
-                <li >
-                    <span> 合计: </span>
-                </li>
-                <li >
-                    <span>充值金额:</span>
-                    <span>200.00</span>
-                </li>
-                <li >
-                    <span>实际到账</span>
-                    <span>200.00</span>
-                </li>
-            </ul>
-            <ul>
-                <li >
-                    <span> 总计: </span>
-                </li>
-                <li >
-                    <span>充值金额:</span>
-                    <span>200.00</span>
-                </li>
-                <li >
-                    <span>实际到账</span>
-                    <span>200.00</span>
-                </li>
-            </ul>
-        </div>
+            </Table>
+            <div class="total-table">
+                <ul>
+                    <li>
+                        <span>合计:</span>
+                    </li>
+                    <li>
+                        <span>充值金额:</span>
+                        <span>200.00</span>
+                    </li>
+                    <li>
+                        <span>实际到账</span>
+                        <span>200.00</span>
+                    </li>
+                </ul>
+                <ul>
+                    <li>
+                        <span>总计:</span>
+                    </li>
+                    <li>
+                        <span>充值金额:</span>
+                        <span>200.00</span>
+                    </li>
+                    <li>
+                        <span>实际到账</span>
+                        <span>200.00</span>
+                    </li>
+                </ul>
+            </div>
             <Page
                 class="table-page"
                 :total="total"
@@ -130,128 +109,171 @@
                 @updateSize="updateSize"
             />
         </div>
-
-        <Modal :show="show_conf!==''" title="出款订单" :content="modal_conf_content" @cancel="show_conf=''" @close="show_conf=''" @confirm="paymentConfirm" ></Modal>
+        <Dialog :show.sync="dia_show" :title="dia_title" >
+            <div class="dia-inner" >
+                <PaymentOrderReviewDetail  :row="curr_row"  />
+            </div>
+        </Dialog>
     </div>
 </template>
 
 <script>
+import PaymentOrderReviewDetail from './paymentOrderReview/PaymentOrderReviewDetail'
+
 export default {
-    props: {},
+    components:{
+        PaymentOrderReviewDetail,
+    },
     data() {
         return {
             quick_query: [],
             filter: {
-                account: '',
-                acc_id: '',
-                rewiew_dates: [],
-                auditor: '',
-                operator: '',
-                official_acc: '',
-                order_id: '',
+                account: "",
+                acc_id: "",
+                review_dates: [],
+                auditor: "",
+                operator: "",
+                payment_status: "",
+                order_id: "",
                 operate_dates: [],
-                payment_type: '',
-                is_audit_withhold: '',
+                payment_type: "",
+                is_audit_withhold: ""
             },
             type_opt: [
-                { label: '全部', value: 0 },
-                { label: '支付宝', value: 1 },
-                { label: '银行卡', value: 2 }
+                { label: "全部", value: ""},
+                { label: "银行卡", value: "1"},
+                { label: "支付宝", value: "2" },
+                { label: "微信", value: "3"}
             ],
-            color_obj:{
-                '0':{
-                    color:'red',
-                    text: '已拒绝'
+            color_obj: {
+                "0": {
+                    color: "red",
+                    text: "已拒绝"
                 },
-                '1':{
-                    color:'green',
-                    text: '已通过'
+                "1": {
+                    color: "green",
+                    text: "已通过"
                 },
-                '2':{
-                    color:'purple',
-                    text: '待审核'
-                },
-                
-            },
-            icon_obj:{
-                '0':'iconfont iconcha red',                
-                '1':'iconfont icongou green',                
+                "2": {
+                    color: "purple",
+                    text: "待审核"
+                }
             },
             total: 0,
             pageNo: 1,
             pageSize: 25,
+            dia_show:true,
+            dia_title:'出款订单审核',
+            curr_row:{},
 
-            show_conf: '',
-            modal_conf_content: '',
+            modal_conf_content: "",
             is_audit_withhold_opt: [
-                { label: '全部', value: '' },
-                { label: '是', value: '1' },
-                { label: '否', value: '0' }
+                { label: "全部", value: "" },
+                { label: "是", value: "1" },
+                { label: "否", value: "0" }
             ],
-            official_acc_opt: [
-                { label: '全部', value: '' },
-                { label: '是', value: '1' },
-                { label: '否', value: '0' }
+            payment_status_opt: [
+                { label: "全部", value: "" },
+                { label: "待出款", value: "0" },
+                { label: "已出款", value: "1"},
+                { label: "已拒绝", value: "2" },
             ],
+            status_obj: {
+                '0': {
+                    color: 'red',
+                    button: 'btns-red',
+                    text: '已拒绝'
+                },
+                '2': {
+                    color: 'green',
+                    button: 'btns-green',
+                    text: '已出款'
+                },
+                '1': {
+                    color: 'purple',
+                    button: 'btns-yellow',
+                    text: '待审核'
+                }
+            },
             // table
-            table_headers: [
-                ['订单号','会员账号', '会员ID', '出款金额', '稽核扣款', '实际出款', '手续费', '出款方式', '出款账号', '审核时间', '操作'], 
-                ['审核人','出款状态','正式账号', '账号余额', '上级账号', '收款姓名', '开户行', '今日出款次','操作时间', '操作人', '备注']
+            headers: [
+                "订单号",
+                "会员账号",
+                "会员ID",
+                "出款方式",
+                "出款金额",
+                "稽核扣款",
+                "实际出款",
+                "手续费",
+                "审核时间",
+                "审核人",
+                "出款状态",
+                "操作"
             ],
-            table_list: [
-                { a1: 'aD201909201252', a2: '13245678942', a3: '4561234', a4: '13256689796', a5: '红牛商户', a6: '微信充值', a7: '1', a8: '1', a9: '0', a10: '2019/09/20 12:25:20', a11: '2019/09/20 12:25:20', a12: '2019/09/20 12:25:20' },
-                { a1: 'aD201909201252', a2: '13245678942', a3: '4561234', a4: '13256689796', a5: '红牛商户', a6: '微信充值', a7: '0', a8: '0', a9: '1', a10: '2019/09/20 12:25:20', a11: '2019/09/20 12:25:20', a12: '2019/09/20 12:25:20' },
-            ],
-        }
+
+            list: [],
+        };
     },
 
     methods: {
         qqUpd(dates) {
             //同步时间筛选值
-            this.filter.rewiew_dates = dates
-            this.filter = Object.assign(this.filter)
+            this.filter.review_dates = dates;
+            this.filter = Object.assign(this.filter);
         },
         timeUpdate() {
             //同步快捷查询按钮状态
-            this.quick_query = this.filter.rewiew_dates
+            this.quick_query = this.filter.review_dates;
         },
         clearAll() {
             this.filter = {
-                account: '',
-                acc_id: '',
-                rewiew_dates: [],
-                auditor: '',
-                operator: '',
-                official_acc: '',
-                order_id: '',
+                account: "",
+                acc_id: "",
+                review_dates: [],
+                auditor: "",
+                operator: "",
+                payment_status: "",
+                order_id: "",
                 operate_dates: [],
-                payment_type: '',
-                is_audit_withhold: '',
-            }
+                payment_type: "",
+                is_audit_withhold: ""
+            };
         },
         updateNo(val) {},
         updateSize(val) {},
-        paymentConfirm() {
-            if (this.show_conf === 'pass') {
-                console.log('pass')
-            } else if (this.show_conf === 'refuse') {
-                console.log('refuse')
-            }
-        },
-        pass(row) {
-            this.show_conf = 'pass'
-            this.modal_conf_content = '是否确认出款'
-        },
-        refuse(row) {
-            this.show_conf = 'refuse'
-            this.modal_conf_content = '是否拒绝出款'
-        },
         updateNo(val) {},
-        updateSize(val) {}
+        updateSize(val) {},
+        statusShow(){
+            this.dia_show=true
+            this.dia_title='出款订单审核'
+        },
+        getList(){
+            let para={
+                order_no:this.filter.order_no,
+                mobile:this.filter.account,
+                guid:this.filter.acc_id,
+                amount_type:this.filter.payment_type,
+                status:this.filter.payment_status,
+                is_audit:this.filter.is_audit_withhold,
+                admin:this.filter.auditor,
+                operation_at:[this.filter.review_dates[0],this.filter.review_dates[1]],
+            }
+            let params=window.all.tool.rmEmpty(para);
+            let {method,url}=this.$api.founds_paymentorder_list;
+            this.$http({method:method,url:url,params:params}).then(res=>{
+                // console.log('返回数据',res)
+                if(res && res.code=='200'){
+                    this.list=res.data.data;
+                    this.total=res.data.total;
+                }
+            })
+        },
     },
 
-    mounted() {}
-}
+    mounted() {
+        this.getList();
+    }
+};
 </script>
 
 <style scoped>
@@ -266,5 +288,10 @@ export default {
 }
 .filter-item > li {
     margin-top: 10px;
+}
+.dia-inner {
+    width: 900px;
+    max-height: 80vh;
+    overflow: auto;
 }
 </style>

@@ -41,8 +41,8 @@
                     <td>{{row.black_num}}</td>
                     <td>{{row.remark}}</td>
                     <td>
-                        <button class="btn-green" @click="turnOnUser">启用</button>
-                        <button class="btn-blue" @click="dtlShow(row)">详情</button>
+                        <button class="btn-green" @click="turnOnUser(row)">启用</button>
+                        <button class="btn-blue" @click="dtlShow()">详情</button>
                     </td>
                 </template>
             </Table>
@@ -71,7 +71,7 @@
                     <i class="iconfont iconcuowuguanbi-" @click="show_detail=false"></i>
                 </div>
                 <div class="mod-body detail">
-                    <BlackListManageDetail></BlackListManageDetail>
+                    <BlackListManageDetail :row="curr_row" ></BlackListManageDetail>
                 </div>
             </div>
         </div>
@@ -79,7 +79,7 @@
 </template>
 
 <script>
-import BlackListManageDetail from './BlackListManageDetail.vue'
+import BlackListManageDetail from "./BlackListManageDetail.vue";
 export default {
     components: {
         BlackListManageDetail
@@ -88,69 +88,109 @@ export default {
         return {
             quick_query: [],
             filter: {
-                mobile: '',
-                guid: '',
-                start_date: '',
-                end_date: '',
-                black_num: ''
+                mobile: "",
+                guid: "",
+                start_date: "",
+                end_date: "",
+                black_num: ""
             },
-            guid: '',
-            headers: [ '会员账号', '会员ID', '账户余额', '注册时间', '最后登录时间', '进入黑名单时间', '最后登录IP', '进入黑名单次数', '备注', '操作' ],
+            guid: "",
+            headers: [
+                "会员账号",
+                "会员ID",
+                "账户余额",
+                "注册时间",
+                "最后登录时间",
+                "进入黑名单时间",
+                "最后登录IP",
+                "进入黑名单次数",
+                "备注",
+                "操作"
+            ],
 
             list: [],
             total: 0,
             pageSize: 20,
             pageNo: 1,
             // modal
-            modal_cont: '是否启用该账户',
+            modal_cont: "是否启用该账户",
             show_black_list_conf: false,
-            show_detail: false,
-            is_detail_show: ''
-        }
+            show_detail:false,
+            is_detail_show: "",
+            curr_row:{},
+        };
     },
     methods: {
         dateUpdate(dates) {
-            this.filter.start_date = dates[0]
-            this.filter.end_date = dates[1]
+            this.filter.start_date = dates[0];
+            this.filter.end_date = dates[1];
             // this.$set(this.filter, 'start_date', dates[0])
             // this.$set(this.filter, 'end_date', dates[1])
-            this.filter = Object.assign(this.filter)
+            this.filter = Object.assign(this.filter);
         },
         timeUpdate() {
             // 同步快捷查询时间
-            this.quick_query = [this.filter.start_date, this.filter.end_date]
+            this.quick_query = [this.filter.start_date, this.filter.end_date];
         },
         getList() {
-            let para={
-                
-            }
+            let para = {
+                mobile:this.filter.mobile,
+                guid:this.filter.guid,
+                createAt:[this.filter.start_date,this.filter.end_date]
+            };
+            let params = window.all.tool.rmEmpty(para);
+            let {method,url} =this.$api.black_list_list;
+            this.$http({method:method,url:url,params:params}).then(res=>{
+                // console.log('返回数据',res)
+                if(res && res.code=='200'){
+                    this.list=res.data.data
+                    this.total=res.data.total
+                }
+            })
         },
         clearAll() {
-            console.log(this.filter)
+            console.log(this.filter);
             this.filter = {
-                mobile: '',
-                user_id: '',
-                start_date: '',
-                end_date: '',
-                black_num: ''
-            }
+                mobile: "",
+                user_id: "",
+                start_date: "",
+                end_date: "",
+                black_num: ""
+            };
         },
         updateNo(val) {},
         updateSize(val) {},
         turnOnUser() {
-            this.show_black_list_conf = true
-        },
-        dtlShow() {
-            this.show_detail = true
+            this.show_black_list_conf = true;
+            this.curr_row=row;
         },
         blackListConfirm() {
-            console.log('我确认了')
-        }
+            let data = {
+                id:this.curr_row.id
+            }
+            let {url,method} = this.$api.black_list_detail_remove;
+            this.$http({method,url,data}).then(res=>{
+                // console.log(res)
+                if(res && res.code=='200'){
+                    this.$toast.success(res && res.message);
+                    this.show_black_list_conf=false
+                    this.getList();
+                }else{
+                    if(res && res.message !==""){
+
+                    }
+                }
+            })
+        },
+        dtlShow() {
+            this.show_detail = true;
+        },
+        
     },
     mounted() {
-        this.getList()
+        this.getList();
     }
-}
+};
 </script>
 
 <style scoped>

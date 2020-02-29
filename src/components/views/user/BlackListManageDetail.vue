@@ -18,24 +18,22 @@
                     <Input style="width:110px" limit="en-num" v-model="filter.times" />
                 </li>
                 <li style="margin-bottom:0;">
-                    <button class="btn-blue">查询</button>
+                    <button class="btn-blue" @click="getList" >查询</button>
                     <button class="btn-blue" @click="clear">清空</button>
                 </li>
             </ul>
         </div>
         <Table class="table" :headers="headers" :column="list">
             <template v-slot:item="{row}">
-                <td>{{row.a1}}</td>
-                <td>{{row.a2}}</td>
-                <td>{{row.a3}}</td>
-                <td>{{row.a4}}</td>
-                <td>{{row.a5}}</td>
-                <td>{{row.a6}}</td>
-                <td>{{row.a7}}</td>
-                <td>{{row.a8}}</td>
-                <td>
-                    <p style="width:120px;">{{row.a9}}</p>
-                </td>
+                <td>{{row.mobile}}</td>
+                <td>{{row.guid}}</td>
+                <td>{{row.account}}</td>
+                <td>{{row.register}}</td>
+                <td>{{row.last_login_time}}</td>
+                <td>{{row.created_at}}</td>
+                <td>{{row.remove_time}}</td>
+                <td>{{row.last_login_ip}}</td>
+                <td>{{row.remark}}</td>
             </template>
         </Table>
         <Page
@@ -51,19 +49,24 @@
 
 <script>
 export default {
-    props: {},
+    props: {
+        curr_row:{
+            type:String,
+            default:''
+        }
+    },
     data() {
         return {
             quick_query: [],
             filter: {
                 dates: [],
                 times: '',
-                status: 0
+                status: '',
             },
             status_opt: [
-                { label: '全部', value: 0 },
-                { label: '已解冻', value: 1 },
-                { label: '冻结', value: 2 }
+                { label: '全部', value: ""},
+                { label: '已解冻', value: "1" },
+                { label: '冻结', value: "0"}
             ],
             headers: [
                 '会员账号',
@@ -76,53 +79,7 @@ export default {
                 '最后登录IP',
                 '备注'
             ],
-            list: [
-                {
-                    a1: '13245678998',
-                    a2: '456789',
-                    a3: '110.0',
-                    a4: '2019/11/02 12:30:23',
-                    a5: '2019/11/02 12:30:23',
-                    a6: '2019/11/02 12:30:23',
-                    a7: '2019/11/02 12:30:23',
-                    a8: '192.168.1.1',
-                    a9:
-                        '5246465类似的会计法收到了福建数量的风景收到了福建收代理费就收到了福建464备注'
-                },
-                {
-                    a1: '13245678998',
-                    a2: '456789',
-                    a3: '110.0',
-                    a4: '2019/11/02 12:30:23',
-                    a5: '2019/11/02 12:30:23',
-                    a6: '2019/11/02 12:30:23',
-                    a7: '2019/11/02 12:30:23',
-                    a8: '192.168.1.1',
-                    a9: '5246465464备注'
-                },
-                {
-                    a1: '13245678998',
-                    a2: '456789',
-                    a3: '110.0',
-                    a4: '2019/11/02 12:30:23',
-                    a5: '2019/11/02 12:30:23',
-                    a6: '2019/11/02 12:30:23',
-                    a7: '2019/11/02 12:30:23',
-                    a8: '192.168.1.1',
-                    a9: '5246465464备注'
-                },
-                {
-                    a1: '13245678998',
-                    a2: '456789',
-                    a3: '110.0',
-                    a4: '2019/11/02 12:30:23',
-                    a5: '2019/11/02 12:30:23',
-                    a6: '2019/11/02 12:30:23',
-                    a7: '2019/11/02 12:30:23',
-                    a8: '192.168.1.1',
-                    a9: '5246465464备注'
-                }
-            ],
+            list: [],
             total: 0,
             pageNo: 1,
             pageSize: 25
@@ -141,13 +98,31 @@ export default {
             this.filter = {
                 dates: [],
                 times: '',
-                status: 0
+                status: '',
             }
         },
         updateNo(val) {},
-        updateSize(val) {}
+        updateSize(val) {},
+        getList(){
+            let para={
+                guid:this.curr_row.id,
+                createAt:[this.filter.dates[0],this.filter.dates[1]],
+                status:this.filter.status,
+            }
+            let params = window.all.tool.rmEmpty(para)
+            let {method,url} =this.$api.black_list_detail_list;
+            this.$http({method:method,url:url,params:params}).then(res=>{
+                // console.log(res)
+                if(res && res.code=='200'){
+                    this.list=res.data.data;
+                    this.total=res.data.total;
+                }
+            })
+        }
     },
-    mounted() {}
+    mounted() {
+        this.getList();
+    }
 }
 </script>
 

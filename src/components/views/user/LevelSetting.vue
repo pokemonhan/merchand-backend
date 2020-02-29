@@ -82,7 +82,6 @@
                     <ul class="rule">
                         <li class="flex">
                             <span>晋级方式:</span>
-
                             <span style="margin-left:10px;" class="flex">
                                 <Checkbox 
                                     label="会员充值" 
@@ -100,7 +99,6 @@
                             </span>
                             <span style="margin-left:10px;" class="flex">
                                 <Checkbox
-                                    dot
                                     label="充值+打码"
                                     v-model="rule.up_method[2]"
                                     @update="UpMethodHandle(2)"
@@ -108,7 +106,7 @@
                             </span>
                         </li>
 
-                        <li>
+                        <li v-if="this.rule.up_method[2]==true" >
                             <span>充值:</span>
                             <Input class="re-code" v-model="rule.recharge_code[0]" />
                             <span class="ml-10">+</span>
@@ -117,13 +115,13 @@
                             <span class="ml-10">=</span>
                             <span>1经验</span>
                         </li>
-                        <li>
+                        <li v-if="this.rule.up_method[0]==true" >
                             <span>充值金额:</span>
                             <Input class="w200 ml-10" v-model="rule.recharge"/>
                             <span class="ml-10">=</span>
                             <span>1经验</span>
                         </li>
-                        <li>
+                        <li v-if="this.rule.up_method[1]==true" >
                             <span>会员打码:</span>
                             <Input class="w200 ml-10" v-model="rule.code" />
                             <span class="ml-10">=</span>
@@ -309,28 +307,12 @@ export default {
                     this.rule.up_method[0] = false
                     this.rule.up_method[1] = false
                 default:
-                    console.log('val: ', val)
+                    // console.log('val: ', val)
                     break
             }
             this.rule.up_method = this.rule.up_method
             this.rule = Object.assign({}, this.rule)
         },
-        // typOpt(){
-        //     let recharge=this.rule.up_method[0]
-        //     let bet=this.rule.up_method[1]
-        //     let rechargeAndBet=this.rule.up_method[2]
-        //     if(recharge && bet){
-        //         return 3
-        //     }else if(recharge){
-        //         return 1
-        //     }else if(bet){
-        //         return 2
-        //     }else if(rechargeAndBet){
-        //         return 4
-        //     }
-        //     return 99
-        //     console.log()
-        // },
         delLev(row) {
             // console.log(row);
             this.show_del_modal = true;
@@ -347,30 +329,28 @@ export default {
                     this.$toast.success(res && res.message);
                     this.show_del_modal=false;
                     this.getList();
-                }else{
-                    if(res && res.message !==''){
-                    }
                 }
             })
-            
         },
         levRule(){
             this.show_lev_rule=true;
         },
+        // 1.充值  2.打码  3.充值或打码任一满足  4.充值和打码同时满足
+        typeChoose(){
+            
+        },
         levRuleCfm(){
-            // let data={
-            //     type:this.rule.up_method;
-            //     recharge:this.rule.recharge_code
-            // }
+            let data={
+                type
+            }
         },
         getList(){
-            let data={
-
-            }
             let{method,url}=this.$api.grade_list;
             this.$http({method,url}).then(res=>{
+                // console.log(res)
                 if(res && res.code=='200'){
                     this.list=res.data;
+                    this.total=res.data.total;
                 }
             })
         },

@@ -24,36 +24,17 @@
                             <Select
                                 v-model="filter.online_state"
                                 :options="online_state_opt"
-                                
                             ></Select>
                         </span>
                     </li>
                     <li>
-                        <span>正式状态</span>
-                        <span>
-                            <Select
-                                v-model="filter.online_state"
-                                :options="online_state_opt"
-                                
-                            ></Select>
-                        </span>
+                        <span>上级账号</span>
+                        <Input v-model="filter.parent_account" />
                     </li>
                 </ul>
             </div>
             <div class="filter flt-down">
                 <ul class="left">
-                    <li>
-                        <span>上级状态</span>
-                        <!-- <Input class="account-status" size="small"/> -->
-                        <span>
-                            <Select
-                                v-model="filter.online_state"
-                                :options="online_state_opt"
-                                
-                                @update="selectupdate"
-                            ></Select>
-                        </span>
-                    </li>
                     <li>
                         <span>登录IP</span>
                         <Input  limit="number" v-model="filter.loginIP" />
@@ -61,6 +42,10 @@
                     <li>
                         <span class="w4e">注册IP</span>
                         <Input  limit="number" v-model="filter.registIP" />
+                    </li>
+                    <li>
+                        <span>正式账号</span>
+                        <Select v-model="filter.is_tester" :options="is_tester_opt"  ></Select>
                     </li>
                     <li>
                         <span>
@@ -108,16 +93,6 @@
                 @updateSize="updateSize"
             />
         </div>
-        <!-- <div class="modal-mask" v-if="show_detail">
-            <div class="v-modal">
-              
-                <div class="mod-head">
-                    <span>详情</span>
-                    <i class="iconfont iconcuowuguanbi-" @click="closeUserList()"></i>
-                </div>
-                
-            </div>
-        </div> -->
         <Dialog class="modal-mask" :show.sync="show_detail" title="详情">
             <div class="dia-inner">
                 <div class="mod-body">
@@ -388,9 +363,21 @@ export default {
                 start_date: '',
                 end_date: '',
                 online_state: '',
+                parent_account:'',
+                is_tester:'',
                 loginIP: '',
                 registIP: ''
             },
+            online_state_opt:[
+                { label: "全部", value:""},
+                { label: "在线", value:"0"},
+                { label: "离线", value:"1"},
+            ],
+            is_tester_opt:[
+                { label: "全部", value:""},
+                { label: "是", value:"0"},
+                { label: "否", value:"1"},
+            ],
             headers: [
                     '在线状态',
                     '会员账号',
@@ -407,30 +394,7 @@ export default {
                     '操作',
 
             ],
-            list: [
-                {
-                    a: '在线',
-                    b: '132****4654',
-                    c: '33542354234',
-                    d: '1',
-                    e: 'sd',
-                    f: '192.168.0.0',
-                    g: 'df',
-                    h: 'df',
-                    i: '192.168.0.0',
-                    j: '192.168.0.0',
-                    k: '2019/8/12 14：12：00',
-                    l: '2019/8/12 14：12：00',
-                    m: '2019/8/12 14：12：00'
-                },
-                { a: '离线', b: '132****4654', c: '3', d: '0' }
-            ],
-            online_state: '',
-            online_state_opt: [
-                { label: '全部', value: '' },
-                { label: '在线', value: '1' },
-                { label: '离线', value: '2' }
-            ],
+            list: [],
             total: 300,
             pageNo: 1,
             pageSize: 25,
@@ -455,10 +419,6 @@ export default {
         }
     },
     methods: {
-        selectupdate(val) {
-            // this.$toast.info('你好')
-        },
-
         userDetail(row) {
             this.show_detail = true
         },
@@ -467,9 +427,6 @@ export default {
         },
         addBlackListCfm(){
             
-        },
-        closeUserList() {
-            this.show_detail = false
         },
         addAccClick() {
             this.inner_mask_show = true

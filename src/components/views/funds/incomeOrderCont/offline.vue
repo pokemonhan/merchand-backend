@@ -74,29 +74,29 @@
                 <tr>
                     <th>
                         <span>合计:</span>
-                        <span>{{'400.00'}}</span>
+                        <span>{{''}}</span>
                     </th>
                     <th>
                         <span>充值金额:</span>
-                        <span>{{'200.00'}}</span>
+                        <span>{{''}}</span>
                     </th>
                     <th>
                         <span>实际到账:</span>
-                        <span>{{'200.00'}}</span>
+                        <span>{{''}}</span>
                     </th>
                 </tr>
                 <tr>
                     <th>
                         <span>总计:</span>
-                        <span>{{'400.00'}}</span>
+                        <span>{{''}}</span>
                     </th>
                     <th>
                         <span>实际到账:</span>
-                        <span>{{'200.00'}}</span>
+                        <span>{{''}}</span>
                     </th>
                     <th>
                         <span>实际到账:</span>
-                        <span>{{'200.00'}}</span>
+                        <span>{{''}}</span>
                     </th>
                 </tr>
             </table>

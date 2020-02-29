@@ -349,9 +349,47 @@ export default {
     },
 
     /*=========================== 活动管理 ===========================--*/
-
-
-
+   
+    //静态活动 - 添加
+    static_active_add:{
+        url:'/merchant-api/activity-static/add-do',
+        method:'post'
+    },
+    //静态活动 - 列表
+    static_active_list:{
+        url:'/merchant-api/activity-static/index',
+        method:'get'
+    },
+    //静态活动 - 编辑
+    static_active_edit:{
+        url:'/merchant-api/activity-static/edit',
+        method:'post'
+    },
+    //静态活动 - 改变状态
+    static_active_change_status:{
+        url:'/merchant-api/activity-static/status',
+        method:'post'
+    },
+    //静态活动 - 删除
+    static_active_delte:{
+        url:'/merchant-api/activity-static/del-do',
+        method:'post'
+    },
+    //动态活动 - 列表
+    dynamic_active_list:{
+        url:'/merchant-api/activity-dyn/index',
+        method:'get'
+    },
+    //动态活动 - 改变状态
+    dynamic_active_change_status:{
+        url:'/merchant-api/activity-dyn/status',
+        method:'post'
+    },
+    //动态活动 - 上传图片
+    dynamic_active_upload_pic:{
+        url:'/merchant-api/activity-dyn/save-pic',
+        method:'post'
+    },
 
     /*=========================== 金流管理 ===========================--*/
 

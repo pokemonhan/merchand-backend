@@ -243,6 +243,7 @@ export default {
                     this.getList();
                 } else {
                     if (res && res.message !== "") {
+                        
                     }
                 }
             });
@@ -251,9 +252,10 @@ export default {
             let para = {};
             let { method, url } = this.$api.tag_list;
             this.$http({ method, url }).then(res => {
-                console.log("res", res);
+                // console.log("res", res);
                 if (res && res.code == "200") {
                     this.list = res.data.data;
+                    this.total=res.data.total;
                 }
             });
         }

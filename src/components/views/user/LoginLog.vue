@@ -34,7 +34,7 @@
         <div class="table">
             <Table :headers="headers" :column="list">
                 <template v-slot:item="{row}">
-                    <td style="height:30px">{{row.mobile}}</td>
+                    <td>{{row.mobile}}</td>
                     <td>{{row.uid}}</td>
                     <td>{{row.last_login_ip}}</td>
                     <td>{{row}}</td>

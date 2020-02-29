@@ -464,10 +464,6 @@ export default {
                     this.$toast.success(res && res.message);
                     this.mod_show = false;
                     this.getList();
-                } else {
-                    if (res && res.message !== "") {
-                        // this.toast.error(res.message)
-                    }
                 }
             });
         },

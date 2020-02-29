@@ -125,10 +125,10 @@ export default {
     data() {
         return {
             games: ['刺激棋牌', '经典棋牌', '电子游艺', '趣味竞猜'],
-            active_game: 2,
+            active_game: 0,
 
             // game_plant: 0,
-            active_plant: 1,
+            active_plant: 0,
             plants: ['开元棋牌', '龙城棋牌', '财神棋牌', '欢乐棋牌'],
             game_plant_option: [
                 { label: '全部', value: '2' },
@@ -172,7 +172,7 @@ export default {
             show_modal: false,
             /* ----------  wash_form ------------ */
             wash_form: {
-                // code_numbers: [],
+                code_numbers: [],
                 // vip1: { num: '', bonus: '' },
                 // vip2: { num: '', bonus: '' },
                 // vip3: { num: '', bonus: '' },

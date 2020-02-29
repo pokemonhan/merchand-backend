@@ -73,11 +73,11 @@
                     </li>
                     <li>
                         <span>开始时间:</span>
-                        <Date style="width:250px;" v-model="form.dates[0]" />
+                        <Date style="width:250px;" v-model="form.start_dates" />
                     </li>
                     <li>
                         <span>结束时间:</span>
-                        <Date style="width:250px;" v-model="form.dates[1]" />
+                        <Date style="width:250px;" v-model="form.end_dates" />
                     </li>
                     <li>
                         <span>是否开启:</span>
@@ -135,7 +135,8 @@ export default {
             curr_row:{},
             form: {
                 title: "",
-                dates: [],
+                start_dates: [],
+                end_dates:[],
                 status: true,
                 pic_path: ""
             },
@@ -186,8 +187,8 @@ export default {
                 device:this.curr_btn,
                 title:this.form.title,
                 pic:this.form.pic_path,
-                start_time:this.form.dates[0],
-                end_time:this.form.dates[1],
+                start_time:this.form.start_dates,
+                end_time:this.form.end_dates,
                 status:this.form.status
             }
             let {url,method}=this.$api.static_active_add;
@@ -213,13 +214,42 @@ export default {
                 }
             })
         },
-        edit() {
+        edit(row) {
             this.dia_status = "edit";
             this.dia_title = "编辑";
             this.dia_show = true;
+            this.form={
+                id:row.id,
+                title:row.title,
+                pic_path:row.pic,
+                start_dates:row.created_at,
+                end_dates:row.end_time,
+                status:row.status,
+            }
         },
         editCfm() {
-            
+            let data={
+                device:this.curr_btn,
+                id:this.form.id,
+                title:this.form.title,
+                pic:this.form.pic_path,
+                start_time:this.form.start_dates,
+                end_time:this.form.end_dates,
+                status:this.form.status,
+            }
+            // console.log(data)
+            let {url,method}=this.$api.static_active_edit;
+            this.$http({method,url,data}).then(res=>{
+                if(res && res.code=='200'){
+                    this.$toast.success(res && res.message);
+                    this.dia_show=false;
+                    this.getList();
+                }else{
+                    if(res && res.message !==""){
+                        this.$toast.error(res.message)
+                    }
+                }
+            })
         },
         del(row){
             this.curr_row=row;

@@ -22,9 +22,9 @@
                 </li>
                 <li>
                     <span>添加日期</span>
-                    <Date v-model="filter.add_dates[0]" />
+                    <Date v-model="filter.add_start_dates" />
                     <span style="margin:0 5px;">~</span>
-                    <Date v-model="filter.add_dates[1]" />
+                    <Date v-model="filter.add_end_dates" />
                 </li>
             </ul>
         </div>
@@ -36,9 +36,9 @@
                 </li>
                 <li>
                     <span>更新日期:</span>
-                    <Date v-model="filter.update_dates[0]" />
+                    <Date v-model="filter.start_dates" />
                     <span style="margin:0 5px;">~</span>
-                    <Date v-model="filter.update_dates[1]" />
+                    <Date v-model="filter.end_dates" />
                 </li>
                 <li>
                     <button class="btn-blue" @click="getList">查询</button>
@@ -93,7 +93,7 @@
                                 :options="inconm_opt"
                             ></Select>
                         </li>
-                        <li v-show="form.inconm == 1">
+                        <li v-show="form.inconm === 1">
                             <span>所属银行:</span>
                             <Select style="width:250px;" v-model="form.bank" :options="bank_opt"></Select>
                         </li>
@@ -111,7 +111,7 @@
                                 type="file"
                             />
                         </li>
-                        <li v-show="form.inconm !=1 ">
+                        <li v-show="form.inconm !==1 ">
                             <span>账号:</span>
                             <Input class="w250" v-model="form.accountNumber" />
                         </li>
@@ -198,9 +198,11 @@ export default {
                 type: "",
                 account: "",
                 name: "",
-                add_dates: [],
+                add_start_dates: [],
+                add_end_dates:[],
                 update_person: "",
-                update_dates: []
+                start_dates: [],
+                end_dates:[]
             },
             type_opt: [],
             headers: [
@@ -434,9 +436,10 @@ export default {
             this.dia_status = "edit";
             this.dia_title = "修改";
             this.dia_show = true;
+            console.log(row)
             this.form = {
-                inconm: row.type_id,
-                bank: row.bank_id,
+                // inconm: row.type_id,
+                // bank: row.bank_id,
                 accountName: row.username,
                 qrcode: row.qrcode,
                 accountNumber: row.account,
@@ -446,6 +449,7 @@ export default {
                 minimum_deposit: row.min,
                 maxmum_deposit: row.max,
                 deposit_fee: row.fee,
+                formtag:[],
                 description: row.remark
             };
         },
@@ -476,13 +480,13 @@ export default {
                 username: this.filter.name,
                 author_name: this.filter.add_author,
                 created_at: [
-                    this.filter.add_dates[0],
-                    this.filter.add_dates[1]
+                    this.filter.add_start_dates,
+                    this.filter.add_end_dates
                 ],
                 last_editor_name: this.filter.update_person,
                 updated_at: [
-                    this.filter.update_dates[0],
-                    this.filter.update_dates[1]
+                    this.filter.start_dates,
+                    this.filter.end_dates
                 ]
             };
             let params = window.all.tool.rmEmpty(para);

@@ -10,41 +10,29 @@
                 </li>
 
                 <li>
-                    <button class="btn-blue">查询</button>
+                    <button class="btn-blue" @click="getList" >查询</button>
                 </li>
             </ul>
         </div>
         <div class="table mt20">
             <Table :headers="headers" :column="list">
-                <template v-slot:item="{row,idx}">
-                    <td>{{(pageNo-1)*pageSize+idx+1}}</td>
+                <template v-slot:item="{row}">
+                    <td>{{row.activity && row.activity.name}}</td>
                     <td>
-                        <img
-                            class="td-img"
-                            src="../../../assets/image/announce/sysAnnounce.png"
-                            alt
-                        />
+                        <img style="max-width:200px;max-height:200px;"  :src="protocol+'//pic.jianghu.local/'+row.pc_pic" alt />
                     </td>
                     <td>
-                        <img
-                            class="td-img"
-                            src="../../../assets/image/announce/sysAnnounce.png"
-                            alt
-                        />
+                        <img style="max-width:200px;max-height:200px;"  :src="protocol+'//pic.jianghu.local/'+row.h5_pic" alt />
                     </td>
                     <td>
-                        <img
-                            class="td-img"
-                            src="../../../assets/image/announce/sysAnnounce.png"
-                            alt
-                        />
+                        <img style="max-width:200px;max-height:200px;"  :src="protocol+'//pic.jianghu.local/'+row.app_pic" alt />
                     </td>
 
-                    <td>{{row.a1}}</td>
-                    <td>{{row.a1}}</td>
-                    <td>{{row.a1}}</td>
+                    <td>{{row.last_editor && rowm.last_editor.name}}</td>
+                    <td>{{row.updated_at}}</td>
+                    <td>{{row.end_time}}</td>
                     <td>
-                        <Switchbox class="switch-select" v-model="row.a1" />
+                        <Switchbox class="switch-select" :value="row.status" @update="switchStatus($event,row)" />
                     </td>
                     <td>
                         <button class="btns-blue" @click="upPic(row)">上传图片</button>
@@ -69,35 +57,37 @@
                         <ul class="form">
                             <li>
                                 <span>PC标题图片:</span>
+                                <Input style="width:123px;" v-model="form.pc_pic_path" />
                                 <Upload
-                                    style="width:170px;"
-                                    title="选择上传图片"
-                                    v-model="form.pic"
-                                    @change="upPicChange"
+                                    style="width:125px;"
+                                    title="上传图片"
+                                    @change="upPcPicChange($event)"
+                                    type="file"
                                 />
                             </li>
                             <li>
                                 <span>H5标题图片:</span>
+                                <Input style="width:123px;" v-model="form.h5_pic_path" />
                                 <Upload
-                                    style="width:170px;"
-                                    title="选择上传图片"
-                                    v-model="form.pic"
-                                    @change="upPicChange"
+                                    style="width:125px;"
+                                    title="上传图片"
+                                    @change="upH5PicChange($event)"
+                                    type="file"
                                 />
                             </li>
                             <li>
                                 <span>APP标题图片:</span>
-                                <!-- <button class="btn-blue">选择上次图片</button> -->
+                                <Input style="width:123px;" v-model="form.app_pic_path" />
                                 <Upload
-                                    style="width:170px;"
-                                    title="选择上传图片"
-                                    v-model="form.pic"
-                                    @change="upPicChange"
+                                    style="width:125px;"
+                                    title="上传图片"
+                                    @change="upAppPicChange($event)"
+                                    type="file"
                                 />
                             </li>
                             <li>
                                 <button class="btn-plain mr50" @click="dia_show=false">取消</button>
-                                <button class="btn-blue">确认</button>
+                                <button class="btn-blue" @click="uploadCfm()">确认</button>
                             </li>
                         </ul>
                     </div>
@@ -111,7 +101,7 @@
 </template>
 
 <script>
-import Detail from './dynamicDetail/DynamicDetail.vue';
+import Detail from "./dynamicDetail/DynamicDetail.vue";
 export default {
     components: {
         Detail: Detail
@@ -119,33 +109,33 @@ export default {
     data() {
         return {
             filter: {
-                name: ''
+                name: ""
             },
             headers: [
-                '活动名称',
-                'PC标题图片',
-                'H5标题图片',
-                'APP标题图片',
-                '最后跟新人',
-                '最后跟新时间',
-                '结束时间',
-                '状态',
-                '操作'
+                "活动名称",
+                "PC标题图片",
+                "H5标题图片",
+                "APP标题图片",
+                "最后更新人",
+                "最后更新时间",
+                "结束时间",
+                "状态",
+                "操作"
             ],
             list: [
                 {
                     a1: true,
-                    a2: 'sdfsdfdsf',
-                    a3: '充支好礼',
-                    a4: '1',
-                    a5: '2019-02-02 21:30'
+                    a2: "sdfsdfdsf",
+                    a3: "充支好礼",
+                    a4: "1",
+                    a5: "2019-02-02 21:30"
                 },
                 {
                     a1: false,
-                    a2: 'sdfsdfdsf',
-                    a3: '充支好礼',
-                    a4: '1',
-                    a5: '2019-02-02 21:30'
+                    a2: "sdfsdfdsf",
+                    a3: "充支好礼",
+                    a4: "1",
+                    a5: "2019-02-02 21:30"
                 }
             ],
             total: 0,
@@ -154,55 +144,130 @@ export default {
 
             // dialog
             curr_row: {},
-            dia_show: false,
-            dia_status: '',
-            dia_title: '',
+            dia_show: false, //TODO
+            dia_status: "", //TODO
+            dia_title: "", //TODO
             form: {
-                title: '',
-                pic: '',
-                dates: [],
-                status: true
-            }
-        }
+                pc_pic_path: "",
+                h5_pic_path: "",
+                app_pic_path: ""
+            },
+            protocol: window.location.protocol,
+        };
     },
     methods: {
-        initForm() {
-            this.form = {
-                title: '',
-                pic: '',
-                dates: [],
-                status: false
+        switchStatus(val,row){
+            let data={
+                id:row.id,
+                status:val ? 1 : 0
             }
+            let {url,method}=this.$api.dynamic_active_change_status;
+            this.$http({method,url,data}).then(res=>{
+                if(res && res.code=='200'){
+                    this.$toast.success(res && res.message);
+                    this.getList();
+                }
+            })
         },
-
         edit() {
-            this.dia_status = 'edit'
-            this.dia_title = '编辑'
-            this.dia_show = true
+            this.dia_status = "edit";
+            this.dia_title = "编辑";
+            this.dia_show = true;
         },
         upPic(row) {
-            this.dia_status = 'upPic'
-            this.dia_title = '上传图片'
-            this.dia_show = true
+            this.dia_status = "upPic";
+            this.dia_title = "上传图片";
+            this.dia_show = true;
+            this.curr_row = row;
         },
-        upPicChange (e) {
-            let file = e.targe.files[0]
-            // console.log('e: ', e);
-
+        upPcPicChange(e) {
+            let pic = e.target.files[0];
+            let basket = "active/dynamic/uploads/pc";
+            let formList = new FormData();
+            formList.append("file", pic, pic.name);
+            formList.append("basket", basket);
+            let { url, method } = this.$api.update_picture_database;
+            let data = formList;
+            let headers = { "Content-Type": "multipart/form-data" };
+            this.$http({ method, url, data, headers }).then(res => {
+                // console.log(res)
+                if (res && res.code == "200") {
+                    this.form.pc_pic_path = res.data.path;
+                }
+            });
         },
-        selectBtn(item) {
-            this.curr_btn = item.value
+        upH5PicChange(e) {
+            let pic = e.target.files[0];
+            let basket = "active/dynamic/uploads/h5";
+            let formList = new FormData();
+            formList.append("file", pic, pic.name);
+            formList.append("basket", basket);
+            let { url, method } = this.$api.update_picture_database;
+            let data = formList;
+            let headers = { "Content-Type": "multipart/form-data" };
+            this.$http({ method, url, data, headers }).then(res => {
+                // console.log(res)
+                if (res && res.code == "200") {
+                    this.form.h5_pic_path = res.data.path;
+                }
+            });
         },
-
+        upAppPicChange(e) {
+            let pic = e.target.files[0];
+            let basket = "active/dynamic/uploads/app";
+            let formList = new FormData();
+            formList.append("file", pic, pic.name);
+            formList.append("basket", basket);
+            let { url, method } = this.$api.update_picture_database;
+            let data = formList;
+            let headers = { "Content-Type": "multipart/form-data" };
+            this.$http({ method, url, data, headers }).then(res => {
+                // console.log(res)
+                if (res && res.code == "200") {
+                    this.form.app_pic_path = res.data.path;
+                }
+            });
+        },
+        uploadCfm() {
+            let data = {
+                id: this.curr_row.id,
+                pc_pic: this.form.pc_pic_path,
+                h5_pic: this.form.h5_pic_path,
+                app_pic: this.form.app_pic_path
+            };
+            let {url,method}=this.$api.dynamic_active_upload_pic;
+            this.$http({method,url,data}).then(res=>{
+                if(res && res.code=='200'){
+                    this.$toast.success(res && res.message);
+                    this.dia_show=false;
+                    this.getList();
+                }
+            })
+        },
         updateNo(val) {},
-        updateSize(val) {}
+        updateSize(val) {},
+        getList(){
+            let para={
+                name:this.filter.name
+            }
+            let params=window.all.tool.rmEmpty(para);
+            let {method,url}=this.$api.dynamic_active_list;
+            this.$http({method,url,params}).then(res=>{
+                // console.log(res)
+                if(res && res.code=='200'){
+                    this.list=res.data.data;
+                    this.total=res.data.length;
+                }
+            })
+        },
     },
-    mounted() {}
-}
+    mounted() {
+        this.getList();
+    }
+};
 </script>
 
 <style scoped>
-
 /* .p10 全局样式 */
 .switch-select {
     transform: scale(0.8);

@@ -231,10 +231,128 @@ export default {
     // 资金账变
 
     /*=========================== 公告管理 ===========================--*/
-    // 跑马灯消息
-    // 系统公告
-    // 登录弹窗公告
-    // 轮播公告
+    // 跑马灯消息 - 添加
+    announce_marquee_add:{
+        url:'/merchant-api/marquee-notice/add-do',
+        method:'post'
+    },
+
+    //跑马灯消息 - 列表
+    announce_marquee_list:{
+        url:'/merchant-api/marquee-notice/index',
+        method:'get'
+    },
+
+    //跑马灯消息 - 编辑
+    announce_marquee_edit:{
+        url:'/merchant-api/marquee-notice/edit',
+        method:'post'
+    },
+
+    //跑马灯消息 - 删除
+    announce_marquee_del:{
+        url:'/merchant-api/marquee-notice/del-do',
+        method:'post'
+    },
+
+    //跑马灯消息 - 改变状态
+    announce_marquee_change_status:{
+        url:'/merchant-api/marquee-notice/status',
+        method:'post'
+    },
+
+    // 系统公告 - 添加
+    announce_systemannounce_add:{
+        url:'/merchant-api/system-notice/add-do',
+        method:'post'
+    },
+
+    // 系统公告 - 列表
+    announce_systemannounce_list:{
+        url:'/merchant-api/system-notice/index',
+        method:'get'
+    },
+
+    // 系统公告 - 编辑
+    announce_systemannounce_edit:{
+        url:'/merchant-api/system-notice/edit',
+        method:'post'
+    },
+
+    // 系统公告 - 改变状态
+    announce_systemannounce_change_status:{
+        url:'/merchant-api/system-notice/status',
+        method:'post'
+    },
+
+    //系统公告 - 删除
+    announce_systemannounce_del:{
+        url:'/merchant-api/system-notice/del-do',
+        method:'post'
+    },
+
+
+    // 登录弹窗公告 - 添加
+    announce_loginpopup_add:{
+        url:'/merchant-api/login-notice/add-do',
+        method:'post'
+    },
+
+    // 登录弹窗公告 - 列表
+    announce_loginpopup_list:{
+        url:'/merchant-api/login-notice/index',
+        method:'get'
+    },
+
+    //登录弹窗公告 - 编辑
+    announce_loginpopup_edit:{
+        url:'/merchant-api/login-notice/edit',
+        method:'post'
+    },
+
+    // 登录弹窗公告 - 改变状态
+    announce_loginpopup_change_status:{
+        url:'/merchant-api/login-notice/status',
+        method:'post'
+    },
+
+    //登录弹窗公告 - 删除
+    announce_loginpopup_del:{
+        url:'/merchant-api/login-notice/del-do',
+        method:'post'
+    },
+
+    
+    // 轮播公告 - 添加
+    announce_carousel_add:{
+        url:'/merchant-api/carousel-notice/add-do',
+        method:'post'
+    },
+
+    //轮播公告 - 列表
+    announce_carousel_list:{
+        url:'/merchant-api/carousel-notice/index',
+        method:'get'
+    },
+
+    //轮播公告 - 编辑
+    announce_carousel_edit:{
+        url:'/merchant-api/carousel-notice/edit',
+        method:'post'
+    },
+
+    //轮播公告 - 改变状态
+    announce_carousel_change_status:{
+        url:'/merchant-api/carousel-notice/status',
+        method:'post'
+    },
+
+    //轮播公告 - 删除
+    announce_carousel_del:{
+        url:'/merchant-api/carousel-notice/del-do',
+        method:'post'
+    },
+
 
     // /*=========================== 邮件系统 ===========================--*/
     // 发邮件

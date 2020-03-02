@@ -18,18 +18,18 @@
         <div class="table">
             <Table :headers="headers" :column="list">
                 <template v-slot:item="{row}">
-                    <td>{{row.a1}}</td>
-                    <td>{{row.a2}}</td>
-                    <td>{{row.a3}}</td>
-                    <td>{{row.a4}}</td>
-                    <td>{{row.a5}}</td>
-                    <td>{{row.a6}}</td>
+                    <td>{{row.title}}</td>
+                    <td>{{row.content}}</td>
+                    <td>{{row.device}}</td>
+                    <td>{{row.created_at}}</td>
+                    <td>{{row.start_time}}</td>
+                    <td>{{row.end_time}}</td>
                     <td>
-                        <Switchbox v-model="row.a7" />
+                        <Switchbox v-model="row.status" />
                     </td>
-                    <td>{{row.a7}}</td>
-                    <td>{{row.a7}}</td>
-                    <td>{{row.a7}}</td>
+                    <td>{{row.author && row.author.name}}</td>
+                    <td>{{row.last_editor && row.last_editor.name}}</td>
+                    <td>{{row.updated_at}}</td>
                     <td>
                         <button class="btns-blue" @click="editMarquee">编辑</button>
                         <button class="btns-red" @click="show_conf=true">删除</button>
@@ -45,15 +45,7 @@
                 @updateSize="updateSize"
             />
         </div>
-        <!-- <div v-if="dia_show" class="modal-mask">
-            <div class="v-modal">
-                <div @click="dia_show=false">
-                    <i class="iconfont iconcuowuguanbi-"></i>
-                </div>
-
-            </div>
-        </div>-->
-        <Dialog :show.sync="dia_show" title="标题标题">
+        <Dialog :show.sync="dia_show" :title="dia_title">
             <div class="dia-inner">
                 <ul class="form">
                     <li>
@@ -62,25 +54,39 @@
                     </li>
                     <li>
                         <span>公告内容:</span>
-                        <textarea class="announce-content" />
+                        <textarea class="announce-content" v-model="form.content" />
                     </li>
                     <li>
                         <span>设备选择:</span>
                         <div class="equip-check">
                             <Checkbox v-model="form.select_all" label="全选" @update="equipSelectAll"></Checkbox>
-                            <Checkbox v-model="equip[0]" label="iOS" @update="equipSelect()"></Checkbox>
-                            <Checkbox v-model="equip[1]" label="Android" @update="equipSelect()"></Checkbox>
-                            <Checkbox v-model="equip[2]" label="PC" @update="equipSelect()"></Checkbox>
-                            <Checkbox v-model="equip[3]" label="H5" @update="equipSelect()"></Checkbox>
+                            <Checkbox
+                                v-model="equip[0]"
+                                label="PC"
+                                value="1"
+                                @update="equipSelect()"
+                            ></Checkbox>
+                            <Checkbox
+                                v-model="equip[1]"
+                                label="H5"
+                                value="2"
+                                @update="equipSelect()"
+                            ></Checkbox>
+                            <Checkbox
+                                v-model="equip[2]"
+                                label="APP"
+                                value="3"
+                                @update="equipSelect()"
+                            ></Checkbox>
                         </div>
                     </li>
                     <li>
                         <span>开始时间:</span>
-                        <Date style="width:250px;" />
+                        <Date style="width:250px;" v-model="form.start_dates" />
                     </li>
                     <li>
                         <span>结束时间:</span>
-                        <Date style="width:250px;" />
+                        <Date style="width:250px;" v-model="form.end_dates" />
                     </li>
                     <li class="status">
                         <span>状态选择:</span>
@@ -89,7 +95,7 @@
                 </ul>
                 <div style="margin-top:50px;text-align:center;">
                     <button class="btn-plain-large mr100" @click="dia_show=false">取消</button>
-                    <button class="btn-blue-large">保存</button>
+                    <button class="btn-blue-large" @click="diaCfm">保存</button>
                 </div>
             </div>
         </Dialog>
@@ -109,47 +115,47 @@ export default {
     data() {
         return {
             filter: {
-                header: ''
+                header: ""
             },
             headers: [
-                '公告标题',
-                '内容',
-                '设备',
-                '添加时间',
-                '开始时间',
-                '结束时间',
-                '状态',
-                '发布人',
-                '最后更新人',
-                '最后跟新时间',
-                '操作'
+                "公告标题",
+                "内容",
+                "设备",
+                "添加时间",
+                "开始时间",
+                "结束时间",
+                "状态",
+                "发布人",
+                "最后更新人",
+                "最后跟新时间",
+                "操作"
             ],
             list: [
                 {
-                    a1: 'D456123456789',
-                    a2: '13245678942',
-                    a3: '4561234',
-                    a4: '100.00',
-                    a5: '2019/09/20 12:25:20',
-                    a6: 'admin',
+                    a1: "D456123456789",
+                    a2: "13245678942",
+                    a3: "4561234",
+                    a4: "100.00",
+                    a5: "2019/09/20 12:25:20",
+                    a6: "admin",
                     a7: true
                 },
                 {
-                    a1: 'D456123456789',
-                    a2: '13245678942',
-                    a3: '4561234',
-                    a4: '100.00',
-                    a5: '2019/09/20 12:25:20',
-                    a6: 'admin',
+                    a1: "D456123456789",
+                    a2: "13245678942",
+                    a3: "4561234",
+                    a4: "100.00",
+                    a5: "2019/09/20 12:25:20",
+                    a6: "admin",
                     a7: true
                 },
                 {
-                    a1: 'D456123456789',
-                    a2: '13245678942',
-                    a3: '4561234',
-                    a4: '100.00',
-                    a5: '2019/09/20 12:25:20',
-                    a6: 'admin',
+                    a1: "D456123456789",
+                    a2: "13245678942",
+                    a3: "4561234",
+                    a4: "100.00",
+                    a5: "2019/09/20 12:25:20",
+                    a6: "admin",
                     a7: true
                 }
             ],
@@ -159,49 +165,114 @@ export default {
             dia_show: false,
 
             form: {
-                name: '',
-                content: '',
+                name: "",
+                content: "",
+                start_dates: "",
+                end_dates: "",
                 status: true
             },
-            equip: [0, 0, 0, 0],
-            show_conf: false
-        }
+            equip: [0, 0, 0],
+            show_conf: false,
+            dia_status: "",
+            dia_title: "",
+            curr_row: "",
+        };
     },
     methods: {
         updateNo(val) {},
         updateSize(val) {},
         equipSelectAll() {
-            let bool = this.form.select_all
+            let bool = this.form.select_all;
             for (let i = 0; i < this.equip.length; i++) {
-                this.$set(this.equip, i, bool)
+                this.$set(this.equip, i, bool);
             }
         },
         equipSelect() {
             // 如果都为true 全选为true
-            this.form.select_all = this.equip.every(item => item)
+            this.form.select_all = this.equip.every(item => item);
+
         },
         initForm() {
             this.form = {
-                name: '',
-                content: '',
+                name: "",
+                content: "",
+                start_dates: "",
+                end_dates: "",
                 status: false
+            };
+            this.equip = [0, 0, 0];
+        },
+        diaCfm() {
+            // console.log(2);
+            if (this.dia_status == "addMarquee") {
+                this.addCfm();
             }
-            this.equip = [0, 0, 0, 0]
+            console.log('dia_status: ', this.dia_status);
+
+            if (this.dia_status == "editMarquee") {
+                this.editCfm();
+            }
         },
         addMarquee() {
-            this.dia_show = true
-            this.initForm()
+            this.initForm();
+            this.dia_status = "addMarquee";
+            this.dia_show = true;
+            this.dia_title = "添加公告";
+        },
+        addCfm() {
+            let device_opt=[];
+            for(let i=0;i<this.equip.length;i++){
+                if(this.equip[i]){
+                    device_opt.push(i+1)
+                }
+            }
+            let data = {
+                title: this.form.name,
+                content: this.form.content,
+                device: JSON.stringify(device_opt),
+                start_time: this.form.start_dates,
+                end_time: this.form.end_dates,
+                status: this.form.status
+            };
+            let { url, method } = this.$api.announce_marquee_add;
+            this.$http({ method, url, data }).then(res => {
+                console.log(res);
+                if (res && res.code == "200") {
+                    this.$toast.success(res && res.message);
+                    this.dia_show = false;
+                    this.getList();
+                }
+            });
         },
         editMarquee() {
-            this.dia_show = true
-            this.initForm()
+            this.dia_status == "editMarquee";
+            this.dia_show = true;
+            this.dia_title = "编辑";
+            this.initForm();
         },
+        editCfm() {},
         marqueeDelConf() {
-            console.log('确认删除')
+            console.log("确认删除");
+        },
+        getList() {
+            let para = {
+                title: this.filter.header
+            };
+            let params = window.all.tool.rmEmpty(para);
+            let { url, method } = this.$api.announce_marquee_list;
+            this.$http({ url, method, params }).then(res => {
+                // console.log(res)
+                if (res && res.code == "200") {
+                    this.list = res.data.data;
+                    this.tool = res.data.total;
+                }
+            });
         }
     },
-    mounted() {}
-}
+    mounted() {
+        this.getList();
+    },
+};
 </script>
 
 <style scoped>
@@ -255,16 +326,11 @@ export default {
 }
 .equip-check .v-checkbox:nth-child(2),
 .equip-check .v-checkbox:nth-child(3) {
-    margin-left: 30px;
+    margin-left: 20px;
 }
 .equip-check .v-checkbox:nth-child(4) {
-    margin-top: 10px;
+    margin-left: 20px;
 }
-.equip-check .v-checkbox:nth-child(5) {
-    margin-left: 40px;
-    margin-top: 10px;
-}
-
 .status .stat-switch {
     position: relative;
     top: 10px;

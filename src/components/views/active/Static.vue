@@ -261,6 +261,8 @@ export default {
             }
             let {url,method}=this.$api.static_active_delte;
             this.$http({method,url,data}).then(res=>{
+                // console.log('res: ', res);
+                
                 if(res && res.code=='200'){
                     this.$toast.success(res && res.message);
                     this.mod_show=false;
@@ -282,7 +284,7 @@ export default {
             let params = window.all.tool.rmEmpty(para);
             let { method, url } = this.$api.static_active_list;
             this.$http({ method, url, params }).then(res => {
-                // console.log(res);
+                console.log(res);
                 if (res && res.code == "200") {
                     this.total = res.data.total;
                     this.list = res.data.data;

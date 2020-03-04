@@ -11,7 +11,7 @@
                     <Input style="width:150px;" v-model="filter.header" />
                 </li>
                 <li>
-                    <button class="btn-blue">查询</button>
+                    <button class="btn-blue" @click="getList">查询</button>
                 </li>
             </ul>
             <div class="right">
@@ -30,23 +30,23 @@
         <div class="table">
             <Table :headers="headers" :column="list">
                 <template v-slot:item="{row}">
-                    <td>{{row.a1}}</td>
+                    <td>{{row.title}}</td>
                     <td>
-                        <img width="40" :src="row.a2[0]" alt="加载中" />
-                        <img width="40" :src="row.a2[1]" alt="加载中" />
-                        <img width="40" src="../../../assets/image/user/neko.png" alt="加载中" />
+                        <img width="40" :src="protocol+'//pic.jianghu.local/'+row.h5_pic" alt />
+                        <img width="40" :src="protocol+'//pic.jianghu.local/'+row.app_pic" alt />
+                        <img width="40" :src="protocol+'//pic.jianghu.local/'+row.pc_pic" alt />
                     </td>
-                    <td>{{row.a3}}</td>
-                    <td>{{row.a4}}</td>
-                    <td>{{row.a5}}</td>
+                    <td>{{getDevice(row.device)}}</td>
+                    <td>{{row.created_at}}</td>
+                    <td>{{row.end_time}}</td>
                     <td>
-                        <Switchbox v-model="row.a7" />
+                        <Switchbox :value="row.status" @update="switchStatus($event,row)" />
                     </td>
-                    <td>{{row.a7}}</td>
-                    <td>{{row.a7}}</td>
-                    <td>{{row.a7}}</td>
+                    <td>{{row.author && row.author.name}}</td>
+                    <td>{{row.last_editor && row.last_editor.name}}</td>
+                    <td>{{row.updated_at}}</td>
                     <td>
-                        <button class="btns-blue" @click="edit">编辑</button>
+                        <button class="btns-blue" @click="edit(row)">编辑</button>
                         <button class="btns-red" @click="del(row)">删除</button>
                     </td>
                 </template>
@@ -66,37 +66,71 @@
                     <ul class="form">
                         <li>
                             <span>公告标题</span>
-                            <Input class="w250" placeholder="最多5个字" v-model="form.title" maxlength="5" />
+                            <Input
+                                class="w250"
+                                placeholder="最多5个字"
+                                v-model="form.title"
+                                maxlength="5"
+                            />
                         </li>
 
                         <li>
                             <span>公告内容</span>
                             <div class="upload-btn">
                                 <div>
-                                    <Upload width="170" title="App图片上传" @change="upPicChange($event,0)" />
-                                    <button style="width:70px;" class="btn-blue" @click="preview(0)">预览</button>
+                                    <Input style="width:90px;" v-model="form.app_pic_path" />
+                                    <Upload
+                                        style="width:110px"
+                                        title="App图片上传"
+                                        @change="upAppPicChange($event)"
+                                        type="file"
+                                    />
+                                    <button
+                                        style="width:60px;margin-left:4px"
+                                        class="btn-blue"
+                                        @click="appPreview"
+                                    >预览</button>
                                 </div>
-                               
+
                                 <div>
-                                    <Upload width="170" title="PC图片上传" @change="upPicChange($event,1)" />
-                                    <button style="width:70px;" class="btn-blue" @click="preview(1)">预览</button>
+                                    <Input style="width:90px;" v-model="form.pc_pic_path" />
+                                    <Upload
+                                        style="width:110px"
+                                        title="PC图片上传"
+                                        @change="upPcPicChange($event)"
+                                        type="file"
+                                    />
+                                    <button
+                                        style="width:60px;margin-left:4px"
+                                        class="btn-blue"
+                                        @click="pcPreview"
+                                    >预览</button>
                                 </div>
-                               
+
                                 <div>
-                                    <Upload width="170" title="H5图片上传" @change="upPicChange($event,2)" />
-                                    <button style="width:70px;" class="btn-blue" @click="preview(2)">预览</button>
+                                    <Input style="width:90px;" v-model="form.h5_pic_path" />
+                                    <Upload
+                                        style="width:110px"
+                                        title="H5图片上传"
+                                        @change="upH5PicChange($event)"
+                                        type="file"
+                                    />
+                                    <button
+                                        style="width:60px;margin-left:4px"
+                                        class="btn-blue"
+                                        @click="h5Preview"
+                                    >预览</button>
                                 </div>
-                               
                             </div>
                         </li>
 
                         <li>
                             <span>开始时间</span>
-                            <Date style="width:250px;" v-model="form.dates[0]" />
+                            <Date style="width:266px;" v-model="form.start_dates" />
                         </li>
                         <li>
                             <span>结束时间</span>
-                            <Date style="width:250px;" v-model="form.dates[1]" />
+                            <Date style="width:266px;" v-model="form.end_dates" />
                         </li>
                         <li>
                             <span>状态选择</span>
@@ -104,31 +138,52 @@
                                 class="radio-left"
                                 label="开"
                                 :value="form.status"
-                                val="on"
+                                val="1"
                                 v-model="form.status"
                             />
                             <Radio
                                 class="radio-right"
                                 label="关"
                                 :value="form.status"
-                                val="off"
+                                val="0"
                                 v-model="form.status"
                             />
                         </li>
                     </ul>
                     <div class="form-buttons">
                         <button class="btn-plain-large" @click="dia_show=false">取消</button>
-                        <button class="btn-blue-large ml50">保存</button>
+                        <button class="btn-blue-large ml50" @click="diaCfm">保存</button>
                     </div>
                 </div>
             </div>
         </Dialog>
         <Dialog :show.sync="pic_dia_show" title="预览图片">
-             <img class="max-w800" :src="src[curr_pic_idx]" alt="未选择图片" />
+            <img
+                class="max-w800"
+                :src="protocol+'//pic.jianghu.local/'+form.app_pic_path"
+                alt
+                v-if="showApp"
+            />
+            <img
+                class="max-w800"
+                :src="protocol+'//pic.jianghu.local/'+form.pc_pic_path"
+                alt
+                v-if="showPc"
+            />
+            <img
+                class="max-w800"
+                :src="protocol+'//pic.jianghu.local/'+form.h5_pic_path"
+                alt
+                v-if="showH5"
+            />
         </Dialog>
-        <Modal :show.sync="mod_show" title="删除" content="是否删除该公告" @cancel="mod_show=false" @confirm="modConf"></Modal>
-        
-        
+        <Modal
+            :show.sync="mod_show"
+            title="删除"
+            content="是否删除该公告"
+            @cancel="mod_show=false"
+            @confirm="modConf"
+        ></Modal>
     </div>
 </template>
 
@@ -138,124 +193,269 @@ export default {
     data() {
         return {
             filter: {
-                header: ''
+                header: ""
             },
             headers: [
-                '公告标题',
-                '图片',
-                '设备',
-                '发布时间',
-                '结束时间',
-                '状态',
-                '发布人',
-                '最后更新人',
-                '最后跟新时间',
-                '操作'
+                "公告标题",
+                "图片",
+                "设备",
+                "发布时间",
+                "结束时间",
+                "状态",
+                "发布人",
+                "最后更新人",
+                "最后跟新时间",
+                "操作"
             ],
-            list: [
-                {
-                    a1: 'D456123456789',
-                    a2: [
-                        require('../../../assets/image/user/neko.png'),
-                        'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcRmHjVlVE9Ur6b1UlUBG1g5fmrvK7SDrCmEcOFmYEuNLMsWmHbB'
-                    ],
-                    a3: '4561234',
-                    a4: '100.00',
-                    a5: '2019/09/20 12:25:20',
-                    a6: 'admin',
-                    a7: true
-                },
-                {
-                    a1: 'D456123456789',
-                    a2: '13245678942',
-                    a3: '4561234',
-                    a4: '100.00',
-                    a5: '2019/09/20 12:25:20',
-                    a6: 'admin',
-                    a7: true
-                },
-                {
-                    a1: 'D456123456789',
-                    a2: '13245678942',
-                    a3: '4561234',
-                    a4: '100.00',
-                    a5: '2019/09/20 12:25:20',
-                    a6: 'admin',
-                    a7: true
-                }
-            ],
+            list: [],
             total: 0,
             pageNo: 1,
             pageSize: 25,
-            dia_show: false,
-            dia_title: '添加公告',
+            dia_show: false, //TODO
+            dia_title: "",
             form: {
-                title: '',
-                content: '',
-                dates: [],
-                status: ''
+                title: "",
+                pc_pic_path: "",
+                h5_pic_path: "",
+                app_pic_path: "",
+                start_dates: "",
+                end_dates: "",
+                status: ""
             },
             src: [],
             pic_dia_show: false,
             curr_pic_idx: -1,
             // model
             mod_show: false,
-        }
+            protocol: window.location.protocol,
+            showApp: "",
+            showPc: "",
+            showH5: "",
+            dia_status: "",
+            device_name: {
+                1: "PC",
+                2: "H5",
+                3: "APP"
+            },
+            curr_row: {}
+        };
     },
     methods: {
+        getDevice(device) {
+            let device_all = "";
+            // console.log("传值", device);
+            for (let i = 0; i < device.length; i++) {
+                let item = device[i];
+                let name = this.device_name[item];
+                device_all = device_all + name + ",";
+            }
+            return device_all.slice(0, -1);
+        },
         updateNo(val) {},
         updateSize(val) {},
         upFileChange(e) {
-            console.log('e: ', e)
+            console.log("e: ", e);
         },
-        upPicChange(e,index) {
-            console.log('res: ')
-            let file = e.target.files[0]
-            let self = this
-            let date = new FormData()
-            date.append('uploadimg', file)
-            console.log('文件的内容', date)
-            let reader = new FileReader()
-            reader.readAsDataURL(file)
-            reader.onerror = function() {
-                return
-            }
-            reader.onload = function() {
-                // self.src[index] = this.result
-                self.src.splice(index, 1, this.result)
-            }
+        upAppPicChange(e) {
+            let pic = e.target.files[0];
+            let basket = "announce/systemannounce/uploads/app";
+            let formList = new FormData();
+            formList.append("file", pic, pic.name);
+            formList.append("basket", basket);
+            let { url, method } = this.$api.update_picture_database;
+            let data = formList;
+            let headers = { "Content-Type": "multipart/form-data" };
+            this.$http({ method, url, data, headers }).then(res => {
+                // console.log(res)
+                if (res && res.code == "200") {
+                    this.$set(this.form, "app_pic_path", res.data.path);
+                }
+            });
         },
-        preview(index){
-            this.pic_dia_show = true
-            this.curr_pic_idx = index
+        upPcPicChange(e) {
+            let pic = e.target.files[0];
+            let basket = "announce/systemannounce/uploads/pc";
+            let formList = new FormData();
+            formList.append("file", pic, pic.name);
+            formList.append("basket", basket);
+            let { url, method } = this.$api.update_picture_database;
+            let data = formList;
+            let headers = { "Content-Type": "multipart/form-data" };
+            this.$http({ method, url, data, headers }).then(res => {
+                // console.log('检查',res)
+                if (res && res.code == "200") {
+                    this.$set(this.form, "pc_pic_path", res.data.path);
+                }
+            });
+        },
+        upH5PicChange(e) {
+            let pic = e.target.files[0];
+            let basket = "announce/systemannounce/uploads/h5";
+            let formList = new FormData();
+            formList.append("file", pic, pic.name);
+            formList.append("basket", basket);
+            let { url, method } = this.$api.update_picture_database;
+            let data = formList;
+            let headers = { "Content-Type": "multipart/form-data" };
+            this.$http({ method, url, data, headers }).then(res => {
+                // console.log(res)
+                if (res && res.code == "200") {
+                    this.$set(this.form, "h5_pic_path", res.data.path);
+                }
+            });
+        },
+        appPreview() {
+            this.pic_dia_show = true;
+            this.showApp = true;
+            this.showPc = false;
+            this.showH5 = false;
+        },
+        pcPreview() {
+            this.pic_dia_show = true;
+            this.showPc = true;
+            this.showH5 = false;
+            this.showApp = false;
+        },
+        h5Preview() {
+            this.pic_dia_show = true;
+            this.showH5 = true;
+            this.showApp = false;
+            this.showPc = false;
         },
         initForm() {
-            this.form ={
-                title: '',
-                content: '',
-                dates: [],
-                status: ''
-            }
-            this.pic_show=[false, false, false],
-            this.src = []
+            this.form = {
+                title: "",
+                content: "",
+                start_dates: "",
+                end_dates: "",
+                status: ""
+            };
         },
         add() {
-            this.dia_show = true
-            this.initForm()
+            this.dia_title = "添加公告";
+            this.dia_status = "add";
+            this.dia_show = true;
+            this.initForm();
         },
 
-        edit() {
-            this.dia_show = true
-            this.initForm()
+        edit(row) {
+            this.dia_title = "编辑";
+            this.dia_status = "edit";
+            this.dia_show = true;
+            // this.initForm()
+            this.form = {
+                id: row.id,
+                title: row.title,
+                app_pic_path: row.app_pic,
+                pc_pic_path: row.pc_pic,
+                h5_pic_path: row.h5_pic,
+                start_dates: row.start_time,
+                end_dates: row.end_time,
+                status: String(row.status)
+            };
         },
-        del() {
-            this.mod_show = true
+        editCfm() {
+            let data = {
+                id: this.form.id,
+                title: this.form.title,
+                h5_pic: this.form.h5_pic_path,
+                pc_pic: this.form.pc_pic_path,
+                app_pic: this.form.app_pic_path,
+                start_time: this.form.start_dates,
+                end_time: this.form.end_dates,
+                status: this.form.status
+            };
+            let { url, method } = this.$api.announce_systemannounce_edit;
+            this.$http({ method, url, data }).then(res => {
+                // console.log('返回数据',res )
+                if (res && res.code == "200") {
+                    this.$toast.success(res && res.message);
+                    this.dia_show = false;
+                    this.getList();
+                }
+            });
+        },
+        diaCfm() {
+            if (this.dia_status === "add") {
+                this.addCfm();
+            }
+            if (this.dia_status === "edit") {
+                this.editCfm();
+            }
+        },
+        addCfm() {
+            let data = {
+                title: this.form.title,
+                h5_pic: this.form.h5_pic_path,
+                pc_pic: this.form.pc_pic_path,
+                app_pic: this.form.app_pic_path,
+                start_time: this.form.start_dates,
+                end_time: this.form.end_dates,
+                status: this.form.status
+            };
+            // console.log('请求数据',data)
+            let { url, method } = this.$api.announce_systemannounce_add;
+            this.$http({ method, url, data }).then(res => {
+                // console.log('返回数据',res)
+                if (res && res.code == "200") {
+                    this.$toast.success(res && res.message);
+                    this.dia_show = false;
+                    this.getList();
+                }
+            });
+        },
+        getList() {
+            let para = {
+                title: this.filter.header
+            };
+            let params = window.all.tool.rmEmpty(para);
+            let { url, method } = this.$api.announce_systemannounce_list;
+            this.$http({ url, method, params }).then(res => {
+                // console.log('返回数据',res)
+                if (res && res.code == "200") {
+                    this.list = res.data.data;
+                    this.total = res.data.total;
+                }
+            });
+        },
+        switchStatus(val, row) {
+            let data = {
+                id: row.id,
+                status: val ? 1 : 0
+            };
+            let {
+                url,
+                method
+            } = this.$api.announce_systemannounce_change_status;
+            this.$http({ method, url, data }).then(res => {
+                if (res && res.code == "200") {
+                    this.$toast.success(res && res.message);
+                    this.getList();
+                }
+            });
+        },
+        del(row) {
+            this.mod_show = true;
+            this.curr_row = row;
         },
         modConf() {
-        },
+            let data = {
+                id: this.curr_row.id
+            };
+            let { url, method } = this.$api.announce_systemannounce_del;
+            this.$http({ method, url, data }).then(res => {
+                if (res && res.code == "200") {
+                    this.$toast.success(res && res.message);
+                    this.mod_show = false;
+                    this.getList();
+                }
+            });
+        }
     },
-    mounted() {}
-}
+    mounted() {
+        this.getList();
+    }
+};
 </script>
 
 <style scoped>
@@ -338,7 +538,7 @@ export default {
     margin-top: 10px;
 }
 .w250 {
-    width: 250px;
+    width: 266px;
 }
 .radio-right {
     margin-left: 40px;
@@ -352,7 +552,7 @@ export default {
 .ml50 {
     margin-left: 50px;
 }
-.max-w800{
+.max-w800 {
     max-width: 800px;
 }
 </style>

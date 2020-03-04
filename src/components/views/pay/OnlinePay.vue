@@ -253,24 +253,7 @@ export default {
                 "状态",
                 "操作"
             ],
-            list: [
-                {
-                    a1: "64646466",
-                    a2: "sdfsdfdsf",
-                    a3: "充支好礼",
-                    a4: "1",
-                    a5: "2019-02-02 21:30",
-                    status: true
-                },
-                {
-                    a1: "64646466",
-                    a2: "sdfsdfdsf",
-                    a3: "充支好礼",
-                    a4: "1",
-                    a5: "2019-02-02 21:30",
-                    status: false
-                }
-            ],
+            list: [],
             total: 0,
             pageNo: 1,
             pageSize: 25,

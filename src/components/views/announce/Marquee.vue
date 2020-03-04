@@ -11,7 +11,7 @@
                     <Input v-model="filter.header" />
                 </li>
                 <li>
-                    <button class="btn-blue">查询</button>
+                    <button class="btn-blue" @click="getList">查询</button>
                 </li>
             </ul>
         </div>
@@ -20,19 +20,19 @@
                 <template v-slot:item="{row}">
                     <td>{{row.title}}</td>
                     <td>{{row.content}}</td>
-                    <td>{{row.device}}</td>
+                    <td>{{getDevice(row.device)}}</td>
                     <td>{{row.created_at}}</td>
                     <td>{{row.start_time}}</td>
                     <td>{{row.end_time}}</td>
                     <td>
-                        <Switchbox v-model="row.status" />
+                        <Switchbox :value="row.status" @update="switchStatus($event,row)" />
                     </td>
                     <td>{{row.author && row.author.name}}</td>
                     <td>{{row.last_editor && row.last_editor.name}}</td>
                     <td>{{row.updated_at}}</td>
                     <td>
-                        <button class="btns-blue" @click="editMarquee">编辑</button>
-                        <button class="btns-red" @click="show_conf=true">删除</button>
+                        <button class="btns-blue" @click="editMarquee(row)">编辑</button>
+                        <button class="btns-red" @click="del(row)">删除</button>
                     </td>
                 </template>
             </Table>
@@ -100,7 +100,7 @@
             </div>
         </Dialog>
         <Modal
-            :show="show_conf"
+            :show.sync="show_conf"
             title="跑马丁消息"
             content="是否删除该公告!"
             @cancel="show_conf=false"
@@ -130,35 +130,7 @@ export default {
                 "最后跟新时间",
                 "操作"
             ],
-            list: [
-                {
-                    a1: "D456123456789",
-                    a2: "13245678942",
-                    a3: "4561234",
-                    a4: "100.00",
-                    a5: "2019/09/20 12:25:20",
-                    a6: "admin",
-                    a7: true
-                },
-                {
-                    a1: "D456123456789",
-                    a2: "13245678942",
-                    a3: "4561234",
-                    a4: "100.00",
-                    a5: "2019/09/20 12:25:20",
-                    a6: "admin",
-                    a7: true
-                },
-                {
-                    a1: "D456123456789",
-                    a2: "13245678942",
-                    a3: "4561234",
-                    a4: "100.00",
-                    a5: "2019/09/20 12:25:20",
-                    a6: "admin",
-                    a7: true
-                }
-            ],
+            list: [],
             total: 0,
             pageNo: 1,
             pageSize: 25,
@@ -175,10 +147,25 @@ export default {
             show_conf: false,
             dia_status: "",
             dia_title: "",
-            curr_row: "",
+            curr_row: {},
+            device_name: {
+                1: 'PC',
+                2: 'H5',
+                3: 'APP'
+            },
         };
     },
     methods: {
+        getDevice(device) {
+            let device_all='';
+            // console.log("传值", device);
+            for(let i=0;i<device.length;i++){
+                let item=device[i];
+                let name=this.device_name[item];
+                device_all=device_all+name+"," ;
+            }
+            return device_all.slice(0,-1)
+        },
         updateNo(val) {},
         updateSize(val) {},
         equipSelectAll() {
@@ -190,7 +177,6 @@ export default {
         equipSelect() {
             // 如果都为true 全选为true
             this.form.select_all = this.equip.every(item => item);
-
         },
         initForm() {
             this.form = {
@@ -207,7 +193,7 @@ export default {
             if (this.dia_status == "addMarquee") {
                 this.addCfm();
             }
-            console.log('dia_status: ', this.dia_status);
+            console.log("dia_status: ", this.dia_status);
 
             if (this.dia_status == "editMarquee") {
                 this.editCfm();
@@ -220,10 +206,10 @@ export default {
             this.dia_title = "添加公告";
         },
         addCfm() {
-            let device_opt=[];
-            for(let i=0;i<this.equip.length;i++){
-                if(this.equip[i]){
-                    device_opt.push(i+1)
+            let device_opt = [];
+            for (let i = 0; i < this.equip.length; i++) {
+                if (this.equip[i]) {
+                    device_opt.push(i + 1);
                 }
             }
             let data = {
@@ -236,7 +222,7 @@ export default {
             };
             let { url, method } = this.$api.announce_marquee_add;
             this.$http({ method, url, data }).then(res => {
-                console.log(res);
+                // console.log(res);
                 if (res && res.code == "200") {
                     this.$toast.success(res && res.message);
                     this.dia_show = false;
@@ -244,15 +230,83 @@ export default {
                 }
             });
         },
-        editMarquee() {
-            this.dia_status == "editMarquee";
+        switchStatus(val, row) {
+            let data = {
+                id: row.id,
+                status: val ? 1 : 0
+            };
+            let { url, method } = this.$api.announce_marquee_change_status;
+            this.$http({ method, url, data }).then(res => {
+                if (res && res.code == "200") {
+                    this.$toast.success(res && res.message);
+                    this.getList();
+                }
+            });
+        },
+        editMarquee(row) {
+            this.dia_status = "editMarquee";
             this.dia_show = true;
             this.dia_title = "编辑";
             this.initForm();
+            let device_status = row.device;
+            // console.log(device_status)
+            for (let i = 0; i < device_status.length; i++) {
+                // console.log('打印',i)
+                let item = device_status[i];
+                this.equip[item - 1] = true;
+            }
+            this.form = {
+                id: row.id,
+                name: row.title,
+                content: row.content,
+                start_dates: row.start_time,
+                end_dates: row.end_time,
+                status: row.status
+            };
         },
-        editCfm() {},
+        editCfm() {
+            let device_list = [];
+            for (let i = 0; i < this.equip.length; i++) {
+                if (this.equip[i]) {
+                    device_list.push(i + 1);
+                }
+            }
+            let data = {
+                id: this.form.id,
+                title: this.form.name,
+                content: this.form.content,
+                device: JSON.stringify(device_list),
+                start_time: this.form.start_dates,
+                end_time: this.form.end_dates,
+                status: this.form.status
+            };
+            // console.log('请求数据',data)
+            let { url, method } = this.$api.announce_marquee_edit;
+            this.$http({ method, url, data }).then(res => {
+                // console.log('返回数据',res)
+                if (res && res.code == "200") {
+                    this.$toast.success(res && res.message);
+                    this.dia_show = false;
+                    this.getList();
+                }
+            });
+        },
+        del(row) {
+            this.curr_row = row;
+            this.show_conf = true;
+        },
         marqueeDelConf() {
-            console.log("确认删除");
+            let data = {
+                id: this.curr_row.id
+            };
+            let { url, method } = this.$api.announce_marquee_del;
+            this.$http({ method, url, data }).then(res => {
+                if (res && res.code == "200") {
+                    this.$toast.success(res && res.message);
+                    this.show_conf = false;
+                    this.getList();
+                }
+            });
         },
         getList() {
             let para = {
@@ -264,14 +318,14 @@ export default {
                 // console.log(res)
                 if (res && res.code == "200") {
                     this.list = res.data.data;
-                    this.tool = res.data.total;
+                    this.total = res.data.total;
                 }
             });
         }
     },
     mounted() {
         this.getList();
-    },
+    }
 };
 </script>
 

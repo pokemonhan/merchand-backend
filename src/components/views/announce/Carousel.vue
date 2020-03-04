@@ -3,26 +3,31 @@
 
         <!-----------------------  轮播公告  ----------------------->
         <div class="bg-gray equip-sel">
-            <button :class="[is_pc_show?'btn-blue':'btn-plain']" @click="pcShow">PC网页</button>
-            <button :class="[is_pc_show?'btn-plain':'btn-blue']" @click="h5Show">H5手机</button>
+            <button
+                v-for="(item, index) in buttons"
+                :key="index"
+                :class="curr_btn===item.value?'btn-blue':'btn-plain'"
+                @click="selectBtn(item)"
+            >{{item.label}}</button>
         </div>
         <div class="car-cont">
-            <div class="left">
-                <ul class="form">
+            <div class="left"  >
+                <ul class="form"  >
                     <li>
                         <span>活动名称：</span>
                         <Input class="w250" v-model="form.name" />
                     </li>
                     <li>
                         <span>活动图片：</span>
+                        <Input style="width:100px;" v-model="form.pic_path" />
                         <Upload
-                            style="width:170px;"
+                            style="width:100px;"
                             title="选择图片"
-                            v-model="form.pic"
-                            @change="upPicChange"
+                            @change="upPicChange($event)"
+                            type="file"
                         />
                         <button
-                            style="width:70px;margin-left:10px;"
+                            style="width:60px;margin-left:4px;"
                             class="btn-blue"
                             @click="dia_show=true"
                         >预览</button>
@@ -66,7 +71,7 @@
                         <button class="btn-blue-large ml20" @click="editConf">确定修改</button>
                     </li>
                     <li v-else class="conf-btn">
-                        <button class="btn-blue-large">确定</button>
+                        <button class="btn-blue-large">确定添加</button>
                     </li>
 
                 </ul>
@@ -129,7 +134,11 @@
         </div>
         <Dialog :show.sync="dia_show" title="预览图片">
             <div class="dia-inner">
-                <img class="max-w800" :src="form.pic_src" alt="未选择图片" />
+                <img
+                class="max-w800"
+                :src="protocol+'//pic.jianghu.local/'+form.pic_path"
+                alt
+            />
             </div>
         </Dialog>
     </div>
@@ -140,14 +149,18 @@
 export default {
     data() {
         return {
+            buttons: [
+                { label: "PC网页", value: "1" },
+                { label: "手机H5", value: "2" },
+            ],
+            curr_btn:"1",
             // 是否是编辑模式
             is_edit: false,
-              list: [
+            list: [
                 { a1: true, a2: '1', a3: '4561234', a4: '13256689796', a5: '1', a6: '微信充值', a7: '100', a8: '99.9', a9: '已支付', a10: '2019/09/20 12:25:20', a11: '2019/09/20 12:25:20', a12: '2019/09/20 12:25:20' },
                 { a1: true, a2: '2', a3: '4561234', a4: '13256689796', a5: '1', a6: '微信充值', a7: '100', a8: '99.9', a9: '已支付', a10: '2019/09/20 12:25:20', a11: '2019/09/20 12:25:20', a12: '2019/09/20 12:25:20' },
                 { a1: true, a2: 'h1L', a3: '4561234', a4: '13256689796', a5: '1', a6: '微信充值', a7: '100', a8: '99.9', a9: '已支付', a10: '2019/09/20 12:25:20', a11: '2019/09/20 12:25:20', a12: '2019/09/20 12:25:20' },
                 { a1: true, a2: 'ht1L', a3: '4561234', a4: '13256689796', a5: '1', a6: '微信充值', a7: '100', a8: '99.9', a9: '已支付', a10: '2019/09/20 12:25:20', a11: '2019/09/20 12:25:20', a12: '2019/09/20 12:25:20' },
-                { a1: false, a2: '../../../assets/image/announce/sysAnnounce.png', a3: '4561234', a4: '13256689796', a5: '0', a6: '微信充值', a7: '100', a8: '99.9', a9: '已支付', a10: '2019/09/20 12:25:20', a11: '2019/09/20 12:25:20', a12: '2019/09/20 12:25:20' }
             ],
             form: {
                 name: '',
@@ -159,10 +172,15 @@ export default {
             },
             pic_src: [],
             dia_show: false,
-            is_pc_show: true
+            is_pc_show: true,
+            protocol: window.location.protocol,
         }
     },
     methods: {
+        selectBtn(item){
+            this.curr_btn = item.value;
+            this.getList();
+        },
         pcShow() {
             this.initForm()
             this.is_pc_show = true
@@ -198,24 +216,28 @@ export default {
 
         },
         upPicChange(e) {
-            let self = this
-            let file = e.target.files[0]
-            let date = new FormData()
+            let pic = e.target.files[0];
+            let basket = "announce/carousel/uploads";
+            let formList = new FormData();
+            formList.append("file", pic, pic.name);
+            formList.append("basket", basket);
+            let { url, method } = this.$api.update_picture_database;
+            let data = formList;
+            let headers = { "Content-Type": "multipart/form-data" };
+            this.$http({ method, url, data, headers }).then(res => {
+                // console.log(res)
+                if (res && res.code == "200") {
+                    this.$set(this.form,'pic_path',res.data.path)
+                }
+            });
+        },
+        getList(){
 
-            date.append('uploadimg', file)
-            console.log('文件的内容', date)
-            let reader = new FileReader()
-            reader.readAsDataURL(file)
-            reader.onerror = function() {
-                return
-            }
-            reader.onload = function() {
-                // self.src[index] = this.result
-                self.form.pic_src = this.result
-            }
-        }
+        },
     },
-    mounted() {}
+    mounted() {
+
+    }
 }
 </script>
 
@@ -232,10 +254,10 @@ export default {
     border-right: 1px solid #bfbfbf;
 }
 .form .w250 {
-    width: 250px;
+    width: 264px;
 }
 .form {
-    width: 345px;
+    width: 370px;
     /* border: 1px solid #000; */
 }
 .form > li {
@@ -258,6 +280,9 @@ export default {
 }
 .ml20{
     margin-left: 20px;
+}
+.right{
+    margin-left: 100px;
 }
 .right > li {
     display: flex;

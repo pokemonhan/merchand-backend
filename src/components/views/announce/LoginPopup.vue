@@ -2,11 +2,11 @@
     <div class="container">
         <div class="hd-btn">
             <button
-                v-for="(item, index) in ['PC网页','H5手机','手机APP']"
+                v-for="(item, index) in buttons"
                 :key="index"
-                :class="['head-btns',head_act_btn===index?'btn-blue':'btn-plain']"
-                @click="head_act_btn=index"
-            >{{item}}</button>
+                :class="['head-btns',head_act_btn===item.value?'btn-blue':'btn-plain']"
+                @click="selectBtn(item)"
+            >{{item.label}}</button>
         </div>
         <div class="filter search">
             <ul class="left">
@@ -18,34 +18,46 @@
                     <Input style="width:150px;" v-model="filter.title" />
                 </li>
                 <li>
-                    <button class="btn-blue">查询</button>
+                    <button class="btn-blue" @click="getList">查询</button>
                 </li>
             </ul>
         </div>
         <div class="table" style="margin-top:20px;">
             <Table :headers="headers" :column="list">
                 <template v-slot:item="{row}">
-                    <td>{{row.a1}}</td>
+                    <td>{{row.title}}</td>
                     <td>
-                        <img width="120" :src="row.a2" alt="无图片" />
+                        <img
+                            style="max-width:100px;max-height:80px;"
+                            :src="protocol+'//pic.jianghu.local/'+row.pic"
+                            alt
+                        />
                     </td>
-                    <td>{{row.a3}}</td>
-                    <td>{{row.a4}}</td>
+                    <td>{{row.start_time}}</td>
+                    <td>{{row.end_time}}</td>
                     <td>
-                        <Switchbox v-model="row.a5" @update="switchUpdate(row)" />
+                        <Switchbox :value="row.status" @update="switchStatus($event,row)" />
                     </td>
-                    <td>{{row.a6}}</td>
-                    <td>{{row.a7}}</td>
-                    <td>{{row.a8}}</td>
+                    <td>{{row.author && row.author.name}}</td>
+                    <td>{{row.last_editor && row.last_editor.name}}</td>
+                    <td>{{row.updated_at}}</td>
                     <td>
                         <button class="btn-blue" @click="edit(row)">编辑</button>
                         <button class="btn-red" @click="del(row)">删除</button>
                     </td>
                 </template>
             </Table>
+            <Page
+                class="table-page"
+                :total="total"
+                :pageNo.sync="pageNo"
+                :pageSize.sync="pageSize"
+                @updateNo="updateNo"
+                @updateSize="updateSize"
+            />
         </div>
         <!-- 添加公告 , 编辑公告 -->
-        <Dialog :show.sync="dia_show" :title="is_edit?'编辑公告':'添加公告'">
+        <Dialog :show.sync="dia_show" :title="dia_title">
             <div class="dia-inner">
                 <div>
                     <ul class="form">
@@ -62,10 +74,15 @@
                         <li>
                             <span>选择图片</span>
                             <div class="upload-pic">
-                                <Upload style="width:170px;" title="App图片上传" @change="upPicChange" />
-
+                                <Input style="width:84px;" v-model="form.pic_path" />
+                                <Upload
+                                    style="width:110px;"
+                                    title="App图片上传"
+                                    @change="upPicChange($event)"
+                                    type="file"
+                                />
                                 <button
-                                    style="width:70px;margin-left:10px;"
+                                    style="width:60px;margin-left:4px;"
                                     class="btn-blue"
                                     @click="preview"
                                 >预览</button>
@@ -77,11 +94,11 @@
                         </li>
                         <li>
                             <span>开始时间</span>
-                            <Date style="width:250px;" v-model="form.dates[0]" />
+                            <Date style="width:260px;" v-model="form.start_dates" />
                         </li>
                         <li>
                             <span>结束时间</span>
-                            <Date style="width:250px;" v-model="form.dates[1]" />
+                            <Date style="width:260px;" v-model="form.end_dates" />
                         </li>
                         <li>
                             <span>状态选择</span>
@@ -89,28 +106,28 @@
                                 class="radio-left"
                                 label="开"
                                 :value="form.status"
-                                val="on"
+                                val="1"
                                 v-model="form.status"
                             />
                             <Radio
                                 class="radio-right"
                                 label="关"
                                 :value="form.status"
-                                val="off"
+                                val="0"
                                 v-model="form.status"
                             />
                         </li>
                     </ul>
                     <div class="form-buttons">
                         <button class="btn-plain-large" @click="dia_show=false">取消</button>
-                        <button class="btn-blue-large ml50">保存</button>
+                        <button class="btn-blue-large ml50" @click="diaCfm">保存</button>
                     </div>
                 </div>
             </div>
         </Dialog>
         <!-- 图片预览 -->
         <Dialog :show.sync="pic_dia_show" title="预览图片">
-            <img class="max-w800" :src="form.pic_src" alt="未选择图片" />
+            <img class="max-w800" :src="protocol+'//pic.jianghu.local/'+form.pic_path" alt />
         </Dialog>
         <Modal :show.sync="show_del_modal" title="删除公告" content="是否删除该公告" @confirm="delConfirm"></Modal>
     </div>
@@ -122,136 +139,203 @@ export default {
     props: {},
     data() {
         return {
-            head_act_btn: 0,
+            buttons: [
+                { label: "PC网页", value: "1" },
+                { label: "H5手机", value: "2" },
+                { label: "手机APP", value: "3" }
+            ],
+            head_act_btn: "1",
             filter: {
-                title: ''
+                title: ""
             },
             headers: [
-                '公告标题',
-                '图片',
-                '发布时间',
-                '结束时间',
-                '状态',
-                '发布人',
-                '最后跟新人',
-                '最后跟新时间',
-                '操作'
+                "公告标题",
+                "图片",
+                "发布时间",
+                "结束时间",
+                "状态",
+                "发布人",
+                "最后跟新人",
+                "最后跟新时间",
+                "操作"
             ],
-            list: [
-                {
-                    a1: 'aD201909201252',
-                    a2:
-                        'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcSxdxCKUXf9x4R6LejYNviNYIIxeoKoQ8N752y9QTT-hwkc4c1L',
-                    a3: '4561234',
-                    a4: '13256689796',
-                    a5: '1',
-                    a6: '微信充值',
-                    a7: '100',
-                    a8: '99.9',
-                    a9: '已支付',
-                    a10: '2019/09/20 12:25:20',
-                    a11: '2019/09/20 12:25:20',
-                    a12: '2019/09/20 12:25:20'
-                },
-                {
-                    a1: 'aD201909201252',
-                    a2: require('../../../assets/image/announce/sysAnnounce.png'),
-                    a3: '4561234',
-                    a4: '13256689796',
-                    a5: '0',
-                    a6: '微信充值',
-                    a7: '100',
-                    a8: '99.9',
-                    a9: '已支付',
-                    a10: '2019/09/20 12:25:20',
-                    a11: '2019/09/20 12:25:20',
-                    a12: '2019/09/20 12:25:20'
-                }
-            ],
+            list: [],
             form: {
-                name: '',
-                link: '',
-                pic_src: '',
-                dates: [],
-                status: 'on'
+                name: "",
+                pic_path: "",
+                link: "",
+                start_dates: "",
+                end_dates: "",
+                status: ""
             },
+            total: 0,
+            pageNo: 1,
+            pageSize: 25,
             dia_show: false,
-            is_edit: false,
+            dia_title: "",
+            dia_status: "",
             pic_dia_show: false,
-            // form_pic_src: ''
-            show_del_modal: false // 删除公告
-        }
+            show_del_modal: false, // 删除公告
+            protocol: window.location.protocol,
+            curr_row: {}
+        };
     },
     methods: {
-        switchUpdate(row) {
-            // console.log('row: ', row);
+        switchStatus(val, row) {
+            let data = {
+                id: row.id,
+                status: val ? 1 : 0
+            };
+            let { url, method } = this.$api.announce_loginpopup_change_status;
+            this.$http({ method, url, data }).then(res => {
+                if (res && res.code == "200") {
+                    this.$toast.success(res && res.message);
+                    this.getList();
+                }
+            });
         },
         initForm() {
             this.form = {
-                name: '',
-                link: '',
-                dates: [],
-                status: 'on'
+                name: "",
+                pic_path: "",
+                link: "",
+                start_dates: "",
+                end_dates: "",
+                status: ""
+            };
+        },
+
+        diaCfm() {
+            if (this.dia_status === "add") {
+                this.addCfm();
             }
-            this.form.pic_src = ''
+            if (this.dia_status === "edit") {
+                this.editCfm();
+            }
         },
         add() {
-            this.dia_show = true
-            this.is_edit = false
-            this.initForm()
+            this.dia_status = "add";
+            this.dia_title = "添加公告";
+            this.dia_show = true;
+            this.initForm();
         },
-        edit() {
-            this.dia_show = true
-            this.is_edit = true
-            this.initForm()
+        addCfm() {
+            let data = {
+                device: this.head_act_btn,
+                title: this.form.name,
+                pic: this.form.pic_path,
+                link: this.form.link,
+                start_time: this.form.start_dates,
+                end_time: this.form.end_dates,
+                status: this.form.status
+            };
+            // console.log("请求数据", data);
+            let { url, method } = this.$api.announce_loginpopup_add;
+            this.$http({ method, url, data }).then(res => {
+                // console.log('返回数据',res)
+                if (res && res.code == "200") {
+                    this.$toast.success(res && res.message);
+                    this.dia_show = false;
+                    this.getList();
+                }
+            });
         },
-        del() {
-            this.show_del_modal = true
+        edit(row) {
+            this.dia_status = "edit";
+            this.dia_title = "编辑";
+            this.dia_show = true;
+            this.form = {
+                id: row.id,
+                name: row.title,
+                pic_path: row.pic,
+                link: row.link,
+                start_dates: row.start_time,
+                end_dates: row.end_time,
+                status: String(row.status)
+            };
         },
-        upPicChange(e) {
-            let file = e.target.files[0]
-            let self = this
-            let date = new FormData()
-            date.append('uploadimg', file)
-            console.log('文件的内容', date)
-            let reader = new FileReader()
-            reader.readAsDataURL(file)
-            reader.onerror = function() {
-                return
-            }
-            reader.onload = function() {
-                // self.src[index] = this.result
-                self.form.pic_src = this.result
-            }
+        editCfm() {
+            let data = {
+                id: this.form.id,
+                device: this.head_act_btn,
+                title: this.form.name,
+                pic: this.form.pic_path,
+                link: this.form.link,
+                start_time: this.form.start_dates,
+                end_time: this.form.end_dates,
+                status: this.form.status
+            };
+            let { url, method } = this.$api.announce_loginpopup_edit;
+            this.$http({ method, url, data }).then(res => {
+                // console.log('返回数据',res)
+                if (res && res.code == "200") {
+                    this.$toast.success(res && res.message);
+                    this.dia_show = false;
+                    this.getList();
+                }
+            });
         },
-        preview(index) {
-            this.pic_dia_show = true
+        del(row) {
+            this.curr_row = row;
+            this.show_del_modal = true;
         },
         delConfirm() {
-            console.log(this.is_edit)
-        }
-    },
-    created() {
-        this.list = this.list.map(item => {
-            if (item.a5 === '1') {
-                item.a5 = true
-            } else {
-                item.a5 = false
-            }
-            return item
-        })
+            let data = {
+                id: this.curr_row.id
+            };
+            let { url, method } = this.$api.announce_loginpopup_del;
+            this.$http({ method, url, data }).then(res => {
+                this.$toast.success(res && res.message);
+                this.show_del_modal = false;
+                this.getList();
+            });
+        },
+        upPicChange(e) {
+            let pic = e.target.files[0];
+            let basket = "announce/loginpopup/uploads";
+            let formList = new FormData();
+            formList.append("file", pic, pic.name);
+            formList.append("basket", basket);
+            let { url, method } = this.$api.update_picture_database;
+            let data = formList;
+            let headers = { "Content-Type": "multipart/form-data" };
+            this.$http({ method, url, data, headers }).then(res => {
+                // console.log(res)
+                if (res && res.code == "200") {
+                    this.$set(this.form, "pic_path", res.data.path);
+                }
+            });
+        },
+        preview(index) {
+            this.pic_dia_show = true;
+        },
+        getList() {
+            let para = {
+                device: this.head_act_btn,
+                title: this.filter.title
+            };
+            // console.log('请求数据',para)
+            let params = window.all.tool.rmEmpty(para);
+            let { url, method } = this.$api.announce_loginpopup_list;
+            this.$http({ url, method, params }).then(res => {
+                // console.log('返回数据',res)
+                if (res && res.code == "200") {
+                    this.list = res.data.data;
+                    this.total = res.data.total;
+                }
+            });
+        },
+        selectBtn(item) {
+            this.head_act_btn = item.value;
+            this.getList();
+        },
+        updateNo(val) {},
+        updateSize(val) {}
     },
     mounted() {
-        let self = this
-        setTimeout(() => {
-            self.list = self.list.map(item => {
-                item.a5 = false
-                return item
-            })
-            self.list = self.list
-        }, 3000)
+        this.getList();
     }
-}
+};
 </script>
 
 <style scoped>
@@ -261,10 +345,10 @@ export default {
     padding: 10px;
 }
 .head-btns:not(:first-child) {
-    margin-left: 10px;
+    margin-left: 5px;
 }
 .w250 {
-    width: 250px;
+    width: 260px;
 }
 .dia-inner {
     width: 700px;

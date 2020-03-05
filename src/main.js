@@ -13,6 +13,7 @@ import echarts from 'echarts'
 import menu_list from './js/menuList'           // 菜单目录
 
 import $ from 'jquery'                          // jquery
+import xss from 'xss'
 Vue.use(plugins)
 window.$ = $
 window.all = {
@@ -25,7 +26,10 @@ window.all = {
 };
 
 Vue.config.productionTip = false
-
+// 防止xss 攻击
+Object.defineProperty(Vue.prototype, '$xss', {
+    value: xss
+  })
 /* eslint-disable no-new */
 window.__vm__= new Vue({
     el: '#app',

@@ -3,9 +3,9 @@
         <!-- 展示tab [x] -->
         <div class="show-selected" @click="openTree">
             <span
-                class="sel-item"
+                :class="[disabled?'sel-item-disabled':'sel-item']"
                 v-for="(item, index) in tagShow.filter(item=>tagShowObj[item])"
-                :key="index"
+                :key="item"
                 @click.stop
             >
                 <span>{{tagShowObj[item]}}</span>
@@ -14,14 +14,15 @@
         </div>
 
         <!-- 树 -->
-        <div v-show="tree_show" ref="tree" class="drop-list" v-clickoutside="closeTree">
-            <Tree style="width:fit-content" :list="tree_list" @change="treeUpd" />
+        <div v-show="tree_show" ref="tree" class="drop-list authority-tree" v-clickoutside="closeTree">
+            <Tree :disabled="disabled" style="width:fit-content" :list="tree_list" @change="treeUpd" />
         </div>
     </div>
 </template>
 
 <script>
 import Tree from '../commonComponents/Tree'
+import Slide from '../../js/config/slide'
 export default {
     name: 'AuthorityTree',
     components: {
@@ -35,6 +36,10 @@ export default {
         value: {
             type: Array,
             default: []
+        },
+        disabled: {
+            type: Boolean,
+            default: false
         }
     },
     model: {
@@ -53,20 +58,26 @@ export default {
     methods: {
         // 点击组权限框, 下拉打开 tree
         openTree() {
+            
             if (!this.tree_show) {
                 setTimeout(() => {
                     this.tree_show = true
-                    $(this.$refs.tree).slideDown(200)
+                    let ele = document.getElementsByClassName('authority-tree')[0]
+                    // $(this.$refs.tree).slideDown(200)
+                    Slide.slideDown(ele)
                 }, 0)
             }
         },
         // 关闭 tree 下拉内容
         closeTree() {
+
             if (!this.tree_show) return
             this.tree_show = false
         },
         // 关闭 tab 框(点击tab里那个叉叉时触发..)
         tabClose(closeId, index) {
+            // 如果disabled 取消关闭
+            if(this.disabled) return
             this.tagShow = this.tagShow.filter(item => item !== closeId)
             this.treeSelectShow(this.tagShow)
             this.isShow = false
@@ -75,6 +86,9 @@ export default {
 
         // tree 点击更新时
         treeUpd(bool, index, list) {
+            // 如果disable 取消赋值
+            if(this.disabled) return
+
             // 重新赋值让其能检测到
             this.tree_list = list.slice()
             this.getTabList()
@@ -159,19 +173,16 @@ export default {
     },
     watch: {
         value(val) {
-            // console.log('watch val: ', val)
             this.tagShow = this.value.slice()
-            // console.log('this.isShow: ', this.isShow);
             if (this.isShow) {
-                
                 this.treeSelectShow(val)
             } else {
                 this.isShow = true
             }
         },
         menutree(list) {
-            // console.log('list: ', list);
             this.tree_list = list
+            this.treeSelectShow(this.tagShow)
             this.setTabObj(list)
         }
     },
@@ -181,6 +192,7 @@ export default {
         this.setTabObj(this.tree_list)
 
         this.tagShow = this.value.slice()
+        // console.log('this.tagShow: ', this.tagShow);
         this.treeSelectShow(this.tagShow)
     }
 }
@@ -197,7 +209,18 @@ export default {
     padding: 0 10px 10px 0;
     border-radius: 5px;
 }
+.sel-item-disabled {
+    display: inline-block;
+    margin-left: 10px;
+    margin-top: 10px;
+    padding: 3px 10px;
 
+    font-size: 12px;
+    color: #8ba1b8;
+    border: 1px solid #d9ecff;
+    border-radius: 4px;
+    background-color: #ecf5ff;
+}
 .sel-item {
     display: inline-block;
     margin-left: 10px;
@@ -216,7 +239,10 @@ export default {
     cursor: pointer;
     transform: scale(1);
 }
-.iconcuowuguanbi-:hover {
+.sel-item-disabled .iconcuowuguanbi-:hover {
+    cursor: not-allowed;
+}
+.sel-item .iconcuowuguanbi-:hover {
     color: red;
 }
 /* 选择组 下拉list */

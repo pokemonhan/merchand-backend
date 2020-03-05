@@ -1,6 +1,5 @@
 <template>
     <div class="container">
-
         <!----------------        收件箱          ----->
         <QuickQuery :date="quick_query" @update="qqUpd" />
         <!-- filter 筛选 -->
@@ -8,16 +7,17 @@
             <ul class="left">
                 <li>
                     <span>发件人</span>
-                    <Input v-model="filter.sender" />
+                    <Input class="w100" v-model="filter.platform_sign" />
                 </li>
                 <li>
-                    <span>收件时间</span>
-                    <Date v-model="filter.dates[0]" @update="timeUpdate()" />
+                    <span>收件日期</span>
+                    <!-- <Date v-model="filter.dates[0]" @update="timeUpdate()" />
                     <span style="margin: 0 5px;">~</span>
-                    <Date v-model="filter.dates[1]" @update="timeUpdate()" />
+                    <Date v-model="filter.dates[1]" @update="timeUpdate()" /> -->
+                    <Date type="daterange" v-model="filter.dates" @update="timeUpdate()" />
                 </li>
                 <li>
-                    <button class="btn-blue">查询</button>
+                    <button class="btn-blue" @click="getList">查询?</button>
                     <button class="btn-red" @click="clearFilter">清空</button>
                 </li>
             </ul>
@@ -26,21 +26,40 @@
             <!-- 控制栏 -->
             <div class="tab-control">
                 <div class="left">
-                    <button class="btn-plain" @click="mod_show=true">删除</button>
+                    <button class="btn-plain" @click="mod_show=true">删除?</button>
                 </div>
                 <div class="right">
                     <span>{{pageNo}}/{{Math.ceil(total/pageSize)}}</span>
-                    <button class="btn-plain">上一页</button>
-                    <button class="btn-plain">下一页</button>
+                    <button
+                        :disabled="pageNo<2"
+                        :class="[pageNo>1?'btn-plain':'btn-disabled']"
+                        @click="prevPage"
+                    >上一页</button>
+                    <button
+                        :class="[pageNo<Math.ceil(total/pageSize)?'btn-plain':'btn-disabled']"
+                        @click="nextPage"
+                    >下一页</button>
                 </div>
             </div>
             <!-- table -->
             <div style="margin-top:5px;"></div>
             <Table :headers="headers" :column="list" @checkboxChange="checkboxChange" hadCheckbox>
-                <template v-slot:item="{row}">
-                    <td class="pointer" style="width:100px;" @click="showDetail(row)">{{row.a1}}</td>
-                    <td class="pointer" style="width:760px;padding:5px;" @click="showDetail(row)">{{row.a2}}</td>
-                    <td class="pointer" @click="showDetail(row)">{{row.a3}}</td>
+                <template v-slot:item="{row,idx}">
+                    <td
+                        class="pointer"
+                        style="width:100px;"
+                        @click="showDetail(row,idx)"
+                    >{{row.email&&row.email.title}}</td>
+                    <td
+                        class="pointer"
+                        style="width:760px;padding:5px;"
+                        @click="showDetail(row,idx)"
+                        v-html="getText(row.email&&row.email.content)"
+                    ></td>
+                    <td
+                        class="pointer"
+                        @click="showDetail(row,idx)"
+                    >{{row.email&&row.email.created_at}}</td>
                 </template>
             </Table>
             <Page
@@ -53,9 +72,9 @@
             />
         </div>
         <!-- 详情 -->
-        <Dialog :show.sync="dia_show" title="收件箱详情">
+        <Dialog class="dialog" :show.sync="dia_show" title="收件箱详情">
             <div class="dia-inner">
-                <Detail @close="dia_show=false" />
+                <Detail :row="curr_row" @close="dia_show=false" />
             </div>
         </Dialog>
         <!-- 删除确认 -->
@@ -73,6 +92,7 @@
 <script>
 import Detail from './EmailDetail'
 export default {
+    name: 'ReceiveEmail',
     components: {
         Detail: Detail
     },
@@ -80,30 +100,18 @@ export default {
         return {
             quick_query: [],
             filter: {
-                sender: '',
+                platform_sign: '',
                 dates: []
             },
-            headers: ['发件人', '内容', '收件日期'],
-            list: [
-                {
-                    a1: 'admin',
-                    a2:
-                        'admin趣闻 1947 年，时装设计师 Elsa Schiaparelli 将“艳粉色”引入西方时尚圈。 桃色可以营造亲密氛围，减少攻击性和敌意。 由于听说粉色有一种镇定效果，有些球队会把客队的休息室漆成粉色。 对于粉色的研究发现，男性举重运动员在粉色房间内似乎感到力不从心，而女性举重运动员面对这种颜色反而会有变强的倾向。 糕点从粉色盒子里取出或盛在粉色盘子里时，尝起来会更美味（这种情况仅适用于甜点），因为粉色令我们渴望糖份',
-                    a3: '2019-02-02'
-                },
-                {
-                    a1: 'admin',
-                    a2:
-                        'admin趣闻 1947 年，时装设计师 Elsa Schiaparelli 将“艳粉色”引入西方时尚圈。 桃色可以营造亲密氛围，减少攻击性和敌意。 由于听说粉色有一种镇定效果，有些球队会把客队的休息室漆成粉色。 对于粉色的研究发现，男性举重运动员在粉色房间内似乎感到力不从心，而女性举重运动员面对这种颜色反而会有变强的倾向。 糕点从粉色盒子里取出或盛在粉色盘子里时，尝起来会更美味（这种情况仅适用于甜点），因为粉色令我们渴望糖份',
-                    a3: '2019-02-02'
-                }
-            ],
+            headers: ['标题?发件人??', '内容', '收件日期'],
+            list: [],
             total: 2,
             pageNo: 1,
             pageSize: 25,
+
+            curr_row: {},
             dia_show: false,
             mod_show: false
-
         }
     },
     methods: {
@@ -113,8 +121,7 @@ export default {
         },
         qqUpd(dates) {
             //同步时间筛选值
-            this.filter.dates = dates;
-            this.filter = Object.assign(this.filter)
+            this.$set(this.filter,'dates',dates)
         },
         clearFilter() {
             this.filter = {
@@ -122,27 +129,85 @@ export default {
                 dates: []
             }
         },
+        prevPage() {
+            if (this.pageNo > 1) {
+                this.pageNo--
+                this.getList()
+            }
+        },
+        nextPage() {
+            // 总页数
+            let pagesNum = Math.ceil(Number(this.total) / this.pageSize)
+            if (this.pageNo < pagesNum) {
+                this.pageNo++
+                this.getList()
+            }
+        },
         checkboxChange(index, e) {
             // console.log('e: ', e);
             // console.log('index: ', index);
             // console.log(this.list);
         },
-        showDetail(row) {
-            console.log(row);
+        showDetail(row, index) {
+            this.curr_row = row
+
+            this.curr_row.pageSize = this.pageSize
+            this.curr_row.pageNo = this.pageNo
+            this.curr_row.total = this.total
+            this.curr_row.index = index
+
             this.dia_show = true
         },
         modConf() {
             console.log('确认删除')
         },
-        updateNo(val) {},
-        updateSize(val) {}
+        getText(content) {
+            let divLink = document.createElement('div')
+            divLink.innerHTML = content
+            return divLink.innerText
+        },
+        getList() {
+            let created_at = ''
+            if (this.filter.dates[0] && this.filter.dates[1]) {
+                created_at = JSON.stringify(this.filter.dates)
+            }
+            let para = {
+                platform_sign: this.filter.platform_sign, // 厅主标识
+                created_at: created_at, // 接收日期
+                pageSize: this.pageSize,
+                page: this.pageNo
+            }
+            let params = window.all.tool.rmEmpty(para)
+
+            let { url, method } = this.$api.email_received
+            this.$http({ method, url, params }).then(res => {
+                console.log('列表: ', res)
+                if (res && res.code === '200') {
+                    this.total = res.data.total
+                    this.list = res.data.data
+                }
+            })
+        },
+        updateNo() {
+            this.getList()
+        },
+        updateSize() {
+            this.pageNo = 1
+            this.getList()
+        }
     },
-    mounted() {}
+    mounted() {
+        this.getList()
+       
+    }
 }
 </script>
 
 <style scoped>
 
+/* .p10 {
+    padding: 10px;
+} */
 .tab-control {
     /* width: 100%; */
     display: flex;
@@ -151,10 +216,19 @@ export default {
     padding: 10px;
     background: #d8e2f5;
 }
-.pointer{
+.btn-disabled {
+    padding: 5px 15px;
+    color: #ccc;
+    border: 1px solid #ccc;
+    cursor: not-allowed;
+}
+.pointer {
     cursor: pointer;
 }
 .dia-inner {
-    max-width: 800px;
+    min-width: 1000px;
+    max-width: 80vw;
+    max-height: 80vh;
+    overflow: auto;
 }
 </style>

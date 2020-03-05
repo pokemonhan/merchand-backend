@@ -3,11 +3,12 @@
         <ul class="lev1">
             <li v-for="(lev1, lev1_idx) in list" :key="lev1_idx">
                 <div class="title">
-                    <i :class="['iconfont iconup',lev1.child?'':'hide']" @click="expand(lev1_idx)"></i>
+                    <i :class="['iconfont iconup',lev1.child?'':'hide']" @click="expand(lev1,lev1_idx)"></i>
                     <Checkbox
                         class="checkbox-head"
                         :label="lev1.label"
                         v-model="lev1.checked"
+                        :disabled="disabled"
                         @update="checkBoxUpd($event, lev1_idx)"
                     />
                 </div>
@@ -19,12 +20,13 @@
                         <div class="title">
                             <i
                                 :class="['iconfont iconup',lev2.child?'':'hide']"
-                                @click="expand(lev2_idx)"
+                                @click="expand(lev2,lev2_idx)"
                             ></i>
                             <Checkbox
                                 class="checkbox"
                                 :label="lev2.label"
                                 v-model="lev2.checked"
+                                :disabled="disabled"
                                 @update="checkBoxUpd($event, lev1_idx+'-'+lev2_idx)"
                             />
                         </div>
@@ -35,12 +37,13 @@
                                 <div>
                                     <i
                                         :class="['iconfont iconup',lev3.child?'':'hide']"
-                                        @click="expand(lev3_idx)"
+                                        @click="expand(lev1,lev3_idx)"
                                     ></i>
                                     <Checkbox
                                         class="checkbox"
                                         :label="lev3.label"
                                         v-model="lev3.checked"
+                                        :disabled="disabled"
                                         @update="checkBoxUpd($event, lev1_idx+'-'+lev2_idx+'-'+lev3_idx)"
                                     />
                                 </div>
@@ -55,10 +58,15 @@
 
 
 <script>
+import Slide from '../../js/config/slide'
 export default {
     props: {
         list: {
             type: Array
+        },
+        disabled: {
+            type: Boolean,
+            default: false
         }
     },
     data() {
@@ -67,9 +75,11 @@ export default {
         }
     },
     methods: {
-        expand(index) {
-            let ele = this.$refs[index]
-            $(ele).slideToggle(200)
+        expand(lev1,index) {
+            // console.log('lev1: ', lev1);
+            let ele = this.$refs[index][0]
+            // $(ele).slideToggle(200)
+            Slide.slideToggle(ele)
         },
         
         checkBoxUpd(bool, idx) {

@@ -6,12 +6,20 @@
                     <!-- <button class="btn-blue">查找</button> -->
                     <button class="btn-blue" @click="addsort">创建分组</button>
                 </li>
+                <li>
+                    <Input class="filter-input ml50" v-model="filter.searchStr" @enter="search" />
+                    <button class="btn-blue" @click="search">搜索</button>
+                </li>
             </ul>
         </div>
         <div class="cont">
             <div class="cont-left">
                 <ul>
-                    <li v-for="(group,index) in group_list" :key="index">
+                    <li
+                        :class="[searchGroup.indexOf(group.id)>-1?'had-search':'']"
+                        v-for="(group,index) in group_list"
+                        :key="index"
+                    >
                         <div class="li-left">
                             <p class="li-hd">
                                 <span @click="check(group)">{{group.group_name}}</span>
@@ -27,7 +35,8 @@
                 </ul>
                 <div class="vertical-line"></div>
             </div>
-            <!-- 右边的 页面 -->
+
+            <!--------- 右边的 页面 ---------->
             <div class="cont-right">
                 <div class="edit-form">
                     <div>
@@ -37,12 +46,42 @@
                     </div>
                     <div class="edit-name">
                         <p class="mb10">组名称:</p>
-                        <Input style="width:300px;" v-model="form.group_name" />
+                        <Input
+                            style="width:300px;"
+                            :disabled="form.id===1"
+                            v-model="form.group_name"
+                        />
                         <span v-show="!form.group_name" class="err-tips">组名称不可为空</span>
                     </div>
                     <div class="edit-authority">
                         <p class="mb10">选择组权限:</p>
-                        <AuthorityTree :menutree="menu_tree" v-model="authority_list" />
+                        <!-- <div class="show-selected" @click="openTree">
+                            <span
+                                class="sel-item"
+                                v-for="(item, index) in authority_list"
+                                :key="index"
+                                @click.stop
+                            >
+                                <span>{{item.label}}</span>
+                                <i class="iconfont iconcuowuguanbi-" @click.stop="tabClose(item)"></i>
+                            </span>
+                        </div>-->
+                        <!-- v-clickoutside="closeTree" -->
+                        <!-- <div
+                            v-show="tree_show"
+                            ref="tree"
+                            class="drop-list"
+                            v-clickoutside="closeTree"
+                        >
+                            <Tree style="width:fit-content" :list.sync="tree_list" @change="treeUpd" />
+                        </div>-->
+                        <AuthorityTree
+                            style="width:500px;"
+                            :menutree="tree_list"
+                            :disabled="form.id===1"
+                            v-model="form.tagList"
+                            @update="treeListUpd"
+                        />
                     </div>
 
                     <div v-if="!(curr_group.id===1 &&right_show!=='add')" class="mt50 t-center">
@@ -71,7 +110,7 @@
                 <div v-if="right_show==='check'" class="mt20">
                     <!-- table 内容 -->
                     <div class="table">
-                        <AdminTable :group_id="admin_id" />
+                        <AdminTable ref="adminTable" :group_id="admin_id" @search="search" />
                     </div>
                 </div>
             </div>
@@ -79,13 +118,12 @@
 
         <Modal :show.sync="mod_show" :title="mod_title" :content="mod_cont" @confirm="modConf"></Modal>
     </div>
-</template>
-
-<script>
-import AuthorityTree from '../../commonComponents/AuthorityTree'
+</template> <script>
 import Tree from '../../commonComponents/Tree'
 import AdminTable from './AdminSortDir/AdminTable'
+import AuthorityTree from '../../commonComponents/AuthorityTree'
 export default {
+    name: 'AdminSort',
     components: {
         Tree: Tree,
         AdminTable: AdminTable,
@@ -94,28 +132,31 @@ export default {
     data() {
         return {
             right_show: 'add', // 默认右侧为添加组
-            // filter: {
-            //     group: ''
-            // },
+            filter: {
+                searchStr: ''
+            },
+            searchGroup: [],
             group_list: [], // 展示列表
             form: {
-                group_name: ''
+                group_name: '',
+                tagList: []
             },
             tree_list: [],
-            authority_list: [],
+            // authority_list: [],
             tree_show: false,
 
             // table
-            admin_id: '',
+            admin_id: '', // 展示成员table所需要的id
 
             // 启用 禁用modal
             mod_show: false,
             curr_group: {},
             mod_status: '',
             mod_title: '',
-            mod_cont: '',
+            mod_cont: ''
 
-            menu_tree: [],
+            // 以下测试
+            // tagList: []
         }
     },
     computed: {},
@@ -141,11 +182,74 @@ export default {
             this.mod_cont = ''
         },
 
+        search() {
+            if (!this.filter.searchStr) return
+            let data = {
+                searchStr: this.filter.searchStr
+            }
+
+            let { url, method } = this.$api.admin_group_users_search_list
+            this.$http({ method, url, data }).then(res => {
+                // console.log('列表👌👌👌👌: ', res)
+                if (res && res.code === '200') {
+                    // console.log('res: ', res);
+
+                    this.searchGroup = (res.data || []).map(
+                        item => item.group_id
+                    ) // 管理员所在的分组
+
+                    // 展示搜索结果中,第一个的名字,权限,id
+                    let firstGroup = this.group_list.find(item => {
+                        return item.id === this.searchGroup[0]
+                    })
+                    if (firstGroup) {
+                        this.form.group_name = firstGroup.group_name
+                        this.form.id = firstGroup.id
+                        this.form.tagList = firstGroup.detail.map(
+                            item => item.menu_id
+                        )
+                    }
+
+                    this.$refs.adminTable.setList(res.data, res.data.length)
+                    // console.log('adminTable: ', adminTable);
+                    // this.$toast.success(res && res.message)
+                }
+            })
+        },
+        treeListUpd(val) {
+            // console.log('tag展示更新', val)
+        },
+        // 根据group 展示勾选 tree中此项
+        treeSelectShow(group) {
+            // 当前权限数组
+            let authority_arr = group.detail.map(item => item.menu_id)
+            // console.log('authority_arr: ', authority_arr);
+
+            // id 是否在选择项数组中
+            let isSelect = function(id) {
+                return authority_arr.indexOf(id) !== -1
+            }
+
+            function listSetCheked(arr) {
+                let list = arr.map(item => {
+                    item.checked = isSelect(item.id)
+                    item.child && listSetCheked(item.child)
+                    return item
+                })
+                return list
+            }
+
+            this.tree_list = listSetCheked(this.tree_list)
+            // this.getAuthorityList()
+            // this.isChildSelAll()
+        },
+
         // 创建按钮
         addsort() {
             this.right_show = 'add'
             this.form.group_name = ''
-            this.authority_list = []
+            this.form.id = ''
+            this.form.tagList = []
             // this.initTree(this.tree_list)
             // this.getAuthorityList()
         },
@@ -153,14 +257,15 @@ export default {
         // 查看其中一组
         check(group) {
             // console.log('group: ', group);
+            this.searchGroup = []
             this.right_show = 'check'
             this.curr_group = Object.assign({}, group)
 
             this.form.group_name = group.group_name
+            this.form.id = group.id
             this.admin_id = group.id
-            // this.treeSelectShow(group)
-            this.authority_list = (group.detail||[]).map(item =>item.menu_id)
-            // console.log('this.authority_list: ', this.authority_list);
+
+            this.form.tagList = group.detail.map(item => item.menu_id)
         },
 
         // 删除分组列表 按钮
@@ -172,12 +277,10 @@ export default {
             this.mod_cont = '是否确认删除该分组！'
         },
         edit(group) {
-            // console.log('group: ', group);
             this.right_show = 'edit'
             this.curr_group = group // 存储当前点击的组
             this.form.group_name = group.group_name
-            this.authority_list = (group.detail||[]).map(item =>item.menu_id)
-            // this.treeSelectShow(group)
+            this.treeSelectShow(group)
         },
 
         // 后台res 转化为 tree 数组
@@ -199,7 +302,11 @@ export default {
 
         // 获取后台所有权限树
         getTreeList() {
-           
+            // this.tree_list = JSON.parse(JSON.stringify(window.all.menu_list))
+            // console.log('想要的tree_list: ', this.tree_list);
+            // this.tree_list.forEach((item, index) => {
+            //     item.id = index
+            // })
             let self = this
             let { url, method } = this.$api.current_admin_menu
             this.$http({
@@ -208,19 +315,17 @@ export default {
             }).then(res => {
                 // console.log('所有权限树: ', res)
                 if (res && res.code === '200') {
-                    this.total = res.data.total
-                    // this.tree_list = this.resToTree(res.data)
-                    this.menu_tree = this.resToTree(res.data)
-                    // console.log('this.menu_tree: ', this.menu_tree);
+                    self.total = res.data.total
+                    self.tree_list = this.resToTree(res.data)
                 }
             })
         },
-     
+
         cancel() {
             let group = Object.assign({}, this.curr_group)
             this.form.group_name = group.group_name
             this.admin_id = group.id
-            this.authority_list = (group.detail||[]).map(item =>item.menu_id)
+            this.treeSelectShow(group)
         },
         // 创建分组 ——确认
         groupAddCfm() {
@@ -228,13 +333,13 @@ export default {
                 return this.$toast.error('组名称不可以为空！')
             }
 
-            let role = this.authority_list
             let data = {
                 group_name: this.form.group_name,
-                role: '[' + role.join(',') + ']'
+                role: JSON.stringify(this.form.tagList || [])
             }
 
             let { url, method } = this.$api.admin_group_add
+            let self = this
             this.$http({ method, url, data }).then(res => {
                 if (res && res.code === '200') {
                     this.$toast.success(res.message)
@@ -249,14 +354,14 @@ export default {
                 return this.$toast.error('组名称不可以为空！')
             }
 
-            let role = this.authority_list
             let data = {
                 id: this.curr_group.id,
                 group_name: this.form.group_name,
-                role: '[' + role.join(',') + ']'
+                role: JSON.stringify(this.form.tagList || [])
             }
             let { method, url } = this.$api.admin_group_set
             this.$http({ method, url, data }).then(res => {
+                // console.log(res)
                 if (res.code === '200') {
                     this.$toast.success(res.message)
                 }
@@ -304,10 +409,29 @@ export default {
                     this.group_list = res.data
                 }
             })
+        },
+        // 初次进去展示check 页面
+        firstView() {
+            let { url, method } = this.$api.admin_group_list
+
+            this.$http({ method, url }).then(res => {
+                // console.log('res: ', res)
+                if (res && res.code === '200') {
+                    this.group_list = res.data
+                    this.group_list &&
+                        this.$nextTick(() => {
+                            let self = this
+                            // setTimeout(()=>{
+                            self.check(self.group_list[0])
+                            // },1000)
+                        })
+                }
+            })
         }
     },
     mounted() {
-        this.getGroupList()
+        // this.getGroupList()
+        this.firstView()
         this.getTreeList()
     }
 }
@@ -323,6 +447,9 @@ export default {
     /* todo */
     margin-left: 40px;
 }
+.filter-input {
+    width: 15em;
+}
 .cont .cont-left li {
     display: flex;
     justify-content: space-between;
@@ -332,10 +459,16 @@ export default {
     padding: 10px;
 }
 .cont-left li:nth-child(2n) {
-    background: #e5f7ff;
+    background: #f6fcff;
 }
 .cont-left li:nth-child(2n-1) {
     background: #f9fbfc;
+}
+.cont .cont-left .had-search {
+    border: 1px solid rgb(250, 207, 195);
+
+    background: rgb(248, 222, 215);
+    transition: background-color 0.2s;
 }
 .cont .li-left .li-hd span {
     font-size: 16px;

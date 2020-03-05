@@ -14,13 +14,17 @@ import QuickQuery from '../components/commonComponents/QuickQuery.vue'
 import TwoTable from '../components/commonComponents/TwoTable.vue'
 
 import Toast from '../components/commonComponents/Toast.vue'
-
+import Notice from '../components/commonComponents/Notice.vue'
+import Loading from '../components/commonComponents/Loading.vue'
+import Tooltip from '../components/commonComponents/Tooltip.vue'
+// import DragTree from '../components/commonComponents/dragtree/index.js'
 
 // 指令
 import directives from './config/directive.js'
 
 //axios
 import $http from '../js/config/$http.js'
+// api 后端接口
 import $api from '../js/config/api.js'
 
 // websocket
@@ -40,12 +44,16 @@ const components = {
     Checkbox,
     Radio,
     QuickQuery,
-    TwoTable
+    TwoTable,
+    Loading,
+    Tooltip,
+    // DragTree
 }
 
-
+let requestObj = {}
 export default {
     install(Vue) {
+        // 相同提示 5s内不再提示
         // 1.  $toast组件
         Vue.prototype.$toast = function (option) {
             let opt = {}
@@ -59,17 +67,21 @@ export default {
             let tpl = new ToastConstructor({
                 propsData: opt
             }).$mount().$el;
+            let toastDom = document.querySelector('#toast-box')
 
-            document.querySelector('#toast-box').appendChild(tpl)
+            // 判断 toast-box 是否已有同样的消息 有就关闭之前的
+            for (let child of toastDom.children) {
+                if (child.innerText === opt.message) {
+                    document.querySelector('#toast-box').removeChild(child)
+                }
+            }
 
+            toastDom.appendChild(tpl)
             if (opt.duration) {
                 setTimeout(function () {
-                    document.querySelector('#toast-box').removeChild(tpl)
+                    tpl.tagName && document.querySelector('#toast-box').removeChild(tpl)
                 }, opt.duration)
             }
-            // if (document.querySelector('#toast-box').children.length > 200) {
-            //     setTimeout(function () { document.querySelector('#toast-box').html = '' }, 3000)
-            // }
         }
         new Array('error', 'success', 'info', 'warning').forEach(type => {
             Vue.prototype.$toast[type] = function (tips) {
@@ -79,6 +91,39 @@ export default {
                 })
             }
         })
+        // $notice 注册
+        Vue.prototype.$notice = function (option) {
+            let NoticeConstructor = Vue.extend(Notice)
+            let tpl = new NoticeConstructor({
+                propsData: option
+            }).$mount().$el
+            document.querySelector('#notice-box').appendChild(tpl)
+
+            if (option.duration) {
+                setTimeout(function () {
+                    document.querySelector('#notice-box').removeChild(tpl)
+                }, opt.duration)
+            }
+        }
+
+        // // $loading 注册
+        // const LoadingConstructor = Vue.extend(Loading)
+        // // 生成一个该子类的实例
+        // const instance = new LoadingConstructor()
+        // // 将这个实例挂载在我创建的div上
+        // // 并将此div加入全局挂载点内部
+        // instance.$mount(document.createElement('div'))
+        // document.body.appendChild(instance.$el)
+        // //注入vue的原型链
+        // Vue.prototype.$loading = {
+        //     show() {
+        //         instance.show = true
+        //     },
+        //     close() {
+        //         instance.show = false
+        //     }
+        // }
+
 
         // 2. 全局注册组件
 
@@ -91,7 +136,43 @@ export default {
         }
 
         // 4. axios
-        Vue.prototype.$http = $http;
+        Vue.prototype.$http = function (opt) {
+            // 以url 作为key
+
+            let url = opt.url
+            let now = window.all.tool.now()
+
+            if (requestObj[url]) {
+                let lastTime = requestObj[url]
+                let delay = now - lastTime
+                // 同一接口时间大于1500毫秒 就请求
+                if (delay > 300) {
+                    requestObj[url] = now
+                    return $http(opt)
+                } else {
+                    let data = {
+                        // "code": "100004",
+                        "message": "请求过快！！"
+                    }
+                    data = JSON.stringify(data)
+                    
+                    // 能toast 的情况 这两个接口同步弹出,所以例外
+                    let canToast = function () {
+                        let excludeArr = ['/headquarters-api/finance-channel/get-search-condition', '/headquarters-api/game/get-search-condition']
+                        return excludeArr.indexOf(url) === -1
+                    }
+                    canToast() && window.__vm__.$toast.warning('请求太频繁！')
+                    return new Promise(function (resolve, reject) {
+                        resolve(data)
+                    })
+                }
+            } else {
+                requestObj[url] = now
+                return $http(opt)
+            }
+
+
+        };
         Vue.prototype.$api = $api;
         Vue.prototype.$socket = $socket;
     }

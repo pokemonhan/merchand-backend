@@ -1,6 +1,7 @@
-const Tool = {//工具汇总
+const Tool = {
+    //工具汇总
 
-    // TODO 本地存储类工具************************************************************************* //
+    //  本地存储类工具************************************************************************* //
 
     setSession: (key, val) => sessionStorage.setItem(key, JSON.stringify(val)),//保存本地信息
     getSession: key => JSON.parse(sessionStorage.getItem(key)),//获取本地信息
@@ -26,7 +27,7 @@ const Tool = {//工具汇总
     getLocal: key => JSON.parse(localStorage.getItem(key)),  // 获取localStorage
     // 工具类别分割线--------------------------------------------------------------------------------------------- //
 
-    // TODO 通用工具类************************************************************************* //
+    // 通用工具类************************************************************************* //
     isType: type => Object.prototype.toString.call(type).slice(8, Object.prototype.toString.call(type).length - 1), // 数据类型判断工具
     // 时间格式化
     formatDate(time, withTime = false) {
@@ -44,43 +45,136 @@ const Tool = {//工具汇总
         arr2.push(`0${date.getSeconds()}`.slice(-2))
         return `${arr1.join('-')} ${arr2.join(':')}`
     },
+
+    now() {
+        return new Date().valueOf()
+    },
     // 节流
-    throttle(fn, interval = 300) {
-        let canRun = true;
+    throttle(fn, delay) {
+        var lastTime;
+        var timer;
+        var delay = delay || 200;
         return function () {
-            if (!canRun) return;
-            canRun = false;
-            setTimeout(() => {
-                fn.apply(this, arguments);
-                canRun = true;
-            }, interval);
-        };
+            var args = arguments;
+            // 记录当前函数触发的时间
+            var nowTime = Date.now();
+            var self = this;
+
+            if (lastTime && nowTime - lastTime < delay) {
+                clearTimeout(timer);
+                timer = setTimeout(function () {
+                    // 记录上一次函数触发的时间
+                    lastTime = nowTime;
+                    // 修正this指向问题
+                    fn.apply(self, args);
+                }, delay);
+            } else {
+                lastTime = nowTime;
+                fn.apply(self, args);
+            }
+        }
     },
 
     // 防抖
-    debounce(fun, delay) {
-        return function (args) {
-            let that = this
-            let _args = args
-            clearTimeout(fun.id)
-            fun.id = setTimeout(function () {
-                fun.call(that, _args)
-            }, delay)
+    debounce(fn, delay) {
+        // 记录上一次的延时器
+        var timer = null;
+        var delay = delay || 200;
+        return function () {
+            var args = arguments;
+            var that = this;
+            // 清除上一次延时器
+            clearTimeout(timer)
+            timer = setTimeout(function () {
+                fn.apply(that, args)
+            }, delay);
         }
     },
-    // 去除为param空的 属性 (不支持空对象。。)
+
+    // 去除为param空的 属性
     rmEmpty(obj) {
         let params = {}
         for (const key in obj) {
             if (Array.isArray(obj[key])) {
-                if (obj.length > 0) {
+                if (obj[key].length > 0) {
                     params[key] = obj[key]
                 }
-            } else if (obj[key] !== '' && obj[key] !== null) {
+            } else if (obj[key] !== '' && obj[key] !== null && obj[key] !== undefined) {
                 params[key] = obj[key]
             }
         }
         return params
     },
+    // 简单的下拉slide
+    slideDown(ele, time=200) {
+        // let ele = this.$refs.ul
+        if (!ele) return
+        if (!(ele instanceof Element)) {
+            ele = ele[0]
+        }
+        ele.style.maxHeight = 'none'
+        let offsetHeight = ele.offsetHeight
+        ele.style.maxHeight = '0'
+        setTimeout(() => {
+            ele.style.maxHeight = offsetHeight + 'px'
+        }, 20)
+        setTimeout(() => {
+            ele.style.maxHeight = 'none'
+            ele.style.display = 'block'
+
+        }, time+100)
+    },
+    slideUp(ele,time=20) {
+        // let ele = this.$refs.ul
+        if (!ele) return
+        if (!(ele instanceof Element)) {
+            ele = ele[0]
+            // if(!(ele instanceof Element)) {
+            //     return
+            // }
+        }
+        ele.style.maxHeight = ele.offsetHeight + 'px'
+        setTimeout(() => {
+            ele.style.maxHeight = '0'
+        }, 20)
+        setTimeout(() => {
+            ele.style.maxHeight = 'none'
+            ele.style.display = 'none'
+
+        }, time+100)
+    },
+    slideToggle(ele,time=200) {
+        if (!ele) return
+        if (!(ele instanceof Element)) {
+            ele = ele[0]
+        }
+        let offsetHeight = ele.clientHeight
+        // this.offsetHeight || this.initMaxHeight()
+        // 如果有就slideUp
+        if (offsetHeight) {
+            ele.style.maxHeight = ele.offsetHeight + 'px'
+            setTimeout(() => {
+                ele.style.maxHeight = '0'
+            }, 20)
+            setTimeout(() => {
+                ele.style.display = 'none'
+                ele.style.maxHeight = 'none'
+            }, time+100)
+            // 没有就 slideDown
+        } else {
+            ele.style.maxHeight = 'none'
+            ele.style.display = 'block'
+            let offsetHeight = ele.offsetHeight
+            ele.style.maxHeight = '0'
+            setTimeout(() => {
+                ele.style.maxHeight = offsetHeight + 'px'
+            }, 20)
+            setTimeout(() => {
+                ele.style.maxHeight = 'none'
+                ele.style.display = 'block'
+            }, time+100)
+        }
+    }
+
 };
 export default Tool;

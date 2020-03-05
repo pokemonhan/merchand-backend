@@ -114,7 +114,7 @@ tbody tr:hover {
     background: #70a1fd;
 }
 tr td {
-    height: 40px;
+    height: 3.1rem;
     text-align: center;
     /* padding: 7px 4px; */
     border: 1px solid #6fa2fe;

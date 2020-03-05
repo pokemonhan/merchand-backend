@@ -218,10 +218,10 @@ export default {
 
 <style scoped>
 .contain {
-    /* width: 150px; */
+    width: 12rem;
     /* max-height: 92vh; */
     min-width: 145px;
-    box-sizing: border-box;
+    margin-left: 10px;
     border-top: 2px solid #4c8bfd;
     cursor: pointer;
     overflow: auto;

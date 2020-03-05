@@ -58,7 +58,7 @@
                     <td>{{row.snap_account}}</td>
                     <td>{{row.money}}</td>
                     <td>{{row.arrive_money}}</td>
-                    <td :class="review_status_obj[row.status && row.status].color">{{review_status_obj[row.status && row.status].text}}</td>
+                    <td :class="(review_status_obj[row.status]||{}).color">{{(review_status_obj[row.status]||{}).text}}</td>
                     <td>{{row.created_at}}</td>
                     <td>
                         <span class="a" @click="showDetail(row)">详情</span>
@@ -474,7 +474,7 @@ table {
     min-width: 660px;
     height: 430px;
     position: absolute;
-    top: 100px;
+    /* top: 100px; */
     z-index: 3;
     left: 50%;
     top: 50%;

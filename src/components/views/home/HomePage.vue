@@ -1,4 +1,4 @@
-<template xmlns:v-slot="http://www.w3.org/1999/XSL/Transform">
+<template>
     <div class="contain">
         <ul class="row1">
             <!-- 今日盈利 -->
@@ -587,13 +587,14 @@ export default {
 }
 .row1 {
     width: 100%;
-    height: 150px;
+    /* height: 150px; */
+    height: 12rem;
     display: flex;
     justify-content: space-between;
 }
 .row1 li {
     position: relative;
-    width: 246px;
+    width: 20rem;
     height: 100%;
     /* padding: 10px; */
     /* border-radius: 5px; */
@@ -664,7 +665,7 @@ export default {
     /* position: relative; */
 }
 .row1 .bottom-10 {
-    width: 225px;
+    width: 93%;
     position: absolute;
     bottom: 10px;
     padding-top: 4px;
@@ -697,14 +698,15 @@ export default {
 
 .row2 .contain {
     display: flex;
-    /* justify-content: space-between; */
+    justify-content: space-between;
     padding: 10px 20px;
     /* margin-top: 15px; */
 }
 .row2 .game-data {
-    width: 450px;
+    /* width: 450px; */
+    width: 42rem;
     padding-right: 20px;
-    margin-right: 80px;
+    /* margin-right: 80px; */
 }
 .row2 .contain .title {
     width: 4em;
@@ -713,7 +715,8 @@ export default {
     border-bottom: 3px solid #4c8bfd;
 }
 .row2 .plant-rank {
-    width: 450px;
+    /* width: 450px; */
+    width: 42rem;
     /* margin-right: 40px; */
 }
 .mr8 {
@@ -750,7 +753,8 @@ export default {
 
 .row3 .data,
 .row3 .graph {
-    width: 510px;
+    /* width: 510px; */
+    width: 43rem;
     /* padding: 10px; */
     background: #fff;
 }

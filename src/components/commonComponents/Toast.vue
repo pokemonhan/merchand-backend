@@ -6,7 +6,7 @@
                 <i v-else-if="type==='success'" class="toast-success iconfont iconchenggong-"></i>
                 <i v-else-if="type==='error'" class="toast-error iconfont iconcuowuguanbi-"></i>
                 <i v-else-if="type==='info'" class="toast-info iconfont iconinfor"></i>
-                <span>{{message}}</span>
+                <p class="message">{{message}}</p>
             </div>
         </div>
     </transition>
@@ -63,7 +63,7 @@ export default {
     transition: all 0.3s ease;
 }
 .vue-toast {
-    height: 55px;
+    /* height: 55px; */
     box-sizing: border-box;
     padding: 8px;
     text-align: center;
@@ -71,9 +71,9 @@ export default {
     align-items: center;
     justify-content: center;
 }
-.vue-toast div {
+.vue-toast > div {
     height: 100%;
-    padding: 0 16px;
+    padding: 6px 16px;
     border-radius: 4px;
     box-shadow: 0 1px 6px rgba(0, 0, 0, 0.2);
     background-color: #fff;

@@ -1,6 +1,5 @@
 <template>
     <div class="container">
-
         <!-----------------------  轮播公告  ----------------------->
         <div class="bg-gray equip-sel">
             <button
@@ -11,8 +10,8 @@
             >{{item.label}}</button>
         </div>
         <div class="car-cont">
-            <div class="left"  >
-                <ul class="form"  >
+            <div class="left">
+                <ul class="form">
                     <li>
                         <span>活动名称：</span>
                         <Input class="w250" v-model="form.name" />
@@ -34,12 +33,12 @@
                     </li>
                     <li>
                         <span>轮播类型：</span>
-                        <Radio label="内部" :value="form.status" val="in" v-model="form.status" />
+                        <Radio label="内部" :value="form.status" val="1" v-model="form.status" />
                         <Radio
                             style="margin-left:50px;"
                             label="外部活动"
                             :value="form.status"
-                            val="out"
+                            val="2"
                             v-model="form.status"
                         />
                     </li>
@@ -49,20 +48,20 @@
                     </li>
                     <li>
                         <span>开始时间：</span>
-                        <Date class="w250" v-model="form.dates[0]" />
+                        <Date class="w250" v-model="form.start_dates" />
                     </li>
                     <li>
                         <span>结束时间：</span>
-                        <Date class="w250" v-model="form.dates[1]" />
+                        <Date class="w250" v-model="form.end_dates" />
                     </li>
                     <li>
                         <span>活动开关：</span>
-                        <Radio label="开" :value="form.status" val="on" v-model="form.active" />
+                        <Radio label="开" :value="form.active" val="1" v-model="form.active" />
                         <Radio
                             style="margin-left:50px;"
                             label="关"
                             :value="form.status"
-                            val="off"
+                            val="0"
                             v-model="form.active"
                         />
                     </li>
@@ -71,9 +70,8 @@
                         <button class="btn-blue-large ml20" @click="editConf">确定修改</button>
                     </li>
                     <li v-else class="conf-btn">
-                        <button class="btn-blue-large">确定添加</button>
+                        <button class="btn-blue-large" @click="addCfm">确定添加</button>
                     </li>
-
                 </ul>
             </div>
             <!-- <div class="right"> -->
@@ -83,17 +81,17 @@
                         <ul>
                             <li class="row1">
                                 <span class="pic-title">热门活动</span>
-                                <span style="font-size:12px;">结束时间：{{'2019/11/14 14:30'}}</span>
+                                <span style="font-size:12px;">结束时间：{{item.end_time}}</span>
                             </li>
                             <li class="row2">
                                 <img
                                     class="pic-pic"
-                                    src="../../../assets/image/announce/sysAnnounce.png"
-                                    alt="图片加载中。。。"
+                                    :src="protocol+'//pic.jianghu.local/'+item.pic"
+                                    alt
                                 />
                             </li>
                             <li class="row3">
-                                <Switchbox class="pic-stwich" v-model="item.a1" />
+                                <Switchbox class="pic-stwich" :value="item.status" @update="switchStatus($event,item)" />
                                 <i class="iconfont iconwrite" @click="edit(item)"></i>
                                 <i class="iconfont iconicon-test" @click="del(item)"></i>
                                 <span>进行中</span>
@@ -104,27 +102,27 @@
                         <ul>
                             <li>
                                 <span>添加时间：</span>
-                                <span>{{'2019/11/14 14:30'}}</span>
+                                <span>{{item.created_at}}</span>
                             </li>
                             <li>
                                 <span>跳转URL:</span>
-                                <span>{{'www.baidu.com'}}</span>
+                                <span>{{item.link}}</span>
                             </li>
                             <li>
                                 <span>添加人：</span>
-                                <span>{{'admin'}}</span>
+                                <span>{{item.author && item.author.name}}</span>
                             </li>
                             <li>
                                 <span>最后更新时间：</span>
-                                <span>{{'2019/11/14 14：30'}}</span>
+                                <span>{{item.updated_at}}</span>
                             </li>
                             <li>
                                 <span>最后更新人：</span>
-                                <span>{{'admin'}}</span>
+                                <span>{{item.last_editor && item.last_editor.name}}</span>
                             </li>
                             <li>
                                 <span>轮播类型：</span>
-                                <span>{{'外部活动'}}</span>
+                                <span>{{item.type==1 ? '内部' : '外部活动' }}</span>
                             </li>
                         </ul>
                     </div>
@@ -134,13 +132,16 @@
         </div>
         <Dialog :show.sync="dia_show" title="预览图片">
             <div class="dia-inner">
-                <img
-                class="max-w800"
-                :src="protocol+'//pic.jianghu.local/'+form.pic_path"
-                alt
-            />
+                <img class="max-w800" :src="protocol+'//pic.jianghu.local/'+form.pic_path" alt />
             </div>
         </Dialog>
+        <Modal
+            :show.sync="mod_show"
+            title="删除"
+            content="是否删除该公告"
+            @cancel="mod_show=false"
+            @confirm="modConf"
+        ></Modal>
     </div>
 </template>
 
@@ -152,68 +153,112 @@ export default {
             buttons: [
                 { label: "PC网页", value: "1" },
                 { label: "手机H5", value: "2" },
+                { label: "手机APP", value: "3 " }
             ],
-            curr_btn:"1",
+            curr_btn: "1",
             // 是否是编辑模式
             is_edit: false,
-            list: [
-                { a1: true, a2: '1', a3: '4561234', a4: '13256689796', a5: '1', a6: '微信充值', a7: '100', a8: '99.9', a9: '已支付', a10: '2019/09/20 12:25:20', a11: '2019/09/20 12:25:20', a12: '2019/09/20 12:25:20' },
-                { a1: true, a2: '2', a3: '4561234', a4: '13256689796', a5: '1', a6: '微信充值', a7: '100', a8: '99.9', a9: '已支付', a10: '2019/09/20 12:25:20', a11: '2019/09/20 12:25:20', a12: '2019/09/20 12:25:20' },
-                { a1: true, a2: 'h1L', a3: '4561234', a4: '13256689796', a5: '1', a6: '微信充值', a7: '100', a8: '99.9', a9: '已支付', a10: '2019/09/20 12:25:20', a11: '2019/09/20 12:25:20', a12: '2019/09/20 12:25:20' },
-                { a1: true, a2: 'ht1L', a3: '4561234', a4: '13256689796', a5: '1', a6: '微信充值', a7: '100', a8: '99.9', a9: '已支付', a10: '2019/09/20 12:25:20', a11: '2019/09/20 12:25:20', a12: '2019/09/20 12:25:20' },
-            ],
+            list: [],
             form: {
-                name: '',
-                pic_src: '',
-                status: 'in',
-                link: '',
-                dates: [],
-                active: 'on'
+                name: "",
+                pic_path: "",
+                status: "1",
+                link: "",
+                start_dates: "",
+                end_dates: "",
+                active: "1"
             },
-            pic_src: [],
             dia_show: false,
             is_pc_show: true,
             protocol: window.location.protocol,
-        }
+            mod_show:false,
+            curr_item:{},
+        };
     },
     methods: {
-        selectBtn(item){
+        selectBtn(item) {
             this.curr_btn = item.value;
             this.getList();
         },
         pcShow() {
-            this.initForm()
-            this.is_pc_show = true
+            this.initForm();
+            this.is_pc_show = true;
         },
         h5Show() {
-            this.initForm()
-            this.is_pc_show = false
+            this.initForm();
+            this.is_pc_show = false;
         },
-        edit(item){
-            console.log('item内容:😀 ', item);
-            this.initForm()
-            this.is_edit = true
-            this.form.name =item.a2;
-        },
-        del(item){
-
-        },
-        initForm(){
+        edit(item) {
+            // console.log("item内容:😀 ", item);
+            this.initForm();
+            this.is_edit = true;
             this.form={
-                name: '',
-                pic_src: '',
-                status: 'in',
-                link: '',
-                dates: [],
-                active: 'on'
+                id:item.id,
+                name:item.title,
+                pic_path:item.pic,
+                status:String(item.type),
+                link:item.link,
+                start_dates:item.start_time,
+                end_dates:item.end_time,
+                active:String(item.status)
             }
-        },
-        editCancel(){
-            this.is_edit= false
-            this.initForm()
+            this.curr_btn=String(item.device)
         },
         editConf() {
-
+            let data={
+                id:this.form.id,
+                device:this.curr_btn,
+                title:this.form.name,
+                pic:this.form.pic_path,
+                type:this.form.status,
+                link:this.form.link,
+                start_time:this.form.start_dates,
+                end_time:this.form.end_dates,
+                status:this.form.active
+            }
+            // console.log('请求数据',data)
+            let {url,method}=this.$api.announce_carousel_edit;
+            this.$http({method,url,data}).then(res=>{
+                // console.log('返回数据',res)
+                if(res && res.code=='200'){
+                    this.$toast.success(res && res.message);
+                    this.is_edit=false;
+                    this.getList();
+                    this.initForm();
+                }
+            })
+        },
+        del(item) {
+            this.mod_show=true;
+            this.curr_item=item;
+        },
+        modConf(){
+            let data={
+                id:this.curr_item.id
+            }
+            let {url,method}=this.$api.announce_carousel_del;
+            this.$http({method,url,data}).then(res=>{
+                if(res && res.code=='200'){
+                    this.$toast.success(res && res.message);
+                    this.mod_show=false;
+                    this.getList();
+                }
+            })
+        },
+        initForm() {
+            this.form = {
+                name: "",
+                pic_path: "",
+                status: "1",
+                link: "",
+                start_dates: "",
+                end_dates: "",
+                active: "1"
+            };
+        },
+        editCancel() {
+            this.is_edit = false;
+            this.initForm();
         },
         upPicChange(e) {
             let pic = e.target.files[0];
@@ -227,18 +272,63 @@ export default {
             this.$http({ method, url, data, headers }).then(res => {
                 // console.log(res)
                 if (res && res.code == "200") {
-                    this.$set(this.form,'pic_path',res.data.path)
+                    this.$set(this.form, "pic_path", res.data.path);
                 }
             });
         },
-        getList(){
-
+        addCfm() {
+            let data = {
+                device: this.curr_btn,
+                title: this.form.name,
+                pic: this.form.pic_path,
+                type: this.form.status,
+                link: this.form.link,
+                start_time: this.form.start_dates,
+                end_time: this.form.end_dates,
+                status: this.form.active
+            };
+            // console.log('请求数据',data)
+            let { url, method } = this.$api.announce_carousel_add;
+            this.$http({ method, url, data }).then(res => {
+                // console.log('返回数据',res)
+                if (res && res.code == "200") {
+                    this.$toast.success(res && res.message);
+                    this.getList();
+                    this.initForm();
+                }
+            });
         },
+        switchStatus(val,item){
+            let data={
+                id:item.id,
+                status: val ? 1 : 0
+            }
+            let {url,method}=this.$api.announce_carousel_change_status;
+            this.$http({method,url,data}).then(res=>{
+                if(res && res.code=='200'){
+                    this.$toast.success(res && res.message);
+                    this.getList();
+                }
+            })
+        },
+        getList() {
+            let para = {
+                device: this.curr_btn
+            };
+            let params = window.all.tool.rmEmpty(para);
+            let { url, method } = this.$api.announce_carousel_list;
+            this.$http({ method, url, params }).then(res => {
+                // console.log('返回数据',res)
+                if (res && res.code == "200") {
+                    this.list = res.data.data;
+                }
+            });
+        }
     },
     mounted() {
-
+        this.getList();
     }
-}
+};
 </script>
 
 <style scoped>
@@ -278,10 +368,10 @@ export default {
 .mt50 {
     margin-top: 50px;
 }
-.ml20{
+.ml20 {
     margin-left: 20px;
 }
-.right{
+.right {
     margin-left: 100px;
 }
 .right > li {

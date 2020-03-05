@@ -193,7 +193,7 @@ export default {
             }
             let {url,method}=this.$api.static_active_add;
             this.$http({method,url,data}).then(res=>{
-                console.log('返回数据',res)
+                // console.log('返回数据',res)
                 if(res && res.code=='200'){
                     this.$toast.success(res && res.message);
                     this.dia_show=false;

@@ -28,7 +28,7 @@
                     <ul>
                         <li>
                             <span>客服名称:</span>
-                            <Input class="w200" v-model="form.name" />
+                            <Input class="w210" v-model="form.name" />
                             <span v-show="!form.name" class="err-tips">内容不可为空！</span>
                         </li>
                         <li>
@@ -39,22 +39,24 @@
                         </li>
                        
                         <li>
-                            <span>{{form.version==='2'?'微信号码:':'QQ号码:'}}</span>
-                            <Input class="w200" limit="number" v-model="form.number" />
+                            <span>{{form.version=='2'?'微信号码:':'QQ号码:'}}</span>
+                            <Input class="w210" limit="number" v-model="form.number" />
                             <span v-show="!form.number" class="err-tips">内容不可为空！</span>
                         </li>
                         <li>
                             <span>聊天链接:</span>
-                            <Input class="w200" v-model="form.link" />
+                            <Input class="w210" v-model="form.link" />
                             <span v-show="!form.link" class="err-tips">内容不可为空！</span>
                         </li>
                         <li>
                             <span>二维码:</span>
+                            <Input style="width:80px;" v-model="form.pic_path" />
+                            <span v-show="!form.pic_path" class="err-tips">请选择上传二维码！</span>
                             <Upload
-                                style="width:200px;"
+                                style="width:130px;"
                                 title="选择二维码上传"
                                 v-model="form.qrcode"
-                                @change="qrcodeClick"
+                                @change="qrcodeClick($event)"
                             />
                         </li>
                         <li class="form-btn">
@@ -79,22 +81,7 @@ export default {
     data() {
         return {
             headers: ['客服名称', '客服类型', '客服号码', '聊天链接', '操作'],
-            list: [
-                {
-                    a1: '64646466',
-                    a2: 'sdfsdfdsf',
-                    a3: '充支好礼',
-                    a4: '1',
-                    a5: '2019-02-02 21:30'
-                },
-                {
-                    a1: '64646466',
-                    a2: 'sdfsdfdsf',
-                    a3: '充支好礼',
-                    a4: '1',
-                    a5: '2019-02-02 21:30'
-                }
-            ],
+            list: [],
             total: 0,
             pageNo: 1,
             pageSize: 25,
@@ -111,6 +98,7 @@ export default {
                 number: '',
                 link: '',
                 qrcode: '',
+                pic_path:'',
             },
             // modal
             mod_show: false,
@@ -126,6 +114,7 @@ export default {
                 number: '',
                 link: '',
                 qrcode: '',
+                pic_path:'',
             }
             this.dia_status = 'add'
             this.dia_title = '添加'
@@ -141,7 +130,7 @@ export default {
                 version: row.version,
                 number: row.number,
                 link: row.link,
-                // qrcode: row.qrcode,
+                // pic_path:row.pic
             }
         },
         delClick(row) {
@@ -184,6 +173,8 @@ export default {
                 toastTxt = '号码不可为空'
             }else if(this.form.link===''){
                 toastTxt = '聊天链接不可为空'
+            }else if(this.form.pic_path===''){
+                toastTxt = '未上传二维码'
             }
             if(toastTxt){
                 this.$toast.warning(toastTxt)
@@ -199,7 +190,7 @@ export default {
                 number: this.form.number,
                 type: 1,
                 version: this.form.version,
-                // qrcode: this.form.qrcode,
+                // pic:this.form.pic_path,
             }
 
             let { url, method } = this.$api.customer_service_add
@@ -221,12 +212,12 @@ export default {
                 number: this.form.number,
                 type: 1,
                 version: this.form.version,
-                // qrcode: this.form.qrcode,
+                // pc:this.form.pic_path,
             }
 
             let { url, method } = this.$api.customer_service_set
             this.$http({ method, url, data }).then(res => {
-                console.log('列表👌👌👌👌: ', res)
+                // console.log('列表👌👌👌👌: ', res)
                 if (res && res.code === '200') {
                     this.$toast.success(res && res.message)
                     this.dia_show = false
@@ -251,7 +242,22 @@ export default {
                 }
             })
         },
-        qrcodeClick() {},
+        qrcodeClick(e) {
+            let pic = e.target.files[0];
+            let basket = "set/serviceset/uploads";
+            let formList = new FormData();
+            formList.append("file", pic, pic.name);
+            formList.append("basket", basket);
+            let { url, method } = this.$api.update_picture_database;
+            let data = formList;
+            let headers = { "Content-Type": "multipart/form-data" };
+            this.$http({ method, url, data, headers }).then(res => {
+                // console.log(res)
+                if (res && res.code == "200") {
+                    this.$set(this.form, "pic_path", res.data.path);
+                }
+            });
+        },
         updateNo(val) {
             this.getList()
         },
@@ -286,6 +292,9 @@ export default {
 .form-btn {
     width: fit-content;
     margin: 0 auto;
+}
+.w210{
+    width: 213px;
 }
 .err-tips {
     position: absolute;

@@ -238,10 +238,6 @@ export default {
                         return item.grade_name
                     })
                     this.headers= Array.concat(['编号','打码量'], vip_head, '操作')
-                }else{
-                    if(res && res.message !==''){
-                        this.toast.error(res.message)
-                    }
                 }
             })
         },

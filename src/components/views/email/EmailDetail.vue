@@ -125,6 +125,7 @@ export default {
                     list.forEach((item, index) => {
                         // 后台数据的第几个,存入content_obj 中.
                         let idx = (para.page - 1) * this.pageSize + index + 1
+                        console.log('idx: ', idx);
                         this.content_obj[String(idx)] = item
                     })
                     this.content = this.content_obj[this.list_idx] || {}

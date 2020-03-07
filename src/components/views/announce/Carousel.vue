@@ -87,7 +87,7 @@
                                 <img
                                     class="pic-pic"
                                     :src="protocol+'//pic.jianghu.local/'+item.pic"
-                                    alt
+                                    alt="图片加载失败。"
                                 />
                             </li>
                             <li class="row3">

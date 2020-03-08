@@ -272,7 +272,7 @@ export default {
     box-sizing: border-box;
     border-radius: 3px;
     outline: none;
-    border: none;
+    /* border: none; */
     box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
     cursor: pointer;
     color: #333;

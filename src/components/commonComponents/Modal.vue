@@ -76,7 +76,7 @@ export default {
     },
     mounted() {
         setTimeout(() => {
-            this.dialog = this.show
+            // this.dialog = this.show
         }, 100)
     }
 }

@@ -53,7 +53,7 @@
                     <ul class="cont">
                         <li>
                             <span>我在吃火锅55</span>
-                            <span>Ling@gmail.com</span>
+                            <span>18967200</span>
                         </li>
                         <li>
                             <span>我在吃火锅</span>
@@ -71,7 +71,7 @@
                         <span>联系人</span>
                     </div>
                     <div v-show="contact_show" class="cont">
-                        <Tree style="width:220px;" :list="tree_list" @change="treeUpd" />
+                        <Tree style="width:420px;" :list="tree_list" @change="treeUpd" />
                     </div>
                 </div>
             </div>

@@ -65,29 +65,9 @@
                             <Input class="w200" v-model="form.title" />
                         </li>
                         <li>
-<<<<<<< HEAD
                             <span>添加图片:</span>
                             <Input style="width:98px" v-model="form.pic_path" />
                             <Upload style="width:100px;" title="选择图片"   @change="AddPicChange($event)" type="file" />
-=======
-                            <img
-                                v-if="form.path"
-                                :src="protocol+'//pic.jianghu.local/'+form.pic"
-                                alt="图片加载失败..."
-                            />
-                            <br/>
-                            <div class="red">{{protocol+'//pic.janghu.local/'+form.pic}}</div>
-                        </li>
-                        <li>
-                            <span>添加图片</span>
-                            <Upload
-                                style="width:200px;"
-                                title="选择图片"
-                                accept="image/png,image/jpg,image/gif"
-                                v-model="form.pic"
-                                @change="AddPicChange"
-                            />
->>>>>>> 9730ffa27b8e504321467b293ca3229aacffec6d
                         </li>
                         <li>
                             <span>是否启用:</span>
@@ -95,11 +75,7 @@
                         </li>
                         <li class="form-btn">
                             <button class="btn-plain-large" @click="dia_show=false">取消</button>
-<<<<<<< HEAD
                             <button class="btn-blue-large ml50" @click="addCfm" >确认</button>
-=======
-                            <button class="btn-blue-large ml50" @click="diaCfm">确认</button>
->>>>>>> 9730ffa27b8e504321467b293ca3229aacffec6d
                         </li>
                     </ul>
                 </div>
@@ -111,11 +87,7 @@
 export default {
     data() {
         return {
-<<<<<<< HEAD
             curr_btn: 1,
-=======
-            curr_plant: 1,
->>>>>>> 9730ffa27b8e504321467b293ca3229aacffec6d
             plant_opt: [
                 { label: 'H5帮助管理', value: 1 },
                 { label: 'PC帮助管理', value: 2 },
@@ -168,17 +140,9 @@ export default {
             dia_show: false,
             dia_status: '',
             form: {
-<<<<<<< HEAD
                 title:'',
                 pic_path:'',
                 status:''
-=======
-                title: '',
-                pic: '',
-                type: '',
-                status: 1,
-                path: '' // 上传图片成功后的地址
->>>>>>> 9730ffa27b8e504321467b293ca3229aacffec6d
             }
         }
     },
@@ -191,7 +155,6 @@ export default {
             }
         },
         plantSelect(item) {
-<<<<<<< HEAD
             this.curr_btn = item.value
         },
         addClick() {
@@ -215,37 +178,6 @@ export default {
                     this.getList();
                 }
             })
-=======
-            this.curr_plant = item.value
-            this.getList()
-        },
-        initForm() {
-            this.form = {
-                title: '',
-                pic: '',
-                type: '',
-                status: 1,
-                pic: ''
-            }
-        },
-        add() {
-            this.initForm()
-            this.dia_title = '添加'
-            this.dia_status = 'add'
-            this.dia_show = true
-        },
-        editPicClick(row) {
-            console.log('row: ', row);
-            this.curr_row = row
-            this.dia_status = 'edit'
-            this.dia_title = '更换图片'
-            this.dia_show = true
-            this.form = {
-                title: row.title,
-                pic: row.pic,
-                status: row.status
-            }
->>>>>>> 9730ffa27b8e504321467b293ca3229aacffec6d
         },
         setPicChange() {},
         AddPicChange(e) {
@@ -267,7 +199,6 @@ export default {
                 }
             })
         },
-<<<<<<< HEAD
         AddPicChange(e) {
             let pic = e.target.files[0];
             let basket = "set/help/uploads";
@@ -283,89 +214,6 @@ export default {
                     this.form.pic_path = res.data.path;
                 }
             });
-=======
-        switchUpd(status, row) {
-            console.log('row: ', row)
-            console.log('val: ', status)
-            let data = {
-                id: row.id,
-                type: this.curr_plant,
-                title: row.title,
-                pic: row.pic,
-                status: status ? 1 : 0
-            }
-
-            let { url, method } = this.$api.help_center_set
-            this.$http({ method, url, data }).then(res => {
-                console.log('列表👌👌👌👌: ', res)
-                if (res && res.code === '200') {
-                    this.$toast.success(res && res.message)
-                }
-                this.getList()
-            })
-        },
-        diaCfm() {
-            if (this.dia_status === 'add') {
-                this.addCfm()
-            }
-            if (this.dia_status === 'edit') {
-                this.editCfm()
-            }
-        },
-        addCfm() {
-            let data = {
-                title: this.form.title,
-                pic: this.form.pic,
-                type: this.curr_plant,
-                status: this.status ? 1 : 0
-            }
-
-            let { url, method } = this.$api.help_center_add
-            this.$http({ method, url, data }).then(res => {
-                console.log('列表👌👌👌👌: ', res)
-                if (res && res.code === '200') {
-                    this.$toast.success(res && res.message)
-                    this.dia_show = false
-                    this.getList()
-                }
-            })
-        },
-        editCfm() {
-            let data = {
-                id: this.curr_row.id,
-                type: this.curr_plant,
-                title: this.form.title,
-                pic: this.form.pic,
-                status: this.form.status ? 1 : 0
-            }
-
-            let { url, method } = this.$api.help_center_set
-            this.$http({ method, url, data }).then(res => {
-                console.log('列表👌👌👌👌: ', res)
-                if (res && res.code === '200') {
-                    this.$toast.success(res && res.message)
-                    this.dia_show = false
-                }
-                this.getList()
-            })
-        },
-        getList() {
-            let para = {
-                type: this.curr_plant
-            }
-            let params = window.all.tool.rmEmpty(para)
-
-            let { url, method } = this.$api.help_center_list
-            this.$http({ method, url, params }).then(res => {
-                console.log('列表👌👌👌👌: ', res)
-                if (res && res.code === '200') {
-                    // this.total = res.data.total
-                    // this.list = res.data.data
-                    this.total = res.total
-                    this.list = res.data
-                }
-            })
->>>>>>> 9730ffa27b8e504321467b293ca3229aacffec6d
         },
         updateNo(val) {},
         updateSize(val) {},

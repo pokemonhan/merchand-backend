@@ -191,14 +191,14 @@ export default {
             },
             pay_status_opt: [
                 { label: "全部", value: "" },
-                { label: "已支付", value: 1 },
-                { label: "未支付", value: 2 }
+                { label: "已支付", value: "1" },
+                { label: "未支付", value: "2" }
             ],
             pay_way_opt: [],
             official_opt: [
                 { label: "全部", value: "" },
-                { label: "是", value: 1 },
-                { label: "否", value: 2 }
+                { label: "是", value: "1" },
+                { label: "否", value: "2" }
             ],
             headers: [
                 "系统订单",
@@ -409,11 +409,15 @@ export default {
             return all.concat(back_list);
         },
         getList(){
+            let created_at=''
+            if(this.filter.start_date && this.filter.end_date){
+                created_at=JSON.stringify([this.filter.start_date,this.filter.end_date])
+            }
             let para={
-                is_online:1,
+                is_online:"1",
                 mobile:this.filter.account,
                 guid:this.filter.acc_id,
-                created_at:[this.filter.start_date,this.filter.end_date],
+                created_at:created_at,
                 snap_merchant_code:this.filter.vendor_num,
                 status:this.filter.pay_status,
                 finance_type_id:this.filter.pay_way,
@@ -423,6 +427,7 @@ export default {
                 snap_merchant_no:this.filter.vendor_num_id,
                 snap_merchant:this.filter.vendor,
             };
+            console.log('para: ', para);
             let params =window.all.tool.rmEmpty(para);
             let {method,url} =this.$api.founds_incomeorder_list;
             this.$http({method:method,url:url,params:params}).then(res=>{

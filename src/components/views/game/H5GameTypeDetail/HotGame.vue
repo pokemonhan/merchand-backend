@@ -32,7 +32,7 @@
                     <td>
                         <Switchbox
                             class="switch-select"
-                            :value="row.is_hot"
+                            :value="row.hot_new"
                             @update="switchUpd($event,row)"
                         />
                     </td>
@@ -134,7 +134,7 @@ export default {
         },
         getList() {
             let para = {
-                is_hot: 1,
+                hot_new: 1,
                 vendor_id: this.filter.vendor_id,
                 name: this.filter.name
             };
@@ -145,10 +145,10 @@ export default {
                 params: params
             }).then(res => {
                 console.log("res", res);
-                // if (res && res.code === "200") {
-                //     this.list = res.data || [];
-                //     this.total = this.list.length;
-                // }
+                if (res && res.code === "200") {
+                    this.list = res.data || [];
+                    this.total = this.list.length;
+                }
             });
         },
         updateNo(val) {},

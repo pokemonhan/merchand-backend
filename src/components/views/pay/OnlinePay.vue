@@ -475,32 +475,31 @@ export default {
             }
         },
         getList() {
+            let created_at=''
+            if(this.filter.add_dates[0] && this.filter.add_dates[1]){
+                created_at=JSON.stringify(this.filter.add_dates)
+            }
+            let updated_at=''
+            if(this.filter.update_dates[0] && this.filter.update_dates[1] ){
+                updated_at=JSON.stringify(this.filter.update_dates)
+            }
             let para = {
                 merchant_code: this.filter.merchant_num,
                 front_name: this.filter.front_name,
-                created_at: [
-                    this.filter.add_dates[0],
-                    this.filter.add_dates[1]
-                ],
-                updated_at: [
-                    this.filter.update_dates[0],
-                    this.filter.update_dates[1]
-                ],
+                created_at: created_at,
+                updated_at: updated_at,
                 author_name: this.filter.person,
                 last_editor_name: this.filter.update_person
             };
+            console.log('请求数据',para)
             let params = window.all.tool.rmEmpty(para);
             let { method, url } = this.$api.online_finance_list;
             this.$http({ method: method, url: url, params: params }).then(
                 res => {
-                    // console.log("返回数据", res);
+                    console.log("返回数据", res);
                     if (res && res.code == "200") {
                         this.list = res.data.data;
                         this.total = res.data.total;
-                    } else {
-                        if (res && res.message !== "") {
-                            this.toast.error(res.message);
-                        }
                     }
                 }
             );

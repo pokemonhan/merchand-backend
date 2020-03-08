@@ -47,6 +47,7 @@ export default {
         getSelect() {
             let { method, url } = this.$api.game_search_condition_list
             this.$http({ method, url }).then(res => {
+                console.log('返回数据',res)
                 if (res && res.code === '200') {
                     this.buttons = res.data.gameTypes
 

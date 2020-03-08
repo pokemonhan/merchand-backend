@@ -77,7 +77,7 @@ export default {
         switchUpd(val, row) {
             let data = {
                 id: row.id,
-                is_hot: val ? 1 : 0
+                hot_new: val ? 1 : 0
             };
 
             let { url, method } = this.$api.game_hot_set;
@@ -134,7 +134,7 @@ export default {
         },
         getList() {
             let para = {
-                is_hot: 1,
+                hot_new: 1,
                 vendor_id: this.filter.vendor_id,
                 name: this.filter.name
             };

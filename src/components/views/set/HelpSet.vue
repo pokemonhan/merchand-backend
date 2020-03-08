@@ -5,7 +5,7 @@
             <button
                 v-for="(item, index) in plant_opt"
                 :key="index"
-                :class="item.value===curr_plant?'btn-blue-large':'btn-plain-large'"
+                :class="curr_btn===item.value?'btn-blue-large':'btn-plain-large'"
                 @click="plantSelect(item)"
             >{{item.label}}</button>
         </div>
@@ -65,8 +65,9 @@
                             <Input class="w200" v-model="form.title" />
                         </li>
                         <li>
-                            <span>添加图片</span>
-                            <Upload style="width:200px;" title="选择图片"  v-model="form.pic" @change="AddPicChange" />
+                            <span>添加图片:</span>
+                            <Input style="width:98px" v-model="form.pic_path" />
+                            <Upload style="width:100px;" title="选择图片"   @change="AddPicChange($event)" type="file" />
                         </li>
                         <li>
                             <span>是否启用:</span>
@@ -74,7 +75,7 @@
                         </li>
                         <li class="form-btn">
                             <button class="btn-plain-large" @click="dia_show=false">取消</button>
-                            <button class="btn-blue-large ml50">确认</button>
+                            <button class="btn-blue-large ml50" @click="addCfm" >确认</button>
                         </li>
                     </ul>
                 </div>
@@ -86,16 +87,16 @@
 export default {
     data() {
         return {
-            curr_plant: 0,
+            curr_btn: 1,
             plant_opt: [
-                { label: 'H5帮助管理', value: 0 },
-                { label: 'PC帮助管理', value: 1 },
-                { label: 'APP帮助管理', value: 2 }
+                { label: 'H5帮助管理', value: 1 },
+                { label: 'PC帮助管理', value: 2 },
+                { label: 'APP帮助管理', value: 3 }
             ],
             status_opt: [
                 { label: '全部', value: '' },
-                { label: '启用', value: 1 },
-                { label: '关闭', value: 0 }
+                { label: '启用', value: '1' },
+                { label: '关闭', value: '0' }
             ],
             filter: {
                 title: '',
@@ -127,25 +128,69 @@ export default {
             //
             dia_show: false,
             form: {
-
+                title:'',
+                pic_path:'',
+                status:''
             }
         }
     },
     methods: {
+        initForm(){
+            this.form={
+               title:'',
+               pic_path:'',
+               status:0, 
+            }
+        },
         plantSelect(item) {
-            this.curr_plant = item.value
+            this.curr_btn = item.value
         },
         addClick() {
-            this.dia_show = true
+            this.dia_show = true;
+            this.initForm();
+        },
+        addCfm(){
+            let data={
+               type:this.curr_btn,
+               title:this.form.title,
+               pic:this.form.pic_path,
+               status:this.form.status, 
+            }
+            console.log('请求数据',data)
+            let {url,method}=this.$api.help_center_add;
+            this.$http({method,url,data}).then(res=>{
+                // console.log('返回数据',res)
+                if(res && res.code=='200'){
+                    this.$toast.success(res && res.message)
+                    this.dia_show=false;
+                    this.getList();
+                }
+            })
         },
         setPicChange() {
 
         },
-        AddPicChange() {
-
+        AddPicChange(e) {
+            let pic = e.target.files[0];
+            let basket = "set/help/uploads";
+            let formList = new FormData();
+            formList.append("file", pic, pic.name);
+            formList.append("basket", basket);
+            let { url, method } = this.$api.update_picture_database;
+            let data = formList;
+            let headers = { "Content-Type": "multipart/form-data" };
+            this.$http({ method, url, data, headers }).then(res => {
+                // console.log(res)
+                if (res && res.code == "200") {
+                    this.form.pic_path = res.data.path;
+                }
+            });
         },
         updateNo(val) {},
-        updateSize(val) {}
+        updateSize(val) {},
+        getList(){
+
+        },
     },
     mounted() {}
 }

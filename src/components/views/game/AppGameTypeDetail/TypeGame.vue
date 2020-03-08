@@ -42,13 +42,6 @@
                     <td>
                         <Switchbox
                             class="switch-select"
-                            :value="row.is_maintain"
-                            @update="switchMaintain($event,row)"
-                        />
-                    </td>
-                    <td>
-                        <Switchbox
-                            class="switch-select"
                             :value="row.status"
                             @update="switchStatus($event,row)"
                         />
@@ -113,7 +106,6 @@ export default {
                 "游戏名称",
                 "游戏ICON",
                 "排序",
-                "是否维护",
                 "是否启用",
                 "是否热门",
                 "是否推荐",
@@ -155,19 +147,6 @@ export default {
             });
             return all.concat(back_list);
         },
-        switchMaintain(val, row) {
-            let data = {
-                id: row.id,
-                is_maintain: val ? 1 : 0
-            };
-            let { url, method } = this.$api.game_maintain_list;
-            this.$http({ method, url, data }).then(res => {
-                if (res && res.code === "200") {
-                    this.$toast.success(res && res.message);
-                    this.getList();
-                }
-            });
-        },
         switchStatus(val, row) {
             let data = {
                 id: row.id,
@@ -184,7 +163,7 @@ export default {
         switchHot(val, row) {
             let data = {
                 id: row.id,
-                is_hot: val ? 1 : 0
+                hot_new: val ? 1 : 0
             };
             let { url, method } = this.$api.game_hot_set;
             this.$http({ method, url, data }).then(res => {
@@ -225,10 +204,6 @@ export default {
                 if (res && res.code === "200") {
                     this.total = res.data.length;
                     this.list = res.data;
-                } else {
-                    if (res && res.message !== "") {
-                        this.$toast.error(res.message);
-                    }
                 }
             });
         },

@@ -4,11 +4,11 @@
         <div class="head-set">
             <div class="set-label">设置选项:</div>
             <button
-                :class="['mt20',item.value===curr_set_btn?'btn-blue':'btn-plain']"
-                v-for="(item, index) in set_btns"
+                :class="['mt20',curr_set_btn===item.id?'btn-blue':'btn-plain']"
+                v-for="(item, index) in set_btns" 
                 :key="index"
                 @click="setChange(item)"
-            >{{item.label}}</button>
+            >{{item.name}}</button>
         </div>
         <div>
             <div class="set-cont">
@@ -17,7 +17,7 @@
             </div>
 
             <!------------ 注册登录设定 ---------->
-            <ul v-if="curr_set_btn===1" class="form">
+            <ul v-if="curr_set_btn==3" class="form">
                 <li>
                     <div class="li-left">
                         <span>登录密码错误限制次数:</span>
@@ -26,18 +26,11 @@
                         <i class="green iconfont iconchenggong- ml5"></i>
                         <button class="ml5 btns-blue">保存</button>
                     </div>
-                    <div class="li-right">
-                        <span>注册邀请邀请码:</span>
-                        <Switchbox v-model="login_set.status" />
-                        <i class="orange iconfont iconjinggao1- ml5"></i>
-                        <i class="green iconfont iconchenggong- ml5"></i>
-                        <button class="ml5 btns-blue">保存</button>
-                    </div>
                 </li>
             </ul>
 
             <!----------- 游戏设定 ---------->
-            <ul v-if="curr_set_btn===2" class="form">
+            <ul v-if="curr_set_btn==6" class="form">
                 <li>
                     <div class="li-left">
                         <span>系统维护总开关:</span>
@@ -117,7 +110,7 @@
             </ul>
 
             <!---------- 活动金额限制设定---------->
-            <ul v-if="curr_set_btn===3" class="form">
+            <ul v-if="curr_set_btn==16" class="form">
                 <li>
                     <div class="li-left">
                         <span>注册送活动最高金额限制:</span>
@@ -217,7 +210,7 @@
             </ul>
 
             <!---------- 出入款设定---------->
-            <ul v-if="curr_set_btn===4" class="form">
+            <ul v-if="curr_set_btn==23" class="form">
                 <li>
                     <div class="li-left">
                         <span>出款手续费 (%):</span>
@@ -339,14 +332,9 @@
 export default {
     data() {
         return {
-            set_btns: [
-                { label: '注册登录设定', value: 1 },
-                { label: '游戏设定', value: 2 },
-                { label: '金额限制设定', value: 3 },
-                { label: '出入款设定', value: 4 }
-            ],
-            curr_set_btn: 1,
-
+            set_btns: [],
+            curr_set_btn: 3,
+            set_name:[],
             // 注册登录设定
             login_set: {
                 aa: '',
@@ -374,15 +362,28 @@ export default {
                 { label: 'VIP1', value: 0 },
                 { label: 'VIP2', value: 0 },
                 { label: 'VIP3', value: 0 }
-            ]
+            ],
+            list:[],
         }
     },
     methods: {
         setChange(item) {
-            this.curr_set_btn = item.value
-        }
+            this.curr_set_btn = item.id;
+            console.log(item.id)
+        },
+        getTitleList(){
+            let {method,url}=this.$api.allarea_set_list;
+            this.$http({method,url}).then(res=>{
+                console.log('返回数据',res)
+                if(res && res.code=='200'){
+                    this.set_btns=res.data
+                }
+            })
+        },
     },
-    mounted() {}
+    mounted() {
+        this.getTitleList();
+    }
 }
 </script>
 

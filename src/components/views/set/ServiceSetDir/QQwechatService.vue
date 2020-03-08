@@ -235,7 +235,7 @@ export default {
 
             let { url, method } = this.$api.customer_service_list
             this.$http({ method, url, params }).then(res => {
-                console.log('列表👌👌👌👌: ', res)
+                // console.log('列表👌👌👌👌: ', res)
                 if (res && res.code === '200') {
                     // this.total = res.data.t
                     this.list = res.data

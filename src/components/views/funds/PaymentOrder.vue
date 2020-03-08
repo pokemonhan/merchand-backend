@@ -43,7 +43,7 @@
                 </li>
                 <li>
                     <button class="btn-blue" @click="getList" >查询</button>
-                    <button class="btn-blue">导出excel</button>
+                    <button class="btn-blue"  @click="exportExcel()" >导出excel</button>
                     <button class="btn-red" @click="clearAll">清空</button>
                 </li>
             </ul>
@@ -79,11 +79,11 @@
                     </li>
                     <li>
                         <span>充值金额:</span>
-                        <span>200.00</span>
+                        <span></span>
                     </li>
                     <li>
                         <span>实际到账</span>
-                        <span>200.00</span>
+                        <span></span>
                     </li>
                 </ul>
                 <ul>
@@ -92,11 +92,11 @@
                     </li>
                     <li>
                         <span>充值金额:</span>
-                        <span>200.00</span>
+                        <span></span>
                     </li>
                     <li>
                         <span>实际到账</span>
-                        <span>200.00</span>
+                        <span></span>
                     </li>
                 </ul>
             </div>
@@ -162,7 +162,7 @@ export default {
             total: 0,
             pageNo: 1,
             pageSize: 25,
-            dia_show:true,
+            dia_show:false,
             dia_title:'出款订单审核',
             curr_row:{},
 
@@ -216,6 +216,21 @@ export default {
     },
 
     methods: {
+        exportExcel(){
+            import('../../../js/config/Export2Excel').then(excel=>{
+                const tHeaders=this.headers
+                const data=this.list.map(item=>{
+                    return[item.order_no,item.user.mobile,item.user.guid,item.account_type,item.amount,item.audit_fee,item.amount_received,item.handing_fee,item.created_at,item.reviewer.name,item.status]
+                })
+                excel.export_json_to_excel({
+                    header:tHeaders,
+                    data,
+                    filename:excel,
+                    autoWidth:true,
+                    bookType:'xlsx'
+                })
+            })
+        },
         qqUpd(dates) {
             //同步时间筛选值
             this.filter.review_dates = dates;
@@ -248,6 +263,10 @@ export default {
             this.dia_title='出款订单审核'
         },
         getList(){
+            let operation_at=''
+            if(this.filter.operate_dates[0] && this.filter.operate_dates[1]){
+                operation_at=JSON.stringify(this.filter.operate_dates)
+            }
             let para={
                 order_no:this.filter.order_no,
                 mobile:this.filter.account,
@@ -256,7 +275,7 @@ export default {
                 status:this.filter.payment_status,
                 is_audit:this.filter.is_audit_withhold,
                 admin:this.filter.auditor,
-                operation_at:[this.filter.review_dates[0],this.filter.review_dates[1]],
+                operation_at:operation_at,
             }
             let params=window.all.tool.rmEmpty(para);
             let {method,url}=this.$api.founds_paymentorder_list;

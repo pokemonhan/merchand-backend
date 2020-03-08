@@ -83,19 +83,19 @@
                     </li>
                     <li>
                         <span>出款金额:</span>
-                        <span>200.00</span>
+                        <span></span>
                     </li>
                     <li>
                         <span>稽核扣款:</span>
-                        <span>200.00</span>
+                        <span></span>
                     </li>
                     <li>
                         <span>实际出款金额</span>
-                        <span>200.00</span>
+                        <span></span>
                     </li>
                     <li>
                         <span>手续费统计</span>
-                        <span>200.00</span>
+                        <span></span>
                     </li>
                 </ul>
                 <ul>
@@ -104,19 +104,19 @@
                     </li>
                     <li>
                         <span>出款金额:</span>
-                        <span>200.00</span>
+                        <span></span>
                     </li>
                     <li>
                         <span>稽核扣款:</span>
-                        <span>200.00</span>
+                        <span></span>
                     </li>
                     <li>
                         <span>实际出款金额</span>
-                        <span>200.00</span>
+                        <span></span>
                     </li>
                     <li>
                         <span>手续费统计</span>
-                        <span>200.00</span>
+                        <span></span>
                     </li>
                 </ul>
             </div>
@@ -184,32 +184,6 @@ export default {
                 { label: '是', value: '1' },
                 { label: '否', value: '0' }
             ],
-            // table
-            table_headers: [
-                [
-                    '订单号',
-                    '会员号',
-                    '会员ID',
-                    '正式账号',
-                    '出款金额',
-                    '稽核扣款',
-                    '实际出款',
-                    '手续费',
-                    '存款次数',
-                    '操作'
-                ],
-                [
-                    '今日出款次数',
-                    '申请时间',
-                    '状态',
-                    '账号余额',
-                    '上级账号',
-                    '存款总额',
-                    '操作时间',
-                    '操作人',
-                    '备注'
-                ]
-            ],
             status_obj: {
                 '0': {
                     color: 'red',
@@ -241,32 +215,7 @@ export default {
                 '状态',
                 '操作'
             ],
-            list: [
-                {
-                    a1: '64646466',
-                    a2: 'sdfsdfdsf',
-                    a3: '充支好礼',
-                    a4: '1',
-                    a5: '2019-02-02 21:30',
-                    status: '0'
-                },
-                {
-                    a1: '64646466',
-                    a2: 'sdfsdfdsf',
-                    a3: '充支好礼',
-                    a4: '1',
-                    a5: '2019-02-02 21:30',
-                    status: '1'
-                },
-                {
-                    a1: '64646466',
-                    a2: 'sdfsdfdsf',
-                    a3: '充支好礼',
-                    a4: '1',
-                    a5: '2019-02-02 21:30',
-                    status: '2'
-                }
-            ],
+            list: [],
             total: 0,
             pageNo: 1,
             pageSize: 25,
@@ -319,13 +268,21 @@ export default {
         updateNo(val) {},
         updateSize(val) {},
         getLsit(){
-           let para={
+            let created_at = ''
+            if (this.filter.apply_dates[0] && this.filter.apply_dates[1]) {
+                created_at = JSON.stringify(this.filter.apply_dates)
+            } 
+            let review_at=''
+            if(this.filter.operater_dates[0] && this.filter.operater_dates[1] ){
+                review_at=JSON.stringify(this.filter.operater_dates)
+            }
+            let para={
                mobile:this.filter.account,
                order_no:this.filter.order_no,
-               created_at:[this.filter.apply_dates[0],this.filter.apply_dates[1]],
+               created_at:created_at,
                guid:this.filter.acc_id,
                review:this.filter.operater,
-               review_at:[this.filter.operater_dates[0],this.filter.operater_dates[1]],
+               review_at:review_at,
                status:this.filter.review_status,
                is_audit:this.filter.is_audit_withhold,
            };

@@ -474,34 +474,33 @@ export default {
         updateNo(val) {},
         updateSize(val) {},
         getList() {
+            let created_at=''
+            if(this.filter.add_start_dates && this.filter.add_end_dates){
+                created_at=JSON.stringify([this.filter.add_start_dates,this.filter.add_end_dates])
+            }
+            let updated_at=''
+            if(this.filter.status && this.filter.end_dates){
+                updated_at=JSON.stringify([this.filter.start_dates,this.filter.end_dates])
+            }
             let para = {
                 type_id: this.filter.type,
                 account: this.filter.account,
                 username: this.filter.name,
                 author_name: this.filter.add_author,
-                created_at: [
-                    this.filter.add_start_dates,
-                    this.filter.add_end_dates
-                ],
+                created_at: created_at,
                 last_editor_name: this.filter.update_person,
-                updated_at: [
-                    this.filter.start_dates,
-                    this.filter.end_dates
-                ]
+                updated_at: updated_at,
             };
+            console.log('请求数据',para)
             let params = window.all.tool.rmEmpty(para);
             let { method, url } = this.$api.offline_finance_list;
-            this.$http({ method: method, url: url, params: params }).then(
+            this.$http({ method, url, params }).then(
                 res => {
-                    // console.log('返回数据：',res)
+                    console.log('返回数据：',res)
                     if (res && res.code == "200") {
                         this.list = res.data.data;
                         this.total = res.data.total;
-                    } else {
-                        if (res && res.message !== "") {
-                            this.toast.error(res.message);
-                        }
-                    }
+                    } 
                 }
             );
         }

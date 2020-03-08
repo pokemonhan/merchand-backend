@@ -174,10 +174,14 @@ export default {
             this.quick_query = this.filter.dates;
         },
         getList() {
+            let created_at = ''
+            if (this.filter.dates[0] && this.filter.dates[1]) {
+                created_at = JSON.stringify(this.filter.dates)
+            }
             let para = {
                 mobile: this.filter.account,
                 guid: this.filter.account_id,
-                created_at: [this.filter.dates[0], this.filter.dates[1]],
+                created_at: created_at,
                 is_tester: this.filter.official_account,
                 type: this.filter.charge_type
             };

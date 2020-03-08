@@ -42,13 +42,6 @@
                     <td>
                         <Switchbox
                             class="switch-select"
-                            :value="row.is_maintain"
-                            @update="switchMaintain($event,row)"
-                        />
-                    </td>
-                    <td>
-                        <Switchbox
-                            class="switch-select"
                             :value="row.status"
                             @update="switchStatus($event,row)"
                         />
@@ -56,7 +49,7 @@
                     <td>
                         <Switchbox
                             class="switch-select"
-                            :value="row.is_hot"
+                            :value="row.hot_new"
                             @update="switchHot($event,row)"
                         />
                     </td>
@@ -113,7 +106,6 @@ export default {
                 "游戏名称",
                 "游戏ICON",
                 "排序",
-                "是否维护",
                 "是否启用",
                 "是否热门",
                 "是否推荐",
@@ -177,20 +169,7 @@ export default {
             }).then(res => {
                 if (res && res.code == "200") {
                     // console.log("我成功啦", res);
-                    alert("执行成功")
-                    this.getList();
-                }
-            });
-        },
-        switchMaintain(val, row) {
-            let data = {
-                id: row.id,
-                is_maintain: val ? 1 : 0
-            };
-            let { url, method } = this.$api.game_maintain_list;
-            this.$http({ method, url, data }).then(res => {
-                if (res && res.code === "200") {
-                    this.$toast.success(res && res.message);
+                    this.$toast.success(res && res.message)
                     this.getList();
                 }
             });
@@ -211,7 +190,7 @@ export default {
         switchHot(val, row) {
             let data = {
                 id: row.id,
-                is_hot: val ? 1 : 0
+                hot_new: val ? 1 : 0
             };
             let { url, method } = this.$api.game_hot_set;
             this.$http({ method, url, data }).then(res => {
@@ -248,20 +227,16 @@ export default {
 
             let { url, method } = this.$api.game_h5_list;
             this.$http({ method, url, params }).then(res => {
-                console.log("列表👌👌👌👌: ", res);
+                // console.log("列表👌👌👌👌: ", res);
                 if (res && res.code === "200") {
                     this.total = res.data.length;
                     this.list = res.data;
-                } else {
-                    if (res && res.message !== "") {
-                        this.$toast.error(res.message);
-                    }
                 }
             });
         },
         upPicChange(e, row) {
-            console.log("row: ", row);
-            console.log("event: ", e);
+            // console.log("row: ", row);
+            // console.log("event: ", e);
             let reader = new FileReader();
             let pic = e.target.files[0];
             let basket = "GameManagement/H5GamePicture";
@@ -281,9 +256,9 @@ export default {
             });
         },
         updatePicture(data, id) {
-            console.log("id: ", id);
+            // console.log("id: ", id);
             if (!data) return;
-            console.log(data);
+            // console.log(data);
             let para = {
                 id: id,
                 icon: data.path

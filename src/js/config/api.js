@@ -642,7 +642,16 @@ export default {
         method: 'post'
     },
 
-    // 全域设置
+    // 全域设置 - 列表
+    allarea_set_list:{
+        url:'/merchant-api/config/index',
+        method:'get'
+    },
+    //  全域设置 - 保存设置
+    allarea_set_save:{
+        url:'/merchant-api/config/edit',
+        method:'post'
+    },
 
     // ------- 客服设置 ----------------
     // 客服设置-列表

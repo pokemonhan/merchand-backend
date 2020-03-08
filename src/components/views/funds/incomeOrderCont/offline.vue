@@ -145,21 +145,21 @@ export default {
                 id: "",
                 start_date: "",
                 end_date: "",
-                review_status: 0,
+                review_status: "0",
                 income_acc: "",
-                formal_status: 0,
-                order_id: ""
+                formal_status: "0",
+                order_id: "",
             },
             review_status_opt: [
-                { label: "全部", value: 0 },
-                { label: "审核中", value: 1 },
-                { label: "审核通过", value: 2 },
-                { label: "审核拒绝", value: 3 }
+                { label: "全部", value:"0" },
+                { label: "审核中", value: "1" },
+                { label: "审核通过", value:"2"},
+                { label: "审核拒绝", value: "3" }
             ],
             formal_status_opt: [
-                { label: "全部", value: 0 },
-                { label: "是", value: 1 },
-                { label: "否", value: 2 }
+                { label: "全部", value: "0" },
+                { label: "是", value: "1" },
+                { label: "否", value: "2" }
             ],
             review_status_obj: {
                 "0": { text: "拒绝", color: "red" },
@@ -180,52 +180,7 @@ export default {
                 "操作",
                 "操作人"
             ],
-            list: [
-                {
-                    a1: "aD201909201252",
-                    a2: "13245678942",
-                    a3: "4561234",
-                    a4: "1",
-                    a5: "红牛商户",
-                    a6: "1",
-                    a7: "100",
-                    a8: "99.9",
-                    a9: "1",
-                    a10: "2019/09/20 12:25:20",
-                    a11: "1",
-                    a12: "1",
-                    a13: "2019/09/20 12:25:20",
-                    a14: "2019/09/20 12:25:20"
-                },
-                {
-                    a1: "aD201909201252",
-                    a2: "13245678942",
-                    a3: "1",
-                    a4: "0",
-                    a5: "红牛商户",
-                    a6: "0",
-                    a7: "100",
-                    a8: "99.9",
-                    a9: "0",
-                    a10: "2019/09/20 12:25:20",
-                    a11: "2019/09/20 12:25:20",
-                    a12: "1"
-                },
-                {
-                    a1: "aD201909201252",
-                    a2: "13245678942",
-                    a3: "1",
-                    a4: "0",
-                    a5: "红牛商户",
-                    a6: "0",
-                    a7: "100",
-                    a8: "99.9",
-                    a9: "2",
-                    a10: "2019/09/20 12:25:20",
-                    a11: "2019/09/20 12:25:20",
-                    a12: "1"
-                }
-            ],
+            list: [],
             total: 0,
             pageNo: 1,
             pageSize: 25,
@@ -265,9 +220,9 @@ export default {
                 id: "",
                 start_date: "",
                 end_date: "",
-                review_status: 0,
+                review_status: "0",
                 income_acc: "",
-                formal_status: 0,
+                formal_status: "0",
                 order_id: ""
             };
         },
@@ -386,16 +341,22 @@ export default {
             document.body.removeChild(aLink);
         },
         getList(){
+            // console.log(1)
+            let created_at=''
+            if(this.filter.start_date && this.filter.end_date){
+                created_at=JSON.stringify([this.filter.start_date,this.filter.end_date])
+            }
             let para={
-                is_online:0,
+                is_online:"0",
                 mobile:this.filter.account, 
                 guid:this.filter.id,
-                created_at:[this.filter.start_date,this.filter.end_date],
+                created_at:created_at,
                 status:this.filter.review_status,
                 snap_account:this.filter.income_acc,
                 is_tester:this.filter.formal_status,
                 order_no:this.filter.order_id,
             };
+            // console.log('请求数据',para)
             let params=window.all.tool.rmEmpty(para);
             let {method,url}=this.$api.founds_incomeorder_list;
             this.$http({method:method,url:url,params:params}).then(res=>{
@@ -403,10 +364,6 @@ export default {
                 if(res && res.code=='200'){
                     this.list=res.data.data;
                     this.total=res.data.total;
-                }else{
-                    if(res && res.message !==""){
-                        this.toast.error(res.message);
-                    }
                 }
             })
         },

@@ -3,11 +3,10 @@
         <!--------------------   发邮件   ----------------->
         <div class="body">
             <div class="left">
-                <div class="hd-btn">
+                <!-- <div class="hd-btn">
                     <button class="btn-plain" @click="sendNow">立即发送</button>
                     <button class="btn-plain ml20" @click="sendAtTime">定时发送</button>
-                    <Checkbox label="总控邮件" v-model="is_head" />
-                </div>
+                </div>-->
                 <ul class="form">
                     <li v-show="recipient_show">
                         <span>收件人：</span>
@@ -24,9 +23,14 @@
                     </li>
                     <li>
                         <Upload style="width:90px;" title="选择图片" @change="upPicChange" />
-                        <span v-show="pic_data">
-                            <img class="img-show" :src="pic_data" alt="没有图片" />
-                            <button class="btns-red" @click="clearPic">清除</button>
+
+                        <span class="ml50">
+                            <Checkbox
+                                label="总控邮件"
+                                :disabled="Boolean(receivers)"
+                                v-model="is_head"
+                                @update="isHeadChange"
+                            />
                         </span>
                     </li>
                     <li>
@@ -126,6 +130,7 @@ export default {
             content: '', //邮件内容
             is_timing: 1,
             contact_show: true, // 有收件人就隐藏联系人下拉
+            protocol: window.location.protocol,
             tree_list: [
                 {
                     label: '厅主群主',
@@ -255,28 +260,45 @@ export default {
             this.dia_show = true
         },
         recipientUpd(val) {
+            this.contact_show = !val
             if (val) {
-                this.contact_show = false
-            } else {
-                this.contact_show = true
+                val = val.replace('，', ',')
+                val = val.replace(/[^\d,]/g, '')
+                this.$nextTick(() => {
+                    this.receivers = val
+                })
             }
         },
         upPicChange(e) {
-            let self = this
-            let file = e.target.files[0]
-            let date = new FormData()
-
-            date.append('uploadimg', file)
-            console.log('文件的内容', date)
-            let reader = new FileReader()
-            reader.readAsDataURL(file)
-            reader.onerror = function() {
-                return
-            }
-            reader.onload = function() {
-                // self.src[index] = this.result
-                self.pic_data = this.result
-            }
+            let pic = e.target.files[0]
+            let basket = 'email/sendemail/uploads'
+            let formData = new FormData()
+            formData.append('file', pic, pic.name)
+            formData.append('basket', basket)
+            let { url, method } = this.$api.update_picture_database
+            let data = formData
+            let headers = { 'Content-Type': 'multipart/form-data' }
+            this.$http({ method, url, data, headers }).then(res => {
+                if (res && res.code == '200') {
+                    this.pic_data = res.data.path
+                    let imgHtml = `<img src="${this.protocol}//pic.jianghu.local/${this.pic_data}" alt="图片加载失败">`
+                    this.editor.txt.append(imgHtml)
+                }
+            })
+            // let reader = new FileReader()
+            // reader.readAsDataURL(file)
+            // reader.onerror = function() {
+            //     return
+            // }
+            // reader.onload = function() {
+            //     // self.src[index] = this.result
+            //     self.pic_data = this.result
+            // }
+        },
+        // 是否发给总控
+        isHeadChange(val) {
+            console.log('val: ', val)
+            this.recipient_show = !val
         },
         clearPic() {
             this.pic_data = ''
@@ -392,6 +414,7 @@ export default {
         // this.editor.customConfig.uploadImgServer = '/upload'  // 上传图片到服务器
         // https://www.kancloud.cn/wangfupeng/wangeditor3/335782  上传到图片 文档
         this.editor.create()
+        this.editor.txt.append()
     }
 }
 </script>
@@ -428,11 +451,19 @@ export default {
 .form > li > span:first-child {
     width: 4.5em;
 }
+.li-pic {
+    display: flex;
+    /* border: 1px solid #000; */
+    align-items: center;
+}
 /* 图片 */
 .img-show {
-    max-width: 400px;
+    max-width: 250px;
     max-height: 100px;
     margin-left: 20px;
+}
+.pic-show {
+    user-select: text;
 }
 .form .textarea {
     width: 500px;

@@ -3,7 +3,7 @@
     <div>
         <QuickQuery :date="quick_query" @update="quickDateUpdate($event)" />
 
-        <div class="filter p10">
+        <div class="filter">
             <ul class="left">
                 <li>
                     <span>会员账号</span>
@@ -28,15 +28,15 @@
                     <span>入款账号</span>
                     <Input v-model="filter.income_acc" />
                 </li>
-                <li class="mt10">
+                <li >
                     <span>正式状态</span>
                     <Select v-model="filter.formal_status" :options="formal_status_opt"></Select>
                 </li>
-                <li class="mt10">
+                <li >
                     <span>订单号</span>
                     <Input limit="en-num" v-model="filter.order_id" />
                 </li>
-                <li class="mt10">
+                <li >
                     <button class="btn-blue" @click="getList" >查询</button>
                     <button class="btn-blue" @click="exportExcel()" >导出Excel</button>
                     <button class="btn-red" @click="clearClick">清空</button>
@@ -313,10 +313,7 @@ export default {
         updateSize(val) {
             this.pageNo = 1;
         },
-        offlineGetList() {
-            // this.$http
-        },
-
+        
         // canvas 转png 图片
         exportCanvasAsPNG(ref, fileName) {
             // let canvasElement = document.getElementById(id);
@@ -377,23 +374,15 @@ export default {
 </script>
 
 <style scoped>
-/* .container {
-    padding: 20px 8px 20px 8px;
-    border-top-right-radius: 5px;
-    border-bottom-left-radius: 5px;
-    border-bottom-right-radius: 5px;
-    background: #fff;
-} */
-.head {
-    margin-left: 20px;
+.filter {
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    padding-left: 10px;
 }
-.select-list {
-    padding: 10px;
-    border-bottom: 1px solid #eee;
-    /* margin-bottom: 10px; */
+.filter .left {
+    margin-left: 10px;
 }
-/*  */
-.mt10 {
+.filter .left li {
     margin-top: 10px;
 }
 .total-table ul {
@@ -413,6 +402,7 @@ table {
     width: 100%;
 }
 .table {
+    margin-top: 8px;
     width: 100%;
     overflow-x: auto;
 }
@@ -469,9 +459,6 @@ table {
 }
 .save-btn .btn-blue-large {
     text-align: center;
-    /* padding: 8px 12px; */
 }
-/* .a{
-    font-size: 14px;
-} */
+
 </style>

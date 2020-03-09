@@ -34,7 +34,6 @@
                     <button class="btn-blue" @click="dia_show=true">人工充值</button>
                 </li>
             </ul>
-            <div class="right"></div>
         </div>
         <div class="table">
             <Table :headers="headers" :column="list">

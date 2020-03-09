@@ -147,19 +147,7 @@ export default {
                 // { label: 'VIP7' },
                 // { label: '操作' }
             ],
-            list: [
-                {
-                    a: '1',
-                    b: '1000',
-                    c: '0.8%',
-                    d: '0.8%',
-                    e: '0.8%',
-                    f: '0.8%',
-                    g: '0.8%',
-                    h: '0.8%',
-                    i: '0.8%'
-                }
-            ],
+            list: [],
             total: 0,
             pageNo: 1,
             pageSize: 25,
@@ -221,9 +209,10 @@ export default {
         },
         getList(){
             let para={
-                gameTypeId:this.active_game,
-                gameVendorId:this.active_plant,
+                game_type_id:this.active_game,
+                game_vendor_id:this.active_plant,
             };
+            console.log('请求数据',para)
             // let self=this
             let params = window.all.tool.rmEmpty(para)
             let {method,url}=this.$api.wash_code_list;

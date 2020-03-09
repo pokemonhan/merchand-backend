@@ -1,7 +1,7 @@
  <template>
     <div class="container">
         <!-- 银行卡反查中心 -->
-        <div class="filter p10">
+        <div class="filter ">
             <ul class="left">
                 <li>
                     <span>会员账号</span>
@@ -21,7 +21,12 @@
                 </li>
                 <li>
                     <span>绑定日期</span>
-                    <Date type="daterange" v-model="filter.dates[0]" />
+                    <Date type="daterange" v-model="filter.start_dates" />
+                    <span>~</span>
+                    <Date type="daterange" v-model="filter.end_dates" />
+                </li>
+                <li>
+                    <button class="btn-blue" @click="getList" >查询</button>
                 </li>
             </ul>
         </div>
@@ -70,7 +75,8 @@ export default {
                 id: '',
                 bank: '',
                 card: '',
-                dates: ['', '']
+                start_dates:'',
+                end_dates:''
             },
             bank_opt: [
                 { label: '全部', value: 0 },
@@ -115,11 +121,43 @@ export default {
         },
         modConf() {},
         updateNo(val) {},
-        updateSize(val) {}
+        updateSize(val) {},
+        getList(){
+            // let created_at=''
+            // if(this.filter.start_dates && this.filter.end_dates){
+            //     created_at=JSON.stringify([this.filter.start_dates,this.filter.end_dates])
+            // }
+            let datas={
+                mobile:this.filter.acc,
+                user_id:this.filter.id,
+                // bank_id:this.filter.bank,
+                created_at:String([this.filter.start_dates,this.filter.end_dates]),
+           }
+           let data=window.all.tool.rmEmpty(datas) 
+           let {method,url}=this.$api.bank_cards_list
+           this.$http({method,url,data}).then(res=>{
+               console.log('返回数据',res)
+           })
+        },
     },
-    mounted() {}
+    mounted() {
+        this.getList();
+    }
 }
 </script>
  
  <style scoped>
+ .filter {
+    /* margin-top: 10px; */
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    padding-left: 10px;
+}
+.filter .left {
+    margin-left: 10px;
+}
+.filter .left li {
+    margin-top: 10px;
+    /* margin-bottom: 10px; */
+}
 </style>

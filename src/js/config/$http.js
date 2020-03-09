@@ -62,7 +62,7 @@ http.interceptors.response.use(res => {
                 // 401 跳转到login 登录
                 if (res.status === 401) {
                     res.data.message && window.__vm__.$toast.error(res.data.message)
-                    // router.push('/login')
+                    router.push('/login')
                     return res.data
                 }
 

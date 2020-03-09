@@ -698,10 +698,14 @@ export default {
     },
 
     // 操作纪录
-    // 银行卡反查中心
+    // 银行卡反查中心-删除
     bank_cards_del: {
         url: '/merchant-api/bank-cards/delete',
         method: 'post',
+    },
+    //银行卡反查中心-列表
+    bank_cards_list:{
+        url:'/merchant-api/bank-cards/index',
+        method:'post',
     }
-
 };

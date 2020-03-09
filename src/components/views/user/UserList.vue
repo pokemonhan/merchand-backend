@@ -1,58 +1,50 @@
 <template>
     <!-- 会员列表 -->
     <div class="container">
-        <div class="filter-group">
-            <div class="filter flt-up">
+            <div class="filter ">
                 <ul class="left">
                     <li>
                         <span>会员账号</span>
-                        <Input  limit="en-num" v-model="filter.account" />
+                        <Input limit="en-num" v-model="filter.account" />
                     </li>
                     <li>
                         <span>会员ID</span>
-                        <Input  limit="en-num" v-model="filter.userid" />
+                        <Input limit="en-num" v-model="filter.userid" />
                     </li>
                     <li>
                         <span>注册日期</span>
-                        <Date  v-model="filter.start_date" />
+                        <Date v-model="filter.start_date" />
                         <span style="margin:0 5px;">至</span>
                         <Date v-model="filter.end_date" />
                     </li>
                     <li>
                         <span>在线状态</span>
                         <span>
-                            <Select
-                                v-model="filter.online_state"
-                                :options="online_state_opt"
-                            ></Select>
+                            <Select v-model="filter.online_state" :options="online_state_opt"></Select>
                         </span>
                     </li>
                     <li>
                         <span>上级账号</span>
                         <Input v-model="filter.parent_account" />
                     </li>
-                </ul>
-            </div>
-            <div class="filter flt-down">
-                <ul class="left">
                     <li>
                         <span>登录IP</span>
-                        <Input  limit="number" v-model="filter.loginIP" />
+                        <Input v-model="filter.loginIP" />
                     </li>
                     <li>
-                        <span class="w4e">注册IP</span>
-                        <Input  limit="number" v-model="filter.registIP" />
+                        <span >注册IP</span>
+                        <Input limit="number" v-model="filter.registIP" />
                     </li>
                     <li>
                         <span>正式账号</span>
-                        <Select v-model="filter.is_tester" :options="is_tester_opt"  ></Select>
+                        <Select v-model="filter.is_tester" :options="is_tester_opt"></Select>
                     </li>
                     <li>
                         <span>
-                            <button class="btn-blue">查询</button>
+                            <button class="btn-blue" @click="getList">查询</button>
                         </span>
                         <span>
-                            <button class="btn-blue">导出Excel</button>
+                            <button class="btn-blue" @click="exportExcel()">导出Excel</button>
                         </span>
                     </li>
                     <li>
@@ -60,30 +52,32 @@
                     </li>
                 </ul>
             </div>
-        </div>
-        <div class="tool-bar"></div>
-        <!-- 在线状态, 游戏账号, 游戏ID, 会员标签, 团队人数, 上级账号, 玩家金额, 注册IP->登录iP,注册日期->登录日期 -->
+        <div class="table">
+            <!-- 在线状态, 游戏账号, 游戏ID, 会员标签, 团队人数, 上级账号, 玩家金额, 注册IP->登录iP,注册日期->登录日期 -->
 
-        <Table :headers="headers" :column="list">
-            <template v-slot:item="{row}">
-                <td>{{row.is_online}}</td>
-                <td>{{row.mobile}}</td>
-                <td>{{row.guid}}</td>
-                <td>{{row.is_tester}}</td>
-                <td>{{row.user_tag}}</td>
-                <td>{{row.total_members}}</td>
-                <td>{{row.parent_mobile}}</td>
-                <td>{{row.balance}}</td>
-                <td>{{row.register_ip}}</td>
-                <td>{{row.last_login_ip}}</td>
-                <td>{{row.created_at}}</td>
-                <td></td>
-                <td>
-                    <button class="btn-blue" @click="userDetail(row)">详情</button>
-                    <button class="btn-blue" @click="addBlackList(row)" >加入黑名单</button>
-                </td>
-            </template>
-        </Table>
+            <Table :headers="headers" :column="list">
+                <template v-slot:item="{row}">
+                    <td :class="[row.is_online==1?'green':'red']" >{{row.is_online==1?'在线':'离线'}}</td>
+                    <td>{{row.mobile}}</td>
+                    <td>{{row.guid}}</td>
+                    <td>
+                        <i :class="['iconfont',row.is_tester==1 ?'icongou green':'iconcha red']"></i>
+                    </td>
+                    <td>{{row.user_tag}}</td>
+                    <td>{{row.total_members}}</td>
+                    <td>{{row.parent_mobile}}</td>
+                    <td>{{row.balance}}</td>
+                    <td>{{row.register_ip}}</td>
+                    <td>{{row.last_login_ip}}</td>
+                    <td>{{row.created_at}}</td>
+                    <td>{{row.last_login_time}}</td>
+                    <td>
+                        <button class="btn-blue" @click="userDetail(row)">详情</button>
+                        <button class="btn-blue" @click="addBlackList(row)">加入黑名单</button>
+                    </td>
+                </template>
+            </Table>
+        </div>
         <div class="page">
             <Page
                 :total="total"
@@ -160,10 +154,9 @@
                                     <span>管理银行卡:</span>
                                     <span class="a">重置</span>
                                 </li>
-                               
                             </ul>
                             <ul style="margin-top:10px;">
-                                 <li>
+                                <li>
                                     <span>清空支付宝:</span>
                                     <span class="a">重置</span>
                                 </li>
@@ -358,41 +351,40 @@ export default {
     data() {
         return {
             filter: {
-                account: '',
-                userid: '',
-                start_date: '',
-                end_date: '',
-                online_state: '',
-                parent_account:'',
-                is_tester:'',
-                loginIP: '',
-                registIP: ''
+                account: "",
+                userid: "",
+                start_date: "",
+                end_date: "",
+                online_state: "",
+                parent_account: "",
+                is_tester: "",
+                loginIP: "",
+                registIP: ""
             },
-            online_state_opt:[
-                { label: "全部", value:""},
-                { label: "在线", value:"0"},
-                { label: "离线", value:"1"},
+            online_state_opt: [
+                { label: "全部", value: "" },
+                { label: "在线", value: "0" },
+                { label: "离线", value: "1" }
             ],
-            is_tester_opt:[
-                { label: "全部", value:""},
-                { label: "是", value:"0"},
-                { label: "否", value:"1"},
+            is_tester_opt: [
+                { label: "全部", value: "" },
+                { label: "是", value: "0" },
+                { label: "否", value: "1" }
             ],
             headers: [
-                    '在线状态',
-                    '会员账号',
-                    '会员ID',
-                    '正式账号',
-                    '会员标签',
-                    '团队人数',
-                    '上级账号',
-                    '会员余额',
-                    '注册IP',
-                    '登录IP',
-                    '注册日期',
-                    '登录日期',
-                    '操作',
-
+                "在线状态",
+                "会员账号",
+                "会员ID",
+                "正式账号",
+                "会员标签",
+                "团队人数",
+                "上级账号",
+                "会员余额",
+                "注册IP",
+                "登录IP",
+                "注册日期",
+                "登录日期",
+                "操作"
             ],
             list: [],
             total: 300,
@@ -402,75 +394,120 @@ export default {
             show_detail: false,
             use_detail: false,
             form: {
-                account: '',
-                password: '',
-                type: '',
-                conf_pwd: ''
+                account: "",
+                password: "",
+                type: "",
+                conf_pwd: ""
             },
-            user_tab: '',
+            user_tab: "",
             EditUserTab: false,
             user_tab_opt: [
-                { label: '危险会员', value: 1 },
-                { label: '普通会员', value: 2 }
+                { label: "危险会员", value: 1 },
+                { label: "普通会员", value: 2 }
             ],
 
             inner_mask_show: false,
-            show_add_black_list: false
-        }
+            show_add_black_list: false,
+            
+        };
     },
     methods: {
         userDetail(row) {
-            this.show_detail = true
+            this.show_detail = true;
         },
         addBlackList() {
-            this.show_add_black_list = true
+            this.show_add_black_list = true;
         },
-        addBlackListCfm(){
-            
-        },
+        addBlackListCfm() {},
         addAccClick() {
-            this.inner_mask_show = true
+            this.inner_mask_show = true;
         },
         closeConfirm() {
-            this.inner_mask_show = false
+            this.inner_mask_show = false;
         },
         getList() {
-            let para = {
-
+            let createdAt = "";
+            if (this.filter.start_date && this.filter.end_date) {
+                createdAt = JSON.stringify([
+                    this.filter.start_date,
+                    this.filter.end_date
+                ]);
             }
-            let {method,url} = this.$api.user_list
-            this.$http({method,url}).then(res => {
-                console.log('res', res)
-                if(res && res.code === '200'){
-                    this.list = res.data.data
-                    this.total = res.data.total
+            let para = {
+                mobile: this.filter.account,
+                guid: this.filter.userid,
+                createdAt: createdAt,
+                isOnline: this.filter.online_state,
+                parent_mobile: this.filter.parent_account,
+                lastLoginIp: this.filter.loginIP,
+                registerIp: this.filter.registIP
+                // isTest:this.filter.is_tester
+            };
+            // console.log('请求数据',para)
+            let params = window.all.tool.rmEmpty(para);
+            let { method, url } = this.$api.user_list;
+            this.$http({ method, url, params }).then(res => {
+                console.log("返回数据", res);
+                if (res && res.code === "200") {
+                    this.list = res.data.data;
+                    this.total = res.data.total;
                 }
-            })
-
+            });
         },
-
+        exportExcel() {
+            import("../../../js/config/Export2Excel").then(excel => {
+                const tHeaders = this.headers;
+                const data = this.list.map(item => {
+                    return [
+                        item.is_online,
+                        item.mobile,
+                        item.guid,
+                        item.is_tester,
+                        item.user_tag,
+                        item.total_members,
+                        item.parent_mobile,
+                        item.balance,
+                        item.regist_ip,
+                        item.last_login_ip,
+                        item.created_at,
+                        item.last_login_time
+                    ];
+                });
+                excel.export_json_to_excel({
+                    header: tHeaders,
+                    data,
+                    filename: excel,
+                    autoWidth: true,
+                    bookType: "xlsx"
+                });
+            });
+        },
         updateNo(val) {
             // this.p
         },
         updateSize(val) {}
     },
     mounted() {
-        this.getList()
+        this.getList();
     }
-}
+};
 </script>
 
 <style scoped>
 /* .container .red .green ---在 App.vue公共区 */
 /* .filter 部分样式在公共区 */
-.filter-group {
-    padding: 10px 10px;
-    background: #f2f2f2;
-    /* border-radius: 5px; */
+.filter {
+    /* margin-top: 10px; */
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    padding-left: 10px;
 }
-
-.flt-down {
-    margin-top: 8px;
+.filter .left {
+    margin-left: 10px;
+}
+.filter .left li {
+    margin-top: 10px;
+    /* margin-bottom: 10px; */
 }
 .w4e {
     width: 4em;
@@ -492,17 +529,19 @@ export default {
 .filter .btn-blue {
     padding: 4px 15px;
 }
-.tool-bar .btn-blue {
-    padding: 6px 15px;
+table {
+    border-collapse: collapse;
+    width: 100%;
 }
-.tool-bar {
-    margin-bottom: 10px;
+.table {
+    margin-top: 10px;
+    width: 100%;
+    overflow-x: auto;
 }
-.table-td {
-    /* width: 300px; */
-    text-align: center;
-    padding: 18px 6px;
+.table .v-table {
+    width: 2000px;
 }
+
 /* .modal-mask   .v-modal  .mod-head确认窗口 已转移到公共css*/
 
 .confirm .content {
@@ -678,5 +717,4 @@ export default {
 .mr50 {
     margin-right: 50px;
 }
-
 </style>

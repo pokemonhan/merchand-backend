@@ -449,9 +449,12 @@ export default {
 </script>
 
 <style scoped>
-/* .filter {
-    position: relative;
-} */
+.filter {
+    /* margin-top: 10px; */
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    padding-left: 10px;
+}
 .filter .left {
     margin-left: 10px;
 }
@@ -459,9 +462,9 @@ export default {
     margin-top: 10px;
     /* margin-bottom: 10px; */
 }
-.mb10 {
+/* .mb10 {
     margin-bottom: 10px;
-}
+} */
 .red {
     color: rgba(255, 51, 0, 0.979);
 }
@@ -510,6 +513,7 @@ table {
     width: 100%;
 }
 .table {
+    margin-top: 8px;
     width: 100%;
     overflow-x: auto;
 }
@@ -531,9 +535,7 @@ table {
     margin-top: 20px;
 }
 
-.mb10 {
-    margin-bottom: 10px;
-}
+
 .textarea {
     border: 1px solid #666;
     border-radius: 5px;

@@ -347,11 +347,11 @@ export default {
         getList(){
             let{method,url}=this.$api.grade_list;
             this.$http({method,url}).then(res=>{
-                // console.log(res)
-                if(res && res.code=='200'){
-                    this.list=res.data;
-                    this.total=res.data.total;
-                }
+                console.log(res)
+                // if(res && res.code=='200'){
+                //     this.list=res.data;
+                //     this.total=res.data.total;
+                // }
             })
         },
     },

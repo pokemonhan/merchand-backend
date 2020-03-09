@@ -20,7 +20,7 @@
                     <Select v-model="filter.status" :options="status_opt"></Select>
                 </li>
                 <li>
-                    <button class="btn-blue">查询</button>
+                    <button class="btn-blue" @click="getList" >查询</button>
                     <button class="btn-blue" @click="add">添加</button>
                 </li>
             </ul>
@@ -32,7 +32,7 @@
                     <td>{{(pageNo-1)*pageSize+idx+1}}</td>
                     <td>{{row.title}}</td>
                     <td>
-                        <img :src="protocol+'//pic.jianghu.local/'+row.pic" alt="图片加载失败..." />
+                        <img :src="protocol+'//pic.jianghu.local/'+row.pic" alt="图片加载失败..." style="max-width:100px;max-height:100px;" />
                     </td>
                     <td>{{row.author&&row.author.name}}</td>
                     <td>{{row.created_at}}</td>
@@ -42,7 +42,12 @@
                     <td>{{row.newer&&row.newer.name}}</td>
                     <td>{{row.updated_at}}</td>
                     <td>
-                        <button class="btn-blue" @click="editPicClick(row)">更换图片</button>
+                        <Upload
+                            style="width:100px;margin:0 auto;"
+                            title="更换图片"
+                            @change="upPicChange($event, row)"
+                            type="file"
+                        />
                     </td>
                 </template>
             </Table>
@@ -157,7 +162,7 @@ export default {
         plantSelect(item) {
             this.curr_btn = item.value
         },
-        addClick() {
+        add() {
             this.dia_show = true;
             this.initForm();
         },
@@ -215,10 +220,59 @@ export default {
                 }
             });
         },
+        upPicChange(e,row){
+            console.log("row: ", row);
+            console.log("event: ", e);
+            let reader = new FileReader();
+            let pic = e.target.files[0];
+            let basket = "set/helpset/uploads";
+            var icon = "";
+            let form = new FormData();
+            form.append("file", pic, pic.name);
+            form.append("basket", basket);
+            let { url, method } = this.$api.update_picture_database;
+            let data = form;
+            let headers = { "Content-Type": "multipart/form-data" };
+            this.$http({ method, url, data, headers }).then(res => {
+                if (res && res.code == "200") {
+                    // returnData=res.data
+                    this.updatePicture(res.data, row.id);
+                }
+            });
+        },
+        updatePicture(data, id) {
+            console.log("id: ", id);
+            if (!data) return;
+            console.log(data);
+            let para = {
+                id: id,
+                icon: data.path
+            };
+            console.log(para);
+            let { url, method } = this.$api.help_center_set;
+            this.$http({ method, url, data: para }).then(res => {
+                console.log("res", res);
+                if(res && res.code=='200'){
+                    this.getList();
+                }
+            });
+        },
         updateNo(val) {},
         updateSize(val) {},
         getList(){
-
+            let data={
+                type:this.curr_btn,
+                // title:this.filter.title,
+                // status:this.filter.status,
+            }
+            let {method,url}=this.$api.help_center_list;
+            this.$http({method,url,data}).then(res=>{
+                console.log('返回数据',res)
+                if(res && res.code=='200'){
+                    this.list=res.data
+                    this.total=res.data.length
+                }
+            })
         },
     },
     mounted() {

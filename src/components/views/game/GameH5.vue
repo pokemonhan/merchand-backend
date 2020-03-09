@@ -31,7 +31,8 @@ export default {
         return {
             buttons: [],
             curr_type_id: '',
-            isHot: true
+            isHot: true,
+            vendor_opt:[],
         }
     },
     methods: {
@@ -52,14 +53,14 @@ export default {
                     this.buttons = res.data.gameTypes
 
                     // 游戏平台
-                    if (res.data.gameVendors) {
-                        let arr = res.data.gameVendors
-                        this.vendor_opt = [{ label: '全部', value: '' }]
-                        let array = arr.map(item => {
-                            return { label: item.name, value: item.id }
-                        })
-                        this.vendor_opt = this.vendor_opt.concat(array)
-                    }
+                    // if (res.data.gameVendors) {
+                    //     let arr = res.data.gameVendors
+                    //     this.vendor_opt = [{ label: '全部', value: '' }]
+                    //     let array = arr.map(item => {
+                    //         return { label: item.name, value: item.id }
+                    //     })
+                    //     this.vendor_opt = this.vendor_opt.concat(array)
+                    // }
 
                     // 获取 table 内    容
                     // this.getList()

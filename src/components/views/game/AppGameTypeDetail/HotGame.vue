@@ -71,6 +71,30 @@ export default {
     },
 
     methods: {
+        getSelectOpt() {
+            let { url, method } = this.$api.game_search_condition_list;
+            this.$http({ url, method }).then(res => {
+                // console.log('下拉数据',res)
+                if (res && res.code == "200") {
+                    this.select = res.data;
+                    this.plant_opt = this.backToSelOpt(
+                        res.data && res.data.gameVendors
+                    );
+                }
+            });
+        },
+        backToSelOpt(list = []) {
+            let all = [
+                {
+                    label: "全部",
+                    value: ""
+                }
+            ];
+            let back_list = list.map(item => {
+                return { label: item.name, value: item.id };
+            });
+            return all.concat(back_list);
+        },
         selectBtn(item) {
             this.curr_btn = item.value;
         },
@@ -165,6 +189,7 @@ export default {
     // },
     mounted() {
         this.getList();
+        this.getSelectOpt();
     }
 };
 </script>

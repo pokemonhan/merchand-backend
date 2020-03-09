@@ -19,7 +19,7 @@
                 </li>
                 <li>
                     <span>登录IP</span>
-                    <Input style="width:100px" limit="en-num" v-model="filter.lastLoginIp" />
+                    <Input style="width:100px"  v-model="filter.lastLoginIp" />
                 </li>
             </ul>
             <div class="right">
@@ -39,7 +39,7 @@
                     <td>{{row.last_login_ip}}</td>
                     <td>{{row}}</td>
                     <td>{{row.last_login_device}}</td>
-                    <td>{{row.create_at}}</td>
+                    <td>{{row.last_login_time}}</td>
                 </template>
             </Table>
             <Page
@@ -94,6 +94,7 @@ export default {
                 createAt: [this.filter.dates[0], this.filter.dates[1]],
                 lastLoginIp: this.filter.lastLoginIp
             }
+            console.log('请求数据',para)
             let params = window.all.tool.rmEmpty(para)
             let { method, url } = this.$api.user_login_log_list
             this.$http({ method: method, url: url, params: params }).then(

@@ -19,7 +19,7 @@
                 </li>
                 <li>
                     <span>登录IP</span>
-                    <Input style="width:100px"  v-model="filter.lastLoginIp" />
+                    <Input style="width:100px" v-model="filter.lastLoginIp" />
                 </li>
             </ul>
             <div class="right">
@@ -27,7 +27,7 @@
                     <button class="btn-blue" @click="getList">查询</button>
                 </span>
                 <span>
-                    <button class="btn-blue">导出Excel</button>
+                    <button class="btn-blue" @click="exportExcel()">导出Excel</button>
                 </span>
             </div>
         </div>
@@ -65,24 +65,24 @@ export default {
             // ],
             // user_id: "",
             filter: {
-                mobile: '',
-                uniqueld: '',
+                mobile: "",
+                uniqueld: "",
                 dates: [],
-                login_ip: ''
+                login_ip: ""
             },
             headers: [
-                { label: '会员账号' },
-                { label: '会员ID' },
-                { label: '登录IP' },
-                { label: '登录网址' },
-                { label: '登录设备' },
-                { label: '登录日期' }
+                "会员账号",
+                "会员ID",
+                "登录IP",
+                "登录网址",
+                "登录设备",
+                "登录日期"
             ],
             list: [],
             total: 0,
             pageNo: 1,
             pageSize: 25
-        }
+        };
     },
     methods: {
         updateNo(val) {},
@@ -93,28 +93,46 @@ export default {
                 uniqueld: this.filter.uniqueld,
                 createAt: [this.filter.dates[0], this.filter.dates[1]],
                 lastLoginIp: this.filter.lastLoginIp
-            }
-            console.log('请求数据',para)
-            let params = window.all.tool.rmEmpty(para)
-            let { method, url } = this.$api.user_login_log_list
+            };
+            console.log("请求数据", para);
+            let params = window.all.tool.rmEmpty(para);
+            let { method, url } = this.$api.user_login_log_list;
             this.$http({ method: method, url: url, params: params }).then(
                 res => {
-                    console.log('res', res)
-                    if (res && res.code == '200') {
-                        this.list = res.data.data
-                    } else {
-                        if (res && res.message !== '') {
-                            this.toast.error(res.message)
-                        }
-                    }
+                    console.log("res", res);
+                    if (res && res.code == "200") {
+                        this.list = res.data.data;
+                    } 
                 }
-            )
+            );
+        },
+        exportExcel() {
+            import("../../../js/config/Export2Excel").then(excel => {
+                const tHeader = this.headers;
+                const data = this.list.map(item => {
+                    return [
+                        item.mobile,
+                        item.uid,
+                        item.last_login_ip,
+                        item.a4,
+                        item.last_login_device,
+                        item.last_login_time,
+                    ];
+                });
+                excel.export_json_to_excel({
+                    header: tHeader,
+                    data,
+                    filename: "",
+                    autoWidth: true,
+                    bookType: "xlsx"
+                });
+            });
         }
     },
     mounted() {
-        this.getList()
+        this.getList();
     }
-}
+};
 </script>
 
 <style scoped>

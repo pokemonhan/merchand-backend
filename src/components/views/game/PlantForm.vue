@@ -254,10 +254,6 @@ export default {
                 if (res && res.code == "200") {
                     this.total = res.data.length;
                     this.list = res.data;
-                } else {
-                    if (res && res.message !== "") {
-                        this.$toast.error(res.message);
-                    }
                 }
             });
         }

@@ -161,6 +161,7 @@ export default {
         },
         plantSelect(item) {
             this.curr_btn = item.value
+            this.getList();
         },
         add() {
             this.dia_show = true;
@@ -184,25 +185,8 @@ export default {
                 }
             })
         },
-        setPicChange() {},
-        AddPicChange(e) {
-            if (!e.target.files.length) return
+        switchUpd(){
 
-            let files = e.target.files[0]
-            let data = new FormData()
-            data.append('file', files, files.name)
-            data.append('basket', 'set/helpset/uploads')
-
-            let { url, method } = this.$api.update_picture_database
-            let headers = { 'Content-Type': 'multipart/form-data' }
-            this.$http({ method, url, data, headers }).then(res => {
-                console.log('列表👌👌👌👌: ', res)
-                if (res && res.code === '200') {
-                    this.$set(this.form, 'pic', res.data.path)
-                    console.log(this.form)
-                    this.$toast.success(res && res.message)
-                }
-            })
         },
         AddPicChange(e) {
             let pic = e.target.files[0];
@@ -214,9 +198,9 @@ export default {
             let data = formList;
             let headers = { "Content-Type": "multipart/form-data" };
             this.$http({ method, url, data, headers }).then(res => {
-                // console.log(res)
+                console.log('返回数据',res)
                 if (res && res.code == "200") {
-                    this.form.pic_path = res.data.path;
+                    this.$set(this.form,"pic_path",res.data.path)
                 }
             });
         },
@@ -267,7 +251,7 @@ export default {
             }
             let {method,url}=this.$api.help_center_list;
             this.$http({method,url,data}).then(res=>{
-                console.log('返回数据',res)
+                // console.log('返回数据',res)
                 if(res && res.code=='200'){
                     this.list=res.data
                     this.total=res.data.length

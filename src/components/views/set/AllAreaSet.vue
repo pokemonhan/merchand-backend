@@ -360,8 +360,8 @@ export default {
             chat_lev_opt: [
                 { label: '全部', value: '' },
                 { label: 'VIP1', value: 0 },
-                { label: 'VIP2', value: 0 },
-                { label: 'VIP3', value: 0 }
+                { label: 'VIP2', value: 1 },
+                { label: 'VIP3', value: 2 }
             ],
             list:[],
         }

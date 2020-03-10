@@ -52,8 +52,8 @@
                 </li>
                 <li style="margin-left:-10px"></li>
                 <li class="mb10">
-                    <button class="btn-blue" @click="getList" >查询</button>
-                    <button class="btn-blue" @click="exportExcel()" >导出Excel</button>
+                    <button class="btn-blue" @click="getList">查询</button>
+                    <button class="btn-blue" @click="exportExcel()">导出Excel</button>
                     <button class="btn-red" @click="clearClick">清空</button>
                 </li>
             </ul>
@@ -67,7 +67,10 @@
                     <td>{{row.user && row.user.id}}</td>
                     <td>{{row.parent && row.parent.mobile}}</td>
                     <td>
-                        <i v-if="row.user && row.user.is_tester==='1'" class="iconfont icongou green"></i>
+                        <i
+                            v-if="row.user && row.user.is_tester==='1'"
+                            class="iconfont icongou green"
+                        ></i>
                         <i v-if="row.user && row.user.is_tester==='0'" class="iconfont iconcha red"></i>
                     </td>
                     <td>{{row.snap_merchant_no}}</td>
@@ -87,36 +90,34 @@
             </Table>
         </div>
         <div class="total-table">
-            <table>
-                <tr>
-                    <th>
-                        <span>合计:</span>
-                        <span>{{''}}</span>
-                    </th>
-                    <th>
-                        <span>充值金额:</span>
-                        <span>{{''}}</span>
-                    </th>
-                    <th>
-                        <span>实际到账:</span>
-                        <span>{{''}}</span>
-                    </th>
-                </tr>
-                <tr>
-                    <th>
-                        <span>总计:</span>
-                        <span>{{''}}</span>
-                    </th>
-                    <th>
-                        <span>实际到账:</span>
-                        <span>{{''}}</span>
-                    </th>
-                    <th>
-                        <span>实际到账:</span>
-                        <span>{{''}}</span>
-                    </th>
-                </tr>
-            </table>
+            <ul>
+                <li>
+                    <span>合计:</span>
+                    <span>{{''}}</span>
+                </li>
+                <li>
+                    <span>充值金额:</span>
+                    <span>{{''}}</span>
+                </li>
+                <li>
+                    <span>实际到账:</span>
+                    <span>{{''}}</span>
+                </li>
+            </ul>
+            <ul>
+                <li>
+                    <span>总计:</span>
+                    <span>{{''}}</span>
+                </li>
+                <li>
+                    <span>实际到账:</span>
+                    <span>{{''}}</span>
+                </li>
+                <li>
+                    <span>实际到账:</span>
+                    <span>{{''}}</span>
+                </li>
+            </ul>
         </div>
         <Page
             class="table-page"
@@ -240,20 +241,37 @@ export default {
             this.filter.end_date = dates[1];
             this.filter = Object.assign(this.filter);
         },
-        exportExcel(){
-            import('../../../../js/config/Export2Excel').then(excel=>{
-                const tHeaders=this.headers
-                const data=this.list.map(item=>{
-                    return[item.order_no,item,platform_no,item.user.mobile,item.user.id,item.parent.mobile,item.user.is_tester,item.snap_merchant_no,item.snap_merchant_code,item.snap_merchant,item.snap_finance_type,item.money,item.arrive_money,item.status,item.created_at,item.updated_at]
-                })
+        exportExcel() {
+            import("../../../../js/config/Export2Excel").then(excel => {
+                const tHeaders = this.headers;
+                const data = this.list.map(item => {
+                    return [
+                        item.order_no,
+                        item,
+                        platform_no,
+                        item.user.mobile,
+                        item.user.id,
+                        item.parent.mobile,
+                        item.user.is_tester,
+                        item.snap_merchant_no,
+                        item.snap_merchant_code,
+                        item.snap_merchant,
+                        item.snap_finance_type,
+                        item.money,
+                        item.arrive_money,
+                        item.status,
+                        item.created_at,
+                        item.updated_at
+                    ];
+                });
                 excel.export_json_to_excel({
-                    header:tHeaders,
+                    header: tHeaders,
                     data,
-                    filename:excel,
-                    autoWidth:true,
-                    bookType:'xlsx'
-                })
-            })
+                    filename: excel,
+                    autoWidth: true,
+                    bookType: "xlsx"
+                });
+            });
         },
         clearClick() {
             this.filter = {
@@ -304,9 +322,7 @@ export default {
         manualDepositclick(row, is_confirm) {
             this.dialog_show = true;
         },
-        manualDepositCfm(){
-
-        },
+        manualDepositCfm() {},
         showDetail(row) {
             this.is_show_online_detail = true;
             this.$nextTick(() => {
@@ -391,52 +407,57 @@ export default {
             let { url, method } = this.$api.founds_incomeorder_pay_method;
             this.$http({ method, url, params }).then(res => {
                 // console.log("返回数据", res);
-                if(res && res.code=='200'){
-                    this.pay_way_opt =this.backToSelOpt(res.data);
+                if (res && res.code == "200") {
+                    this.pay_way_opt = this.backToSelOpt(res.data);
                 }
             });
         },
-        backToSelOpt(list=[]){
-            let all=[
+        backToSelOpt(list = []) {
+            let all = [
                 {
-                    label:'全部',
-                    value:""
+                    label: "全部",
+                    value: ""
                 }
             ];
-            let back_list=list.map(item=>{
-                return{label:item.name,value:item.id};
+            let back_list = list.map(item => {
+                return { label: item.name, value: item.id };
             });
             return all.concat(back_list);
         },
-        getList(){
-            let created_at=''
-            if(this.filter.start_date && this.filter.end_date){
-                created_at=JSON.stringify([this.filter.start_date,this.filter.end_date])
+        getList() {
+            let created_at = "";
+            if (this.filter.start_date && this.filter.end_date) {
+                created_at = JSON.stringify([
+                    this.filter.start_date,
+                    this.filter.end_date
+                ]);
             }
-            let para={
-                is_online:"1",
-                mobile:this.filter.account,
-                guid:this.filter.acc_id,
-                created_at:created_at,
-                snap_merchant_code:this.filter.vendor_num,
-                status:this.filter.pay_status,
-                finance_type_id:this.filter.pay_way,
-                is_tester:this.filter.official_acc,
-                order_no:this.filter.system_id,
-                platform_no:this.filter.vendor_order_id,
-                snap_merchant_no:this.filter.vendor_num_id,
-                snap_merchant:this.filter.vendor,
+            let para = {
+                is_online: "1",
+                mobile: this.filter.account,
+                guid: this.filter.acc_id,
+                created_at: created_at,
+                snap_merchant_code: this.filter.vendor_num,
+                status: this.filter.pay_status,
+                finance_type_id: this.filter.pay_way,
+                is_tester: this.filter.official_acc,
+                order_no: this.filter.system_id,
+                platform_no: this.filter.vendor_order_id,
+                snap_merchant_no: this.filter.vendor_num_id,
+                snap_merchant: this.filter.vendor
             };
-            console.log('para: ', para);
-            let params =window.all.tool.rmEmpty(para);
-            let {method,url} =this.$api.founds_incomeorder_list;
-            this.$http({method:method,url:url,params:params}).then(res=>{
-                // console.log("列表返回数据",res)
-                if(res && res.code=='200'){
-                    this.list=res.data.data
-                    this.total=res.data.total;
+            console.log("para: ", para);
+            let params = window.all.tool.rmEmpty(para);
+            let { method, url } = this.$api.founds_incomeorder_list;
+            this.$http({ method: method, url: url, params: params }).then(
+                res => {
+                    // console.log("列表返回数据",res)
+                    if (res && res.code == "200") {
+                        this.list = res.data.data;
+                        this.total = res.data.total;
+                    }
                 }
-            })
+            );
         },
         updateNo(val) {},
         updateSize(val) {}
@@ -473,18 +494,6 @@ export default {
 }
 .green {
     color: rgb(7, 219, 88);
-}
-.total-table ul {
-    display: flex;
-    height: 40px;
-    line-height: 40px;
-    padding-left: 10px;
-    font-weight: bold;
-    color: #4c8bfd;
-    background: rgba(229, 247, 255, 1);
-}
-.total-table ul > li {
-    margin-right: 100px;
 }
 /* ------------------   手动入款   ---------------*/
 .manu-dialog {
@@ -534,7 +543,6 @@ table {
     text-align: center;
     margin-top: 20px;
 }
-
 
 .textarea {
     border: 1px solid #666;

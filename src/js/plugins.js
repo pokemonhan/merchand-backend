@@ -146,7 +146,13 @@ export default {
                 let lastTime = requestObj[url]
                 let delay = now - lastTime
                 // 同一接口时间大于1500毫秒 就请求
-                if (delay > 300) {
+                function excludeRequest() {
+                    let excludeArr = ['/merchant-api/game/get-search-condition-data', '/merchant-api/recharge-order/index', '/merchant-api/game/h5-index', '/merchant-api/game/pc-index', '/merchant-api/game/app-index', '/merchant-api/costomer-service/index']
+                    // console.log('请求地址', url)
+                    return excludeArr.indexOf(url) !== -1
+                }
+                // 同一请求大于300ms 获取在除外数组中，就会请求
+                if (delay > 300 || excludeRequest()) {
                     requestObj[url] = now
                     return $http(opt)
                 } else {
@@ -155,7 +161,7 @@ export default {
                         "message": "请求过快！！"
                     }
                     data = JSON.stringify(data)
-                    
+
                     // 能toast 的情况 这两个接口同步弹出,所以例外
                     let canToast = function () {
                         let excludeArr = ['/headquarters-api/finance-channel/get-search-condition', '/headquarters-api/game/get-search-condition',]
@@ -170,8 +176,6 @@ export default {
                 requestObj[url] = now
                 return $http(opt)
             }
-
-
         };
         Vue.prototype.$api = $api;
         Vue.prototype.$socket = $socket;

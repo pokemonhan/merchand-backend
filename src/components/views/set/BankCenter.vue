@@ -32,16 +32,14 @@
         </div>
         <div class="talbe mt20">
             <Table :headers="headers" :column="list">
-                <template v-slot:item="{row,idx}">
-                    <td>{{(pageNo-1)*pageSize+idx+1}}</td>
-                    <td
-                        :class="row.status?'green':'red'"
-                    >{{row.status===1?'开启':row.status===0?'关闭':'???'}}</td>
-                    <td>{{row.a1}}</td>
-                    <td>{{row.a2}}</td>
-                    <td>{{row.a2}}</td>
-                    <td>{{row.a2}}</td>
-                    <td>{{row.a2}}</td>
+                <template v-slot:item="{row}">
+                    <td>{{row.mobile}}</td>
+                    <td>{{row.id}}</td>
+                    <td>{{row.owner_name}}</td>
+                    <td>{{row.bank_name}}</td>
+                    <td>{{row.card_number}}</td>
+                    <td>{{row.created_at}}</td>
+                    <td>{{row.id}}</td> 
                     <td>
                         <button class="btns-red" @click="delclick(row)">删除</button>
                     </td>
@@ -113,13 +111,29 @@ export default {
             pageSize: 25,
             //mod
             mod_show: false,
+            curr_row:{},
         }
     },
     methods: {
         delclick(row) {
             this.mod_show = true
+            this.curr_row=row;
+
         },
-        modConf() {},
+        modConf(row) {
+            let data={
+                id:this.curr_row.id
+            }
+            let {method,url}=this.$api.bank_cards_del;
+            this.$http({method,url,data}).then(res=>{
+                if(res && res.code=='200'){
+                    this.$toast.success(res && res.message);
+                    this.mod_show=false;
+                    this.getList();
+                }
+            })
+        },
+
         updateNo(val) {},
         updateSize(val) {},
         getList(){
@@ -137,6 +151,10 @@ export default {
            let {method,url}=this.$api.bank_cards_list
            this.$http({method,url,data}).then(res=>{
                console.log('返回数据',res)
+               if(res && res.code=='200'){
+                   this.list=res.data.data
+                   this.total=res.data.total
+               }
            })
         },
     },

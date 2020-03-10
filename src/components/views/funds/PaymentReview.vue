@@ -80,6 +80,7 @@
                 <ul>
                     <li>
                         <span>合计:</span>
+                        <span></span>
                     </li>
                     <li>
                         <span>出款金额:</span>
@@ -306,10 +307,14 @@ export default {
 <style scoped>
 /* .filer .left 有全局样式 见App.vue */
 .filter {
-    padding-left: 10px;
+    margin-bottom: 10px;
     padding-bottom: 10px;
+    padding-left: 10px;
 }
-.filter .left > li {
+.filter .left {
+    margin-left: 10px;
+}
+.filter .left li {
     margin-top: 10px;
 }
 .dia-inner {

@@ -126,7 +126,7 @@ export default {
         getSelectOpt() {
             let { url, method } = this.$api.game_search_condition_list;
             this.$http({ url, method }).then(res => {
-                // console.log('下拉数据',res)
+                console.log('下拉数据',res)
                 if (res && res.code == "200") {
                     this.select = res.data;
                     this.plant_opt = this.backToSelOpt(
@@ -200,7 +200,7 @@ export default {
 
             let { url, method } = this.$api.game_app_list;
             this.$http({ method, url, params }).then(res => {
-                console.log("列表👌👌👌👌: ", res);
+                // console.log("列表👌👌👌👌: ", res);
                 if (res && res.code === "200") {
                     this.total = res.data.length;
                     this.list = res.data;

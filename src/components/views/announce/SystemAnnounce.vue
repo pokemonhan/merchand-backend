@@ -51,15 +51,15 @@
                     </td>
                 </template>
             </Table>
-            <Page
-                class="table-page"
-                :total="total"
-                :pageNo.sync="pageNo"
-                :pageSize.sync="pageSize"
-                @updateNo="updateNo"
-                @updateSize="updateSize"
-            />
         </div>
+        <Page
+            class="table-page"
+            :total="total"
+            :pageNo.sync="pageNo"
+            :pageSize.sync="pageSize"
+            @updateNo="updateNo"
+            @updateSize="updateSize"
+        />
         <Dialog :show.sync="dia_show" :title="dia_title">
             <div class="dia-inner">
                 <div>
@@ -251,10 +251,12 @@ export default {
             }
             return device_all.slice(0, -1);
         },
-        updateNo(val) {},
-        updateSize(val) {},
-        upFileChange(e) {
-            console.log("e: ", e);
+        updateNo(val) {
+            this.getList();
+        },
+        updateSize(val) {
+            this.pageNo = 1;
+            this.getList();
         },
         upAppPicChange(e) {
             let pic = e.target.files[0];
@@ -406,7 +408,9 @@ export default {
         },
         getList() {
             let para = {
-                title: this.filter.header
+                title: this.filter.header,
+                page: this.pageNo,
+                pageSize: this.pageSize
             };
             let params = window.all.tool.rmEmpty(para);
             let { url, method } = this.$api.announce_systemannounce_list;
@@ -507,8 +511,17 @@ export default {
     position: relative;
     bottom: -4px;
 }
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
 .table {
-    margin-top: 20px;
+    margin-top: 8px;
+    width: 100%;
+    overflow-x: auto;
+}
+.table .v-table {
+    width: 2000px;
 }
 /* .modal-mask ---在 App.vue公共区 */
 /* .dia-inner {

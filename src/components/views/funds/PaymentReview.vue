@@ -266,8 +266,13 @@ export default {
             this.dia_show = true
             this.dia_title='查看稽核'
         },
-        updateNo(val) {},
-        updateSize(val) {},
+        updateNo(val) {
+            this.getLsit();
+        },
+        updateSize(val) {
+            this.pageNo=1;
+            this.getLsit();
+        },
         getLsit(){
             let created_at = ''
             if (this.filter.apply_dates[0] && this.filter.apply_dates[1]) {
@@ -286,6 +291,8 @@ export default {
                review_at:review_at,
                status:this.filter.review_status,
                is_audit:this.filter.is_audit_withhold,
+               page:this.pageNo,
+               pageSize:this.pageSize,
            };
            let params=window.all.tool.rmEmpty(para);
            let {method,url}=this.$api.founds_interface_list;

@@ -49,7 +49,7 @@
         <div class="table mt20">
             <Table :headers="headers" :column="list">
                 <template v-slot:item="{row}">
-                    <td>{{row.type_id}}</td>
+                    <td>{{row.type && row.type.name}}</td>
                     <td>{{row.name}}</td>
                     <td>{{row.username}}</td>
                     <td>{{row.account}}</td>
@@ -256,7 +256,6 @@ export default {
         getSelectOpt() {
             let { url, method } = this.$api.offline_finance_types_list;
             this.$http({ url, method }).then(res => {
-                // console.log('下拉数据：',res);
                 if (res && res.code == "200") {
                     this.type_opt = this.backToSelOpt(res.data);
                     this.inconm_opt = this.backToSelOpt(res.data);
@@ -286,7 +285,9 @@ export default {
             });
         },
         backToBankSelOpt(list = []) {
-            let all = [];
+            let all = [
+
+            ];
             let bank_list = list.map(item => {
                 return { label: item.name, value: item.id };
             });
@@ -321,21 +322,16 @@ export default {
             this.showTag.splice(index, 1);
         },
         tagChange() {
-            // console.log(this.form.formtag);
             let show_arr = [];
             for (let key in this.form.formtag) {
-                // this.form.formtag[key]
                 let item = this.form.formtag[key];
                 console.log("item: ", item);
                 if (item) {
                     show_arr.push(key);
                 }
-                console.log("show_arr: ", show_arr);
                 this.showTag = this.all_tag.filter(item => {
-                    // console.log("item: ", item);
                     return show_arr.indexOf(String(item.value)) !== -1;
                 });
-                // console.log("this.showTag: ", this.showTag);
             }
         },
         diaCfm() {
@@ -348,8 +344,8 @@ export default {
         },
         addClearAll() {
             this.form = {
-                inconm: 1,
-                bank: 1,
+                inconm: "",
+                bank: "",
                 accountName: "",
                 qrcode: "",
                 accountNumber: "",
@@ -371,8 +367,6 @@ export default {
             this.addClearAll();
         },
         upQRcode(e, form) {
-            // console.log("form:", form);
-            // console.log("event:", e);
             let pic = e.target.files[0];
             let basket = "pay/offlinePay/uploads";
             let formList = new FormData();
@@ -383,15 +377,18 @@ export default {
             let headers = { "Content-Type": "multipart/form-data" };
             this.$http({ method, url, data, headers }).then(res => {
                 if (res && res.code == "200") {
-                    // console.log("图片返回",res)
                     this.form.qrcode = res.data.path;
                 }
             });
         },
         addCfm() {
-            let data = {
+            let bank_id=this.form.bank
+            if(this.form.inconm!=1){
+                bank_id=''
+            }
+            let datas = {
                 type_id: this.form.inconm,
-                bank_id: this.form.bank,
+                bank_id: bank_id,
                 name: this.form.accountName,
                 qrcode: this.form.qrcode,
                 account: this.form.accountNumber,
@@ -408,10 +405,9 @@ export default {
                 ),
                 reamrk: this.form.description
             };
-            // console.log('请求条件',data)
+            let data=window.all.tool.rmEmpty(datas);
             let { url, method } = this.$api.offline_finance_add;
             this.$http({ method, url, data }).then(res => {
-                console.log("res:", res);
                 if (res && res.code == "200") {
                     this.$toast.success(res && res.message);
                     this.dia_show = false;
@@ -461,7 +457,6 @@ export default {
             let data = {
                 id: this.curr_row.id
             };
-            console.log("请求数据：", data);
             let { url, method } = this.$api.offline_finance_del;
             this.$http({ method, url, data }).then(res => {
                 if (res && res.code == "200") {
@@ -491,12 +486,11 @@ export default {
                 last_editor_name: this.filter.update_person,
                 updated_at: updated_at,
             };
-            console.log('请求数据',para)
             let params = window.all.tool.rmEmpty(para);
             let { method, url } = this.$api.offline_finance_list;
             this.$http({ method, url, params }).then(
                 res => {
-                    console.log('返回数据：',res)
+                    console.log('返回数据',res)
                     if (res && res.code == "200") {
                         this.list = res.data.data;
                         this.total = res.data.total;

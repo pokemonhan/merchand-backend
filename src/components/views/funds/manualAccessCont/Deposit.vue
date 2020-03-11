@@ -182,7 +182,9 @@ export default {
                 guid: this.filter.account_id,
                 created_at: created_at,
                 is_tester: this.filter.official_account,
-                type: this.filter.charge_type
+                type: this.filter.charge_type,
+                page:this.pageNo,
+                pageSize:this.pageSize
             };
             let params = window.all.tool.rmEmpty(para);
             let {
@@ -247,8 +249,13 @@ export default {
                 }
             })
         },
-        updateNo(val) {},
-        updateSize(val) {}
+        updateNo(val) {
+            this.getList();
+        },
+        updateSize(val) {
+            this.pageNo=1;
+            this.getList();
+        }
     },
     mounted() {
         this.getList();

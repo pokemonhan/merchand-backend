@@ -254,10 +254,13 @@ export default {
                 is_audit_withhold: ""
             };
         },
-        updateNo(val) {},
-        updateSize(val) {},
-        updateNo(val) {},
-        updateSize(val) {},
+        updateNo(val) {
+            this.getList();
+        },
+        updateSize(val) {
+            this.pageNo=1;
+            this.getList();
+        },
         statusShow(){
             this.dia_show=true
             this.dia_title='出款订单审核'
@@ -276,6 +279,8 @@ export default {
                 is_audit:this.filter.is_audit_withhold,
                 admin:this.filter.auditor,
                 operation_at:operation_at,
+                page:this.pageNo,
+                pageSize:this.pageSize
             }
             let params=window.all.tool.rmEmpty(para);
             let {method,url}=this.$api.founds_paymentorder_list;

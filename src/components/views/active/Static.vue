@@ -33,7 +33,7 @@
                     <td>{{row.author && row.author.name}}</td>
                     <td>{{row.created_at}}</td>
                     <td>{{row.end_time}}</td>
-                    <td>{{row.last_editor_id}}</td>
+                    <td>{{row.last_editor && row.last_editor.name}}</td>
                     <td>{{row.updated_at}}</td>
                     <td>
                         <Switchbox class="switch-select" :value="row.status" @update="switchStatus($event,row)" />
@@ -270,17 +270,24 @@ export default {
             this.curr_btn = item.value;
             this.getList();
         },
-        updateNo(val) {},
-        updateSize(val) {},
+        updateNo(val) {
+            this.getList();
+        },
+        updateSize(val) {
+            this.pageNo=1;
+            this.getList();
+        },
         getList() {
             let para = {
                 device: this.curr_btn,
-                title: this.filter.title
+                title: this.filter.title,
+                page:this.pageNo,
+                pageSize:this.pageSize
             };
             let params = window.all.tool.rmEmpty(para);
             let { method, url } = this.$api.static_active_list;
             this.$http({ method, url, params }).then(res => {
-                console.log(res);
+                // console.log(res);
                 if (res && res.code == "200") {
                     this.total = res.data.total;
                     this.list = res.data.data;

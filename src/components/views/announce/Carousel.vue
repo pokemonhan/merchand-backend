@@ -431,6 +431,7 @@ export default {
 }
 .inf-right {
     max-width: 365px;
+    font-size: 12px;
 }
 .right > li .inf-right {
     padding-left: 10px;
@@ -439,4 +440,5 @@ export default {
 .inf-right > ul > li {
     margin-top: 15px;
 }
+
 </style>

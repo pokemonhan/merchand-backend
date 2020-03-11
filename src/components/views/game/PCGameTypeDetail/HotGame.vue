@@ -32,7 +32,7 @@
                     <td>
                         <Switchbox
                             class="switch-select"
-                            :value="row.is_hot"
+                            :value="row.hot_new"
                             @update="switchUpd($event,row)"
                         />
                     </td>

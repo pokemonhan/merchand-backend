@@ -20,7 +20,7 @@
                     <Select v-model="filter.status" :options="status_opt"></Select>
                 </li>
                 <li>
-                    <button class="btn-blue" @click="getList" >查询</button>
+                    <button class="btn-blue" @click="getList">查询</button>
                     <button class="btn-blue" @click="add">添加</button>
                 </li>
             </ul>
@@ -32,14 +32,18 @@
                     <td>{{(pageNo-1)*pageSize+idx+1}}</td>
                     <td>{{row.title}}</td>
                     <td>
-                        <img :src="protocol+'//pic.jianghu.local/'+row.pic" alt="图片加载失败..." style="max-width:100px;max-height:100px;" />
+                        <img
+                            v-if="row.pic"
+                            :src="protocol+'//pic.jianghu.local/'+row.pic"
+                            style="max-width:100px;max-height:100px;"
+                        />
                     </td>
-                    <td>{{row.author&&row.author.name}}</td>
+                    <td>{{row.author && row.author.name}}</td>
                     <td>{{row.created_at}}</td>
                     <td>
                         <Switchbox :value="row.status" @update="switchUpd($event,row)" />
                     </td>
-                    <td>{{row.newer&&row.newer.name}}</td>
+                    <td>{{row.newer && row.newer.name}}</td>
                     <td>{{row.updated_at}}</td>
                     <td>
                         <Upload
@@ -72,7 +76,12 @@
                         <li>
                             <span>添加图片:</span>
                             <Input style="width:98px" v-model="form.pic_path" />
-                            <Upload style="width:100px;" title="选择图片"   @change="AddPicChange($event)" type="file" />
+                            <Upload
+                                style="width:100px;"
+                                title="选择图片"
+                                @change="AddPicChange($event)"
+                                type="file"
+                            />
                         </li>
                         <li>
                             <span>是否启用:</span>
@@ -80,7 +89,7 @@
                         </li>
                         <li class="form-btn">
                             <button class="btn-plain-large" @click="dia_show=false">取消</button>
-                            <button class="btn-blue-large ml50" @click="addCfm" >确认</button>
+                            <button class="btn-blue-large ml50" @click="addCfm">确认</button>
                         </li>
                     </ul>
                 </div>
@@ -94,46 +103,46 @@ export default {
         return {
             curr_btn: 1,
             plant_opt: [
-                { label: 'H5帮助管理', value: 1 },
-                { label: 'PC帮助管理', value: 2 },
-                { label: 'APP帮助管理', value: 3 }
+                { label: "H5帮助管理", value: 1 },
+                { label: "PC帮助管理", value: 2 },
+                { label: "APP帮助管理", value: 3 }
             ],
             status_opt: [
-                { label: '全部', value: '' },
-                { label: '启用', value: '1' },
-                { label: '关闭', value: '0' }
+                { label: "全部", value: "" },
+                { label: "启用", value: "1" },
+                { label: "关闭", value: "0" }
             ],
             filter: {
-                title: '',
-                status: ''
+                title: "",
+                status: ""
             },
             protocol: window.location.protocol,
             headers: [
-                '编号',
-                '标题',
-                '图片',
-                '添加人',
-                '添加时间',
-                '是否启用',
-                '最后更新人',
-                '最后跟新时间',
-                '操作'
+                "编号",
+                "标题",
+                "图片",
+                "添加人",
+                "添加时间",
+                "是否启用",
+                "最后更新人",
+                "最后跟新时间",
+                "操作"
             ],
             list: [
                 {
-                    a1: '64646466',
-                    a2: 'sdfsdfdsf',
-                    a3: '充支好礼',
-                    a4: '1',
-                    a5: '2019-02-02 21:30',
+                    a1: "64646466",
+                    a2: "sdfsdfdsf",
+                    a3: "充支好礼",
+                    a4: "1",
+                    a5: "2019-02-02 21:30",
                     status: false
                 },
                 {
-                    a1: '64646466',
-                    a2: 'sdfsdfdsf',
-                    a3: '充支好礼',
-                    a4: '1',
-                    a5: '2019-02-02 21:30',
+                    a1: "64646466",
+                    a2: "sdfsdfdsf",
+                    a3: "充支好礼",
+                    a4: "1",
+                    a5: "2019-02-02 21:30",
                     status: false
                 }
             ],
@@ -143,50 +152,60 @@ export default {
             // dialog
             curr_row: {},
             dia_show: false,
-            dia_status: '',
+            dia_status: "",
             form: {
-                title:'',
-                pic_path:'',
-                status:''
+                title: "",
+                pic_path: "",
+                status: ""
             }
-        }
+        };
     },
     methods: {
-        initForm(){
-            this.form={
-               title:'',
-               pic_path:'',
-               status:0, 
-            }
+        initForm() {
+            this.form = {
+                title: "",
+                pic_path: "",
+                status: 0
+            };
         },
         plantSelect(item) {
-            this.curr_btn = item.value
+            this.curr_btn = item.value;
             this.getList();
         },
         add() {
             this.dia_show = true;
             this.initForm();
         },
-        addCfm(){
-            let data={
-               type:this.curr_btn,
-               title:this.form.title,
-               pic:this.form.pic_path,
-               status:this.form.status, 
-            }
-            console.log('请求数据',data)
-            let {url,method}=this.$api.help_center_add;
-            this.$http({method,url,data}).then(res=>{
+        addCfm() {
+            let data = {
+                type: this.curr_btn,
+                title: this.form.title,
+                pic: this.form.pic_path,
+                status: this.form.status
+            };
+            // console.log('请求数据',data)
+            let { url, method } = this.$api.help_center_add;
+            this.$http({ method, url, data }).then(res => {
                 // console.log('返回数据',res)
-                if(res && res.code=='200'){
-                    this.$toast.success(res && res.message)
-                    this.dia_show=false;
+                if (res && res.code == "200") {
+                    this.$toast.success(res && res.message);
+                    this.dia_show = false;
                     this.getList();
                 }
-            })
+            });
         },
-        switchUpd(){
-
+        switchUpd(val, row) {
+            let data = {
+                id: row.id,
+                status: val ? 1 : 0
+            };
+            let { url, method } = this.$api.help_center_set;
+            this.$http({ method, url, data }).then(res => {
+                if (res && res.code == "200") {
+                    this.$toast.success(res && res.message);
+                    this.getList();
+                }
+            });
         },
         AddPicChange(e) {
             let pic = e.target.files[0];
@@ -198,15 +217,13 @@ export default {
             let data = formList;
             let headers = { "Content-Type": "multipart/form-data" };
             this.$http({ method, url, data, headers }).then(res => {
-                console.log('返回数据',res)
+                // console.log('返回数据',res)
                 if (res && res.code == "200") {
-                    this.$set(this.form,"pic_path",res.data.path)
+                    this.$set(this.form, "pic_path", res.data.path);
                 }
             });
         },
-        upPicChange(e,row){
-            console.log("row: ", row);
-            console.log("event: ", e);
+        upPicChange(e, row) {
             let reader = new FileReader();
             let pic = e.target.files[0];
             let basket = "set/helpset/uploads";
@@ -230,39 +247,39 @@ export default {
             console.log(data);
             let para = {
                 id: id,
-                icon: data.path
+                pic: data.path
             };
-            console.log(para);
+            // console.log('请求数据',para);
             let { url, method } = this.$api.help_center_set;
             this.$http({ method, url, data: para }).then(res => {
                 console.log("res", res);
-                if(res && res.code=='200'){
+                if (res && res.code == "200") {
                     this.getList();
                 }
             });
         },
         updateNo(val) {},
         updateSize(val) {},
-        getList(){
-            let data={
-                type:this.curr_btn,
+        getList() {
+            let data = {
+                type: this.curr_btn
                 // title:this.filter.title,
                 // status:this.filter.status,
-            }
-            let {method,url}=this.$api.help_center_list;
-            this.$http({method,url,data}).then(res=>{
+            };
+            let { method, url } = this.$api.help_center_list;
+            this.$http({ method, url, data }).then(res => {
                 // console.log('返回数据',res)
-                if(res && res.code=='200'){
-                    this.list=res.data
-                    this.total=res.data.length
+                if (res && res.code == "200") {
+                    this.list = res.data;
+                    this.total = res.data.length;
                 }
-            })
-        },
+            });
+        }
     },
     mounted() {
-        this.getList()
+        this.getList();
     }
-}
+};
 </script>
 
 <style scoped>

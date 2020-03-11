@@ -22,7 +22,7 @@ let http = axios.create({
     // retry: 2,
     // retryDelay: 1000,
     // withCredentials : true,
-
+    
     header: {
         'Content-Type': 'application/json; charset=utf-8',
         // 'content-type' : 'application/x-www-form-urlencoded',

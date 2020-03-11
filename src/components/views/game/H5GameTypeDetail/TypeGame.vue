@@ -109,13 +109,13 @@ export default {
                 "是否启用",
                 "是否热门",
                 "是否推荐",
-                "操作"
+                "操作",
             ],
             list: [],
             total: 0,
             pageNo: 1,
             pageSize: 25,
-            basket: []
+            basket: [],
         };
     },
 

@@ -36,15 +36,15 @@
                     </td>
                 </template>
             </Table>
-            <Page
-                class="table-page"
-                :total="total"
-                :pageNo.sync="pageNo"
-                :pageSize.sync="pageSize"
-                @updateNo="updateNo"
-                @updateSize="updateSize"
-            />
         </div>
+        <Page
+            class="table-page"
+            :total="total"
+            :pageNo.sync="pageNo"
+            :pageSize.sync="pageSize"
+            @updateNo="updateNo"
+            @updateSize="updateSize"
+        />
         <Dialog :show.sync="dia_show" :title="dia_title">
             <div class="dia-inner">
                 <ul class="form">
@@ -149,25 +149,30 @@ export default {
             dia_title: "",
             curr_row: {},
             device_name: {
-                1: 'PC',
-                2: 'H5',
-                3: 'APP'
-            },
+                1: "PC",
+                2: "H5",
+                3: "APP"
+            }
         };
     },
     methods: {
         getDevice(device) {
-            let device_all='';
+            let device_all = "";
             // console.log("传值", device);
-            for(let i=0;i<device.length;i++){
-                let item=device[i];
-                let name=this.device_name[item];
-                device_all=device_all+name+"," ;
+            for (let i = 0; i < device.length; i++) {
+                let item = device[i];
+                let name = this.device_name[item];
+                device_all = device_all + name + ",";
             }
-            return device_all.slice(0,-1)
+            return device_all.slice(0, -1);
         },
-        updateNo(val) {},
-        updateSize(val) {},
+        updateNo(val) {
+            this.getList();
+        },
+        updateSize(val) {
+            this.pageNo = 1;
+            this.getList();
+        },
         equipSelectAll() {
             let bool = this.form.select_all;
             for (let i = 0; i < this.equip.length; i++) {
@@ -310,7 +315,9 @@ export default {
         },
         getList() {
             let para = {
-                title: this.filter.header
+                title: this.filter.header,
+                page: this.pageNo,
+                pageSize: this.pageSize
             };
             let params = window.all.tool.rmEmpty(para);
             let { url, method } = this.$api.announce_marquee_list;
@@ -337,8 +344,17 @@ export default {
 .p10 {
     padding: 10px;
 }
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
 .table {
-    margin-top: 20px;
+    margin-top: 8px;
+    width: 100%;
+    overflow-x: auto;
+}
+.table .v-table {
+    width: 2000px;
 }
 .td-switch {
     width: 42px;

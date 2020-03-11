@@ -296,7 +296,6 @@ export default {
         getSelectOpt() {
             let { url, method } = this.$api.online_finance_channel_list;
             this.$http({ url, method }).then(res => {
-                console.log(res);
                 if (res && res.code == "200") {
                     this.pay_method_opt = this.backToSelOpt(res.data);
                 }
@@ -323,8 +322,6 @@ export default {
             }
         },
         upLoadChange(e, form) {
-            console.log("form:", form);
-            console.log("event:", e);
             let certificate = e.target.files[0];
             let basket = "pay/onlinepay/certificate";
             let formList = new FormData();
@@ -393,10 +390,8 @@ export default {
                 desc: this.form.specifcation,
                 backend_remark: this.form.mark
             };
-            console.log("请求数据：", data);
             let { url, method } = this.$api.online_finance_add;
             this.$http({ method, url, data }).then(res => {
-                console.log("添加返回数据：", res);
             });
         },
         edit() {
@@ -491,12 +486,10 @@ export default {
                 author_name: this.filter.person,
                 last_editor_name: this.filter.update_person
             };
-            console.log('请求数据',para)
             let params = window.all.tool.rmEmpty(para);
             let { method, url } = this.$api.online_finance_list;
             this.$http({ method: method, url: url, params: params }).then(
                 res => {
-                    console.log("返回数据", res);
                     if (res && res.code == "200") {
                         this.list = res.data.data;
                         this.total = res.data.total;

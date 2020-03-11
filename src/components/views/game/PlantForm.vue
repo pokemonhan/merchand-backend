@@ -31,8 +31,8 @@
                 <template v-slot:item="{row,idx}">
                     <td>
                         <img
+                            v-if="row.icon"
                             :src="protocol+'//pic.jianghu.local/'+row.icon"
-                            alt
                             style="max-width:100px;min-height:100px"
                         />
                     </td>

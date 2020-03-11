@@ -444,7 +444,9 @@ export default {
                 order_no: this.filter.system_id,
                 platform_no: this.filter.vendor_order_id,
                 snap_merchant_no: this.filter.vendor_num_id,
-                snap_merchant: this.filter.vendor
+                snap_merchant: this.filter.vendor,
+                page:this.pageNo,
+                pageSize:this.pageSize,
             };
             console.log("para: ", para);
             let params = window.all.tool.rmEmpty(para);
@@ -459,8 +461,13 @@ export default {
                 }
             );
         },
-        updateNo(val) {},
-        updateSize(val) {}
+        updateNo(val) {
+            this.getList();
+        },
+        updateSize(val) {
+            this.pageNo=1;
+            this.getList();
+        }
     },
     mounted() {
         this.getPayMethodSel();

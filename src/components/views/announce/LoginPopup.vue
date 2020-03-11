@@ -77,7 +77,7 @@
                                 <Input style="width:84px;" v-model="form.pic_path" />
                                 <Upload
                                     style="width:110px;"
-                                    title="App图片上传"
+                                    title="图片上传"
                                     @change="upPicChange($event)"
                                     type="file"
                                 />

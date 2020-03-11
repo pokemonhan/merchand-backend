@@ -101,11 +101,12 @@ export default {
         switchUpd(val, row) {
             let data = {
                 id: row.id,
-                is_hot: val ? 1 : 0
+                hot_new: val ? 1 : 0
             };
 
             let { url, method } = this.$api.game_hot_set;
             this.$http({ method, url, data }).then(res => {
+                console.log('返回数据',res)
                 if (res && res.code === "200") {
                     this.$toast.success(res && res.message);
                     this.getList();
@@ -151,7 +152,7 @@ export default {
                 data:data
             }).then(res=>{
                 if(res && res.code=='200'){
-                    alert("执行成功")
+                    this.$toast.success(res && res.message)
                     this.getList();
                 }
             })

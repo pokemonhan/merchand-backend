@@ -352,6 +352,8 @@ export default {
                 snap_account:this.filter.income_acc,
                 is_tester:this.filter.formal_status,
                 order_no:this.filter.order_id,
+                page:this.pageNo,
+                pageSize:this.pageSize,
             };
             // console.log('请求数据',para)
             let params=window.all.tool.rmEmpty(para);
@@ -364,8 +366,13 @@ export default {
                 }
             })
         },
-        updateNo(val) {},
-        updateSize(val) {}
+        updateNo(val) {
+            this.getList();
+        },
+        updateSize(val) {
+            this.pageNo=1;
+            this.getList();
+        }
     },
     mounted() {
         this.getList();

@@ -174,10 +174,12 @@ export default {
             }
         },
         withholdUpdateNo(val) {
-            let a = 5
-            console.log(a)
+            this.getList();
         },
-        withholdUpdateSize(val) {},
+        withholdUpdateSize(val) {
+            this.pageNo=1;
+            this.getList();
+        },
         getList(){
             let created_at = ''
             if (this.filter.dates[0] && this.filter.dates[1]) {
@@ -189,6 +191,8 @@ export default {
                 created_at:created_at,
                 is_tester:this.filter.offcial_acc,
                 type:this.filter.withhold_type,
+                page:this.pageNo,
+                pageSize:this.pageSize,
             };
             let params=window.all.tool.rmEmpty(para);
             let {method,url}=this.$api.founds_manualaccess_artificial_charge_recording;

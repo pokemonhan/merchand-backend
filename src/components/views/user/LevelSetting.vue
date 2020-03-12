@@ -13,8 +13,8 @@
                     <td style="height:30px">{{idx+1}}</td>
                     <td>{{row.name}}</td>
                     <td>{{row.experience_min}}~{{row.experience_max}}</td>
-                    <td>{{row.grade_gift}}</td>
-                    <td>{{row.week_gift}}</td>
+                    <td>{{row.promotion_gift}}</td>
+                    <td>{{row.weekly_gift}}</td>
                     <td>{{row.updated_at}}</td>
                     <td>
                         <span class="a" @click="editLev(row)">编辑</span>
@@ -53,11 +53,11 @@
                         </li>
                         <li>
                             <span>晋级奖励:</span>
-                            <Input class="w200" v-model="lev.grade_gift" limit='number'/>
+                            <Input class="w200" v-model="lev.promotion_gift" limit='number'/>
                         </li>
                         <li>
                             <span>周奖励:</span>
-                            <Input class="w200" v-model="lev.week_gift" limit='number'/>
+                            <Input class="w200" v-model="lev.weekly_gift" limit='number'/>
                         </li>
                         <li style="margin-top:30px;">
                             <button
@@ -105,13 +105,12 @@
                                 />
                             </span>
                         </li>
-
                         <li v-if="this.rule.up_method[2]==true" >
                             <span>充值:</span>
-                            <Input class="re-code" v-model="rule.recharge_code[0]" />
+                            <Input class="re-code" v-model="rule.recharge" />
                             <span class="ml-10">+</span>
                             <span>打码</span>
-                            <Input class="re-code" v-model="rule.recharge_code[1]" />
+                            <Input class="re-code" v-model="rule.code" />
                             <span class="ml-10">=</span>
                             <span>1经验</span>
                         </li>
@@ -129,7 +128,7 @@
                         </li>
                     </ul>
                     <div style="margin-top:50px;text-align:center;">
-                        <button class="btn-plain-large mr100" @click="show_rule_modal=false">取消</button>
+                        <button class="btn-plain-large mr100" @click="show_lev_rule=false">取消</button>
                         <button class="btn-blue-large" @click="levRuleCfm">保存</button>
                     </div>
                 </div>
@@ -182,22 +181,21 @@ export default {
             show_lev_rule: false, // 晋级规则_模态框
             /* ----------  form ------------ */
             lev: {
-                
                 name: '', // 等级名称
                 experience_min: '',
                 experience_max: '',
-                grade_gift: '', // 晋升奖励
-                week_gift: '', // 周奖励
+                promotion_gift: '', // 晋升奖励
+                weekly_gift: '', // 周奖励
             },
             rule: {
                 up_method: [],
-                recharge_code: [],
                 recharge: '',
                 code: ''
             },
             /* 删除 */
             show_del_modal: false,
             curr_row:{},
+            rise_type:'',
         }
     },
     methods: {
@@ -217,8 +215,8 @@ export default {
                 name: '', // 等级名称
                 experience_min: '',
                 experience_max: '',
-                grade_gift: '', // 晋升奖励
-                week_gift: '', // 周奖励
+                promotion_gift: '', // 晋升奖励
+                weekly_gift: '', // 周奖励
             };
         },
         checkLev(){
@@ -249,8 +247,8 @@ export default {
                 name:this.lev.name,
                 experience_min:this.lev.experience_min,
                 experience_max:this.lev.experience_max,
-                grade_gift:this.lev.grade_gift,
-                week_gift:this.lev.week_gift,
+                promotion_gift:this.lev.promotion_gift,
+                weekly_gift:this.lev.weekly_gift,
             };
             let{url,method}=this.$api.grade_add;
             this.$http({method,url,data}).then(res=>{
@@ -269,7 +267,14 @@ export default {
             this.lev_modal_name="编辑详情";
             this.dia_status="editLev";
             this.show_lev_modal=true;
-            this.lev=Object.assign({},row)
+            this.lev={
+                id:row.id,
+                name:row.name,
+                experience_min:String(row.experience_min),
+                experience_max:String(row.experience_max),
+                promotion_gift:row.promotion_gift,
+                weekly_gift:row.weekly_gift
+            }
         },
         editCfm(){
             
@@ -278,8 +283,8 @@ export default {
                 name: this.lev.name,
                 experience_min:this.lev.experience_min,
                 experience_max:this.lev.experience_max,
-                grade_gift:this.lev.grade_gift,
-                week_gift:this.lev.week_gift,
+                promotion_gift:this.lev.promotion_gift,
+                weekly_gift:this.lev.weekly_gift,
             };
             let{url,method}=this.$api.grade_set;
             this.$http({method,url,data}).then(res=>{
@@ -334,24 +339,51 @@ export default {
         },
         levRule(){
             this.show_lev_rule=true;
+            this.clearRule();
         },
         // 1.充值  2.打码  3.充值或打码任一满足  4.充值和打码同时满足
-        typeChoose(){
-            
+        clearRule(){
+            this.rule={
+                up_method:[],
+                recharge:'',
+                code:''
+            }
         },
         levRuleCfm(){
-            let data={
-                type
+            if(this.rule.up_method[0] && this.rule.up_method[1]){
+                this.rise_type=3
+            }else if(this.rule.up_method[0]){
+                this.rise_type=1
+            }else if(this.rule.up_method[1]){
+                this.rise_type=2
+            }else if(this.rule.up_method[2]){
+                this.rise_type=4
+            }else{
+                this.rise_type=0
             }
+            let datas={
+                recharge:this.rule.recharge,
+                bet:this.rule.code,
+                type:this.rise_type,
+            }
+            let data=window.all.tool.rmEmpty(datas)
+            let {method,url}=this.$api.grade_config_list;
+            this.$http({method,url,data}).then(res=>{
+                if(res && res.code=='200'){
+                    this.$toast.success(res && res.message)
+                    this.show_lev_rule=false;
+                    this.getList()
+                }
+            })
         },
         getList(){
             let{method,url}=this.$api.grade_list;
             this.$http({method,url}).then(res=>{
                 console.log(res)
-                // if(res && res.code=='200'){
-                //     this.list=res.data;
-                //     this.total=res.data.total;
-                // }
+                if(res && res.code=='200'){
+                    this.list=res.data;
+                    this.total=res.data.length;
+                }
             })
         },
     },

@@ -707,5 +707,10 @@ export default {
     bank_cards_list:{
         url:'/merchant-api/bank-cards/index',
         method:'post',
+    },
+    //银行卡反查中心 - 银行列表
+    bank_sel_list:{
+        url:'/merchant-api/bank-cards/bank-list',
+        method:'get'
     }
 };

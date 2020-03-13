@@ -24,16 +24,14 @@
                     <td style="height:30px">{{idx+1}}</td>
                     <td>{{row.bet}}</td>
 
-                    <td v-for="(item,index) in row.percent_data" :key="index" >
-                        {{item.percent*100}}%
-                    </td>
+                    <td v-for="(item,index) in row.percent_data" :key="index">{{item.percent}}%</td>
                     <td>
                         <span class="a" @click="editWashModal(row)">编辑</span>
                         <span class="a" @click="delWashModal(row)">删除</span>
                     </td>
                 </template>
             </Table>
-           <Page
+            <Page
                 class="table-page"
                 :total="total"
                 :pageNo.sync="pageNo"
@@ -45,7 +43,8 @@
         <div class="modal-mask" v-if="show_modal">
             <div class="v-modal edit-modal">
                 <div class="mod-head">
-                    <span>洗码设置</span>
+                    <span v-if="add_title">添加洗码规则</span>
+                    <span v-if="is_edit">编辑</span>
                     <i class="iconfont iconcuowuguanbi-" @click="show_modal=false"></i>
                 </div>
                 <div class="mod-body center-box">
@@ -78,23 +77,25 @@
                                 </div>
                             </td>
                         </tr>
-                        <tr class="vip-data" v-for="n in 7" :key="n">
+                        <tr class="vip-data" v-for="(item,index) in lev_list" :key="index">
                             <td>
-                                <span>VIP{{n}}:</span>
-                                <span class="ml-10">
-                                    {{aaaaaa}}
-                                </span>
+                                <span>{{item.name}}:</span>
+                                <span class="ml-10">{{wash_list[index].percent}}%</span>
                             </td>
                             <td>
                                 <div class="edit-form">
-                                    <span>VIP{{n}}:</span>
-                                    <Input class="w100 ml-10" v-model="aaaaaa" />
+                                    <span>{{item.name}}:</span>
+                                    <Input
+                                        class="w100 ml-10"
+                                        limit="number"
+                                        v-model="wash_form.rate[index]"
+                                    />
                                     <span class="ml-10">%</span>
                                 </div>
-                            </td>
-                            <td  v-if="is_edit">
+                            </td >
+                            <td v-if="is_edit">
                                 <div class="edit-form">
-                                    <span>VIP{{n}}:</span>
+                                    <span>{{item.name}}:</span>
                                     <span class="ml-10">{{aaaaaa}}</span>
                                     <span></span>
                                 </div>
@@ -103,12 +104,12 @@
                     </table>
                     <div style="margin-top:50px;text-align:center;">
                         <button class="btn-plain-large mr" @click="show_modal=false">取消</button>
-                        <button class="btn-blue-large" @click="editModalSave">保存</button>
+                        <button class="btn-blue-large" @click="diaCfm">保存</button>
                     </div>
                 </div>
             </div>
         </div>
-    
+
         <Modal
             :show="show_del_modal"
             title="删除等级"
@@ -124,117 +125,184 @@
 export default {
     data() {
         return {
-            games: ['刺激棋牌', '经典棋牌', '电子游艺', '趣味竞猜'],
+            games: ["刺激棋牌", "经典棋牌", "电子游艺", "趣味竞猜"],
             active_game: 0,
 
             // game_plant: 0,
             active_plant: 0,
-            plants: ['开元棋牌', '龙城棋牌', '财神棋牌', '欢乐棋牌'],
+            plants: ["开元棋牌", "龙城棋牌", "财神棋牌", "欢乐棋牌"],
             game_plant_option: [
-                { label: '全部', value: '2' },
-                { label: '甲', value: '3' }
+                { label: "全部", value: "2" },
+                { label: "甲", value: "3" }
             ],
-            user_id: '',
-            headers: ['编号','打码量','操作'
-                // { label: '编号' },
-                // { label: '打码量' },
-                // { label: 'VIP1' },
-                // { label: 'VIP2' },
-                // { label: 'VIP3' },
-                // { label: 'VIP4' },
-                // { label: 'VIP5' },
-                // { label: 'VIP6' },
-                // { label: 'VIP7' },
-                // { label: '操作' }
+            user_id: "",
+            headers: [
+                "编号",
+                "打码量",
+                "操作"
             ],
             list: [],
             total: 0,
             pageNo: 1,
             pageSize: 25,
             //晋级方式
-            up_method: '',
+            up_method: "",
             up_method_opt: [
-                { label: '充值', value: 1 },
-                { label: '打码量', value: 2 }
+                { label: "充值", value: 1 },
+                { label: "打码量", value: 2 }
             ],
             show_modal: false,
             /* ----------  wash_form ------------ */
             wash_form: {
                 code_numbers: [],
-                // vip1: { num: '', bonus: '' },
-                // vip2: { num: '', bonus: '' },
-                // vip3: { num: '', bonus: '' },
-                // vip4: { num: '', bonus: '' },
-                // vip5: { num: '', bonus: '' },
-                // vip6: { num: '', bonus: '' },
-                // vip7: { num: '', bonus: '' }
+                rate: []
             },
             /* 删除 */
             show_del_modal: false,
             // modal_status: '',
-            is_edit:true,
-            aaaaaa: '0.8%'
-        }
+            is_edit: true,
+            add_title: true,
+            aaaaaa: {},
+            lev_list: [],
+            wash_list:[],
+            dia_status: "",
+            curr_row: {},
+            bbbb:"0.8%",
+        };
     },
     methods: {
+        getLevList() {
+            let { method, url } = this.$api.grade_list;
+            this.$http({ method, url }).then(res => {
+                // console.log("等级数据", res);
+                if (res && res.code == "200") {
+                    this.lev_list = res.data;
+                }
+            });
+        },
+
         actSort(index) {
             this.active_game = index;
-            this.getList()
+            this.getList();
         },
-        choose_platform(index){
-            this.active_plant=index;
-            this.getList()
+        choose_platform(index) {
+            this.active_plant = index;
+            this.getList();
+        },
+        initWash(){
+            this.wash_form={
+                code_numbers:[],
+                rate:[],
+            }
+        },
+        diaCfm() {
+            if (this.dia_status === "add") {
+                this.addCfm();
+            }
+            if (this.dia_status === "edit") {
+                this.editCfm();
+            }
         },
         addWash() {
-            this.show_modal = true
-            // this.modal_status = 'add'
-            this.is_edit = false
+            this.initWash();
+            this.add_title = true;
+            this.show_modal = true;
+            this.is_edit = false;
+            this.dia_status = "add";
+            let last = (this.list || [])[this.list.length - 1];
+            if(this.list.length=0){
+                last=[]
+            }
+            this.wash_list=last.percent_data;
         },
-        updateNo(val) {},
-        updateSize(val) {},
+        addCfm() {
+            let percent = {};
+            for (let i = 0; i < this.lev_list.length; i++) {
+                let item = this.lev_list[i];
+                percent[item.experience_max] = this.wash_form.rate[i];
+            }
+            let data = {
+                game_type_id: this.active_game + 1,
+                game_vendor_id: this.active_plant + 1,
+                bet: String(this.wash_form.code_numbers[1]),
+                percent: JSON.stringify(percent)
+            };
+            // console.log('请求数据',data)
+            let { method, url } = this.$api.wash_code_add;
+            this.$http({ method, url, data }).then(res => {
+                // console.log('返回数据',res)
+                if (res && res.code == "200") {
+                    this.show_modal = false;
+                    this.$toast.success(res && res.message);
+                    this.getList();
+                }
+            });
+        },
         editWashModal(row) {
-            this.show_modal = true
-            // this.modal_status = 'edit'
-            this.is_edit = true
-            this.wash_form=Object.assign({},row)
+            this.add_title = false;
+            this.show_modal = true;
+            this.is_edit = true;
+            this.dia_status = "edit";
+        },
+        editCfm() {
 
         },
         delWashModal(row) {
-            console.log(row)
-            this.show_del_modal = true
+            // console.log(row);
+            this.show_del_modal = true;
+            this.curr_row = row;
         },
-        editModalSave() {},
+
         delConfirm() {
-            console.log('我删除了.')
-        },
-        getList(){
-            let para={
-                game_type_id:this.active_game,
-                game_vendor_id:this.active_plant,
+            let data = {
+                id: this.curr_row.id
             };
-            console.log('请求数据',para)
-            // let self=this
-            let params = window.all.tool.rmEmpty(para)
-            let {method,url}=this.$api.wash_code_list;
-            this.$http({method:method,url:url,params:params}).then(res=>{
-                console.log("res",res)
-                if(res && res.code =='200'){
-                    this.list=res.data
-                    // { label: '编号' }
-                    let vip_list = []
-                    vip_list = (res.data && res.data[0] && res.data[0].percent_data) ||[]
-                    let vip_head= vip_list.map(item=>{
-                        return item.grade_name
-                    })
-                    this.headers= Array.concat(['编号','打码量'], vip_head, '操作')
+            let { method, url } = this.$api.bank_cards_del;
+            this.$http({ method, url, data }).then(res => {
+                if (res && res.code == "200") {
+                    this.show_del_modal = false;
+                    this.getList();
+                    this.$toast.success(res && res.message);
                 }
-            })
+            });
         },
+        getList() {
+            let para = {
+                game_type_id: this.active_game + 1,
+                game_vendor_id: this.active_plant + 1
+            };
+            // console.log("请求数据", para);
+            let params = window.all.tool.rmEmpty(para);
+            let { method, url } = this.$api.wash_code_list;
+            this.$http({ method: method, url: url, params: params }).then(
+                res => {
+                    // console.log("res", res);
+                    if (res && res.code == "200") {
+                        this.list = res.data;
+                        this.total = res.data.length;
+                        // { label: '编号' }
+                        let vip_list = [];
+                        vip_list = (res.data && res.data[0] && res.data[0].percent_data) || [];
+                        let vip_head = vip_list.map(item => {
+                            return item.grade_name;
+                        });
+                        this.headers = Array.concat(
+                            ["编号", "打码量"],
+                            vip_head,
+                            "操作"
+                        );
+                    }
+                }
+            );
+        },
+        updateNo(val) {},
+        updateSize(val) {}
     },
     mounted() {
-        this.getList()
+        this.getList();
+        this.getLevList();
     }
-}
+};
 </script>
 
 <style scoped>
@@ -286,21 +354,15 @@ export default {
 /* modal-mask  --在index.html区域中 */
 .edit-modal {
     width: 900px;
-    height: 620px;
-}
-
-.center-box {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
+    background: #fff;
 }
 .mr {
     margin-right: 100px;
 }
-.ml-10{
+.ml-10 {
     margin-left: 10px;
 }
-.bold{
+.bold {
     font-weight: 800;
 }
 /* 洗码编辑 */
@@ -308,7 +370,7 @@ export default {
     width: 700px;
     table-layout: fixed;
 }
-.ml-210{
+.ml-210 {
     margin-left: 210px;
 }
 .form-table tr td {
@@ -319,7 +381,6 @@ export default {
     font-size: 18px;
     font-weight: bold;
     color: #4c8bfd;
-
 }
 .code-amount td div {
     display: flex;
@@ -333,7 +394,7 @@ export default {
     display: flex;
     align-items: center;
 }
-.vip-data td span:first-child{
+.vip-data td span:first-child {
     margin-left: 40px;
 }
 </style>

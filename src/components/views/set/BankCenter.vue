@@ -13,7 +13,7 @@
                 </li>
                 <li>
                     <span>银行名称</span>
-                    <Select v-model="filter.bank" :options="bank_opt"></Select>
+                    <Select style="width:120px;" v-model="filter.bank" :options="bank_opt"></Select>
                 </li>
                 <li>
                     <span>银行卡号</span>
@@ -21,9 +21,9 @@
                 </li>
                 <li>
                     <span>绑定日期</span>
-                    <Date type="daterange" v-model="filter.start_dates" />
+                    <Date v-model="filter.start_dates" />
                     <span>~</span>
-                    <Date type="daterange" v-model="filter.end_dates" />
+                    <Date v-model="filter.end_dates" />
                 </li>
                 <li>
                     <button class="btn-blue" @click="getList" >查询</button>
@@ -34,12 +34,12 @@
             <Table :headers="headers" :column="list">
                 <template v-slot:item="{row}">
                     <td>{{row.mobile}}</td>
-                    <td>{{row.id}}</td>
+                    <td>{{row.guid}}</td>
                     <td>{{row.owner_name}}</td>
                     <td>{{row.bank_name}}</td>
                     <td>{{row.card_number}}</td>
                     <td>{{row.created_at}}</td>
-                    <td>{{row.id}}</td> 
+                    <td>{{row.binding_num}}</td> 
                     <td>
                         <button class="btns-red" @click="delclick(row)">删除</button>
                     </td>
@@ -76,10 +76,7 @@ export default {
                 start_dates:'',
                 end_dates:''
             },
-            bank_opt: [
-                { label: '全部', value: 0 },
-                { label: '测试', value: 1 }
-            ],
+            bank_opt: [],
             headers: [
                 '会员账号',
                 '会员ID',
@@ -90,22 +87,7 @@ export default {
                 '单卡绑定次数',
                 '操作'
             ],
-            list: [
-                {
-                    a1: '64646466',
-                    a2: 'sdfsdfdsf',
-                    a3: '充支好礼',
-                    a4: '1',
-                    a5: '2019-02-02 21:30'
-                },
-                {
-                    a1: '64646466',
-                    a2: 'sdfsdfdsf',
-                    a3: '充支好礼',
-                    a4: '1',
-                    a5: '2019-02-02 21:30'
-                }
-            ],
+            list: [],
             total: 0,
             pageNo: 1,
             pageSize: 25,
@@ -115,6 +97,27 @@ export default {
         }
     },
     methods: {
+        getSelectOpt(){
+            let { url, method } = this.$api.bank_sel_list;
+            this.$http({ url, method }).then(res => {
+                console.log('银行卡数据',res)
+                if (res && res.code == "200") {
+                    this.bank_opt = this.backToSelOpt(res.data);
+                }
+            });
+        },
+        backToSelOpt(list=[]){
+            let all=[
+                {
+                    label:"全部",
+                    value:""
+                }
+            ];
+            let back_list=list.map(item=>{
+                return {label:item.name,value:item.id};
+            })
+            return all.concat(back_list)
+        },
         delclick(row) {
             this.mod_show = true
             this.curr_row=row;
@@ -144,9 +147,11 @@ export default {
             let datas={
                 mobile:this.filter.acc,
                 user_id:this.filter.id,
-                // bank_id:this.filter.bank,
+                bank_id:this.filter.bank,
+                card_number:this.filter.card,
                 created_at:String([this.filter.start_dates,this.filter.end_dates]),
            }
+            console.log('请求数据',datas)
            let data=window.all.tool.rmEmpty(datas) 
            let {method,url}=this.$api.bank_cards_list
            this.$http({method,url,data}).then(res=>{
@@ -160,6 +165,7 @@ export default {
     },
     mounted() {
         this.getList();
+        this.getSelectOpt();
     }
 }
 </script>

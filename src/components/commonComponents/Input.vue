@@ -80,7 +80,7 @@ export default {
             this.$emit("enter");
         },
         keyup() {
-            this.regs[this.limit] && (this.val = this.val.toString().replace(this.regs[this.limit], ""));
+            this.regs[this.limit] && (this.val = (this.val||'').toString().replace(this.regs[this.limit], ""));
             // console.log(this.val)
             this.$emit("keyup", this.val);
             this.$emit("update", this.val);

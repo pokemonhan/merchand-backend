@@ -165,7 +165,7 @@ export default {
     methods: {
         expand(i) {
             this.is_show_sec_menu.splice(i, 1, !this.is_show_sec_menu[i]);
-            $(this.$refs["table_" + i]).slideToggle(200);
+            // $(this.$refs["table_" + i]).slideToggle(200);
         },
         updateNo(val) {},
         updateSize(val) {},

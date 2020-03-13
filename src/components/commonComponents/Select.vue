@@ -7,7 +7,14 @@
             @mouseout="updateClearState(false)"
         >
             <input v-model="selectedValue" type="hidden" />
-            <input class="show-input" v-model="showValue" :type="input?'text':'hidden'" @input="handleInput"/>
+            <input
+                class="show-input"
+                v-model="showInputLabel"
+                :type="input?'text':'hidden'"
+                :title="showInputLabel"
+                @input="handleInput"
+                @change="inputChange"
+            />
             <span v-show="!input">{{selectedLabel}}</span>
             <i v-if="clearable && isClear" @click.stop="clear" class="iconfont icon-icon-test"></i>
             <span v-else :class="['drop-down', '', isShow ? 'icon-rotate' : '']"></span>
@@ -18,6 +25,7 @@
                 :key="index"
                 :class="[selectedValue===item.value ? 'active' : '','option']"
                 @click="select(item)"
+                :title="input?item.label:''"
             >{{item.label}}</li>
         </ul>
     </div>
@@ -30,12 +38,14 @@
 
         可绑定 v-model
      */
+import Slide from '../../js/config/slide'
 export default {
     name: 'Select',
     props: {
         css: Object, // 自定义css
-        input: Boolean, // 是否像 input 可以输入 
-        options: {  // 选项内容
+        input: Boolean, // 是否像 input 可以输入
+        options: {
+            // 选项内容
             type: Array,
             default: () => []
         },
@@ -48,7 +58,7 @@ export default {
     },
     data() {
         return {
-            showValue: '',
+            showInputLabel: '',
             selectedValue: '',
             selectedLabel: '',
             index: 0,
@@ -60,10 +70,9 @@ export default {
     },
     methods: {
         showOptions(e) {
-            
-            if(this.input) {
+            if (this.input) {
                 this.isShow = true
-            }else {
+            } else {
                 this.isShow = !this.isShow
             }
             let ele = this.$refs.sections
@@ -72,23 +81,27 @@ export default {
                 let scrollTop = document.documentElement.scrollTop
                 let scrollHeight = document.body.scrollHeight
                 let toBottom = e.target.getBoundingClientRect().bottom
-                let y = scrollHeight -scrollTop -toBottom
+                let y = scrollHeight - scrollTop - toBottom
 
                 this.sectionsDir = y < 150 ? 'top-upfold' : 'bottom-upfold'
 
-                $(ele).slideDown(200)
+                // $(ele).slideDown(200)
+                Slide.slideDown(ele)
             } else {
-                $(ele).slideUp(200)
+                // $(ele).slideUp(200)
+                Slide.slideUp(ele)
             }
         },
         select(item) {
             this.isShow = false
             let ele = this.$refs.sections
-            $(ele).slideUp(200)
+            // $(ele).slideUp(200)
+            Slide.slideUp(ele)
             if (item.value === this.selectedValue) return
             this.selectedValue = item.value
             this.selectedLabel = item.label
-            this.showValue = item.value // input 展示的内容
+
+            this.showInputLabel = item.label // input 展示的内容
             this.$emit('update', item.value, item)
         },
         clear() {
@@ -99,14 +112,18 @@ export default {
         closeSections() {
             this.isShow = false
             let ele = this.$refs.sections
-            $(ele).slideUp(200)
+            // $(ele).slideUp(200)
+            Slide.slideUp(ele)
         },
         updateClearState(bool) {
             this.isClear = bool
         },
         handleInput() {
-            this.$emit('input', this.showValue)
-        }
+            this.$emit('input', this.showInputLabel)
+        },
+        inputChange() {
+            this.$emit('update', this.showInputLabel)
+        },
     },
     watch: {
         value(val) {
@@ -118,7 +135,7 @@ export default {
             })
         },
         options() {
-            if(!this.options) return
+            if (!this.options) return
             this.options.forEach(item => {
                 if (item.value === this.value) {
                     this.selectedLabel = item.label
@@ -131,7 +148,7 @@ export default {
         this.options.forEach(item => {
             if (item.value === this.value) {
                 this.selectedLabel = item.label
-                this.showValue = item.value // input 展示的内容
+                this.showInputLabel = item.label // input 展示的内容
             }
         })
     }
@@ -143,7 +160,7 @@ export default {
     /* height: 22px; */
     /* height: 100%; */
     /* width: 110px; */
-    min-width: 80px;
+    min-width: 110px;
     position: relative;
     /* margin: 0 5px; */
     /* display: inline-block; */

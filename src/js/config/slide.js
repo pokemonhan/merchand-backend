@@ -38,7 +38,7 @@ const slider = (function () {
       }
     }
   }
-  function slideUp(element, time=200) {
+  function slideUp(element, time = 200) {
     if (element.offsetHeight > 0) {
       var totalHeight = element.offsetHeight;
       var currentHeight = totalHeight;
@@ -69,7 +69,7 @@ const slider = (function () {
       }
     }
   }
-  function slideDown(element, time=200) {
+  function slideDown(element, time = 200) {
     if (element.offsetHeight <= 0) {
       element.style.display = "block";
       element.style.transition = "height" + time + " ms";
@@ -103,18 +103,23 @@ const slider = (function () {
   }
   // the interface about slideUp method
   function isElement(element) {
-    return element
+    if (element.nodeType) {
+      // console.log('element.nodeType: ', element.nodeType);
+      return element.nodeType == 1;
+      
+    }
+    // return true
   }
   Slider.slideUp = function (element) {
     // console.log('element: ', element);
-    if(!isElement(element)) return
+    if (!isElement(element)) return
     TimerManager.makeTimerManage(element);
     element.TimerManage.add(slideUp, arguments);
     return this;
   };
   // the interface about slideDown method
   Slider.slideDown = function (element) {
-    if(!isElement(element)) return
+    if (!isElement(element)) return
 
     TimerManager.makeTimerManage(element);
     element.TimerManage.add(slideDown, arguments);
@@ -123,7 +128,7 @@ const slider = (function () {
   // the interface about slideDown method
   Slider.slideToggle = function (element) {
 
-    if(!isElement(element)) return
+    if (!isElement(element)) return
 
     if (element.offsetHeight <= 0) {
       TimerManager.makeTimerManage(element);

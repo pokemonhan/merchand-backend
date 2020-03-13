@@ -17,7 +17,7 @@
                         <!-- 标题 -->
                         <span
                             :class="['title',$route.path == lev2.path?'active-menu':'']"
-                            @click="expandMenu(lev2, lev2_index)"
+                            @click="expandMenu(lev2, lev1_index+'_'+lev2_index)"
                         >
                             <!-- <i :class="['iconfont', i.icon]"></i> -->
                             <span>{{lev2.name}}</span>
@@ -25,7 +25,7 @@
                         </span>
 
                         <!-- ---------    三级菜单 ------------------------->
-                        <ul :ref="lev2_index" class="level3">
+                        <ul :ref="lev1_index+'_'+lev2_index" class="level3">
                             <li v-for="(lev3, lev3_index) in lev2.children" :key="lev3_index">
                                 <span
                                     :class="['title',$route.path == lev3.path?'active-menu':'']"
@@ -46,6 +46,7 @@
 
 <script>
 import { mapState, mapMutations, mapGetters } from 'vuex'
+import Slide from '../js/config/slide'
 export default {
     data() {
         return {
@@ -73,7 +74,7 @@ export default {
             return false
         },
         expandMenu(item, index) {
-            // console.log("该元素item", item);
+            console.log("该元素item", item);
             // console.log("这个index", index);
             if (!item.children) {
                 this.$router.push(item.path)
@@ -91,8 +92,9 @@ export default {
 
                 // 没有 children 就是父级菜单,就下滑打开该菜单
             } else {
-                let ele = this.$refs[index]
-                $(ele).slideToggle(200)
+                let ele = this.$refs[index]&&this.$refs[index][0]
+                // $(ele).slideToggle(200)
+                Slide.slideToggle(ele)
             }
         },
 

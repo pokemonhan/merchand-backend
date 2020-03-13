@@ -201,19 +201,19 @@ export default {
     mounted() {
         this.getMenuList()
         let self = this
-        let setHeight = function() {
-            let height = document.documentElement.clientHeight // 可视 页面高度
-            let ele = self.$refs.contain
-            // console.log('ele: ', ele);
+        // let setHeight = function() {
+        //     let height = document.documentElement.clientHeight // 可视 页面高度
+        //     let ele = self.$refs.contain
+        //     // console.log('ele: ', ele);
 
-            if (ele) {
-                let offsetTop = ele.offsetTop
-                ele.style.height = height - offsetTop - 10 + 'px'
-            }
-        }
-        setHeight()
-        // onresize调节尺寸时, 同步设置 菜单高度
-        window.onresize = window.all.tool.debounce(setHeight, 300)
+        //     if (ele) {
+        //         let offsetTop = ele.offsetTop
+        //         ele.style.height = height - offsetTop - 10 + 'px'
+        //     }
+        // }
+        // setHeight()
+        // // onresize调节尺寸时, 同步设置 菜单高度
+        // window.onresize = window.all.tool.debounce(setHeight, 300)
     }
 }
 </script>
@@ -221,7 +221,7 @@ export default {
 <style scoped>
 .contain {
     width: 12rem;
-    /* max-height: 92vh; */
+    max-height: calc(100vh - 100px);
     min-width: 145px;
     margin-left: 10px;
     border-top: 2px solid #4c8bfd;

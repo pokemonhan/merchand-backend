@@ -25,7 +25,7 @@ let http = axios.create({
     
     header: {
         'Content-Type': 'application/json; charset=utf-8',
-        // 'content-type' : 'application/x-www-form-urlencoded',
+        // 'content-type' : 'application/x-www-form-urlencoded; charset=UTF-8',
         'Cache-Control': 'no-cache',
     },
 

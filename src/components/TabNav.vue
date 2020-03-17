@@ -247,7 +247,7 @@ export default {
 .tab-nav ul li .title {
     display: inline-block;
     width: 100px;
-    line-height: 21px
+    line-height: 21px;
 }
 .tab-nav ul > li:hover {
     background: #679cff;

@@ -106,7 +106,7 @@ const Tool = {
         return params
     },
     // 简单的下拉slide
-    slideDown(ele, time=200) {
+    slideDown(ele, time = 200) {
         // let ele = this.$refs.ul
         if (!ele) return
         if (!(ele instanceof Element)) {
@@ -122,9 +122,9 @@ const Tool = {
             ele.style.maxHeight = 'none'
             ele.style.display = 'block'
 
-        }, time+100)
+        }, time + 100)
     },
-    slideUp(ele,time=20) {
+    slideUp(ele, time = 20) {
         // let ele = this.$refs.ul
         if (!ele) return
         if (!(ele instanceof Element)) {
@@ -141,9 +141,9 @@ const Tool = {
             ele.style.maxHeight = 'none'
             ele.style.display = 'none'
 
-        }, time+100)
+        }, time + 100)
     },
-    slideToggle(ele,time=200) {
+    slideToggle(ele, time = 200) {
         if (!ele) return
         if (!(ele instanceof Element)) {
             ele = ele[0]
@@ -159,7 +159,7 @@ const Tool = {
             setTimeout(() => {
                 ele.style.display = 'none'
                 ele.style.maxHeight = 'none'
-            }, time+100)
+            }, time + 100)
             // 没有就 slideDown
         } else {
             ele.style.maxHeight = 'none'
@@ -172,9 +172,45 @@ const Tool = {
             setTimeout(() => {
                 ele.style.maxHeight = 'none'
                 ele.style.display = 'block'
-            }, time+100)
+            }, time + 100)
         }
-    }
+    },
+    // 可拖动框窗口 
+    dragBox(drag, wrap) {
+        function getCss(ele, prop) {
+            return parseInt(window.getComputedStyle(ele)[prop]);
+        }
+
+        var initX,
+            initY,
+            dragable = false,
+            wrapLeft = getCss(wrap, "left"),
+            wrapRight = getCss(wrap, "top");
+
+        drag.addEventListener("mousedown", function (e) {
+            dragable = true;
+            initX = e.clientX;
+            initY = e.clientY;
+        }, false);
+
+        document.addEventListener("mousemove", function (e) {
+            if (dragable === true) {
+                var nowX = e.clientX,
+                    nowY = e.clientY,
+                    disX = nowX - initX,
+                    disY = nowY - initY;
+                wrap.style.left = wrapLeft + disX + "px";
+                wrap.style.top = wrapRight + disY + "px";
+            }
+        });
+
+        drag.addEventListener("mouseup", function (e) {
+            dragable = false;
+            wrapLeft = getCss(wrap, "left");
+            wrapRight = getCss(wrap, "top");
+        }, false);
+
+    },
 
 };
 export default Tool;

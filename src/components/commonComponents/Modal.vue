@@ -1,8 +1,8 @@
 <template>
-    <div v-if="show" class="modal-mask">
+    <div v-if="show" class="modal-mask" ref="mask">
         <transition name="modal-animate">
-            <div v-if="dialog" class="v-modal">
-                <div class="modal-header">
+            <div v-if="dialog" class="v-modal" ref="modal">
+                <div class="modal-header" ref="header">
                     <!-- <i v-if="icon" :class="['iconfont', icon]"></i> -->
                     <span v-text="title"></span>
                     <i v-if="true" @click="close" class="iconfont iconcuowuguanbi-"></i>
@@ -51,16 +51,54 @@ export default {
             dialog: true
         }
     },
-    watch: {
-        show(val) {
-            // 当有遮罩时, 禁止滚动
-            document.body.style.overflow = val ? 'hidden' : 'auto'
-            setTimeout(() => {
-                this.dialog = val
-            }, 100)
-        }
-    },
+
     methods: {
+        dragBox(drag, wrap) {
+            let headerDom = this.$refs.header
+
+            function getCss(ele, prop) {
+                return parseInt(window.getComputedStyle(ele)[prop])
+            }
+
+            var initX,
+                initY,
+                dragable = false,
+                wrapLeft = getCss(wrap, 'left'),
+                wrapRight = getCss(wrap, 'top')
+            drag.addEventListener(
+                'mousedown',
+                function(e) {
+                    // 如果 鼠标在 header 里面可以拖动
+                    if (headerDom.contains(e.target)) {
+                        dragable = true
+                        initX = e.clientX
+                        initY = e.clientY
+                    }
+                },
+                false
+            )
+
+            document.addEventListener('mousemove', function(e) {
+                if (dragable === true) {
+                    var nowX = e.clientX,
+                        nowY = e.clientY,
+                        disX = nowX - initX,
+                        disY = nowY - initY
+                    wrap.style.left = wrapLeft + disX + 'px'
+                    wrap.style.top = wrapRight + disY + 'px'
+                }
+            })
+
+            drag.addEventListener(
+                'mouseup',
+                function(e) {
+                    dragable = false
+                    wrapLeft = getCss(wrap, 'left')
+                    wrapRight = getCss(wrap, 'top')
+                },
+                false
+            )
+        },
         close() {
             this.$emit('update:show', false)
             this.$emit('close')
@@ -74,9 +112,26 @@ export default {
             this.$emit('confirm')
         }
     },
+    watch: {
+        show(val) {
+            // 当有遮罩时, 禁止滚动
+            document.body.style.overflow = val ? 'hidden' : 'auto'
+
+            setTimeout(() => {
+                this.dialog = val
+            }, 100)
+        },
+        dialog(val) {
+            if (val) {
+                this.$nextTick().then(() => {
+                    this.dragBox(this.$refs.mask, this.$refs.modal)
+                })
+            }
+        }
+    },
     mounted() {
         setTimeout(() => {
-            // this.dialog = this.show
+            this.dialog = this.show
         }, 100)
     }
 }

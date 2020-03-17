@@ -212,11 +212,11 @@ export default {
     /* font-size: 16px; */
 }
 .container {
-    padding: 20px 8px 20px 8px;
-    background: #fff;
-    border: 1px solid #4c8bfd;
-    /* width: 1040px; */
     max-width: 2220px;
+    min-height: calc(100vh - 130px);
+    padding: 20px 8px 20px 8px;
+    border: 1px solid #4c8bfd;
+    background: #fff;
 }
 /* 背景遮罩层 */
 .modal-mask {

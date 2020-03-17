@@ -2,7 +2,7 @@
     <div class="container">
         <!---------------------- 资金账变 ----------------------->
         <QuickQuery :date="quick_query" @update="quickDateUpdate($event)" />
-        <div class="filter p10">
+        <div class="filter">
             <ul class="left">
                 <li>
                     <span>会员账号</span>
@@ -14,23 +14,18 @@
                 </li>
                 <li>
                     <span>账变时间</span>
-                    <Date v-model="filter.date[0]" @update="timeUpdate()"/>
-                 
-                    <span style="margin:0 5px;">~</span>
-                    <Date v-model="filter.date[1]" @update="timeUpdate()" />
-
+                    <Date type="datetime" v-model="filter.date" @update="timeUpdate()" />
                 </li>
                 <li>
                     <span>账变类型</span>
                     <Select v-model="filter.status" :options="acc_change_opt"></Select>
                 </li>
+                <li>
                     <button class="btn-blue">查询</button>
-                    <button class="button-export">导出Excel</button>
+                    <button class="btn-blue">导出Excel</button>
                     <button class="btn-red" @click="clearFilter">清空</button>
+                </li>
             </ul>
-            <div>
-               
-            </div>
         </div>
         <div style="margin-top:20px;">
             <Table :headers="headers" :column="list">
@@ -59,13 +54,12 @@
     </div>
 </template>
 
-
 <script>
 export default {
     props: {},
     data() {
         return {
-            quick_query:[],
+            quick_query: [],
             filter: {
                 account: "",
                 userid: "",
@@ -127,19 +121,20 @@ export default {
     },
     methods: {
         quickDateUpdate(dates) {
-            this.filter.date=dates
+            this.filter.date = dates;
         },
         timeUpdate() {
-            this.quick_query = this.filter.date
+            this.quick_query = this.filter.date;
         },
-        clearFilter(){
+        clearFilter() {
             this.filter = {
                 account: "",
                 userid: "",
                 date: [],
                 status: "0"
-            }
+            };
         },
+        
         updateNo(val) {},
         updateSize(val) {}
     },
@@ -149,10 +144,20 @@ export default {
 
 <style scoped>
 /* .container  在公共区 App.vue */
-.p10{
-    padding: 10px;
+.filter {
+    /* margin-top: 10px; */
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    padding-left: 10px;
 }
-.button-export{
+.filter .left {
+    margin-left: 10px;
+}
+.filter .left li {
+    margin-top: 10px;
+    /* margin-bottom: 10px; */
+}
+.button-export {
     background: #4c8bfd;
     color: #fff;
 }

@@ -37,9 +37,7 @@
                 </li>
                 <li>
                     <span>审核时间</span>
-                    <Date v-model="filter.review_dates[0]" @update="timeUpdate()" />
-                    <span style="margin: 0 5px;">~</span>
-                    <Date v-model="filter.review_dates[1]" @update="timeUpdate()" />
+                    <Date type="datetimerange" style="width:300px;" v-model="filter.operate_dates" @update="timeUpdate()" />
                 </li>
                 <li>
                     <button class="btn-blue" @click="getList" >查询</button>
@@ -130,7 +128,6 @@ export default {
             filter: {
                 account: "",
                 acc_id: "",
-                review_dates: [],
                 auditor: "",
                 operator: "",
                 payment_status: "",
@@ -233,18 +230,17 @@ export default {
         },
         qqUpd(dates) {
             //同步时间筛选值
-            this.filter.review_dates = dates;
-            this.filter = Object.assign(this.filter);
+            let arr=[dates[0]+' 00:00:00',dates[1]+' 00:00:00']
+            this.$set(this.filter, "operate_dates", arr);
         },
         timeUpdate() {
             //同步快捷查询按钮状态
-            this.quick_query = this.filter.review_dates;
+            this.quick_query = this.filter.operate_dates;
         },
         clearAll() {
             this.filter = {
                 account: "",
                 acc_id: "",
-                review_dates: [],
                 auditor: "",
                 operator: "",
                 payment_status: "",
@@ -268,7 +264,7 @@ export default {
         getList(){
             let operation_at=''
             if(this.filter.operate_dates[0] && this.filter.operate_dates[1]){
-                operation_at=JSON.stringify(this.filter.operate_dates)
+                operation_at=JSON.stringify([this.filter.operate_dates[0],this.filter.operate_dates[1]])
             }
             let para={
                 order_no:this.filter.order_no,
@@ -285,7 +281,7 @@ export default {
             let params=window.all.tool.rmEmpty(para);
             let {method,url}=this.$api.founds_paymentorder_list;
             this.$http({method:method,url:url,params:params}).then(res=>{
-                // console.log('返回数据',res)
+                console.log('返回数据',res)
                 if(res && res.code=='200'){
                     this.list=res.data.data;
                     this.total=res.data.total;

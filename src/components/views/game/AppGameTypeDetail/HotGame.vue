@@ -160,7 +160,9 @@ export default {
             let para = {
                 hot_new: 1,
                 vendor_id: this.filter.vendor_id,
-                name: this.filter.name
+                name: this.filter.name,
+                page:this.pageNo,
+                pageSize:this.pageSize
             };
             let params = window.all.tool.rmEmpty(para);
             this.$http({
@@ -175,8 +177,13 @@ export default {
                 }
             });
         },
-        updateNo(val) {},
-        updateSize(val) {}
+        updateNo(val) {
+            this.getList();
+        },
+        updateSize(val) {
+            this.pageNo=1;
+            this.getList();
+        },
     },
     // watch: {
     //     'type_id'(to, from){

@@ -330,9 +330,9 @@ export default {
             startHour: 0,
             startMinute: 0,
             startSecond: 0,
-            endHour: 23,
-            endMinute: 59,
-            endSecond: 59,
+            endHour: 0,
+            endMinute: 0,
+            endSecond: 0,
             hourScrollTop: 0,
             minuteScrollTop: 0,
             secondScrollTop: 0,
@@ -373,8 +373,8 @@ export default {
             this.resultTime[0] = this.resultTime[1] = ''
             this.curEndYear = this.curEndMonth = this.curEndDate = this.curStartYear = this.curStartMonth = this.curStartDate = undefined
             this.startHour = this.startMinute = this.startSecond = 0
-            this.endHour = 23
-            this.endMinute = this.endSecond = 59
+            this.endHour = 0
+            this.endMinute = this.endSecond = 0
             this.step = 1
 
             let time = new Date()
@@ -414,9 +414,9 @@ export default {
                 this.startHour = 0
                 this.startMinute = 0
                 this.startSecond = 0
-                this.endHour = 23
-                this.endMinute = 59
-                this.endSecond = 59
+                this.endHour = 0
+                this.endMinute = 0
+                this.endSecond = 0
             }
             let year, month, timeType
             switch (type) {

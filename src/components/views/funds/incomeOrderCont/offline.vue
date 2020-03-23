@@ -16,9 +16,7 @@
 
                 <li>
                     <span>时间范围</span>
-                    <Date v-model="filter.start_date" @update="timeUpdate()" />
-                    <span style="margin:0 5px;">~</span>
-                    <Date v-model="filter.end_date" @update="timeUpdate()" />
+                    <Date type="datetimerange" style="width:300px;" v-model="filter.dates" @update="timeUpdate()" />
                 </li>
                 <li>
                     <span>审核状态</span>
@@ -143,8 +141,7 @@ export default {
             filter: {
                 account: "",
                 id: "",
-                start_date: "",
-                end_date: "",
+                dates: [],
                 review_status: "0",
                 income_acc: "",
                 formal_status: "0",
@@ -191,13 +188,12 @@ export default {
     methods: {
         quickDateUpdate(dates) {
             // 同步时间筛选值
-            this.filter.start_date = dates[0];
-            this.filter.end_date = dates[1];
-            this.filter = Object.assign(this.filter);
+            let arr=[dates[0]+' 00:00:00',dates[1]+' 00:00:00']
+            this.$set(this.filter, "dates", arr);
         },
         timeUpdate() {
             // 同步快捷查询时间
-            this.quick_query = [this.filter.start_date, this.filter.end_date];
+            this.quick_query = this.filter.dates;
         },
         exportExcel(){
              import('../../../../js/config/Export2Excel').then(excel=>{
@@ -218,8 +214,7 @@ export default {
             this.filter = {
                 account: "",
                 id: "",
-                start_date: "",
-                end_date: "",
+                dates: [],
                 review_status: "0",
                 income_acc: "",
                 formal_status: "0",
@@ -340,8 +335,8 @@ export default {
         getList(){
             // console.log(1)
             let created_at=''
-            if(this.filter.start_date && this.filter.end_date){
-                created_at=JSON.stringify([this.filter.start_date,this.filter.end_date])
+            if(this.filter.dates[0] && this.filter.dates[1]){
+                created_at=JSON.stringify([this.filter.dates[0],this.filter.dates[1]])
             }
             let para={
                 is_online:"0",

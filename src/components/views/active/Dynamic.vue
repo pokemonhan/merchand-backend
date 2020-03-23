@@ -229,11 +229,18 @@ export default {
                 }
             })
         },
-        updateNo(val) {},
-        updateSize(val) {},
+        updateNo(val) {
+            this.getList();
+        },
+        updateSize(val) {
+            this.pageNo=1;
+            this.getList();
+        },
         getList(){
             let para={
-                name:this.filter.name
+                name:this.filter.name,
+                page:this.pageNo,
+                pageSize:this.pageSize
             }
             let params=window.all.tool.rmEmpty(para);
             let {method,url}=this.$api.dynamic_active_list;

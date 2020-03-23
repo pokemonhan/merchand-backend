@@ -80,7 +80,9 @@
                         <tr class="vip-data" v-for="(item,index) in lev_list" :key="index">
                             <td>
                                 <span>{{item.name}}:</span>
-                                <span class="ml-10">{{wash_list[index].percent}}%</span>
+                                <span
+                                    class="ml-10"
+                                >{{wash_list[index] && wash_list[index].percent}}%</span>
                             </td>
                             <td>
                                 <div class="edit-form">
@@ -92,7 +94,7 @@
                                     />
                                     <span class="ml-10">%</span>
                                 </div>
-                            </td >
+                            </td>
                             <td v-if="is_edit">
                                 <div class="edit-form">
                                     <span>{{item.name}}:</span>
@@ -136,11 +138,7 @@ export default {
                 { label: "甲", value: "3" }
             ],
             user_id: "",
-            headers: [
-                "编号",
-                "打码量",
-                "操作"
-            ],
+            headers: ["编号", "打码量", "操作"],
             list: [],
             total: 0,
             pageNo: 1,
@@ -164,10 +162,10 @@ export default {
             add_title: true,
             aaaaaa: {},
             lev_list: [],
-            wash_list:[],
+            wash_list: [],
             dia_status: "",
             curr_row: {},
-            bbbb:"0.8%",
+            bbbb: "0.8%"
         };
     },
     methods: {
@@ -189,11 +187,11 @@ export default {
             this.active_plant = index;
             this.getList();
         },
-        initWash(){
-            this.wash_form={
-                code_numbers:[],
-                rate:[],
-            }
+        initWash() {
+            this.wash_form = {
+                code_numbers: [],
+                rate: []
+            };
         },
         diaCfm() {
             if (this.dia_status === "add") {
@@ -209,11 +207,15 @@ export default {
             this.show_modal = true;
             this.is_edit = false;
             this.dia_status = "add";
-            let last = (this.list || [])[this.list.length - 1];
-            if(this.list.length=0){
-                last=[]
+            let last = {};
+            if (this.list.length === 0) {
+                last = {};
+            } else {
+                last = (this.list || [])[this.list.length - 1];
             }
-            this.wash_list=last.percent_data;
+            if (last && last.percent_data) {
+                this.wash_list = last.percent_data;
+            }
         },
         addCfm() {
             let percent = {};
@@ -244,9 +246,7 @@ export default {
             this.is_edit = true;
             this.dia_status = "edit";
         },
-        editCfm() {
-
-        },
+        editCfm() {},
         delWashModal(row) {
             // console.log(row);
             this.show_del_modal = true;
@@ -269,20 +269,26 @@ export default {
         getList() {
             let para = {
                 game_type_id: this.active_game + 1,
-                game_vendor_id: this.active_plant + 1
+                game_vendor_id: this.active_plant + 1,
+                page:this.pageNo,
+                pageSize:this.pageSize
             };
             // console.log("请求数据", para);
             let params = window.all.tool.rmEmpty(para);
             let { method, url } = this.$api.wash_code_list;
             this.$http({ method: method, url: url, params: params }).then(
                 res => {
-                    // console.log("res", res);
+                    console.log("res", res);
                     if (res && res.code == "200") {
                         this.list = res.data;
                         this.total = res.data.length;
                         // { label: '编号' }
                         let vip_list = [];
-                        vip_list = (res.data && res.data[0] && res.data[0].percent_data) || [];
+                        vip_list =
+                            (res.data &&
+                                res.data[0] &&
+                                res.data[0].percent_data) ||
+                            [];
                         let vip_head = vip_list.map(item => {
                             return item.grade_name;
                         });
@@ -295,8 +301,13 @@ export default {
                 }
             );
         },
-        updateNo(val) {},
-        updateSize(val) {}
+        updateNo(val) {
+            this.getList();
+        },
+        updateSize(val) {
+            this.pageNo=1;
+            this.getList();
+        },
     },
     mounted() {
         this.getList();

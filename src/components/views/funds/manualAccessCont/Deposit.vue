@@ -15,9 +15,7 @@
                 </li>
                 <li>
                     <span>充值时间</span>
-                    <Date v-model="filter.dates[0]" @update="timeUpdate()" />
-                    <span style="margin:0 5px">~</span>
-                    <Date v-model="filter.dates[1]" @update="timeUpdate()" />
+                    <Date type="datetimerange" style="width:300px;" v-model="filter.dates" @update="timeUpdate()" />
                 </li>
                 <li>
                     <span>正式账号</span>
@@ -156,8 +154,8 @@ export default {
     methods: {
         qqUpd(dates) {
             //同步时间筛选值
-            this.filter.dates = dates;
-            this.filter = Object.assign(this.filter);
+             let arr=[dates[0]+' 00:00:00',dates[1]+' 00:00:00']
+            this.$set(this.filter, "dates", arr);
         },
         clearAll() {
             this.filter = {
@@ -175,7 +173,7 @@ export default {
         getList() {
             let created_at = ''
             if (this.filter.dates[0] && this.filter.dates[1]) {
-                created_at = JSON.stringify(this.filter.dates)
+                created_at = JSON.stringify([this.filter.dates[0],this.filter.dates[1]])
             }
             let para = {
                 mobile: this.filter.account,
@@ -186,6 +184,7 @@ export default {
                 page:this.pageNo,
                 pageSize:this.pageSize
             };
+            // console.log('请求数据',para);
             let params = window.all.tool.rmEmpty(para);
             let {
                 method,
@@ -197,10 +196,6 @@ export default {
                     if (res && res.code == "200") {
                         this.list = res.data.data;
                         this.total = res.data.total;
-                    } else {
-                        if (res && res.message !== "") {
-                            this.toast.error(res.message);
-                        }
                     }
                 }
             );

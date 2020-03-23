@@ -241,13 +241,20 @@ export default {
                 }
             });
         },
-        updateNo(val) {},
-        updateSize(val) {},
+        updateNo(val) {
+            this.getList();
+        },
+        updateSize(val) {
+            this.pageNo=1;
+            this.getList();
+        },
         getList() {
             let data = {
-                type: this.curr_btn
+                type: this.curr_btn,
                 // title:this.filter.title,
                 // status:this.filter.status,
+                page:this.pageNo,
+                pageSize:this.pageSize
             };
             let { method, url } = this.$api.help_center_list;
             this.$http({ method, url, data }).then(res => {

@@ -141,8 +141,13 @@ export default {
             this.getList();
         },
 
-        updateNo(val) {},
-        updateSize(val) {},
+        updateNo(val) {
+            this.getList();
+        },
+        updateSize(val) {
+            this.pageNo=1;
+            this.getList();
+        },
 
         switchChange(val, row, type) {
             let data = {
@@ -244,7 +249,9 @@ export default {
             let para = {
                 device: this.curr_btn,
                 name: this.filter.plant,
-                status: this.filter.status
+                status: this.filter.status,
+                page:this.pageNo,
+                pageSize:this.pageSize
             };
             // console.log('查询数据',para)
             let params = window.all.tool.rmEmpty(para);

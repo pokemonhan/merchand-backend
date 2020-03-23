@@ -74,7 +74,7 @@ export default {
         getSelectOpt() {
             let { url, method } = this.$api.game_search_condition_list;
             this.$http({ url, method }).then(res => {
-                // console.log('下拉数据',res)
+                console.log('下拉数据',res)
                 if (res && res.code == "200") {
                     this.select = res.data;
                     this.plant_opt = this.backToSelOpt(
@@ -161,23 +161,29 @@ export default {
             let para = {
                 hot_new: 1,
                 vendor_id: this.filter.vendor_id,
-                name: this.filter.name
+                name: this.filter.name,
+                device:2,
+                page:this.pageNo,
+                pageSize:this.pageSize
             };
+            // console.log('请求数据',para)
             let params = window.all.tool.rmEmpty(para);
-            this.$http({
-                method: this.$api.game_h5_list.method,
-                url: this.$api.game_h5_list.url,
-                params: params
-            }).then(res => {
-                console.log("res", res);
-                if (res && res.code === "200") {
-                    this.list = res.data || [];
+            let {url,method}=this.$api.game_h5_list;
+            this.$http({method, url, params}).then(res => {
+                console.log("列表返回数据", res);
+                if (res && res.code == "200") {
+                    this.list = res.data.data || [];
                     this.total = this.list.length;
                 }
             });
         },
-        updateNo(val) {},
-        updateSize(val) {}
+        updateNo(val) {
+            this.getList();
+        },
+        updateSize(val) {
+            this.pageNo=1;
+            this.getList();
+        },
     },
     // watch: {
     //     'type_id'(to, from){

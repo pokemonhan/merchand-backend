@@ -416,18 +416,18 @@ export default {
 
     // H5游戏管理 - 列表
     game_h5_list: {
-        url: '/merchant-api/game/h5-index',
+        url: '/merchant-api/game/index',
         method: 'get'
     },
 
     // PC游戏管理 - 列表
     game_pc_list: {
-        url: '/merchant-api/game/pc-index',
+        url: '/merchant-api/game/index',
         method: 'get'
     },
     // APP游戏管理 - 列表
     game_app_list: {
-        url: '/merchant-api/game/app-index',
+        url: '/merchant-api/game/index',
         method: 'get'
     },
 

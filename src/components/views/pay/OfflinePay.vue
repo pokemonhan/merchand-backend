@@ -2,7 +2,7 @@
     <div class="container">
         <!-- 线下支付配置 -->
 
-        <div class="filter p10">
+        <div class="filter">
             <ul class="left">
                 <li>
                     <span>入款类型</span>
@@ -22,23 +22,15 @@
                 </li>
                 <li>
                     <span>添加日期</span>
-                    <Date v-model="filter.add_start_dates" />
-                    <span style="margin:0 5px;">~</span>
-                    <Date v-model="filter.add_end_dates" />
+                    <Date type="datetimerange" style="width:300px;" v-model="filter.add_dates" />
                 </li>
-            </ul>
-        </div>
-        <div class="filter p10">
-            <ul class="left">
                 <li>
                     <span style="width:4em;">更新人</span>
                     <Input style="width:110px;" v-model="filter.update_person" />
                 </li>
                 <li>
                     <span>更新日期:</span>
-                    <Date v-model="filter.start_dates" />
-                    <span style="margin:0 5px;">~</span>
-                    <Date v-model="filter.end_dates" />
+                    <Date type="datetimerange" style="width:300px" v-model="filter.dates" />
                 </li>
                 <li>
                     <button class="btn-blue" @click="getList">查询</button>
@@ -46,6 +38,7 @@
                 </li>
             </ul>
         </div>
+        
         <div class="table mt20">
             <Table :headers="headers" :column="list">
                 <template v-slot:item="{row}">
@@ -198,11 +191,9 @@ export default {
                 type: "",
                 account: "",
                 name: "",
-                add_start_dates: [],
-                add_end_dates:[],
+                add_dates: [],
                 update_person: "",
-                start_dates: [],
-                end_dates:[]
+                dates: [],
             },
             type_opt: [],
             headers: [
@@ -466,16 +457,21 @@ export default {
                 }
             });
         },
-        updateNo(val) {},
-        updateSize(val) {},
+        updateNo(val) {
+            this.getList();
+        },
+        updateSize(val) {
+            this.pageNo=1;
+            this.getList();
+        },
         getList() {
             let created_at=''
-            if(this.filter.add_start_dates && this.filter.add_end_dates){
-                created_at=JSON.stringify([this.filter.add_start_dates,this.filter.add_end_dates])
+            if(this.filter.add_dates[0] && this.filter.add_dates[1]){
+                created_at=JSON.stringify([this.filter.add_dates[0],this.filter.add_dates[1]])
             }
             let updated_at=''
-            if(this.filter.status && this.filter.end_dates){
-                updated_at=JSON.stringify([this.filter.start_dates,this.filter.end_dates])
+            if(this.filter.dates[0] && this.filter.dates[1]){
+                updated_at=JSON.stringify([this.filter.dates[0],this.filter.dates[1]])
             }
             let para = {
                 type_id: this.filter.type,
@@ -485,6 +481,8 @@ export default {
                 created_at: created_at,
                 last_editor_name: this.filter.update_person,
                 updated_at: updated_at,
+                page:this.pageNo,
+                pageSize:this.pageSize
             };
             let params = window.all.tool.rmEmpty(para);
             let { method, url } = this.$api.offline_finance_list;
@@ -510,6 +508,17 @@ export default {
 </script>
 
 <style scoped>
+.filter {
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    padding-left: 10px;
+}
+.filter .left {
+    margin-left: 10px;
+}
+.filter .left li {
+    margin-top: 10px;
+}
 .form li {
     display: flex;
     align-items: center;

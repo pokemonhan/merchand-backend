@@ -13,9 +13,7 @@
                     </li>
                     <li>
                         <span>注册日期</span>
-                        <Date v-model="filter.start_date" />
-                        <span style="margin:0 5px;">至</span>
-                        <Date v-model="filter.end_date" />
+                        <Date type="datetimerange"  v-model="filter.dates" style="width:300px"/>
                     </li>
                     <li>
                         <span>在线状态</span>
@@ -353,8 +351,7 @@ export default {
             filter: {
                 account: "",
                 userid: "",
-                start_date: "",
-                end_date: "",
+                dates: [],
                 online_state: "",
                 parent_account: "",
                 is_tester: "",
@@ -427,10 +424,10 @@ export default {
         },
         getList() {
             let createdAt = "";
-            if (this.filter.start_date && this.filter.end_date) {
+            if (this.filter.dates[0] && this.filter.dates[1]) {
                 createdAt = JSON.stringify([
-                    this.filter.start_date,
-                    this.filter.end_date
+                    this.filter.dates[0],
+                    this.filter.dates[1]
                 ]);
             }
             let para = {
@@ -440,10 +437,12 @@ export default {
                 isOnline: this.filter.online_state,
                 parent_mobile: this.filter.parent_account,
                 lastLoginIp: this.filter.loginIP,
-                registerIp: this.filter.registIP
-                // isTest:this.filter.is_tester
+                registerIp: this.filter.registIP,
+                // isTest:this.filter.is_tester,
+                page:this.pageNo,
+                pageSize:this.pageSize
             };
-            // console.log('请求数据',para)
+            console.log('请求数据',para)
             let params = window.all.tool.rmEmpty(para);
             let { method, url } = this.$api.user_list;
             this.$http({ method, url, params }).then(res => {
@@ -483,9 +482,12 @@ export default {
             });
         },
         updateNo(val) {
-            
+            this.getList();
         },
-        updateSize(val) {}
+        updateSize(val) {
+            this.pageNo=1;
+            this.getList();
+        },
     },
     mounted() {
         this.getList();

@@ -2,7 +2,7 @@
     <div class="container">
         <!-- 线上金流配置 -->
 
-        <div class="filter p10">
+        <div class="filter">
             <ul class="left">
                 <li>
                     <span>商户号</span>
@@ -14,9 +14,7 @@
                 </li>
                 <li>
                     <span>添加日期</span>
-                    <Date v-model="filter.add_dates[0]" />
-                    <span class="mv5">~</span>
-                    <Date v-model="filter.add_dates[1]" />
+                    <Date type="datetimerange" style="width:300px;" v-model="filter.dates" />
                 </li>
                 <li>
                     <span>前端名称</span>
@@ -26,19 +24,13 @@
                     <span>商户编号</span>
                     <Input v-model="filter.merchant_code" />
                 </li>
-            </ul>
-        </div>
-        <div class="filter flt-down">
-            <ul class="left">
                 <li>
                     <span>更新人</span>
                     <Input v-model="filter.update_person" />
                 </li>
                 <li>
                     <span>更新日期</span>
-                    <Date v-model="filter.update_dates[0]" />
-                    <span class="mv5">~</span>
-                    <Date v-model="filter.update_dates[1]" />
+                    <Date type="datetimerange" style="width:300px;" v-model="filter.update_dates" />
                 </li>
                 <li>
                     <button class="btn-blue" @click="getList">查询</button>
@@ -231,12 +223,11 @@ export default {
             filter: {
                 merchant_num: "",
                 person: "",
-                add_dates: [],
+                dates: [],
                 update_dates: [],
                 front_name: "",
                 merchant_code: "",
                 update_person: "",
-                update_dates: []
             },
 
             headers: [
@@ -404,8 +395,13 @@ export default {
             this.mod_show = true;
         },
         modConf() {},
-        updateNo(val) {},
-        updateSize(val) {},
+        updateNo(val) {
+            this.getList();
+        },
+        updateSize(val) {
+            this.pageNo=1;
+            this.getList();
+        },
 
         secretUpd() {},
         switchStatus(val, row) {
@@ -471,12 +467,12 @@ export default {
         },
         getList() {
             let created_at=''
-            if(this.filter.add_dates[0] && this.filter.add_dates[1]){
-                created_at=JSON.stringify(this.filter.add_dates)
+            if(this.filter.dates[0] && this.filter.dates[1]){
+                created_at=JSON.stringify([this.filter.dates[0],this.filter.dates[1]])
             }
             let updated_at=''
             if(this.filter.update_dates[0] && this.filter.update_dates[1] ){
-                updated_at=JSON.stringify(this.filter.update_dates)
+                updated_at=JSON.stringify([this.filter.update_dates[0],this.filter.update_dates[1]])
             }
             let para = {
                 merchant_code: this.filter.merchant_num,
@@ -484,7 +480,9 @@ export default {
                 created_at: created_at,
                 updated_at: updated_at,
                 author_name: this.filter.person,
-                last_editor_name: this.filter.update_person
+                last_editor_name: this.filter.update_person,
+                page:this.pageNo,
+                pageSize:this.pageSize
             };
             let params = window.all.tool.rmEmpty(para);
             let { method, url } = this.$api.online_finance_list;
@@ -507,6 +505,17 @@ export default {
 </script>
 
 <style scoped>
+.filter {
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    padding-left: 10px;
+}
+.filter .left {
+    margin-left: 10px;
+}
+.filter .left li {
+    margin-top: 10px;
+}
 .flt-down {
     padding-left: 10px;
     padding-bottom: 10px;

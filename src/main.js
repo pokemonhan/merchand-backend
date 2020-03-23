@@ -25,7 +25,7 @@ window.all = {
     // wangeditor
 };
 
-Vue.config.productionTip = false
+Vue.config.productionTip = true  // TODO: 以后改为false
 // 防止xss 攻击
 Object.defineProperty(Vue.prototype, '$xss', {
     value: xss

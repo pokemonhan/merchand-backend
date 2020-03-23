@@ -111,6 +111,7 @@ export default {
                     data: data
                 })
                 .then(res => {
+                    // this.$router.push('/home')
                     if (res && res.code === '200') {
                        let Authorization = res.data.token_type + ' ' + res.data.remember_token
                         window.all.tool.setLocal('Authorization', Authorization)

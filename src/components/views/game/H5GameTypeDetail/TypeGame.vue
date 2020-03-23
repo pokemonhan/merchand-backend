@@ -220,7 +220,9 @@ export default {
                 type_id: this.type_id, // 分类游戏,(上面的按钮,不包括热门游戏)
                 vendor_id: this.filter.vendor_id, // 游戏平台(厂商id)
                 name: this.filter.name, // 游戏名称
-                status: this.filter.status // 启用状态
+                status: this.filter.status, // 启用状态
+                page:this.pageNo,
+                pageSize:this.pageSize
             };
             // console.log(para);
             let params = window.all.tool.rmEmpty(para);
@@ -230,7 +232,7 @@ export default {
                 // console.log("列表👌👌👌👌: ", res);
                 if (res && res.code === "200") {
                     this.total = res.data.length;
-                    this.list = res.data;
+                    this.list = res.data.data;
                 }
             });
         },
@@ -271,8 +273,13 @@ export default {
                 this.getList();
             });
         },
-        updateNo(val) {},
-        updateSize(val) {},
+        updateNo(val) {
+            this.getList();
+        },
+        updateSize(val) {
+            this.pageNo=1;
+            this.getList();
+        },
         /**
          * @param {string} row 后端的排序
          * @param {string} index 前端的排序

@@ -14,6 +14,7 @@ let hostList = {
 }
 // 有数据,但匹配不到就直接使用HOST地址 
 const BASE_PATH = hostList[HOST] || HOST
+window._bath_path=BASE_PATH
 // const BASE_PATH = hostList[HOST]
 // console.log('BASE_PATH: ', process.env);
 let http = axios.create({

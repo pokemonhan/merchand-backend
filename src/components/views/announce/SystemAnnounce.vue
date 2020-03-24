@@ -32,9 +32,9 @@
                 <template v-slot:item="{row}">
                     <td>{{row.title}}</td>
                     <td>
-                        <img width="40" :src="protocol+'//pic.jianghu.local/'+row.h5_pic" alt />
-                        <img width="40" :src="protocol+'//pic.jianghu.local/'+row.app_pic" alt />
-                        <img width="40" :src="protocol+'//pic.jianghu.local/'+row.pc_pic" alt />
+                        <img width="40" :src="head_path+row.h5_pic" alt />
+                        <img width="40" :src="head_path+row.app_pic" alt />
+                        <img width="40" :src="head_path+row.pc_pic" alt />
                     </td>
                     <td>{{getDevice(row.device)}}</td>
                     <td>{{row.created_at}}</td>
@@ -78,7 +78,7 @@
                             <span>公告内容</span>
                             <div class="upload-btn">
                                 <div>
-                                    <Input style="width:90px;" v-model="form.app_pic_path" />
+                                    <Input style="width:124px;" v-model="form.app_pic_path" />
                                     <Upload
                                         style="width:110px"
                                         title="App图片上传"
@@ -93,7 +93,7 @@
                                 </div>
 
                                 <div>
-                                    <Input style="width:90px;" v-model="form.pc_pic_path" />
+                                    <Input style="width:124px;" v-model="form.pc_pic_path" />
                                     <Upload
                                         style="width:110px"
                                         title="PC图片上传"
@@ -108,7 +108,7 @@
                                 </div>
 
                                 <div>
-                                    <Input style="width:90px;" v-model="form.h5_pic_path" />
+                                    <Input style="width:124px;" v-model="form.h5_pic_path" />
                                     <Upload
                                         style="width:110px"
                                         title="H5图片上传"
@@ -125,12 +125,8 @@
                         </li>
 
                         <li>
-                            <span>开始时间</span>
-                            <Date style="width:266px;" v-model="form.start_dates" />
-                        </li>
-                        <li>
-                            <span>结束时间</span>
-                            <Date style="width:266px;" v-model="form.end_dates" />
+                            <span>时间范围</span>
+                            <Date type="datetimerange" style="width:300px;" v-model="form.dates" />
                         </li>
                         <li>
                             <span>状态选择</span>
@@ -160,19 +156,19 @@
         <Dialog :show.sync="pic_dia_show" title="预览图片">
             <img
                 class="max-w800"
-                :src="protocol+'//pic.jianghu.local/'+form.app_pic_path"
+                :src="head_path+form.app_pic_path"
                 alt
                 v-if="showApp"
             />
             <img
                 class="max-w800"
-                :src="protocol+'//pic.jianghu.local/'+form.pc_pic_path"
+                :src="head_path+form.pc_pic_path"
                 alt
                 v-if="showPc"
             />
             <img
                 class="max-w800"
-                :src="protocol+'//pic.jianghu.local/'+form.h5_pic_path"
+                :src="head_path+form.h5_pic_path"
                 alt
                 v-if="showH5"
             />
@@ -218,8 +214,7 @@ export default {
                 pc_pic_path: "",
                 h5_pic_path: "",
                 app_pic_path: "",
-                start_dates: "",
-                end_dates: "",
+                dates: [],
                 status: ""
             },
             src: [],
@@ -227,7 +222,7 @@ export default {
             curr_pic_idx: -1,
             // model
             mod_show: false,
-            protocol: window.location.protocol,
+            head_path:'',
             showApp: "",
             showPc: "",
             showH5: "",
@@ -237,7 +232,8 @@ export default {
                 2: "H5",
                 3: "APP"
             },
-            curr_row: {}
+            curr_row: {},
+            protocol: window.location.protocol
         };
     },
     methods: {
@@ -284,7 +280,7 @@ export default {
             let data = formList;
             let headers = { "Content-Type": "multipart/form-data" };
             this.$http({ method, url, data, headers }).then(res => {
-                // console.log('检查',res)
+                console.log('检查',res)
                 if (res && res.code == "200") {
                     this.$set(this.form, "pc_pic_path", res.data.path);
                 }
@@ -328,8 +324,7 @@ export default {
             this.form = {
                 title: "",
                 content: "",
-                start_dates: "",
-                end_dates: "",
+                dates: [],
                 status: ""
             };
         },
@@ -351,8 +346,7 @@ export default {
                 app_pic_path: row.app_pic,
                 pc_pic_path: row.pc_pic,
                 h5_pic_path: row.h5_pic,
-                start_dates: row.start_time,
-                end_dates: row.end_time,
+                dates: [row.start_time,row.end_time],
                 status: String(row.status)
             };
         },
@@ -363,8 +357,8 @@ export default {
                 h5_pic: this.form.h5_pic_path,
                 pc_pic: this.form.pc_pic_path,
                 app_pic: this.form.app_pic_path,
-                start_time: this.form.start_dates,
-                end_time: this.form.end_dates,
+                start_time: this.form.dates[0],
+                end_time: this.form.dates[1],
                 status: this.form.status
             };
             let { url, method } = this.$api.announce_systemannounce_edit;
@@ -391,8 +385,8 @@ export default {
                 h5_pic: this.form.h5_pic_path,
                 pc_pic: this.form.pc_pic_path,
                 app_pic: this.form.app_pic_path,
-                start_time: this.form.start_dates,
-                end_time: this.form.end_dates,
+                start_time: this.form.dates[0],
+                end_time: this.form.dates[1],
                 status: this.form.status
             };
             // console.log('请求数据',data)
@@ -452,11 +446,14 @@ export default {
                     this.$toast.success(res && res.message);
                     this.mod_show = false;
                     this.getList();
+
+                    
                 }
             });
         }
     },
     mounted() {
+        this.head_path=this.protocol+'//pic.397017.com/'
         this.getList();
     }
 };
@@ -551,21 +548,22 @@ table {
     margin-top: 10px;
 }
 .w250 {
-    width: 266px;
+    width: 300px;
 }
 .radio-right {
-    margin-left: 40px;
+    margin-left: 100px;
 }
 .form-buttons {
     display: flex;
     justify-content: center;
     /* width: 250px; */
+
     margin-top: 20px;
 }
 .ml50 {
     margin-left: 50px;
 }
 .max-w800 {
-    max-width: 800px;
+    max-width: 300px;
 }
 </style>

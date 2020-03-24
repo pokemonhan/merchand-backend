@@ -146,9 +146,11 @@ export default {
             let para = {
                 mobile: this.filter.mobile,
                 guid: this.filter.guid,
-                createAt: createAt
+                createAt: createAt,
+                page:this.pageNo,
+                pageSize:this.pageSize
             };
-            console.log('请求数据',para)
+            // console.log('请求数据',para)
             let params = window.all.tool.rmEmpty(para);
             let { method, url } = this.$api.black_list_list;
             this.$http({ method: method, url: url, params: params }).then(
@@ -169,8 +171,13 @@ export default {
                 black_num: ""
             };
         },
-        updateNo(val) {},
-        updateSize(val) {},
+        updateNo(val) {
+            this.getList();
+        },
+        updateSize(val) {
+            this.pageNo=1;
+            this.getList();
+        },
         turnOnUser() {
             this.show_black_list_conf = true;
             this.curr_row = row;

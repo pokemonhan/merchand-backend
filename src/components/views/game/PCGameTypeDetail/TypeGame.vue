@@ -29,13 +29,12 @@
                     <td>{{row.games && row.games.name}}</td>
                     <td>
                         <img
-                            :src="protocol+'//pic.jianghu.local/'+row.icon"
+                            :src="head_path+row.icon"
                             alt
                             style="max-width:100px;max-height:100px"
                         />
                     </td>
                     <td>
-                        {{row.sort}}
                         <button class="btns-blue" @click="move(row,idx,'moveUp')">上移</button>
                         <button class="btns-blue" @click="move(row,idx,'moveDown')">下移</button>
                     </td>
@@ -89,6 +88,7 @@ export default {
     data() {
         return {
             protocol: window.location.protocol,
+            head_path:'',
             select: {},
             plant_opt: [],
             status_opt: [
@@ -190,7 +190,7 @@ export default {
         switchHot(val, row) {
             let data = {
                 id: row.id,
-                is_hot: val ? 1 : 0
+                hot_new: val ? 1 : 0
             };
             let { url, method } = this.$api.game_hot_set;
             this.$http({ method, url, data }).then(res => {
@@ -220,17 +220,19 @@ export default {
                 type_id: this.type_id, // 分类游戏,(上面的按钮,不包括热门游戏)
                 vendor_id: this.filter.vendor_id, // 游戏平台(厂商id)
                 name: this.filter.name, // 游戏名称
-                status: this.filter.status // 启用状态
+                status: this.filter.status, // 启用状态
+                page:this.pageNo,
+                pageSize:this.pageSize
             };
             // console.log(para);
             let params = window.all.tool.rmEmpty(para);
 
             let { url, method } = this.$api.game_pc_list;
             this.$http({ method, url, params }).then(res => {
-                console.log("列表👌👌👌👌: ", res);
+                // console.log("列表👌👌👌👌: ", res);
                 if (res && res.code === "200") {
-                    this.total = res.data.length;
-                    this.list = res.data;
+                    this.total = res.data.total;
+                    this.list = res.data.data;
                 }
             });
         },
@@ -270,8 +272,13 @@ export default {
                 this.getList();
             });
         },
-        updateNo(val) {},
-        updateSize(val) {},
+        updateNo(val) {
+            this.getList();
+        },
+        updateSize(val) {
+            this.pageNo=1;
+            this.getList();
+        },
         /**
          * @param {string} row 后端的排序
          * @param {string} index 前端的排序
@@ -303,6 +310,7 @@ export default {
         }
     },
     mounted() {
+        this.head_path=this.protocol+'//pic.397017.com/'
         if (this.type_id) {
             this.getList();
         }

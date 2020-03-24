@@ -199,8 +199,13 @@ export default {
         }
     },
     methods: {
-        updateNo(val) {},
-        updateSize(val) {},
+        updateNo(val) {
+            this.getList();
+        },
+        updateSize(val) {
+            this.pageNo=1;
+            this.getList();
+        },
         diaCfm(){
             if(this.dia_status==="addLev"){
                 this.addCfm()
@@ -377,11 +382,16 @@ export default {
             })
         },
         getList(){
+            let para = {
+                page:this.pageNo,
+                pageSize:this.pageSize
+            };
+            let params = window.all.tool.rmEmpty(para);
             let{method,url}=this.$api.grade_list;
-            this.$http({method,url}).then(res=>{
-                console.log(res)
+            this.$http({method,url,params}).then(res=>{
+                // console.log('返回数据',res)
                 if(res && res.code=='200'){
-                    this.list=res.data;
+                    this.list=res.data.data;
                     this.total=res.data.length;
                 }
             })

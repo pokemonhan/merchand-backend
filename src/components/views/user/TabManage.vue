@@ -24,8 +24,8 @@
                     </td>
                     <td>{{row.created_at}}</td>
                     <td>
-                        <span class="a" @click="editTab(row)">编辑</span>
-                        <span class="a" @click="delTab(row)">删除</span>
+                        <button class="btn-blue" @click="editTab(row)">编辑</button>
+                        <button class="btn-red" @click="delTab(row)">删除</button>
                     </td>
                 </template>
             </Table>
@@ -137,8 +137,13 @@ export default {
         };
     },
     methods: {
-        updateNo(val) {},
-        updateSize(val) {},
+        updateNo(val) {
+            this.getList();
+        },
+        updateSize(val) {
+            this.pageNo=1;
+            this.getList();
+        },
         initForm() {
             this.form = {
                 title: "",
@@ -249,9 +254,13 @@ export default {
             });
         },
         getList() {
-            let para = {};
+            let para = {
+                page:this.pageNo,
+                pageSize:this.pageSize
+            };
+            let params = window.all.tool.rmEmpty(para);
             let { method, url } = this.$api.tag_list;
-            this.$http({ method, url }).then(res => {
+            this.$http({ method, url ,params}).then(res => {
                 // console.log("res", res);
                 if (res && res.code == "200") {
                     this.list = res.data.data;

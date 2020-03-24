@@ -269,7 +269,9 @@ export default {
         getList() {
             let para = {
                 game_type_id: this.active_game + 1,
-                game_vendor_id: this.active_plant + 1
+                game_vendor_id: this.active_plant + 1,
+                page:this.pageNo,
+                pageSize:this.pageSize
             };
             // console.log("请求数据", para);
             let params = window.all.tool.rmEmpty(para);
@@ -299,8 +301,13 @@ export default {
                 }
             );
         },
-        updateNo(val) {},
-        updateSize(val) {}
+        updateNo(val) {
+            this.getList();
+        },
+        updateSize(val) {
+            this.pageNo=1;
+            this.getList();
+        },
     },
     mounted() {
         this.getList();

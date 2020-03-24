@@ -29,13 +29,12 @@
                     <td>{{row.games && row.games.name}}</td>
                     <td>
                         <img
-                            :src="protocol+'//pic.jianghu.local/'+row.icon"
+                            :src="head_path+row.icon"
                             alt
                             style="max-width:100px;max-height:100px"
                         />
                     </td>
                     <td>
-                        {{row.sort}}
                         <button class="btns-blue" @click="move(row,idx,'moveUp')">上移</button>
                         <button class="btns-blue" @click="move(row,idx,'moveDown')">下移</button>
                     </td>
@@ -89,6 +88,7 @@ export default {
     data() {
         return {
             protocol: window.location.protocol,
+            head_path:'',
             select: {},
             plant_opt: [],
             status_opt: [
@@ -220,7 +220,9 @@ export default {
                 type_id: this.type_id, // 分类游戏,(上面的按钮,不包括热门游戏)
                 vendor_id: this.filter.vendor_id, // 游戏平台(厂商id)
                 name: this.filter.name, // 游戏名称
-                status: this.filter.status // 启用状态
+                status: this.filter.status, // 启用状态
+                page:this.pageNo,
+                pageSize:this.pageSize
             };
             // console.log(para);
             let params = window.all.tool.rmEmpty(para);
@@ -229,14 +231,12 @@ export default {
             this.$http({ method, url, params }).then(res => {
                 // console.log("列表👌👌👌👌: ", res);
                 if (res && res.code === "200") {
-                    this.total = res.data.length;
-                    this.list = res.data;
+                    this.total = res.data.total;
+                    this.list = res.data.data;
                 }
             });
         },
         upPicChange(e, row) {
-            // console.log("row: ", row);
-            // console.log("event: ", e);
             let reader = new FileReader();
             let pic = e.target.files[0];
             let basket = "GameManagement/H5GamePicture";
@@ -271,8 +271,13 @@ export default {
                 this.getList();
             });
         },
-        updateNo(val) {},
-        updateSize(val) {},
+        updateNo(val) {
+            this.getList();
+        },
+        updateSize(val) {
+            this.pageNo=1;
+            this.getList();
+        },
         /**
          * @param {string} row 后端的排序
          * @param {string} index 前端的排序
@@ -283,8 +288,6 @@ export default {
             if (index === 0 && moving === "moveUp") return;
             if (index === this.list.length - 1 && moving === "moveDown") return;
             let mov = moving === "moveUp" ? -1 : 1;
-            console.log("执行");
-
             if (moving === "moveUp") {
                 this.list.splice(index, 1);
                 this.list.splice(index + mov, 0, row);
@@ -304,6 +307,7 @@ export default {
         }
     },
     mounted() {
+        this.head_path=this.protocol+'//pic.397017.com/'
         if (this.type_id) {
             this.getList();
         }

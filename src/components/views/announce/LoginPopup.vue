@@ -29,7 +29,7 @@
                     <td>
                         <img
                             style="max-width:100px;max-height:80px;"
-                            :src="protocol+'//pic.jianghu.local/'+row.pic"
+                            :src="head_path+row.pic"
                             alt
                         />
                     </td>
@@ -74,7 +74,7 @@
                         <li>
                             <span>选择图片</span>
                             <div class="upload-pic">
-                                <Input style="width:84px;" v-model="form.pic_path" />
+                                <Input style="width:105px;" v-model="form.pic_path" />
                                 <Upload
                                     style="width:110px;"
                                     title="图片上传"
@@ -93,12 +93,8 @@
                             <Input class="w250" v-model="form.link" />
                         </li>
                         <li>
-                            <span>开始时间</span>
-                            <Date style="width:260px;" v-model="form.start_dates" />
-                        </li>
-                        <li>
-                            <span>结束时间</span>
-                            <Date style="width:260px;" v-model="form.end_dates" />
+                            <span>时间范围</span>
+                            <Date type="datetimerange" style="width:300px;" v-model="form.dates" />
                         </li>
                         <li>
                             <span>状态选择</span>
@@ -127,7 +123,7 @@
         </Dialog>
         <!-- 图片预览 -->
         <Dialog :show.sync="pic_dia_show" title="预览图片">
-            <img class="max-w800" :src="protocol+'//pic.jianghu.local/'+form.pic_path" alt />
+            <img class="max-w800" :src="head_path+form.pic_path" alt />
         </Dialog>
         <Modal :show.sync="show_del_modal" title="删除公告" content="是否删除该公告" @confirm="delConfirm"></Modal>
     </div>
@@ -164,8 +160,7 @@ export default {
                 name: "",
                 pic_path: "",
                 link: "",
-                start_dates: "",
-                end_dates: "",
+                dates: [],
                 status: ""
             },
             total: 0,
@@ -177,6 +172,7 @@ export default {
             pic_dia_show: false,
             show_del_modal: false, // 删除公告
             protocol: window.location.protocol,
+            head_path:'',
             curr_row: {}
         };
     },
@@ -199,8 +195,7 @@ export default {
                 name: "",
                 pic_path: "",
                 link: "",
-                start_dates: "",
-                end_dates: "",
+                dates: [],
                 status: ""
             };
         },
@@ -225,8 +220,8 @@ export default {
                 title: this.form.name,
                 pic: this.form.pic_path,
                 link: this.form.link,
-                start_time: this.form.start_dates,
-                end_time: this.form.end_dates,
+                start_time: this.form.dates[0],
+                end_time: this.form.dates[1],
                 status: this.form.status
             };
             // console.log("请求数据", data);
@@ -249,8 +244,7 @@ export default {
                 name: row.title,
                 pic_path: row.pic,
                 link: row.link,
-                start_dates: row.start_time,
-                end_dates: row.end_time,
+                dates: [row.start_time,row.end_time],
                 status: String(row.status)
             };
         },
@@ -261,8 +255,8 @@ export default {
                 title: this.form.name,
                 pic: this.form.pic_path,
                 link: this.form.link,
-                start_time: this.form.start_dates,
-                end_time: this.form.end_dates,
+                start_time: this.form.dates[0],
+                end_time: this.form.dates[1],
                 status: this.form.status
             };
             let { url, method } = this.$api.announce_loginpopup_edit;
@@ -285,6 +279,7 @@ export default {
             };
             let { url, method } = this.$api.announce_loginpopup_del;
             this.$http({ method, url, data }).then(res => {
+                console.log('返回数据',res)
                 this.$toast.success(res && res.message);
                 this.show_del_modal = false;
                 this.getList();
@@ -312,7 +307,9 @@ export default {
         getList() {
             let para = {
                 device: this.head_act_btn,
-                title: this.filter.title
+                title: this.filter.title,
+                page:this.pageNo,
+                pageSize:this.pageSize
             };
             // console.log('请求数据',para)
             let params = window.all.tool.rmEmpty(para);
@@ -329,10 +326,16 @@ export default {
             this.head_act_btn = item.value;
             this.getList();
         },
-        updateNo(val) {},
-        updateSize(val) {}
+        updateNo(val) {
+            this.getList();
+        },
+        updateSize(val) {
+            this.pageNo=1;
+            this.getList();
+        },
     },
     mounted() {
+        this.head_path=this.protocol+'//pic.397017.com/';
         this.getList();
     }
 };
@@ -348,13 +351,13 @@ export default {
     margin-left: 5px;
 }
 .w250 {
-    width: 260px;
+    width: 500px;
 }
 .dia-inner {
     width: 700px;
 }
 .dia-inner > div {
-    width: 330px;
+    width: 340px;
     margin: 0 auto;
     /* border: 1px solid #000; */
 }
@@ -379,7 +382,7 @@ export default {
     /* border: 1px solid #000; */
 }
 .radio-right {
-    margin-left: 50px;
+    margin-left: 100px;
 }
 .form-buttons {
     margin-top: 40px;
@@ -389,6 +392,6 @@ export default {
     margin-left: 50px;
 }
 .max-w800 {
-    max-width: 800px;
+    max-width: 300px;
 }
 </style>

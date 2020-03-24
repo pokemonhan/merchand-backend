@@ -83,8 +83,13 @@ export default {
         };
     },
     methods: {
-        updateNo(val) {},
-        updateSize(val) {},
+        updateNo(val) {
+            this.getList();
+        },
+        updateSize(val) {
+            this.pageNo=1;
+            this.getList();
+        },
         getList() {
             let createdAt = "";
             if (this.filter.dates[0] && this.filter.dates[1]) {
@@ -97,7 +102,10 @@ export default {
                 mobile: this.filter.mobile,
                 uniqueld: this.filter.uniqueld,
                 createAt: createdAt,
-                lastLoginIp: this.filter.lastLoginIp
+                lastLoginIp: this.filter.lastLoginIp,
+                page:this.pageNo,
+                pageSize:this.pageSize
+
             };
             console.log("请求数据", para);
             let params = window.all.tool.rmEmpty(para);

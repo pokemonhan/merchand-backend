@@ -81,12 +81,8 @@
                         </div>
                     </li>
                     <li>
-                        <span>开始时间:</span>
-                        <Date style="width:250px;" v-model="form.start_dates" />
-                    </li>
-                    <li>
-                        <span>结束时间:</span>
-                        <Date style="width:250px;" v-model="form.end_dates" />
+                        <span>时间范围:</span>
+                        <Date type="datetimerange" style="width:280px;" v-model="form.dates" />
                     </li>
                     <li class="status">
                         <span>状态选择:</span>
@@ -139,8 +135,7 @@ export default {
             form: {
                 name: "",
                 content: "",
-                start_dates: "",
-                end_dates: "",
+                dates: [],
                 status: true
             },
             equip: [0, 0, 0],
@@ -187,8 +182,7 @@ export default {
             this.form = {
                 name: "",
                 content: "",
-                start_dates: "",
-                end_dates: "",
+                dates: [],
                 status: false
             };
             this.equip = [0, 0, 0];
@@ -221,13 +215,13 @@ export default {
                 title: this.form.name,
                 content: this.form.content,
                 device: JSON.stringify(device_opt),
-                start_time: this.form.start_dates,
-                end_time: this.form.end_dates,
+                start_time: this.form.dates[0],
+                end_time: this.form.dates[1],
                 status: this.form.status
             };
             let { url, method } = this.$api.announce_marquee_add;
             this.$http({ method, url, data }).then(res => {
-                // console.log(res);
+                console.log('返回数据',res);
                 if (res && res.code == "200") {
                     this.$toast.success(res && res.message);
                     this.dia_show = false;
@@ -264,8 +258,7 @@ export default {
                 id: row.id,
                 name: row.title,
                 content: row.content,
-                start_dates: row.start_time,
-                end_dates: row.end_time,
+                dates: [row.start_time,row.end_time],
                 status: row.status
             };
         },
@@ -281,8 +274,8 @@ export default {
                 title: this.form.name,
                 content: this.form.content,
                 device: JSON.stringify(device_list),
-                start_time: this.form.start_dates,
-                end_time: this.form.end_dates,
+                start_time: this.form.dates[0],
+                end_time: this.form.dates[1],
                 status: this.form.status
             };
             // console.log('请求数据',data)
@@ -356,11 +349,6 @@ table {
 .table .v-table {
     width: 2000px;
 }
-.td-switch {
-    width: 42px;
-    margin: 0 auto;
-}
-
 .dia-inner {
     width: 800px;
     height: 500px;
@@ -371,7 +359,7 @@ table {
     /* border: 1px solid #000; */
 }
 .w250 {
-    width: 250px;
+    width: 280px;
 }
 .form > li {
     display: flex;
@@ -384,7 +372,7 @@ table {
 
 .announce-content {
     padding: 10px;
-    width: 250px;
+    width: 280px;
     min-height: 130px;
     border-radius: 4px;
     border: 1px solid #ddd;

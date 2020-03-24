@@ -321,7 +321,7 @@
                         </li>
                     </ul>
                     <div class="confirm-btn">
-                        <button class="btn-blue-large">确认</button>
+                        <button class="btn-blue-large" @click="addCfm" >确认</button>
                     </div>
                 </div>
             </div>
@@ -405,12 +405,32 @@ export default {
 
             inner_mask_show: false,
             show_add_black_list: false,
+            curr_row:{},
             
         };
     },
     methods: {
+        clearForm(){
+            this.form={
+               account: "",
+                password: "",
+                type: "",
+                conf_pwd: "" 
+            }
+        },
+        getUserDetail(row){
+
+        },
         userDetail(row) {
             this.show_detail = true;
+            this.curr_row=row
+            let data={
+                guid:this.curr_row.id
+            }
+            let {method,url}=this.$api.user_list_detail;
+            this.$http({method,url,data}).then(res=>{
+                console.log('返回书详情数据',res)
+            })
         },
         addBlackList() {
             this.show_add_black_list = true;
@@ -418,6 +438,25 @@ export default {
         addBlackListCfm() {},
         addAccClick() {
             this.inner_mask_show = true;
+            this.clearForm();
+        },
+        addCfm(){
+            let data={
+                mobile:this.form.account,
+                is_tester:this.form.type,
+                password:this.form.password,
+                password_confirmation:this.form.conf_pwd,
+            }
+            // console.log('请求数据',data)
+            let {method,url}=this.$api.user_list_add;
+            this.$http ({method,url,data}).then(res=>{
+                console.log('返回数据',res)
+                if(res && res.code=='200'){
+                    this.inner_mask_show=false;
+                    this.$toast.success(res && res.message);
+                    this.getList();
+                }
+            })
         },
         closeConfirm() {
             this.inner_mask_show = false;
@@ -437,8 +476,10 @@ export default {
                 isOnline: this.filter.online_state,
                 parent_mobile: this.filter.parent_account,
                 lastLoginIp: this.filter.loginIP,
-                registerIp: this.filter.registIP
-                // isTest:this.filter.is_tester
+                registerIp: this.filter.registIP,
+                // isTest:this.filter.is_tester,
+                page:this.pageNo,
+                pageSize:this.pageSize
             };
             console.log('请求数据',para)
             let params = window.all.tool.rmEmpty(para);
@@ -480,9 +521,12 @@ export default {
             });
         },
         updateNo(val) {
-            
+            this.getList();
         },
-        updateSize(val) {}
+        updateSize(val) {
+            this.pageNo=1;
+            this.getList();
+        },
     },
     mounted() {
         this.getList();

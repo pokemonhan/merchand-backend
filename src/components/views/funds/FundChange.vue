@@ -121,7 +121,8 @@ export default {
     },
     methods: {
         quickDateUpdate(dates) {
-            this.filter.date = dates;
+            let arr=[dates[0]+' 00:00:00']
+            this.$set(this.filter, "date", arr);
         },
         timeUpdate() {
             this.quick_query = this.filter.date;
@@ -134,7 +135,6 @@ export default {
                 status: "0"
             };
         },
-        
         updateNo(val) {},
         updateSize(val) {}
     },

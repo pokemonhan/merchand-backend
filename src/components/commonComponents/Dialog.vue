@@ -42,8 +42,8 @@ export default {
             this.$emit('close')
         },
         dragBox(drag, wrap) {
-            console.log('wrap: ', wrap)
-            console.log('drag: ', drag)
+            // console.log('wrap: ', wrap)
+            // console.log('drag: ', drag)
             let headerDom = this.$refs.header
 
             function getCss(ele, prop) {

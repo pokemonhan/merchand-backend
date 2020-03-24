@@ -401,9 +401,14 @@ export default {
 
         // 获取群组列表 (左侧的列表)
         getGroupList() {
+            // let para = {
+            //     page:this.pageNo,
+            //     pageSize:this.pageSize
+            // };
+            // let params = window.all.tool.rmEmpty(para);
             let { url, method } = this.$api.admin_group_list
 
-            this.$http({ method, url }).then(res => {
+            this.$http({ method, url,}).then(res => {
                 // console.log('res: ', res)
                 if (res && res.code === '200') {
                     this.group_list = res.data

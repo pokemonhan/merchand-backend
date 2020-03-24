@@ -349,11 +349,6 @@ table {
 .table .v-table {
     width: 2000px;
 }
-.td-switch {
-    width: 42px;
-    margin: 0 auto;
-}
-
 .dia-inner {
     width: 800px;
     height: 500px;

@@ -32,7 +32,7 @@
                     <td>
                         <img
                             v-if="row.icon"
-                            :src="protocol+'//pic.jianghu.local/'+row.icon"
+                            :src="head_path+row.icon"
                             style="max-width:100px;min-height:100px"
                         />
                     </td>
@@ -108,7 +108,8 @@ export default {
             pageNo: 1,
             pageSize: 25,
             select: {},
-            protocol: window.location.protocol
+            protocol: window.location.protocol,
+            head_path:'',
         };
     },
     methods: {
@@ -259,13 +260,14 @@ export default {
             this.$http({ method, url, params }).then(res => {
                 // console.log("返回数据", res);
                 if (res && res.code == "200") {
-                    this.total = res.data.length;
-                    this.list = res.data;
+                    this.total = res.data.total;
+                    this.list = res.data.data;
                 }
             });
         }
     },
     mounted() {
+        this.head_path=this.protocol+'//pic.397017.com/'
         this.getSelect();
         this.getList();
     }

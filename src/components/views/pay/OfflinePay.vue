@@ -425,8 +425,8 @@ export default {
             this.dia_show = true;
             console.log(row)
             this.form = {
-                // inconm: row.type_id,
-                // bank: row.bank_id,
+                inconm: row.type_id,
+                bank: row.bank_id,
                 accountName: row.username,
                 qrcode: row.qrcode,
                 accountNumber: row.account,

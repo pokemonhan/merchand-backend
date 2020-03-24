@@ -24,8 +24,8 @@
                     </td>
                     <td>{{row.created_at}}</td>
                     <td>
-                        <span class="a" @click="editTab(row)">编辑</span>
-                        <span class="a" @click="delTab(row)">删除</span>
+                        <button class="btn-blue" @click="editTab(row)">编辑</button>
+                        <button class="btn-red" @click="delTab(row)">删除</button>
                     </td>
                 </template>
             </Table>

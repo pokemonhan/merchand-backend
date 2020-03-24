@@ -25,7 +25,6 @@
                     <td>{{row.vendor&&row.vendor.name}}</td>
                     <td>{{row.games&&row.games.name}}</td>
                     <td>
-                        {{row.sort}}
                         <button class="btns-blue" @click="move(row,idx,'moveUp')">上移</button>
                         <button class="btns-blue" @click="move(row,idx,'moveDown')">下移</button>
                     </td>
@@ -108,6 +107,7 @@ export default {
             this.$http({ method, url, data }).then(res => {
                 if (res && res.code === "200") {
                     this.$toast.success(res && res.message);
+                    this.list=[]
                     this.getList();
                 }
             });
@@ -170,10 +170,10 @@ export default {
                 url: this.$api.game_app_list.url,
                 params: params
             }).then(res => {
-                console.log("res", res);
+                // console.log("res", res);
                 if (res && res.code === "200") {
-                    this.list = res.data || [];
-                    this.total = this.list.length;
+                    this.list = res.data.data || [];
+                    this.total = this.list.total;
                 }
             });
         },

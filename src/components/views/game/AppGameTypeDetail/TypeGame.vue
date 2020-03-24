@@ -29,13 +29,12 @@
                     <td>{{row.games && row.games.name}}</td>
                     <td>
                         <img
-                            :src="protocol+'//pic.jianghu.local/'+row.icon"
+                            :src="head_path+row.icon"
                             alt
                             style="max-width:100px;max-height:100px"
                         />
                     </td>
                     <td>
-                        {{row.sort}}
                         <button class="btns-blue" @click="move(row,idx,'moveUp')">上移</button>
                         <button class="btns-blue" @click="move(row,idx,'moveDown')">下移</button>
                     </td>
@@ -89,6 +88,7 @@ export default {
     data() {
         return {
             protocol: window.location.protocol,
+            head_path:'',
             select: {},
             plant_opt: [],
             status_opt: [
@@ -126,7 +126,7 @@ export default {
         getSelectOpt() {
             let { url, method } = this.$api.game_search_condition_list;
             this.$http({ url, method }).then(res => {
-                console.log('下拉数据',res)
+                // console.log('下拉数据',res)
                 if (res && res.code == "200") {
                     this.select = res.data;
                     this.plant_opt = this.backToSelOpt(
@@ -204,14 +204,14 @@ export default {
             this.$http({ method, url, params }).then(res => {
                 // console.log("列表👌👌👌👌: ", res);
                 if (res && res.code === "200") {
-                    this.total = res.data.length;
-                    this.list = res.data;
+                    this.total = res.data.total;
+                    this.list = res.data.data;
                 }
             });
         },
         upPicChange(e, row) {
-            console.log("row: ", row);
-            console.log("event: ", e);
+            // console.log("row: ", row);
+            // console.log("event: ", e);
             let reader = new FileReader();
             let pic = e.target.files[0];
             let basket = "GameManagement/AppGamePicture";
@@ -240,7 +240,7 @@ export default {
             console.log(para);
             let { url, method } = this.$api.picture_update;
             this.$http({ method, url, data: para }).then(res => {
-                console.log("res", res);
+                // console.log("res", res);
                 // TODO
                 this.getList();
             });
@@ -262,7 +262,7 @@ export default {
             if (index === 0 && moving === "moveUp") return;
             if (index === this.list.length - 1 && moving === "moveDown") return;
             let mov = moving === "moveUp" ? -1 : 1;
-            console.log("执行");
+            // console.log("执行");
 
             if (moving === "moveUp") {
                 this.list.splice(index, 1);
@@ -310,6 +310,7 @@ export default {
         }
     },
     mounted() {
+        this.head_path=this.protocol+'//pic.397017.com/'
         if (this.type_id) {
             this.getList();
         }

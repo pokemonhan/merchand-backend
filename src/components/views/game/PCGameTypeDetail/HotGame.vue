@@ -25,7 +25,6 @@
                     <td>{{row.vendor&&row.vendor.name}}</td>
                     <td>{{row.games&&row.games.name}}</td>
                     <td>
-                        {{row.sort}}
                         <button class="btns-blue" @click="move(row,idx,'moveUp')">上移</button>
                         <button class="btns-blue" @click="move(row,idx,'moveDown')">下移</button>
                     </td>
@@ -103,11 +102,11 @@ export default {
                 id: row.id,
                 hot_new: val ? 1 : 0
             };
-
             let { url, method } = this.$api.game_hot_set;
             this.$http({ method, url, data }).then(res => {
                 if (res && res.code === "200") {
                     this.$toast.success(res && res.message);
+                    this.list=[]
                     this.getList();
                 }
             });
@@ -151,7 +150,7 @@ export default {
                 data:data
             }).then(res=>{
                 if(res && res.code=='200'){
-                    alert("执行成功")
+                    this.$toast.success(res && res.message)
                     this.getList();
                 }
             })
@@ -170,9 +169,9 @@ export default {
                 url: this.$api.game_pc_list.url,
                 params: params
             }).then(res => {
-                console.log("res", res);
+                // console.log("res", res);
                 if (res && res.code === "200") {
-                    this.list = res.data || [];
+                    this.list = res.data.data || [];
                     this.total = this.list.length;
                 }
             });

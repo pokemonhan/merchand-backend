@@ -29,13 +29,12 @@
                     <td>{{row.games && row.games.name}}</td>
                     <td>
                         <img
-                            :src="protocol+'//pic.jianghu.local/'+row.icon"
+                            :src="head_path+row.icon"
                             alt
                             style="max-width:100px;max-height:100px"
                         />
                     </td>
                     <td>
-                        {{row.sort}}
                         <button class="btns-blue" @click="move(row,idx,'moveUp')">上移</button>
                         <button class="btns-blue" @click="move(row,idx,'moveDown')">下移</button>
                     </td>
@@ -89,6 +88,7 @@ export default {
     data() {
         return {
             protocol: window.location.protocol,
+            head_path:'',
             select: {},
             plant_opt: [],
             status_opt: [
@@ -237,8 +237,6 @@ export default {
             });
         },
         upPicChange(e, row) {
-            // console.log("row: ", row);
-            // console.log("event: ", e);
             let reader = new FileReader();
             let pic = e.target.files[0];
             let basket = "GameManagement/H5GamePicture";
@@ -290,8 +288,6 @@ export default {
             if (index === 0 && moving === "moveUp") return;
             if (index === this.list.length - 1 && moving === "moveDown") return;
             let mov = moving === "moveUp" ? -1 : 1;
-            console.log("执行");
-
             if (moving === "moveUp") {
                 this.list.splice(index, 1);
                 this.list.splice(index + mov, 0, row);
@@ -311,6 +307,7 @@ export default {
         }
     },
     mounted() {
+        this.head_path=this.protocol+'//pic.397017.com/'
         if (this.type_id) {
             this.getList();
         }

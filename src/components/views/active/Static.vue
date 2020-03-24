@@ -28,7 +28,7 @@
                 <template v-slot:item="{row}">
                     <td>{{row.title}}</td>
                     <td>
-                        <img style="max-width:200px;max-height:200px;"  :src="protocol+'//pic.jianghu.local/'+row.pic" alt />
+                        <img style="max-width:200px;max-height:200px;"  :src="head_path+row.pic" alt />
                     </td>
                     <td>{{row.author && row.author.name}}</td>
                     <td>{{row.created_at}}</td>
@@ -63,7 +63,7 @@
                     </li>
                     <li>
                         <span>活动图片:</span>
-                        <Input style="width:172px;" v-model="form.pic_path" />
+                        <Input style="width:100px;" v-model="form.pic_path" />
                         <Upload
                             style="width:125px;"
                             title="上传图片"
@@ -135,7 +135,8 @@ export default {
                 status: true,
                 pic_path: ""
             },
-            protocol: window.location.protocol
+            protocol: window.location.protocol,
+            head_path:'',
         };
     },
     methods: {
@@ -178,20 +179,20 @@ export default {
             });
         },
         addCfm() {
-            let start_time=''
-            if(this.form.dates[0]){
-                start_time=JSON.stringify([this.form.dates[0]])
-            }
-            let end_time=''
-            if(this.form.dates[1]){
-                end_time=JSON.stringify([this.form.dates[1]])
-            }
+            // let start_time=''
+            // if(this.form.dates[0]){
+            //     start_time=JSON.stringify([this.form.dates[0]])
+            // }
+            // let end_time=''
+            // if(this.form.dates[1]){
+            //     end_time=JSON.stringify([this.form.dates[1]])
+            // }
             let data={
                 device:this.curr_btn,
                 title:this.form.title,
                 pic:this.form.pic_path,
-                start_time:start_time,
-                end_time:end_time,
+                start_time:this.form.dates[0],
+                end_time:this.form.dates[1],
                 status:this.form.status
             }
             let {url,method}=this.$api.static_active_add;
@@ -225,27 +226,26 @@ export default {
                 id:row.id,
                 title:row.title,
                 pic_path:row.pic,
-                start_dates:row.created_at,
-                end_dates:row.end_time,
+                dates:[row.created_at,row.end_time],
                 status:row.status,
             }
         },
         editCfm() {
-            let start_time=''
-            if(this.form.dates[0]){
-                start_time=JSON.stringify([this.form.dates[0]])
-            }
-            let end_time=''
-            if(this.form.dates[1]){
-                end_time=JSON.stringify([this.form.dates[1]])
-            }
+            // let start_time=''
+            // if(this.form.dates[0]){
+            //     start_time=JSON.stringify([this.form.dates[0]])
+            // }
+            // let end_time=''
+            // if(this.form.dates[1]){
+            //     end_time=JSON.stringify([this.form.dates[1]])
+            // }
             let data={
                 device:this.curr_btn,
                 id:this.form.id,
                 title:this.form.title,
                 pic:this.form.pic_path,
-                start_time:start_time,
-                end_time:end_time,
+                start_time:this.form.dates[0],
+                end_time:this.form.dates[1],
                 status:this.form.status,
             }
             // console.log(data)
@@ -307,6 +307,7 @@ export default {
         }
     },
     mounted() {
+        this.head_path=this.protocol+'//pic.397017.com/'
         this.getList();
     }
 };

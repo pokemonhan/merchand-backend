@@ -45,6 +45,26 @@ export default {
         url: '/merchant-api/frontend-user/index',
         method: 'post'
     },
+    //会员列表 - 添加账号
+    user_list_add:{
+        url:'/merchant-api/frontend-user/store',
+        method:'post'
+    },
+    //会员列表 - 详情
+    user_list_detail:{
+        url:'/merchant-api/frontend-user/detail',
+        method:'post'
+    },
+    //会员列表 - 重置登录密码
+    user_list_reset_login_password:{
+        url:'/merchant-api/frontend-user/password/reset',
+        method:'post'
+    },
+    //会永远列表 - 重置取款密码
+    user_list_reset_without_password:{
+        url:'/merchant-api/frontend-user/withdrawals-password/reset',
+        method:'post'
+    },
     // 会员列表 - 登记记录
     user_login_log_list: {
         url: '/merchant-api/frontend-user/login-log',

@@ -354,10 +354,10 @@ export default {
             this.dia_status = "add";
             this.dia_title = "新增线下入款";
             this.dia_show = true;
-            this.addClearAll();
+            // this.addClearAll();
         },
         addCfm() {
-            let data = {
+            let datas = {
                 channel_id: this.form.pay_method,
                 frontend_name: this.form.front_name,
                 merchant_code: this.form.merchant_num,
@@ -366,23 +366,28 @@ export default {
                 merchant_secret: this.form.merchant_key,
                 public_key: this.form.merchant_public,
                 private_key: this.form.merchant_private,
-                certificate: this.form.certificate,
+                // certificate: this.form.certificate_path,
                 request_url: this.form.url,
                 vendor_url: this.form.third_href,
-                app_id: this.form.terminal,
-                tags: JSON.stringify(
-                    this.showTag.map(item => {
+                app_id:this.form.terminal,
+                tags:JSON.stringify( this.showTag.map(item => {
                         return String(item.value);
-                    })
-                ),
+                })),
                 min: this.form.pay_limit[0],
                 max: this.form.pay_limit[1],
                 handle_fee: this.form.income_charge,
                 desc: this.form.specifcation,
                 backend_remark: this.form.mark
             };
+            // console.log('添加请求数据',datas)
+            let data=window.all.tool.rmEmpty(datas)
             let { url, method } = this.$api.online_finance_add;
             this.$http({ method, url, data }).then(res => {
+                // console.log('添加返回数据',res)
+                if(res && res.code=='200'){
+                    this.dia_show=false;
+                    this.getList();
+                }
             });
         },
         edit() {
@@ -448,7 +453,7 @@ export default {
             this.showTag.splice(index, 1);
         },
         tagChange() {
-            console.log(this.form.formtag);
+            // console.log(this.form.formtag);
             let show_arr = [];
             for (let key in this.form.formtag) {
                 // this.form.formtag[key]
@@ -457,7 +462,7 @@ export default {
                 if (item) {
                     show_arr.push(key);
                 }
-                console.log("show_arr: ", show_arr);
+                // console.log("show_arr: ", show_arr);
                 this.showTag = this.all_tag.filter(item => {
                     // console.log("item: ", item);
                     return show_arr.indexOf(String(item.value)) !== -1;

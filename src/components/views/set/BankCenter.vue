@@ -150,15 +150,15 @@ export default {
                 user_id:this.filter.id,
                 bank_id:this.filter.bank,
                 card_number:this.filter.card,
-                created_at:String([this.filter.dates[0],this.filter.dates[1]]),
+                created_at:JSON.stringify([this.filter.dates[0],this.filter.dates[1]]),
                 page:this.pageNo,
                 pageSize:this.pageSize
            }
-            console.log('请求数据',datas)
+            // console.log('请求数据',datas)
             let data=window.all.tool.rmEmpty(datas) 
             let {method,url}=this.$api.bank_cards_list
             this.$http({method,url,data}).then(res=>{
-                console.log('返回数据',res)
+                // console.log('返回数据',res)
                 if(res && res.code=='200'){
                     this.list=res.data.data
                     this.total=res.data.total

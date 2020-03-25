@@ -170,10 +170,10 @@ export default {
                 url: this.$api.game_app_list.url,
                 params: params
             }).then(res => {
-                // console.log("res", res);
+                console.log("res", res);
                 if (res && res.code === "200") {
                     this.list = res.data.data || [];
-                    this.total = this.list.total;
+                    this.total = this.list.length;
                 }
             });
         },

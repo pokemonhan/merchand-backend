@@ -145,7 +145,7 @@
                                 >{{item.label}}</span>
                             </div>
                         </li>
-                        <li @click.stop>
+                        <li class="tagList" @click.stop>
                             <p
                                 v-show="tag_show"
                                 v-for="(item) in all_tag"
@@ -423,7 +423,7 @@ export default {
             this.dia_status = "edit";
             this.dia_title = "修改";
             this.dia_show = true;
-            console.log(row)
+            this.addClearAll();
             this.form = {
                 inconm: row.type_id,
                 bank: row.bank_id,
@@ -573,5 +573,8 @@ export default {
 }
 .allTag-list {
     margin-left: 95px;
+}
+.tagList{
+    width: 300px;
 }
 </style>

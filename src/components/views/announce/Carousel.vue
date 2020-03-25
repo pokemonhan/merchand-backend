@@ -262,8 +262,7 @@ export default {
                 pic_path: "",
                 status: "1",
                 link: "",
-                start_dates: "",
-                end_dates: "",
+                dates: [],
                 active: "1"
             };
         },
@@ -306,10 +305,10 @@ export default {
                 end_time:this.form.dates[1],
                 status: this.form.active
             };
-            // console.log('请求数据',data)
+            console.log('请求数据',data)
             let { url, method } = this.$api.announce_carousel_add;
             this.$http({ method, url, data }).then(res => {
-                // console.log('返回数据',res)
+                console.log('返回数据',res)
                 if (res && res.code == "200") {
                     this.$toast.success(res && res.message);
                     this.getList();

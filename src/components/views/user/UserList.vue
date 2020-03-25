@@ -425,11 +425,15 @@ export default {
             this.show_detail = true;
             this.curr_row=row
             let data={
-                guid:this.curr_row.id
+                guid:String(this.curr_row.guid)
             }
+            console.log('请求数据',data)
             let {method,url}=this.$api.user_list_detail;
             this.$http({method,url,data}).then(res=>{
-                console.log('返回书详情数据',res)
+                console.log('返回详情数据',res)
+                if(res && res.code=='200'){
+
+                }
             })
         },
         addBlackList() {

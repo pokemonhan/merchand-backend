@@ -26,8 +26,8 @@
 
                     <td v-for="(item,index) in row.percent_data" :key="index">{{item.percent}}%</td>
                     <td>
-                        <span class="a" @click="editWashModal(row)">编辑</span>
-                        <span class="a" @click="delWashModal(row)">删除</span>
+                        <button class="btn-blue" @click="editWashModal(row)">编辑</button>
+                        <button class="btn-red" @click="delWashModal(row)">删除</button>
                     </td>
                 </template>
             </Table>
@@ -172,13 +172,12 @@ export default {
         getLevList() {
             let { method, url } = this.$api.grade_list;
             this.$http({ method, url }).then(res => {
-                // console.log("等级数据", res);
+                console.log("等级数据", res);
                 if (res && res.code == "200") {
-                    this.lev_list = res.data;
+                    this.lev_list = res.data.data;
                 }
             });
         },
-
         actSort(index) {
             this.active_game = index;
             this.getList();
@@ -229,10 +228,10 @@ export default {
                 bet: String(this.wash_form.code_numbers[1]),
                 percent: JSON.stringify(percent)
             };
-            // console.log('请求数据',data)
+            console.log('请求数据',data)
             let { method, url } = this.$api.wash_code_add;
             this.$http({ method, url, data }).then(res => {
-                // console.log('返回数据',res)
+                console.log('返回数据',res)
                 if (res && res.code == "200") {
                     this.show_modal = false;
                     this.$toast.success(res && res.message);
@@ -257,12 +256,13 @@ export default {
             let data = {
                 id: this.curr_row.id
             };
+            console.log('请求数据',data)
             let { method, url } = this.$api.bank_cards_del;
             this.$http({ method, url, data }).then(res => {
                 if (res && res.code == "200") {
                     this.show_del_modal = false;
-                    this.getList();
                     this.$toast.success(res && res.message);
+                    this.getList();
                 }
             });
         },

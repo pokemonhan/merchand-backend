@@ -132,6 +132,7 @@ export default {
             this.quick_query = this.filter.dates;
         },
         dateUpdate(dates) {
+            console.log('传入时间',dates)
             let arr=[dates[0]+' 00:00:00',dates[1]+' 00:00:00']
             this.$set(this.filter, "dates", arr);
         },

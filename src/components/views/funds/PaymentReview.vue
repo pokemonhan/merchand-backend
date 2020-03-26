@@ -38,6 +38,7 @@
                         type="datetimerange"
                         style="width:300px;"
                         v-model="filter.operater_dates"
+                        @update="reviewUpdate()"
                     />
                 </li>
                 <li>
@@ -51,7 +52,7 @@
                 </li>
 
                 <li>
-                    <button class="btn-blue" @click="getLsit">查询</button>
+                    <button class="btn-blue" @click="getList">查询</button>
                     <button class="btn-blue">导出</button>
                     <button class="btn-red" @click="clearfilter">清空</button>
                 </li>
@@ -237,10 +238,14 @@ export default {
             //同步时间筛选值
             let arr = [dates[0] + " 00:00:00", dates[1] + " 00:00:00"];
             this.$set(this.filter, "apply_dates", arr);
+            this.$set(this.filter,"operater_dates",arr);
         },
         timeUpdate() {
             //同步快捷查询按钮状态
             this.quick_query = this.filter.apply_dates;
+        },
+        reviewUpdate(){
+            this.quick_query = this.filter.operater_dates
         },
         clearfilter() {
             this.filter = {
@@ -259,10 +264,12 @@ export default {
             // this.show_audit_button.splice(index, 1, true)
             // this.$set(this.show_audit_button, index, true)
         },
-        statusShow() {
+        statusShow(row) {
+            this.curr_row = row
             this.dia_status = "statusShow";
             this.dia_show = true;
             this.dia_title = "出款订单审核";
+            
         },
         checkAudit() {
             console.log("点击");
@@ -271,13 +278,13 @@ export default {
             this.dia_title = "查看稽核";
         },
         updateNo(val) {
-            this.getLsit();
+            this.getList();
         },
         updateSize(val) {
             this.pageNo = 1;
-            this.getLsit();
+            this.getList();
         },
-        getLsit() {
+        getList() {
             let created_at = "";
             if (this.filter.apply_dates[0] && this.filter.apply_dates[1]) {
                 created_at = JSON.stringify([this.filter.apply_dates[0],this.filter.apply_dates[1]]);
@@ -301,11 +308,12 @@ export default {
                 page: this.pageNo,
                 pageSize: this.pageSize
             };
+            // console.log('请求数据',para)
             let params = window.all.tool.rmEmpty(para);
             let { method, url } = this.$api.founds_interface_list;
             this.$http({ method: method, url: url, params: params }).then(
                 res => {
-                    // console.log(res);
+                    // console.log('出款数据',res);
                     if (res && res.code == "200") {
                         this.list = res.data.data;
                         this.total = res.data.total;
@@ -315,7 +323,7 @@ export default {
         }
     },
     mounted() {
-        this.getLsit();
+        this.getList();
     }
 };
 </script>

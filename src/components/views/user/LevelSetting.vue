@@ -17,8 +17,8 @@
                     <td>{{row.weekly_gift}}</td>
                     <td>{{row.updated_at}}</td>
                     <td>
-                        <span class="a" @click="editLev(row)">编辑</span>
-                        <span class="a" @click="delLev(row)">删除</span>
+                        <button class="btn-blue" @click="editLev(row)">编辑</button>
+                        <button class="btn-red" @click="delLev(row)">删除</button>
                     </td>
                     
                 </template>

@@ -10,9 +10,7 @@
                 </li>
                <li>
                    <span style="margin-left:10px ">起始时间</span>
-                   <Date v-model="filter.dates[0]" @update="timeUpdate()" />
-                   <span class="ph5">~</span>
-                   <Date v-model="filter.dates[1]" @update="timeUpdate()" />
+                   <Date type="datetimerange" style="width:300px;" v-model="filter.dates" />
                </li>
                <li>
                    <button class="btn-blue">查询</button>
@@ -83,9 +81,6 @@ export default {
         };
     },
     methods: {
-        timeUpdate(){
-            this.quick_query=this.filter.dates
-        },
         updateNo(val){},
         updateSize(val){},
         exportExcel(){

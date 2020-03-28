@@ -35,8 +35,8 @@
         </div>
 
         <!--  添加  -->
-        <Dialog :show.sync="add_show" title="添加邮件">
-            <div class="dia-inner">
+        <Dialog :show.sync="add_show" title="添加邮件"  >
+            <div class="dia-inner" style="height:540px;" >
                 <div>
                     <ul class="form">
                         <li>

@@ -52,8 +52,8 @@ export default {
     data() {
         return {
             buttons: [
-                { label: 'H5分类管理', value: '1' },
-                { label: 'PC分类管理', value: '2' },
+                { label: 'PC分类管理', value: '1' },
+                { label: 'H5分类管理', value: '2' },
                 { label: 'APP分类管理', value: '3' }
             ],
             curr_btn: '1',

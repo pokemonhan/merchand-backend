@@ -60,9 +60,19 @@ export default {
         url:'/merchant-api/frontend-user/password/reset',
         method:'post'
     },
-    //会永远列表 - 重置取款密码
+    //会员列表 - 重置取款密码
     user_list_reset_without_password:{
         url:'/merchant-api/frontend-user/withdrawals-password/reset',
+        method:'post'
+    },
+    //会员列表 - 清空支付宝
+    user_list_clear_alipay:{
+        url:'/merchant-api/frontend-user/login-log',
+        method:'post'
+    },
+    //会员列表 - 解锁
+    user_list_unlocck:{
+        url:'/merchant-api/frontend-user/unlock',
         method:'post'
     },
     // 会员列表 - 登记记录

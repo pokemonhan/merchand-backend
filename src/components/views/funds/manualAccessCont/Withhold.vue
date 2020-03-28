@@ -28,7 +28,7 @@
                     <button class="btn-blue" @click="getList" >查询</button>
                     <button class="btn-blue" @click="exportExccel()" >导出Excel</button>
                     <button class="btn-red" @click="clearFilter">清空</button>
-                    <button class="btn-blue" @click="dia_show=true">人工扣款</button>
+                    <button class="btn-blue" @click="without">人工扣款</button>
                 </li>
             </ul>
         </div>
@@ -141,7 +141,7 @@ export default {
             dia_show: false,
             form:{
                 account: '',
-                withhold_type: '1',
+                withhold_type: '',
                 withhold_amount: '',
                 remark: '',
             },
@@ -167,6 +167,14 @@ export default {
                 dates: [],
                 offcial_acc: '',
                 withhold_type: ''
+            }
+        },
+        clearForm(){
+            this.form={
+                account: '',
+                withhold_type: '',
+                withhold_amount: '',
+                remark: '',
             }
         },
         withholdUpdateNo(val) {
@@ -226,6 +234,10 @@ export default {
                     bookType: "xlsx"
                 });
             });   
+        },
+        without(){
+            this.dia_show=true;
+            this.clearForm();
         },
         withHoldCfm(){
             let data={

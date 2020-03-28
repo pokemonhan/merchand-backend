@@ -49,17 +49,17 @@
                         class="pointer"
                         style="width:100px;"
                         @click="showDetail(row,idx)"
-                    >{{row.email&&row.email.title}}</td>
+                    >{{row.sender}}</td>
                     <td
                         class="pointer"
                         style="width:760px;padding:5px;"
                         @click="showDetail(row,idx)"
-                        v-html="getText(row.email&&row.email.content)"
+                        v-html="getText(row.content)"
                     ></td>
                     <td
                         class="pointer"
                         @click="showDetail(row,idx)"
-                    >{{row.email&&row.email.created_at}}</td>
+                    >{{row.created_at}}</td>
                 </template>
             </Table>
             <Page

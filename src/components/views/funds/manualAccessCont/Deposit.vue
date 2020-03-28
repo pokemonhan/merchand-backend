@@ -29,7 +29,7 @@
                     <button class="btn-blue" @click="getList">查询</button>
                     <button class="btn-blue" @click="exportExcel()">导出Excel</button>
                     <button class="btn-red" @click="clearAll">清空</button>
-                    <button class="btn-blue" @click="dia_show=true">人工充值</button>
+                    <button class="btn-blue" @click="add">人工充值</button>
                 </li>
             </ul>
         </div>
@@ -144,7 +144,12 @@ export default {
             pageSize: 25,
             // 人工充值 添加-dialog
             dia_show: false,
-            form: {},
+            form: {
+                account:'',
+                deposit_type:'',
+                deposit_amount:'',
+                remark:'',
+            },
             deposit_type_opt: [
                 // 目前就一个
                 { label: "优惠存款", value: "1"}
@@ -165,6 +170,14 @@ export default {
                 official_account: "",
                 charge_type: ""
             };
+        },
+        clearForm(){
+            this.form={
+                account:'',
+                deposit_type:'',
+                deposit_amount:'',
+                remark:'',
+            }
         },
         timeUpdate() {
             //同步快捷查询时间
@@ -225,6 +238,10 @@ export default {
                     bookType: "xlsx"
                 });
             });
+        },
+        add(){
+            this.dia_show=true;
+            this.clearForm();
         },
         addCfm(){
             let data={

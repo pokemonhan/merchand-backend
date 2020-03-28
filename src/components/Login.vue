@@ -67,9 +67,7 @@ export default {
             if (!this.email) {
                 this.accMsg = '账号不能为空'
             } else {
-                this.accMsg = this.unameReg.test(this.email)
-                    ? ''
-                    : '请输入8-16个字符组合账号'
+                this.accMsg = this.unameReg.test(this.email)? '': '请输入8-16个字符组合账号'
             }
             return !this.accMsg
         },

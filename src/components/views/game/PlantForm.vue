@@ -80,8 +80,8 @@ export default {
     data() {
         return {
             buttons: [
-                { label: "H5平台管理", value: "1" },
-                { label: "PC平台管理", value: "2" },
+                { label: "PC平台管理", value: "1" },
+                { label: "H5平台管理", value: "2" },
                 { label: "APP平台管理", value: "3" }
             ],
             curr_btn: "1",
@@ -258,7 +258,7 @@ export default {
             let params = window.all.tool.rmEmpty(para);
             let { url, method } = this.$api.game_vendor;
             this.$http({ method, url, params }).then(res => {
-                // console.log("返回数据", res);
+                console.log("返回数据", res);
                 if (res && res.code == "200") {
                     this.total = res.data.total;
                     this.list = res.data.data;

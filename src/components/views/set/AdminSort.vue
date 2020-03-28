@@ -138,6 +138,7 @@ export default {
             searchGroup: [],
             group_list: [], // 展示列表
             form: {
+                id:'',
                 group_name: '',
                 tagList: []
             },
@@ -422,7 +423,7 @@ export default {
             this.$http({ method, url }).then(res => {
                 // console.log('res: ', res)
                 if (res && res.code === '200') {
-                    this.group_list = res.data
+                    this.group_list = res.data.data
                     this.group_list &&
                         this.$nextTick(() => {
                             let self = this

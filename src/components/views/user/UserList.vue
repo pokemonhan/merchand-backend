@@ -99,7 +99,7 @@
                         <div>
                             <img
                                 class="avator"
-                                src="../../../assets/image/user/neko.png"
+                                :src="detail_list.avatar"
                                 alt="没有图片"
                             />
                         </div>
@@ -120,7 +120,7 @@
                                     <span class="mr5">会员标签</span>
                                     <span class="bg-red">
                                         <i class="iconfont iconjinggao1-"></i>
-                                        <span>{{detail_list.title}}</span>
+                                        <span>{{detail_list.label}}</span>
                                     </span>
                                     <button class="btn-blue" @click="EditUserTab=true">修改</button>
                                 </td>
@@ -162,12 +162,12 @@
                             <ul style="margin-top:10px;">
                                 <li>
                                     <span>清空支付宝:</span>
-                                    <button class="btn-blue" @click="reAliPwd()">清空</button>
+                                    <button class="btn-blue" @click="clearAli()">清空</button>
                                 </li>
                                 <li>
                                     <span>账号状态:</span>
-                                    <span>{{'正常'}}</span>
-                                    <button class="btn-blue">解锁</button>
+                                    <span :class="[detail_list.status==1?'green':'red']" >{{detail_list.status==1?'正常':'禁用'}}</span>
+                                    <button v-if="detail_list.status==0" class="btn-blue" @click="unlock()" >解锁</button>
                                 </li>
                             </ul>
                         </div>
@@ -393,6 +393,28 @@
                 </ul>
             </div>
         </Dialog>
+        <Dialog :show.sync="Ali_show" title="清空支付宝">
+            <div class="dia-inner">
+                <div class="ali-inner">
+                    <div class="infor">是否确定清空支付宝？</div>
+                    <div class="ali-btns">
+                        <button class="btn-plain-large mr50" @click="Ali_show=false">取消</button>
+                        <button class="btn-blue-large" @click="clearAliCfm()">确认</button>
+                    </div>
+                </div>
+            </div>
+        </Dialog>
+        <Dialog :show.sync="unlock_show" title="账号解锁" >
+            <div class="dia-inner">
+                <div class="ali-inner">
+                    <div class="infor">是否确定解锁改账号？</div>
+                    <div class="ali-btns">
+                        <button class="btn-plain-large mr50" @click="unlock_show=false">取消</button>
+                        <button class="btn-blue-large" @click="unlockCfm()">确认</button>
+                    </div>
+                </div>
+            </div>
+        </Dialog>
     </div>
 </template>
 
@@ -470,7 +492,9 @@ export default {
             show_password: false,
             reset_title: "",
             reset_status: "",
-            detail_list: {}
+            detail_list: {},
+            Ali_show:false,
+            unlock_show:false,
         };
     },
     methods: {
@@ -496,10 +520,10 @@ export default {
             let data = {
                 guid: String(this.curr_row.guid)
             };
-            console.log("请求数据", data);
+            // console.log("请求数据", data);
             let { method, url } = this.$api.user_list_detail;
             this.$http({ method, url, data }).then(res => {
-                console.log("返回详情数据", res);
+                // console.log("返回详情数据", res);
                 if (res && res.code == "200") {
                     this.detail_list = res.data;
                 }
@@ -524,7 +548,7 @@ export default {
             // console.log('请求数据',data)
             let { method, url } = this.$api.user_list_add;
             this.$http({ method, url, data }).then(res => {
-                console.log("返回数据", res);
+                // console.log("返回数据", res);
                 if (res && res.code == "200") {
                     this.inner_mask_show = false;
                     this.$toast.success(res && res.message);
@@ -555,11 +579,11 @@ export default {
                 page: this.pageNo,
                 pageSize: this.pageSize
             };
-            console.log("请求数据", para);
+            // console.log("请求数据", para);
             let params = window.all.tool.rmEmpty(para);
             let { method, url } = this.$api.user_list;
             this.$http({ method, url, params }).then(res => {
-                console.log("返回数据", res);
+                // console.log("返回数据", res);
                 if (res && res.code === "200") {
                     this.list = res.data.data;
                     this.total = res.data.total;
@@ -692,9 +716,43 @@ export default {
             }
         },
         //查看银行 跳转至银行卡反差中心
-        viewBank() {},
-        clearAli() {},
-
+        viewBank() {
+            this.$router.push('/set/bankcenter')
+            this.show_detail=false
+        },
+        clearAli() {
+            this.Ali_show=true;
+        },
+        clearAliCfm(){
+            let data={
+                guid:String(this.detail_list.guid),
+            }
+            // console.log('请求数据',data)
+            let {method,url}=this.$api.user_list_clear_alipay;
+            this.$http({method,url,data}).then(res=>{
+                // console.log('返回数据',res)
+                if(res && res.code=='200'){
+                    this.Ali_show=false;
+                    this.$toast.success(res.message);
+                }
+            })
+        },
+        unlock(){
+            this.unlock_show=true;
+        },
+        unlockCfm(){
+            let data={
+                guid:String(this,detail_list.guid)
+            }
+            let {method,url}=this.$api.user_list_unlock;
+            this.$http({method,url,data}).then(res=>{
+                if(res && res.code=='200'){
+                    this.unlock_show=false;
+                    this.userDetail();
+                    this.$toast.success(res.message);
+                }
+            })
+        },
         updateNo(val) {
             this.getList();
         },
@@ -959,5 +1017,13 @@ table {
     /* height: 13px; */
     font-size: 12px;
     color: red;
+}
+.ali-inner{
+    text-align: center;
+    font-size: 14px;
+    margin-top: 8%;
+}
+.ali-btns{
+    margin-top: 8%;
 }
 </style>

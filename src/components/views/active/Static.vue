@@ -298,7 +298,7 @@ export default {
             let params = window.all.tool.rmEmpty(para);
             let { method, url } = this.$api.static_active_list;
             this.$http({ method, url, params }).then(res => {
-                // console.log(res);
+                // console.log('返回数据',res);
                 if (res && res.code == "200") {
                     this.total = res.data.total;
                     this.list = res.data.data;

@@ -1,7 +1,7 @@
 <template>
     <div class="cont">
          <!-- <div> 出款订单审核 </div> -->
-         <div>
+         <div class="with-inner" >
              <div class="order">
                  <span >订单号: {{row.order_no}}</span>
              </div>
@@ -61,7 +61,7 @@
                          </td>
                      </tr>
                  </table>
-                 <div class="all-btn">
+                 <div class="all-btn" v-if="row.status==2" >
                      <button class="btn-plain-large mr50" @click="reject" >拒绝</button>
                      <button class="btn-blue-large" @click="pass" >通过</button>
                  </div>
@@ -165,5 +165,8 @@ export default {
     height: 100%;
     border: none;
     float: left;
+}
+.cont{
+    margin-left: 50px;
 }
 </style>

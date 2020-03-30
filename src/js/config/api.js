@@ -71,7 +71,7 @@ export default {
         method:'post'
     },
     //会员列表 - 解锁
-    user_list_unlocck:{
+    user_list_unlock:{
         url:'/merchant-api/frontend-user/unlock',
         method:'post'
     },

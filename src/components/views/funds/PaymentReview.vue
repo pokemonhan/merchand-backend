@@ -70,7 +70,7 @@
                     <td>{{row.created_at}}</td>
                     <td>{{row.reviewer_id}}</td>
                     <td>{{row.review_at}}</td>
-                    <td :class="status_obj[row.status].color">{{status_obj[row.status].text}}</td>
+                    <td :class="status_obj[row.status].color"  >{{status_obj[row.status].text}}</td>
                     <td>
                         <button
                             :class="status_obj[row.status].button"
@@ -230,7 +230,7 @@ export default {
             dia_show: false,
             dia_status: "",
             userid: "",
-            dia_title: ""
+            dia_title: "",
         };
     },
     methods: {
@@ -238,14 +238,14 @@ export default {
             //同步时间筛选值
             let arr = [dates[0] + " 00:00:00", dates[1] + " 00:00:00"];
             this.$set(this.filter, "apply_dates", arr);
-            this.$set(this.filter,"operater_dates",arr);
+            this.$set(this.filter, "operater_dates", arr);
         },
         timeUpdate() {
             //同步快捷查询按钮状态
             this.quick_query = this.filter.apply_dates;
         },
-        reviewUpdate(){
-            this.quick_query = this.filter.operater_dates
+        reviewUpdate() {
+            this.quick_query = this.filter.operater_dates;
         },
         clearfilter() {
             this.filter = {
@@ -264,12 +264,15 @@ export default {
             // this.show_audit_button.splice(index, 1, true)
             // this.$set(this.show_audit_button, index, true)
         },
+        checkStatusShow(row) {
+            if (row.status == 0) {
+            }
+        },
         statusShow(row) {
-            this.curr_row = row
+            this.curr_row = row;
             this.dia_status = "statusShow";
             this.dia_show = true;
             this.dia_title = "出款订单审核";
-            
         },
         checkAudit() {
             console.log("点击");
@@ -287,14 +290,20 @@ export default {
         getList() {
             let created_at = "";
             if (this.filter.apply_dates[0] && this.filter.apply_dates[1]) {
-                created_at = JSON.stringify([this.filter.apply_dates[0],this.filter.apply_dates[1]]);
+                created_at = JSON.stringify([
+                    this.filter.apply_dates[0],
+                    this.filter.apply_dates[1]
+                ]);
             }
             let review_at = "";
             if (
                 this.filter.operater_dates[0] &&
                 this.filter.operater_dates[1]
             ) {
-                review_at = JSON.stringify([this.filter.operater_dates[0],this.filter.operater_dates[1]]);
+                review_at = JSON.stringify([
+                    this.filter.operater_dates[0],
+                    this.filter.operater_dates[1]
+                ]);
             }
             let para = {
                 mobile: this.filter.account,

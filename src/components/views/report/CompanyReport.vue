@@ -6,9 +6,7 @@
             <ul class="left"> 
                 <li>
                     <span>起止时间</span>
-                    <Date v-model="filter.dates[0]" @update="timeUpdate()" />
-                    <span style="margin:0 5px;">~</span>
-                    <Date v-model="filter.dates[1]" @update="timeUpdate()" />
+                    <Date type="datetimerange" style="width:300px;" v-model="filter.dates" @update="timeUpdate()" />
                 </li>
                 <li>
                     <button class="btn-blue">查询</button>
@@ -87,8 +85,8 @@ export default {
             this.quick_query=this.filter.dates
         },
         qqUpd(dates){
-            this.filter.dates=dates
-            this.filter=Object.assign(this.filter)
+            let arr = [dates[0] + " 00:00:00", dates[1] + " 00:00:00"];
+            this.$set(this.filter, "dates", arr);
         },
         updateNo(val){},
         updateSize(val){},

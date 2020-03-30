@@ -1,7 +1,7 @@
 <template>
     <div class="cont">
          <!-- <div> 出款订单审核 </div> -->
-         <div>
+         <div class="with-inner" >
              <div class="order">
                  <span >订单号: {{row.order_no}}</span>
              </div>
@@ -56,12 +56,14 @@
                      </tr>
                      <tr>
                          <td>备注</td>
-                         <td colspan="5">{{row.remark}}</td>
+                         <td colspan="5">
+                            <input type="text" class="remarkText" v-model="table.remark" >{{row.remark}}
+                         </td>
                      </tr>
                  </table>
-                 <div class="all-btn">
+                 <div class="all-btn" v-if="row.status==2" >
                      <button class="btn-plain-large mr50" @click="reject" >拒绝</button>
-                     <button class="btn-blue-large">通过</button>
+                     <button class="btn-blue-large" @click="pass" >通过</button>
                  </div>
              </div>
          </div>
@@ -74,8 +76,8 @@ export default {
     },
     data() {
         return {
-            filter: {
-                acc: ''
+            table: {
+                remark: '',
             },
             icon_obj: {
                 '0': 'iconfont iconcha red',
@@ -102,6 +104,30 @@ export default {
     },
     methods: {
         reject(){
+            let data={
+                id:this.row.id,
+                remark: String(this.table.remark),
+            }
+            console.log('审核拒绝请求数据',data)
+            let{method,url}=this.$api.founds_interface_examination_rejected;
+            this.$http({method,url,data}).then(res=>{
+                console.log('拒绝审核返回数据',res)
+                if(res && res.code=='200'){
+                    this.$emit("dia_show",false)
+                }
+            })
+        },
+        pass(){
+            let data={
+                id:this.row.id,
+                remark:String(this.table.remark),
+            }
+            let {method,url}=this.$api.founds_interface_examination_passed;
+            this.$http({method,url,data}).then(res=>{
+                if(res && res.code=='200'){
+
+                }
+            })
         },
     },
     mounted() {
@@ -133,5 +159,14 @@ export default {
 .all-btn {
     margin-top: 50px;
     text-align: center;
+}
+.remarkText{
+    width: 100%;
+    height: 100%;
+    border: none;
+    float: left;
+}
+.cont{
+    margin-left: 50px;
 }
 </style>

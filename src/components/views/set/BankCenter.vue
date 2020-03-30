@@ -21,10 +21,7 @@
                 </li>
                 <li>
                     <span>绑定日期</span>
-                    <Date v-model="filter.start_dates" />
-                    <span>~</span>
-                    <Date v-model="filter.end_dates" />
-                </li>
+                    <Date type="datetimerange" style="width:300px;" v-model="filter.dates" />
                 <li>
                     <button class="btn-blue" @click="getList" >查询</button>
                 </li>
@@ -73,8 +70,7 @@ export default {
                 id: '',
                 bank: '',
                 card: '',
-                start_dates:'',
-                end_dates:''
+                dates:[],
             },
             bank_opt: [],
             headers: [
@@ -137,28 +133,35 @@ export default {
             })
         },
 
-        updateNo(val) {},
-        updateSize(val) {},
+        updateNo(val) {
+            this.getList();
+        },
+        updateSize(val) {
+            this.pageNo=1;
+            this.getList();
+        },
         getList(){
             // let created_at=''
-            // if(this.filter.start_dates && this.filter.end_dates){
-            //     created_at=JSON.stringify([this.filter.start_dates,this.filter.end_dates])
+            // if(this.filter.dates[0] && this.filter.dates[1]){
+            //     created_at=JSON.stringify([this.filter.dates[0],this.filter.dates[1]])
             // }
             let datas={
                 mobile:this.filter.acc,
                 user_id:this.filter.id,
                 bank_id:this.filter.bank,
                 card_number:this.filter.card,
-                created_at:String([this.filter.start_dates,this.filter.end_dates]),
+                created_at:JSON.stringify([this.filter.dates[0],this.filter.dates[1]]),
+                page:this.pageNo,
+                pageSize:this.pageSize
            }
-            console.log('请求数据',datas)
-           let data=window.all.tool.rmEmpty(datas) 
-           let {method,url}=this.$api.bank_cards_list
-           this.$http({method,url,data}).then(res=>{
-               console.log('返回数据',res)
-               if(res && res.code=='200'){
-                   this.list=res.data.data
-                   this.total=res.data.total
+            // console.log('请求数据',datas)
+            let data=window.all.tool.rmEmpty(datas) 
+            let {method,url}=this.$api.bank_cards_list
+            this.$http({method,url,data}).then(res=>{
+                // console.log('返回数据',res)
+                if(res && res.code=='200'){
+                    this.list=res.data.data
+                    this.total=res.data.total
                }
            })
         },

@@ -18,7 +18,7 @@
                     </li>
                     <li>
                         <span>活动图片：</span>
-                        <Input style="width:100px;" v-model="form.pic_path" />
+                        <Input style="width:136px;" v-model="form.pic_path" />
                         <Upload
                             style="width:100px;"
                             title="选择图片"
@@ -47,12 +47,8 @@
                         <Input class="w250" v-model="form.link" />
                     </li>
                     <li>
-                        <span>开始时间：</span>
-                        <Date class="w250" v-model="form.start_dates" />
-                    </li>
-                    <li>
-                        <span>结束时间：</span>
-                        <Date class="w250" v-model="form.end_dates" />
+                        <span>时间范围：</span>
+                        <Date type="datetimerange" style="width:300px;"  v-model="form.dates" />
                     </li>
                     <li>
                         <span>活动开关：</span>
@@ -86,7 +82,7 @@
                             <li class="row2">
                                 <img
                                     class="pic-pic"
-                                    :src="protocol+'//pic.jianghu.local/'+item.pic"
+                                    :src="head_path+item.pic"
                                     alt="图片加载失败。"
                                 />
                             </li>
@@ -132,7 +128,7 @@
         </div>
         <Dialog :show.sync="dia_show" title="预览图片">
             <div class="dia-inner">
-                <img class="max-w800" :src="protocol+'//pic.jianghu.local/'+form.pic_path" alt />
+                <img class="max-w800" :src="head_path+form.pic_path" alt />
             </div>
         </Dialog>
         <Modal
@@ -164,13 +160,13 @@ export default {
                 pic_path: "",
                 status: "1",
                 link: "",
-                start_dates: "",
-                end_dates: "",
+                dates: [],
                 active: "1"
             },
             dia_show: false,
             is_pc_show: true,
             protocol: window.location.protocol,
+            head_path:'',
             mod_show:false,
             curr_item:{},
         };
@@ -190,6 +186,14 @@ export default {
         },
         edit(item) {
             // console.log("item内容:😀 ", item);
+            // let start_time=''
+            // if(item.start_time){
+            //     start_time=JSON.stringify([item.start_time])
+            // }
+            // let end_time=''
+            // if(item.end_time){
+            //     end_time=JSON.stringify([item.end_time])
+            // }
             this.initForm();
             this.is_edit = true;
             this.form={
@@ -198,13 +202,20 @@ export default {
                 pic_path:item.pic,
                 status:String(item.type),
                 link:item.link,
-                start_dates:item.start_time,
-                end_dates:item.end_time,
+                dates:[item.start_time,item.end_time],
                 active:String(item.status)
             }
             this.curr_btn=String(item.device)
         },
         editConf() {
+            // let start_time=''
+            // if(this.form.dates[0]){
+            //     start_time=JSON.stringify([this.form.dates[0]])
+            // }
+            // let end_time=''
+            // if(this.form.dates[1]){
+            //     end_time=JSON.stringify([this.form.dates[1]])
+            // }
             let data={
                 id:this.form.id,
                 device:this.curr_btn,
@@ -212,8 +223,8 @@ export default {
                 pic:this.form.pic_path,
                 type:this.form.status,
                 link:this.form.link,
-                start_time:this.form.start_dates,
-                end_time:this.form.end_dates,
+                start_time:this.form.dates[0],
+                end_time: this.form.dates[1],
                 status:this.form.active
             }
             // console.log('请求数据',data)
@@ -251,8 +262,7 @@ export default {
                 pic_path: "",
                 status: "1",
                 link: "",
-                start_dates: "",
-                end_dates: "",
+                dates: [],
                 active: "1"
             };
         },
@@ -277,20 +287,28 @@ export default {
             });
         },
         addCfm() {
+            // let start_time=''
+            // if(this.form.dates[0]){
+            //     start_time=JSON.stringify([this.form.dates[0]])
+            // }
+            // let end_time=''
+            // if(this.form.dates[1]){
+            //     end_time=JSON.stringify([this.form.dates[1]])
+            // }
             let data = {
                 device: this.curr_btn,
                 title: this.form.name,
                 pic: this.form.pic_path,
                 type: this.form.status,
                 link: this.form.link,
-                start_time: this.form.start_dates,
-                end_time: this.form.end_dates,
+                start_time: this.form.dates[0],
+                end_time:this.form.dates[1],
                 status: this.form.active
             };
-            // console.log('请求数据',data)
+            console.log('请求数据',data)
             let { url, method } = this.$api.announce_carousel_add;
             this.$http({ method, url, data }).then(res => {
-                // console.log('返回数据',res)
+                console.log('返回数据',res)
                 if (res && res.code == "200") {
                     this.$toast.success(res && res.message);
                     this.getList();
@@ -326,6 +344,7 @@ export default {
         }
     },
     mounted() {
+        this.head_path=this.protocol+'//pic.397017.com/'
         this.getList();
     }
 };
@@ -344,7 +363,7 @@ export default {
     border-right: 1px solid #bfbfbf;
 }
 .form .w250 {
-    width: 264px;
+    width: 300px;
 }
 .form {
     width: 370px;
@@ -358,7 +377,7 @@ export default {
     margin-top: 20px;
 }
 .max-w800 {
-    max-width: 800px;
+    max-width: 300px;
 }
 .left .form .conf-btn {
     display: flex;

@@ -52,8 +52,8 @@ export default {
     data() {
         return {
             buttons: [
-                { label: 'H5分类管理', value: '1' },
-                { label: 'PC分类管理', value: '2' },
+                { label: 'PC分类管理', value: '1' },
+                { label: 'H5分类管理', value: '2' },
                 { label: 'APP分类管理', value: '3' }
             ],
             curr_btn: '1',
@@ -79,8 +79,13 @@ export default {
             this.getList();
         },
 
-        updateNo(val) {},
-        updateSize(val) {},
+        updateNo(val) {
+            this.getList();
+        },
+        updateSize(val) {
+            this.pageNo=1;
+            this.getList();
+        },
         switchStatus(val,row){
             let data={
                 id:row.id,
@@ -101,6 +106,8 @@ export default {
                 status:this.filter.status,
                 device:this.curr_btn,
                 name:this.filter.sort,
+                page:this.pageNo,
+                pageSize:this.pageSize
             }
             // console.log('查询条件：',para)
             let params=window.all.tool.rmEmpty(para);

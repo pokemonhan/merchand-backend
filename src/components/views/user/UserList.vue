@@ -1,63 +1,61 @@
 <template>
     <!-- 会员列表 -->
     <div class="container">
-            <div class="filter ">
-                <ul class="left">
-                    <li>
-                        <span>会员账号</span>
-                        <Input limit="en-num" v-model="filter.account" />
-                    </li>
-                    <li>
-                        <span>会员ID</span>
-                        <Input limit="en-num" v-model="filter.userid" />
-                    </li>
-                    <li>
-                        <span>注册日期</span>
-                        <Date v-model="filter.start_date" />
-                        <span style="margin:0 5px;">至</span>
-                        <Date v-model="filter.end_date" />
-                    </li>
-                    <li>
-                        <span>在线状态</span>
-                        <span>
-                            <Select v-model="filter.online_state" :options="online_state_opt"></Select>
-                        </span>
-                    </li>
-                    <li>
-                        <span>上级账号</span>
-                        <Input v-model="filter.parent_account" />
-                    </li>
-                    <li>
-                        <span>登录IP</span>
-                        <Input v-model="filter.loginIP" />
-                    </li>
-                    <li>
-                        <span >注册IP</span>
-                        <Input limit="number" v-model="filter.registIP" />
-                    </li>
-                    <li>
-                        <span>正式账号</span>
-                        <Select v-model="filter.is_tester" :options="is_tester_opt"></Select>
-                    </li>
-                    <li>
-                        <span>
-                            <button class="btn-blue" @click="getList">查询</button>
-                        </span>
-                        <span>
-                            <button class="btn-blue" @click="exportExcel()">导出Excel</button>
-                        </span>
-                    </li>
-                    <li>
-                        <button class="btn-blue" @click="addAccClick">添加账号</button>
-                    </li>
-                </ul>
-            </div>
+        <div class="filter">
+            <ul class="left">
+                <li>
+                    <span>会员账号</span>
+                    <Input limit="en-num" v-model="filter.account" />
+                </li>
+                <li>
+                    <span>会员ID</span>
+                    <Input limit="en-num" v-model="filter.userid" />
+                </li>
+                <li>
+                    <span>注册日期</span>
+                    <Date type="datetimerange" v-model="filter.dates" style="width:300px" />
+                </li>
+                <li>
+                    <span>在线状态</span>
+                    <span>
+                        <Select v-model="filter.online_state" :options="online_state_opt"></Select>
+                    </span>
+                </li>
+                <li>
+                    <span>上级账号</span>
+                    <Input v-model="filter.parent_account" />
+                </li>
+                <li>
+                    <span>登录IP</span>
+                    <Input v-model="filter.loginIP" />
+                </li>
+                <li>
+                    <span>注册IP</span>
+                    <Input limit="number" v-model="filter.registIP" />
+                </li>
+                <li>
+                    <span>正式账号</span>
+                    <Select v-model="filter.is_tester" :options="is_tester_opt"></Select>
+                </li>
+                <li>
+                    <span>
+                        <button class="btn-blue" @click="getList">查询</button>
+                    </span>
+                    <span>
+                        <button class="btn-blue" @click="exportExcel()">导出Excel</button>
+                    </span>
+                </li>
+                <li>
+                    <button class="btn-blue" @click="addAccClick">添加账号</button>
+                </li>
+            </ul>
+        </div>
         <div class="table">
             <!-- 在线状态, 游戏账号, 游戏ID, 会员标签, 团队人数, 上级账号, 玩家金额, 注册IP->登录iP,注册日期->登录日期 -->
 
             <Table :headers="headers" :column="list">
                 <template v-slot:item="{row}">
-                    <td :class="[row.is_online==1?'green':'red']" >{{row.is_online==1?'在线':'离线'}}</td>
+                    <td :class="[row.is_online==1?'green':'red']">{{row.is_online==1?'在线':'离线'}}</td>
                     <td>{{row.mobile}}</td>
                     <td>{{row.guid}}</td>
                     <td>
@@ -87,7 +85,13 @@
                 @updateSize="updateSize"
             />
         </div>
-        <Dialog class="modal-mask" :show.sync="show_detail" title="详情">
+        <Dialog
+            class="modal-mask"
+            :show.sync="show_detail"
+            title="详情"
+            v-for="(item,index) in detail_list"
+            :key="index"
+        >
             <div class="dia-inner">
                 <div class="mod-body">
                     <!-- 个人资料信息-图片 -->
@@ -95,44 +99,44 @@
                         <div>
                             <img
                                 class="avator"
-                                src="../../../assets/image/user/neko.png"
+                                :src="detail_list.avatar"
                                 alt="没有图片"
                             />
                         </div>
                         <div class="user-info">
                             <tr>
-                                <td class="head-2">我爱吃火锅</td>
+                                <td class="head-2">{{detail_list.name}}</td>
                                 <td>
                                     <span>VIP等级:</span>
-                                    <span>VIP1</span>
+                                    <span>VIP{{detail_list.level}}</span>
                                 </td>
                                 <td style="height:42px;" v-if="EditUserTab" class="user-lab">
                                     <span class="mr5">会员标签</span>
                                     <Select v-model="user_tab" :options="user_tab_opt"></Select>
-                                    <span class="a">保存</span>
-                                    <span class="a" @click="EditUserTab=false">取消</span>
+                                    <button class="btn-blue">保存</button>
+                                    <button class="btn-blue" @click="EditUserTab=false">取消</button>
                                 </td>
                                 <td style="height:42px;" v-if="!EditUserTab" class="user-lab">
                                     <span class="mr5">会员标签</span>
                                     <span class="bg-red">
                                         <i class="iconfont iconjinggao1-"></i>
-                                        <span>{{'危险会员'}}</span>
+                                        <span>{{detail_list.label}}</span>
                                     </span>
-                                    <span class="a" @click="EditUserTab=true">修改</span>
+                                    <button class="btn-blue" @click="EditUserTab=true">修改</button>
                                 </td>
                             </tr>
                             <tr>
                                 <td style="height:46px;">
                                     <span>ID:</span>
-                                    <span>{{'666'}}</span>
+                                    <span>{{detail_list.guid}}</span>
                                 </td>
                                 <td>
-                                    <span>账号余额: 0.00元</span>
-                                    <span>0.00元</span>
+                                    <span>账号余额:</span>
+                                    <span>{{detail_list.balance}}元</span>
                                 </td>
                                 <td>
                                     <span>账号类型:</span>
-                                    <span>{{'正式账号'}}</span>
+                                    <span>{{detail_list.type==1?'正式账号':'测试账号'}}</span>
                                 </td>
                             </tr>
                         </div>
@@ -144,21 +148,26 @@
                             <ul>
                                 <li>
                                     <span>登录密码:</span>
-                                    <span class="a">重置</span>
+                                    <button class="btn-blue" @click="reLoginPwd()">重置</button>
                                 </li>
                                 <li>
                                     <span>取款密码:</span>
-                                    <span class="a">重置</span>
+                                    <button class="btn-blue" @click="reWidthdrawPwd()">重置</button>
                                 </li>
                                 <li>
                                     <span>管理银行卡:</span>
-                                    <span class="a">重置</span>
+                                    <button class="btn-blue" @click="viewBank()">查看</button>
                                 </li>
                             </ul>
                             <ul style="margin-top:10px;">
                                 <li>
                                     <span>清空支付宝:</span>
-                                    <span class="a">重置</span>
+                                    <button class="btn-blue" @click="clearAli()">清空</button>
+                                </li>
+                                <li>
+                                    <span>账号状态:</span>
+                                    <span :class="[detail_list.status==1?'green':'red']" >{{detail_list.status==1?'正常':'禁用'}}</span>
+                                    <button v-if="detail_list.status==0" class="btn-blue" @click="unlock()" >解锁</button>
                                 </li>
                             </ul>
                         </div>
@@ -170,15 +179,15 @@
                             <ul>
                                 <li>
                                     <span>推广级别:</span>
-                                    <span>{{'----'}}</span>
+                                    <span>{{detail_list.promotion_details && detail_list.promotion_details.promotion_level }}</span>
                                 </li>
                                 <li>
                                     <span>团队成员数:</span>
-                                    <span>{{'100'}}人</span>
+                                    <span>{{detail_list.promotion_details && detail_list.promotion_details.total_members}}人</span>
                                 </li>
                                 <li>
                                     <span>佣金金额:</span>
-                                    <span>{{'0.00'}}</span>
+                                    <span>{{detail_list.promotion_details && detail_list.promotion_details.commission_banlace}}</span>
                                 </li>
                             </ul>
                         </div>
@@ -242,15 +251,15 @@
                             <ul>
                                 <li>
                                     <span>最后登录设备:</span>
-                                    <span>{{'IOS'}}</span>
+                                    <span>{{item.device}}</span>
                                 </li>
                                 <li>
                                     <span>最后登录IP:</span>
-                                    <span>{{'192.168.222.222'}}</span>
+                                    <span>{{item.last_login_ip}}</span>
                                 </li>
                                 <li>
                                     <span>最后登录地址:</span>
-                                    <span>{{'192.168.222.222'}}</span>
+                                    <span>{{item.last_login_address}}</span>
                                 </li>
                             </ul>
                         </div>
@@ -258,15 +267,15 @@
                             <ul>
                                 <li>
                                     <span>最后登录时间:</span>
-                                    <span>{{'IOS'}}</span>
+                                    <span>{{item.last_login_time}}</span>
                                 </li>
                                 <li>
                                     <span>距今登录:</span>
-                                    <span>{{'IOS'}}</span>
+                                    <span>{{item.last_seen_time}}</span>
                                 </li>
                                 <li>
                                     <span>注册IP:</span>
-                                    <span>{{'IOS'}}</span>
+                                    <span>{{item.register_ip}}</span>
                                 </li>
                             </ul>
                         </div>
@@ -274,11 +283,11 @@
                             <ul>
                                 <li>
                                     <span>注册时间:</span>
-                                    <span>{{'2019/05/16 15:15:00'}}</span>
+                                    <span>{{item.created_at}}</span>
                                 </li>
                                 <li>
                                     <span>登录次数:</span>
-                                    <span>{{'IOS'}}</span>
+                                    <span>{{item.number_of_logins}}</span>
                                 </li>
                                 <li>
                                     <span>推广渠道:</span>
@@ -323,7 +332,7 @@
                         </li>
                     </ul>
                     <div class="confirm-btn">
-                        <button class="btn-blue-large">确认</button>
+                        <button class="btn-blue-large" @click="addCfm">确认</button>
                     </div>
                 </div>
             </div>
@@ -343,6 +352,69 @@
                 </div>
             </div>
         </Dialog>
+        <Dialog :show.sync="show_password" :title="reset_title">
+            <div class="dia-inner">
+                <ul class="form">
+                    <li v-if=" this.reset_status=='reLoginPwd'">
+                        <span>密码:</span>
+                        <Input type="password" v-model="reset.password" placeholder="8-16位，字母加数字" />
+                    </li>
+                    <li v-if="this.reset_status=='reWidthdrawPwd'">
+                        <span>密码:</span>
+                        <Input
+                            type="password"
+                            v-model="reset.withdrawPassword"
+                            placeholder="8-16位，字母加数字"
+                        />
+                    </li>
+                    <li v-if=" this.reset_status=='reLoginPwd'">
+                        <span>确认密码:</span>
+                        <Input
+                            type="password"
+                            v-model="reset.conf_password"
+                            placeholder="8-16位，字母加数字"
+                            @update="pwdUpdate"
+                        />
+                        <div class="err-item">{{reset.passwordMsg}}</div>
+                    </li>
+                    <li v-if="this.reset_status=='reWidthdrawPwd'">
+                        <span>确认密码:</span>
+                        <Input
+                            type="password"
+                            v-model="reset.confWithdrawPassword"
+                            placeholder="8-16位，字母加数字"
+                            @update="withdrawPwdUpdate"
+                        />
+                        <div class="err-item">{{reset.withdrawPasswordMsg}}</div>
+                    </li>
+                    <li class="conf-btn">
+                        <button class="btn-blue" @click="resetCfm()">确认</button>
+                    </li>
+                </ul>
+            </div>
+        </Dialog>
+        <Dialog :show.sync="Ali_show" title="清空支付宝">
+            <div class="dia-inner">
+                <div class="ali-inner">
+                    <div class="infor">是否确定清空支付宝？</div>
+                    <div class="ali-btns">
+                        <button class="btn-plain-large mr50" @click="Ali_show=false">取消</button>
+                        <button class="btn-blue-large" @click="clearAliCfm()">确认</button>
+                    </div>
+                </div>
+            </div>
+        </Dialog>
+        <Dialog :show.sync="unlock_show" title="账号解锁" >
+            <div class="dia-inner">
+                <div class="ali-inner">
+                    <div class="infor">是否确定解锁改账号？</div>
+                    <div class="ali-btns">
+                        <button class="btn-plain-large mr50" @click="unlock_show=false">取消</button>
+                        <button class="btn-blue-large" @click="unlockCfm()">确认</button>
+                    </div>
+                </div>
+            </div>
+        </Dialog>
     </div>
 </template>
 
@@ -353,14 +425,22 @@ export default {
             filter: {
                 account: "",
                 userid: "",
-                start_date: "",
-                end_date: "",
+                dates: [],
                 online_state: "",
                 parent_account: "",
                 is_tester: "",
                 loginIP: "",
                 registIP: ""
             },
+            reset: {
+                password: "",
+                conf_password: "",
+                withdrawPassword: "",
+                confWithdrawPassword: "",
+                passwordMsg: "",
+                withdrawPasswordMsg:"",
+            },
+            pwdReg: /^[0-9A-Za-z]{8,16}$/,
             online_state_opt: [
                 { label: "全部", value: "" },
                 { label: "在线", value: "0" },
@@ -408,12 +488,46 @@ export default {
 
             inner_mask_show: false,
             show_add_black_list: false,
-            
+            curr_row: {},
+            show_password: false,
+            reset_title: "",
+            reset_status: "",
+            detail_list: {},
+            Ali_show:false,
+            unlock_show:false,
         };
     },
     methods: {
+        clearForm() {
+            this.form = {
+                account: "",
+                password: "",
+                type: "",
+                conf_pwd: ""
+            };
+        },
+        checkForm() {
+            if (this.form.account === "") {
+                this.$toast.warning("会员账号不可为空");
+                return false;
+            }
+            return true;
+        },
+        getUserDetail(row) {},
         userDetail(row) {
             this.show_detail = true;
+            this.curr_row = row;
+            let data = {
+                guid: String(this.curr_row.guid)
+            };
+            // console.log("请求数据", data);
+            let { method, url } = this.$api.user_list_detail;
+            this.$http({ method, url, data }).then(res => {
+                // console.log("返回详情数据", res);
+                if (res && res.code == "200") {
+                    this.detail_list = res.data;
+                }
+            });
         },
         addBlackList() {
             this.show_add_black_list = true;
@@ -421,16 +535,36 @@ export default {
         addBlackListCfm() {},
         addAccClick() {
             this.inner_mask_show = true;
+            this.clearForm();
+        },
+        addCfm() {
+            this.checkForm();
+            let data = {
+                mobile: this.form.account,
+                is_tester: this.form.type,
+                password: this.form.password,
+                password_confirmation: this.form.conf_pwd
+            };
+            // console.log('请求数据',data)
+            let { method, url } = this.$api.user_list_add;
+            this.$http({ method, url, data }).then(res => {
+                // console.log("返回数据", res);
+                if (res && res.code == "200") {
+                    this.inner_mask_show = false;
+                    this.$toast.success(res && res.message);
+                    this.getList();
+                }
+            });
         },
         closeConfirm() {
             this.inner_mask_show = false;
         },
         getList() {
             let createdAt = "";
-            if (this.filter.start_date && this.filter.end_date) {
+            if (this.filter.dates[0] && this.filter.dates[1]) {
                 createdAt = JSON.stringify([
-                    this.filter.start_date,
-                    this.filter.end_date
+                    this.filter.dates[0],
+                    this.filter.dates[1]
                 ]);
             }
             let para = {
@@ -440,14 +574,16 @@ export default {
                 isOnline: this.filter.online_state,
                 parent_mobile: this.filter.parent_account,
                 lastLoginIp: this.filter.loginIP,
-                registerIp: this.filter.registIP
-                // isTest:this.filter.is_tester
+                registerIp: this.filter.registIP,
+                // isTest:this.filter.is_tester,
+                page: this.pageNo,
+                pageSize: this.pageSize
             };
-            // console.log('请求数据',para)
+            // console.log("请求数据", para);
             let params = window.all.tool.rmEmpty(para);
             let { method, url } = this.$api.user_list;
             this.$http({ method, url, params }).then(res => {
-                console.log("返回数据", res);
+                // console.log("返回数据", res);
                 if (res && res.code === "200") {
                     this.list = res.data.data;
                     this.total = res.data.total;
@@ -482,10 +618,148 @@ export default {
                 });
             });
         },
-        updateNo(val) {
-            
+        clearReset() {
+            this.reset = {
+                password: "",
+                conf_password: ""
+            };
         },
-        updateSize(val) {}
+        resetCfm() {
+            if (this.reset_status == "reLoginPwd") {
+                this.reLoginPwdCfm();
+            }
+            if (this.reset_status == "reWidthdrawPwd") {
+                this.reWidthdrawPwdCfm();
+            }
+        },
+        checkReset() {
+            if (!this.reset.password) {
+                this.$set(this.reset, "passwordMsg", "密码不能为空");
+                return !this.reset.passwordMsg;
+            }
+            if (this.reset.password != this.reset.conf_password) {
+                this.$set(this.reset, "passwordMsg", "两次输入密码不一致");
+                return !this.reset.passwordMsg;
+            } else {
+                this.reset.passwordMsg = this.pwdReg.test(this.reset.password)
+                    ? ""
+                    : "请输入8-16个字母及数字组合";
+            }
+            return true;
+        },
+        reLoginPwd() {
+            this.reset_status = "reLoginPwd";
+            this.show_password = true;
+            this.reset_title = "重置登录密码";
+            this.clearReset();
+        },
+        pwdUpdate() {
+            this.checkReset();
+        },
+        reLoginPwdCfm() {
+            let data = {
+                guid: this.detail_list.guid,
+                password: this.reset.password,
+                password_confirmation: this.reset.conf_password
+            };
+            // console.log('重置登录密码请求数据',data)
+            if (this.checkReset()) {
+                let { method, url } = this.$api.user_list_reset_login_password;
+                this.$http({ method, url, data }).then(res => {
+                    // console.log('重置登录密码返回数据',res)
+                    if (res && res.code == "200") {
+                        this.$toast.success(res.message);
+                        this.show_password = false;
+                    }
+                });
+            }
+        },
+        checkWithdrawReset() {
+            if (!this.reset.withdrawPassword) {
+                this.$set(this.reset, "withdrawPasswordMsg", "密码不能为空");
+                return !this.reset.withdrawPasswordMsg;
+            }
+            if (this.reset.withdrawPassword != this.reset.confWithdrawPassword) {
+                this.$set(this.reset, "withdrawPasswordMsg", "两次输入密码不一致");
+                return !this.reset.withdrawPasswordMsg;
+            } else {
+                this.reset.withdrawPasswordMsg = this.pwdReg.test(this.reset.withdrawPassword)
+                    ? ""
+                    : "请输入8-16个字母及数字组合";
+            }
+            return true;
+        },
+        reWidthdrawPwd() {
+            this.reset_status = "reWidthdrawPwd";
+            this.show_password = true;
+            this.reset_title = "重置取款密码";
+            this.clearReset();
+        },
+        withdrawPwdUpdate(){
+            this.checkWithdrawReset();
+        },
+        reWidthdrawPwdCfm() {
+            let data = {
+                guid: this.detail_list.guid,
+                withdrawals_password: this.reset.withdrawPassword,
+                withdrawals_password_confirmation: this.reset
+                    .confWithdrawPassword
+            };
+            if(this.checkWithdrawReset()){
+            let { method, url } = this.$api.user_list_reset_without_password;
+            this.$http({ method, url, data }).then(res => {
+                if (res && res.code == "200") {
+                    this.$toast.success(res.message);
+                    this.show_password = false;
+                }
+            });
+            }
+        },
+        //查看银行 跳转至银行卡反差中心
+        viewBank() {
+            this.$router.push('/set/bankcenter')
+            this.show_detail=false
+        },
+        clearAli() {
+            this.Ali_show=true;
+        },
+        clearAliCfm(){
+            let data={
+                guid:String(this.detail_list.guid),
+            }
+            // console.log('请求数据',data)
+            let {method,url}=this.$api.user_list_clear_alipay;
+            this.$http({method,url,data}).then(res=>{
+                // console.log('返回数据',res)
+                if(res && res.code=='200'){
+                    this.Ali_show=false;
+                    this.$toast.success(res.message);
+                }
+            })
+        },
+        unlock(){
+            this.unlock_show=true;
+        },
+        unlockCfm(){
+            let data={
+                guid:String(this,detail_list.guid)
+            }
+            let {method,url}=this.$api.user_list_unlock;
+            this.$http({method,url,data}).then(res=>{
+                if(res && res.code=='200'){
+                    this.unlock_show=false;
+                    this.userDetail();
+                    this.$toast.success(res.message);
+                }
+            })
+        },
+        updateNo(val) {
+            this.getList();
+        },
+        updateSize(val) {
+            this.pageNo = 1;
+            this.getList();
+        }
     },
     mounted() {
         this.getList();
@@ -716,5 +990,40 @@ table {
 }
 .mr50 {
     margin-right: 50px;
+}
+.form li {
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+.form li:not(:first-child) {
+    margin-top: 20px;
+}
+.form li > span:first-child {
+    margin-right: 10px;
+    width: 70px;
+    justify-content: center;
+    text-align: right;
+}
+
+.conf-btn {
+    display: flex;
+    justify-content: center;
+}
+.err-item {
+    position: absolute;
+    top: 30px;
+    left: 7em;
+    /* height: 13px; */
+    font-size: 12px;
+    color: red;
+}
+.ali-inner{
+    text-align: center;
+    font-size: 14px;
+    margin-top: 8%;
+}
+.ali-btns{
+    margin-top: 8%;
 }
 </style>

@@ -67,9 +67,7 @@ export default {
             if (!this.email) {
                 this.accMsg = '账号不能为空'
             } else {
-                this.accMsg = this.unameReg.test(this.email)
-                    ? ''
-                    : '请输入8-16个字符组合账号'
+                this.accMsg = this.unameReg.test(this.email)? '': '请输入8-16个字符组合账号'
             }
             return !this.accMsg
         },
@@ -111,6 +109,7 @@ export default {
                     data: data
                 })
                 .then(res => {
+                    // this.$router.push('/home')
                     if (res && res.code === '200') {
                        let Authorization = res.data.token_type + ' ' + res.data.remember_token
                         window.all.tool.setLocal('Authorization', Authorization)

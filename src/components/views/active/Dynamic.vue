@@ -19,13 +19,13 @@
                 <template v-slot:item="{row}">
                     <td>{{row.activity && row.activity.name}}</td>
                     <td>
-                        <img style="max-width:200px;max-height:200px;"  :src="protocol+'//pic.jianghu.local/'+row.pc_pic" alt />
+                        <img style="max-width:200px;max-height:200px;"  :src="head_path+row.pc_pic" alt />
                     </td>
                     <td>
-                        <img style="max-width:200px;max-height:200px;"  :src="protocol+'//pic.jianghu.local/'+row.h5_pic" alt />
+                        <img style="max-width:200px;max-height:200px;"  :src="head_path+row.h5_pic" alt />
                     </td>
                     <td>
-                        <img style="max-width:200px;max-height:200px;"  :src="protocol+'//pic.jianghu.local/'+row.app_pic" alt />
+                        <img style="max-width:200px;max-height:200px;"  :src="head_path+row.app_pic" alt />
                     </td>
 
                     <td>{{row.last_editor && rowm.last_editor.name}}</td>
@@ -138,6 +138,7 @@ export default {
                 app_pic_path: ""
             },
             protocol: window.location.protocol,
+            head_path:'',
         };
     },
     methods: {
@@ -229,24 +230,32 @@ export default {
                 }
             })
         },
-        updateNo(val) {},
-        updateSize(val) {},
+        updateNo(val) {
+            this.getList();
+        },
+        updateSize(val) {
+            this.pageNo=1;
+            this.getList();
+        },
         getList(){
             let para={
-                name:this.filter.name
+                name:this.filter.name,
+                page:this.pageNo,
+                pageSize:this.pageSize
             }
             let params=window.all.tool.rmEmpty(para);
             let {method,url}=this.$api.dynamic_active_list;
             this.$http({method,url,params}).then(res=>{
-                // console.log(res)
+                console.log('返回数据结构',res)
                 if(res && res.code=='200'){
                     this.list=res.data.data;
-                    this.total=res.data.length;
+                    this.total=res.data.total;
                 }
             })
         },
     },
     mounted() {
+        this.head_path=this.protocol+'//pic.397017.com/'
         this.getList();
     }
 };

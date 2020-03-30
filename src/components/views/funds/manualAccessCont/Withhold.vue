@@ -14,9 +14,7 @@
                 </li>
                 <li>
                     <span>扣款时间</span>
-                    <Date v-model="filter.dates[0]" @update="timeUpdate()" />
-                    <span style="margin:0 5px;">~</span>
-                    <Date v-model="filter.dates[1]" @update="timeUpdate()" />
+                    <Date type="datetimerange" style="width:300px;" v-model="filter.dates" @update="timeUpdate()" />
                 </li>
                 <li>
                     <span>正式账号</span>
@@ -30,7 +28,7 @@
                     <button class="btn-blue" @click="getList" >查询</button>
                     <button class="btn-blue" @click="exportExccel()" >导出Excel</button>
                     <button class="btn-red" @click="clearFilter">清空</button>
-                    <button class="btn-blue" @click="dia_show=true">人工扣款</button>
+                    <button class="btn-blue" @click="without">人工扣款</button>
                 </li>
             </ul>
         </div>
@@ -135,9 +133,7 @@ export default {
                 '操作人',
                 '备注'
             ],
-            list: [
-               {}
-            ],
+            list: [],
             total: 0,
             pageNo: 1,
             pageSize: 25,
@@ -145,7 +141,7 @@ export default {
             dia_show: false,
             form:{
                 account: '',
-                withhold_type: '1',
+                withhold_type: '',
                 withhold_amount: '',
                 remark: '',
             },
@@ -157,8 +153,8 @@ export default {
     methods: {
         qqUpd(dates) {
             //同步时间筛选值
-            this.filter.dates = dates
-            this.filter = Object.assign(this.filter)
+            let arr=[dates[0]+' 00:00:00',dates[1]+' 00:00:00']
+            this.$set(this.filter, "dates", arr);
         },
         timeUpdate() {
             //同步快捷查询时间
@@ -173,6 +169,14 @@ export default {
                 withhold_type: ''
             }
         },
+        clearForm(){
+            this.form={
+                account: '',
+                withhold_type: '',
+                withhold_amount: '',
+                remark: '',
+            }
+        },
         withholdUpdateNo(val) {
             this.getList();
         },
@@ -183,7 +187,7 @@ export default {
         getList(){
             let created_at = ''
             if (this.filter.dates[0] && this.filter.dates[1]) {
-                created_at = JSON.stringify(this.filter.dates)
+                created_at = [this.filter.dates[0],this.filter.dates[1]]
             }
             let para={
                 mobile:this.filter.account,
@@ -194,17 +198,14 @@ export default {
                 page:this.pageNo,
                 pageSize:this.pageSize,
             };
+            console.log('请求数据',para);
             let params=window.all.tool.rmEmpty(para);
             let {method,url}=this.$api.founds_manualaccess_artificial_charge_recording;
             this.$http({method:method,url:url,params:params}).then(res=>{
-                // console.log('返回数据：',res)
+                console.log('返回数据：',res)
                 if(res && res.code=='200'){
                     this.list=res.data.data;
                     this.total=res.data.total;
-                }else{
-                    if(res && res.message !==""){
-                        this.toast.error(res.message)
-                    }
                 }
             })
         },
@@ -233,6 +234,10 @@ export default {
                     bookType: "xlsx"
                 });
             });   
+        },
+        without(){
+            this.dia_show=true;
+            this.clearForm();
         },
         withHoldCfm(){
             let data={

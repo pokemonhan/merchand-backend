@@ -4,7 +4,7 @@
             <template v-slot:item="{row}">
                 <!-- '客服名称','客服类型','客服号码','聊天链接','操作' -->
                 <td>{{row.name}}</td>
-                <td>{{row.type}}</td>
+                <td>{{row.version==2?'微信客服':'QQ客服'}}</td>
                 <td>{{row.number}}</td>
                 <td>{{row.link}}</td>
                 <td>
@@ -192,7 +192,7 @@ export default {
                 version: this.form.version,
                 // pic:this.form.pic_path,
             }
-
+            console.log('请求数据',data)
             let { url, method } = this.$api.customer_service_add
             this.$http({ method, url, data }).then(res => {
                 if (res && res.code === '200') {
@@ -235,7 +235,7 @@ export default {
 
             let { url, method } = this.$api.customer_service_list
             this.$http({ method, url, params }).then(res => {
-                // console.log('列表👌👌👌👌: ', res)
+                console.log('列表👌👌👌👌: ', res)
                 if (res && res.code === '200') {
                     // this.total = res.data.t
                     this.list = res.data

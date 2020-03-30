@@ -45,6 +45,36 @@ export default {
         url: '/merchant-api/frontend-user/index',
         method: 'post'
     },
+    //会员列表 - 添加账号
+    user_list_add:{
+        url:'/merchant-api/frontend-user/store',
+        method:'post'
+    },
+    //会员列表 - 详情
+    user_list_detail:{
+        url:'/merchant-api/frontend-user/detail',
+        method:'post'
+    },
+    //会员列表 - 重置登录密码
+    user_list_reset_login_password:{
+        url:'/merchant-api/frontend-user/password/reset',
+        method:'post'
+    },
+    //会员列表 - 重置取款密码
+    user_list_reset_without_password:{
+        url:'/merchant-api/frontend-user/withdrawals-password/reset',
+        method:'post'
+    },
+    //会员列表 - 清空支付宝
+    user_list_clear_alipay:{
+        url:'/merchant-api/frontend-user/login-log',
+        method:'post'
+    },
+    //会员列表 - 解锁
+    user_list_unlock:{
+        url:'/merchant-api/frontend-user/unlock',
+        method:'post'
+    },
     // 会员列表 - 登记记录
     user_login_log_list: {
         url: '/merchant-api/frontend-user/login-log',
@@ -416,18 +446,18 @@ export default {
 
     // H5游戏管理 - 列表
     game_h5_list: {
-        url: '/merchant-api/game/h5-index',
+        url: '/merchant-api/game/index',
         method: 'get'
     },
 
     // PC游戏管理 - 列表
     game_pc_list: {
-        url: '/merchant-api/game/pc-index',
+        url: '/merchant-api/game/index',
         method: 'get'
     },
     // APP游戏管理 - 列表
     game_app_list: {
-        url: '/merchant-api/game/app-index',
+        url: '/merchant-api/game/index',
         method: 'get'
     },
 

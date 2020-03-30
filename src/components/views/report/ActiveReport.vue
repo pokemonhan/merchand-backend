@@ -10,9 +10,7 @@
                 </li>
                 <li>
                     <span>日期范围</span>
-                    <Date v-model="filter.dates[0]" />
-                    <span class="ph5">~</span>
-                    <Date v-model="filter.dates[1]"  />
+                    <Date type="datetimerange" style="width:300px;" v-model="filter.dates" />
                 </li>
                 <li>
                     <button class="btn-blue">查询</button>

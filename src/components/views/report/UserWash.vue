@@ -1,7 +1,7 @@
 <template>
     <div class="container">
         <QuickQuery :date="quick_query" @update="qqUpd" />
-        <div class="filter p10" >
+        <div class="filter" >
             <ul  class="left">
                 <li>
                     <span>会员账号</span>
@@ -13,9 +13,7 @@
                 </li>
                 <li>
                     <span>日期</span>
-                    <Date v-model="filter.dates[0]" @update="timeUpdate()" />
-                    <span class="ph5">~</span>
-                    <Date v-model="filter.dates[1]" @update="timeUpdate()" />
+                    <Date type="datetimerange" style="width:300px;" v-model="filter.dates" @update="timeUpdate()" />
                 </li>
                 <li>
                     <span>游戏平台</span>
@@ -97,8 +95,8 @@ export default {
     },
     methods: {
         qqUpd(dates){
-            this.filter.dates=dates
-            this.filter=Object.assign(this.filter)
+            let arr = [dates[0] + " 00:00:00", dates[1] + " 00:00:00"];
+            this.$set(this.filter, "dates", arr);
         },
         timeUpdate(){
             this.quick_query=this.filter.dates
@@ -133,6 +131,17 @@ export default {
 </script>
 
 <style scoped>
+.filter {
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    padding-left: 10px;
+}
+.filter .left {
+    margin-left: 10px;
+}
+.filter .left li {
+    margin-top: 10px;
+}
     .table{
         margin-top:20px;
     }

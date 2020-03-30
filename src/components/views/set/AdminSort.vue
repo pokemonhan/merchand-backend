@@ -138,6 +138,7 @@ export default {
             searchGroup: [],
             group_list: [], // 展示列表
             form: {
+                id:'',
                 group_name: '',
                 tagList: []
             },
@@ -401,9 +402,14 @@ export default {
 
         // 获取群组列表 (左侧的列表)
         getGroupList() {
+            // let para = {
+            //     page:this.pageNo,
+            //     pageSize:this.pageSize
+            // };
+            // let params = window.all.tool.rmEmpty(para);
             let { url, method } = this.$api.admin_group_list
 
-            this.$http({ method, url }).then(res => {
+            this.$http({ method, url,}).then(res => {
                 // console.log('res: ', res)
                 if (res && res.code === '200') {
                     this.group_list = res.data
@@ -417,7 +423,7 @@ export default {
             this.$http({ method, url }).then(res => {
                 // console.log('res: ', res)
                 if (res && res.code === '200') {
-                    this.group_list = res.data
+                    this.group_list = res.data.data
                     this.group_list &&
                         this.$nextTick(() => {
                             let self = this

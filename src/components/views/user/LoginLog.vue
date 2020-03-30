@@ -1,7 +1,7 @@
 <template>
     <div class="container">
         <!-- 登录记录 -->
-        <div class="filter p10">
+        <div class="filter">
             <ul class="left">
                 <li>
                     <span>会员账号</span>
@@ -13,23 +13,21 @@
                 </li>
                 <li>
                     <span>登录日期</span>
-                    <Date v-model="filter.dates[0]" />
-                    <span style="margin:5px;">~</span>
-                    <Date v-model="filter.dates[1]" />
+                    <Date type="datetimerange" v-model="filter.dates" style="width:300px" />
                 </li>
                 <li>
                     <span>登录IP</span>
                     <Input style="width:100px" v-model="filter.lastLoginIp" />
                 </li>
+                <li>
+                    <span>
+                        <button class="btn-blue" @click="getList">查询</button>
+                    </span>
+                    <span>
+                        <button class="btn-blue" @click="exportExcel()">导出Excel</button>
+                    </span>
+                </li>
             </ul>
-            <div class="right">
-                <span>
-                    <button class="btn-blue" @click="getList">查询</button>
-                </span>
-                <span>
-                    <button class="btn-blue" @click="exportExcel()">导出Excel</button>
-                </span>
-            </div>
         </div>
         <div class="table">
             <Table :headers="headers" :column="list">
@@ -85,14 +83,29 @@ export default {
         };
     },
     methods: {
-        updateNo(val) {},
-        updateSize(val) {},
+        updateNo(val) {
+            this.getList();
+        },
+        updateSize(val) {
+            this.pageNo=1;
+            this.getList();
+        },
         getList() {
+            let createdAt = "";
+            if (this.filter.dates[0] && this.filter.dates[1]) {
+                createdAt = JSON.stringify([
+                    this.filter.dates[0],
+                    this.filter.dates[1]
+                ]);
+            }
             let para = {
                 mobile: this.filter.mobile,
                 uniqueld: this.filter.uniqueld,
-                createAt: [this.filter.dates[0], this.filter.dates[1]],
-                lastLoginIp: this.filter.lastLoginIp
+                createAt: createdAt,
+                lastLoginIp: this.filter.lastLoginIp,
+                page:this.pageNo,
+                pageSize:this.pageSize
+
             };
             console.log("请求数据", para);
             let params = window.all.tool.rmEmpty(para);
@@ -102,7 +115,7 @@ export default {
                     console.log("res", res);
                     if (res && res.code == "200") {
                         this.list = res.data.data;
-                    } 
+                    }
                 }
             );
         },
@@ -116,7 +129,7 @@ export default {
                         item.last_login_ip,
                         item.a4,
                         item.last_login_device,
-                        item.last_login_time,
+                        item.last_login_time
                     ];
                 });
                 excel.export_json_to_excel({
@@ -137,19 +150,20 @@ export default {
 
 <style scoped>
 /* .container .filter 公共区 App.vue */
-
-.p10 {
-    padding: 10px;
-}
-/* .filter > ul > li {
-    margin-right: 15px;
-    line-height: 28px;
-}
 .filter {
-    display: flex;
-    justify-content: space-between;
-    padding: 0 10px;
-} */
+    /* margin-top: 10px; */
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    padding-left: 10px;
+}
+.filter .left {
+    margin-left: 10px;
+}
+.filter .left li {
+    margin-top: 10px;
+    /* margin-bottom: 10px; */
+}
+
 .table {
     margin-top: 15px;
 }

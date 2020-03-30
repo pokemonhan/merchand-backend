@@ -15,9 +15,7 @@
                 </li>
                 <li>
                     <span>充值时间</span>
-                    <Date v-model="filter.dates[0]" @update="timeUpdate()" />
-                    <span style="margin:0 5px">~</span>
-                    <Date v-model="filter.dates[1]" @update="timeUpdate()" />
+                    <Date type="datetimerange" style="width:300px;" v-model="filter.dates" @update="timeUpdate()" />
                 </li>
                 <li>
                     <span>正式账号</span>
@@ -31,7 +29,7 @@
                     <button class="btn-blue" @click="getList">查询</button>
                     <button class="btn-blue" @click="exportExcel()">导出Excel</button>
                     <button class="btn-red" @click="clearAll">清空</button>
-                    <button class="btn-blue" @click="dia_show=true">人工充值</button>
+                    <button class="btn-blue" @click="add">人工充值</button>
                 </li>
             </ul>
         </div>
@@ -146,7 +144,12 @@ export default {
             pageSize: 25,
             // 人工充值 添加-dialog
             dia_show: false,
-            form: {},
+            form: {
+                account:'',
+                deposit_type:'',
+                deposit_amount:'',
+                remark:'',
+            },
             deposit_type_opt: [
                 // 目前就一个
                 { label: "优惠存款", value: "1"}
@@ -156,8 +159,8 @@ export default {
     methods: {
         qqUpd(dates) {
             //同步时间筛选值
-            this.filter.dates = dates;
-            this.filter = Object.assign(this.filter);
+             let arr=[dates[0]+' 00:00:00',dates[1]+' 00:00:00']
+            this.$set(this.filter, "dates", arr);
         },
         clearAll() {
             this.filter = {
@@ -168,6 +171,14 @@ export default {
                 charge_type: ""
             };
         },
+        clearForm(){
+            this.form={
+                account:'',
+                deposit_type:'',
+                deposit_amount:'',
+                remark:'',
+            }
+        },
         timeUpdate() {
             //同步快捷查询时间
             this.quick_query = this.filter.dates;
@@ -175,7 +186,7 @@ export default {
         getList() {
             let created_at = ''
             if (this.filter.dates[0] && this.filter.dates[1]) {
-                created_at = JSON.stringify(this.filter.dates)
+                created_at = JSON.stringify([this.filter.dates[0],this.filter.dates[1]])
             }
             let para = {
                 mobile: this.filter.account,
@@ -186,6 +197,7 @@ export default {
                 page:this.pageNo,
                 pageSize:this.pageSize
             };
+            // console.log('请求数据',para);
             let params = window.all.tool.rmEmpty(para);
             let {
                 method,
@@ -197,10 +209,6 @@ export default {
                     if (res && res.code == "200") {
                         this.list = res.data.data;
                         this.total = res.data.total;
-                    } else {
-                        if (res && res.message !== "") {
-                            this.toast.error(res.message);
-                        }
                     }
                 }
             );
@@ -230,6 +238,10 @@ export default {
                     bookType: "xlsx"
                 });
             });
+        },
+        add(){
+            this.dia_show=true;
+            this.clearForm();
         },
         addCfm(){
             let data={

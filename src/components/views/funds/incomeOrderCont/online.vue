@@ -13,9 +13,7 @@
                 </li>
                 <li>
                     <span>时间范围</span>
-                    <Date v-model="filter.start_date" @update="timeUpdate()" />
-                    <span style="margin:0 5px;">~</span>
-                    <Date v-model="filter.end_date" @update="timeUpdate()" />
+                    <Date type="datetimerange" style="width:300px;" v-model="filter.dates" @update="timeUpdate()" />
                 </li>
                 <li>
                     <span>商户号</span>
@@ -179,8 +177,7 @@ export default {
             filter: {
                 account: "", // 会员账号
                 acc_id: "", // 会员id
-                start_date: "", // 时间范围 开始
-                end_date: "", // 时间范围 结束
+                dates: "", // 时间范围 开始
                 vendor_num: "", // 商户号
                 pay_status: "", // 支付状态
                 pay_way: "", // 支付方式
@@ -235,11 +232,10 @@ export default {
         };
     },
     methods: {
-        quickDateUpdate(dates, name) {
+        quickDateUpdate(dates) {
             // 同步时间筛选值
-            this.filter.start_date = dates[0];
-            this.filter.end_date = dates[1];
-            this.filter = Object.assign(this.filter);
+            let arr=[dates[0]+' 00:00:00',dates[1]+' 00:00:00']
+            this.$set(this.filter, "dates", arr);
         },
         exportExcel() {
             import("../../../../js/config/Export2Excel").then(excel => {
@@ -291,7 +287,7 @@ export default {
         },
         timeUpdate() {
             // 同步快捷查询时间
-            this.quick_query = [this.filter.start_date, this.filter.end_date];
+            this.quick_query = this.filter.dates;
         },
         // canvas 转png 图片
         exportCanvasAsPNG(ref, fileName) {
@@ -426,10 +422,10 @@ export default {
         },
         getList() {
             let created_at = "";
-            if (this.filter.start_date && this.filter.end_date) {
+             if (this.filter.dates[0] && this.filter.dates[1]) {
                 created_at = JSON.stringify([
-                    this.filter.start_date,
-                    this.filter.end_date
+                    this.filter.dates[0],
+                    this.filter.dates[1]
                 ]);
             }
             let para = {
@@ -448,7 +444,7 @@ export default {
                 page:this.pageNo,
                 pageSize:this.pageSize,
             };
-            console.log("para: ", para);
+            // console.log("para: ", para);
             let params = window.all.tool.rmEmpty(para);
             let { method, url } = this.$api.founds_incomeorder_list;
             this.$http({ method: method, url: url, params: params }).then(

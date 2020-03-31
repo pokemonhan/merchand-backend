@@ -9,6 +9,7 @@ const state = {
     showMask: false,
     tab_nav_list: [],        // 顶部导航菜单
     BASE_PATH:'',
+    picPrefix: window.location.protocol + '//pic.397017.com/', // 静态图片前缀
 };
 const getters = {}
 const mutations = {};

@@ -14,6 +14,7 @@
                 :title="showInputLabel"
                 @input="handleInput"
                 @change="inputChange"
+                :placeholder="placeholder"
             />
             <span v-show="!input">{{selectedLabel}}</span>
             <i v-if="clearable && isClear" @click.stop="clear" class="iconfont icon-icon-test"></i>
@@ -50,7 +51,8 @@ export default {
             default: () => []
         },
         value: [Number, String], // 默认值
-        clearable: Boolean // 是否可清空
+        clearable: Boolean, // 是否可清空
+        placeholder: String
     },
     model: {
         prop: 'value',
@@ -69,6 +71,26 @@ export default {
         }
     },
     methods: {
+        slideDown(ele) {
+            if (!ele) return
+            if (!(ele instanceof Element)) {
+                ele = ele[0]
+            }
+            ele.style.display = 'block'
+            ele.style.maxHeight = '0'
+            setTimeout(() => {
+                ele.style.maxHeight = '180px'
+            }, 20)
+        },
+        slideUp(ele, time = 20) {
+            if (!ele) return
+            if (!(ele instanceof Element)) {
+                ele = ele[0]
+            }
+            setTimeout(() => {
+                ele.style.maxHeight = '0'
+            }, 20)
+        },
         showOptions(e) {
             if (this.input) {
                 this.isShow = true
@@ -76,7 +98,6 @@ export default {
                 this.isShow = !this.isShow
             }
             let ele = this.$refs.sections
-            // console.log("TCL: showOptions -> ele", ele)
             if (this.isShow) {
                 let scrollTop = document.documentElement.scrollTop
                 let scrollHeight = document.body.scrollHeight
@@ -86,17 +107,21 @@ export default {
                 this.sectionsDir = y < 150 ? 'top-upfold' : 'bottom-upfold'
 
                 // $(ele).slideDown(200)
-                Slide.slideDown(ele)
+                // Slide.slideDown(ele)
+                this.slideDown(ele)
+                // ele.style.maxHeight = '180px'
             } else {
                 // $(ele).slideUp(200)
-                Slide.slideUp(ele)
+                // Slide.slideUp(ele)
+                this.slideUp(ele)
             }
         },
         select(item) {
             this.isShow = false
             let ele = this.$refs.sections
             // $(ele).slideUp(200)
-            Slide.slideUp(ele)
+            // Slide.slideUp(ele)
+            this.slideUp(ele)
             if (item.value === this.selectedValue) return
             this.selectedValue = item.value
             this.selectedLabel = item.label
@@ -113,7 +138,8 @@ export default {
             this.isShow = false
             let ele = this.$refs.sections
             // $(ele).slideUp(200)
-            Slide.slideUp(ele)
+            // Slide.slideUp(ele)
+            this.slideUp(ele)
         },
         updateClearState(bool) {
             this.isClear = bool
@@ -123,7 +149,7 @@ export default {
         },
         inputChange() {
             this.$emit('update', this.showInputLabel)
-        },
+        }
     },
     watch: {
         value(val) {
@@ -144,6 +170,7 @@ export default {
         }
     },
     mounted() {
+        console.log('palceholder', this.placeholder)
         this.selectedValue = this.value
         this.options.forEach(item => {
             if (item.value === this.value) {
@@ -237,6 +264,7 @@ export default {
     overflow-y: scroll;
     display: none;
     z-index: 2;
+    transition: max-height 0.2s;
 }
 .bottom-upfold {
     bottom: -5px;
@@ -254,6 +282,10 @@ export default {
     padding: 0 10px;
     text-align: left;
     border-radius: 4px;
+    /* overflow-x: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap; */
+    overflow-y: auto;
 }
 .sections .active {
     background-color: rgb(243, 243, 243);
@@ -263,6 +295,8 @@ export default {
     background-color: rgb(243, 243, 243);
 }
 .option {
+    text-overflow: ellipsis;
+    white-space: nowrap;
     overflow: hidden;
 }
 </style>

@@ -395,8 +395,11 @@ export default {
         url: '/merchant-api/email/received-index',
         method: 'get'
     },
-
-
+    // 删除邮件 (收件箱)
+    email_received_del: {
+        url: '/merchant-api/email/destroy-incoming-email',
+        method: 'post'
+    },
     // 已发邮件
     email_sent: {
         url: '/merchant-api/email/send-index',

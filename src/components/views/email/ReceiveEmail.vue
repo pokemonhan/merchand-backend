@@ -13,7 +13,7 @@
                     <span>收件日期</span>
                     <!-- <Date v-model="filter.dates[0]" @update="timeUpdate()" />
                     <span style="margin: 0 5px;">~</span>
-                    <Date v-model="filter.dates[1]" @update="timeUpdate()" /> -->
+                    <Date v-model="filter.dates[1]" @update="timeUpdate()" />-->
                     <Date type="daterange" v-model="filter.dates" @update="timeUpdate()" />
                 </li>
                 <li>
@@ -26,7 +26,7 @@
             <!-- 控制栏 -->
             <div class="tab-control">
                 <div class="left">
-                    <button class="btn-plain" @click="mod_show=true">删除?</button>
+                    <button class="btn-plain" @click="del">删除?</button>
                 </div>
                 <div class="right">
                     <span>{{pageNo}}/{{Math.ceil(total/pageSize)}}</span>
@@ -57,10 +57,7 @@
                         v-html="getText(row.content)"
                     ></td>
                     <td>{{row.sender}}</td>
-                    <td
-                        class="pointer"
-                        @click="showDetail(row,idx)"
-                    >{{row.created_at}}</td>
+                    <td class="pointer" @click="showDetail(row,idx)">{{row.created_at}}</td>
                 </template>
             </Table>
             <Page
@@ -122,13 +119,18 @@ export default {
         },
         qqUpd(dates) {
             //同步时间筛选值
-            this.$set(this.filter,'dates',dates)
+            this.$set(this.filter, 'dates', dates)
         },
         clearFilter() {
             this.filter = {
                 sender: '',
                 dates: []
             }
+        },
+        del() {
+            this.mod_status = 'del'
+
+            this.mod_show = true
         },
         prevPage() {
             if (this.pageNo > 1) {
@@ -161,6 +163,28 @@ export default {
         },
         modConf() {
             console.log('确认删除')
+            if (this.mod_status === 'del') {
+                this.delConfirm()
+            }
+        },
+        delConfirm() {
+            // this.list
+            console.log('this.list: ', this.list)
+            let delIdArray = this.list.map(item => {
+                return item.id
+            })
+            console.log('delIdArray: ', delIdArray)
+            let data = {
+                email_id: delIdArray[0],
+            }
+            let { url, method } = this.$api.email_received_del
+            this.$http({ method, url, data }).then(res => {
+                if (res && res.code === '200') {
+                    this.$toast.success(res.message)
+                    this.mod_show = false
+                    this.getList()
+                }
+            })
         },
         getText(content) {
             let divLink = document.createElement('div')
@@ -199,13 +223,11 @@ export default {
     },
     mounted() {
         this.getList()
-       
     }
 }
 </script>
 
 <style scoped>
-
 /* .p10 {
     padding: 10px;
 } */
@@ -229,7 +251,7 @@ export default {
 .dia-inner {
     min-width: 1000px;
     max-width: 80vw;
-    min-height: 600px;
+    /* min-height: 600px; */
     max-height: 80vh;
     overflow: auto;
 }

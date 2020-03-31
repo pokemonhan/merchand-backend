@@ -5,7 +5,7 @@
                 <li>
                     <button class="btn-blue" @click="goBack">返回</button>
                     <button v-if="!isSend" class="btn-blue ml10" @click="reply">回复</button>
-                    <button class="btn-red ml10">删除</button>
+                    <button class="btn-red ml10" @click="delClick">删除</button>
                 </li>
             </ul>
             <div class="right">
@@ -77,6 +77,9 @@ export default {
                     platform_sign: this.content.platform_sign
                 }
             })
+        },
+        delClick() {
+            
         },
         goBack() {
             this.$emit('close')
@@ -175,12 +178,13 @@ export default {
 <style scoped>
 /* p10 ml10 全局css样式 App.vue中 */
 .email-detail {
-    height: 80%;
+    height: 100%;
+    /* min-height: 600px; */
     /* width: 100%; */
     padding: 10px;
     border: 1px solid #4c8bfd;
     overflow: auto;
-
+    
 }
 .btn-disabled {
     padding: 4px 15px;
@@ -194,7 +198,8 @@ export default {
     margin-right: 5px;
 }
 .body {
-    max-height: 50%;
+    /* max-height: 50%; */
+    min-height: 600px;
     padding: 30px 20px;
     margin-top: 20px;
     background: #f2f2f2;

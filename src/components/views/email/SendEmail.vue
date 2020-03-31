@@ -115,6 +115,7 @@
 <script>
 import Tree from '../../commonComponents/Tree.vue'
 import E from 'wangeditor'
+import {mapState} from 'vuex'
 export default {
     name: 'SendEmail',
     components: {
@@ -158,6 +159,7 @@ export default {
         }
     },
     computed: {
+        ...mapState(['picPrefix']),
         date_opt() {
             let year = this.send_time[0]
             let month = parseInt(this.send_time[1])
@@ -281,7 +283,7 @@ export default {
             this.$http({ method, url, data, headers }).then(res => {
                 if (res && res.code == '200') {
                     this.pic_data = res.data.path
-                    let imgHtml = `<img src="${this.protocol}//pic.jianghu.local/${this.pic_data}" alt="图片加载失败">`
+                    let imgHtml = `<img src="${this.picPrefix}${this.pic_data}" alt="图片加载失败">`
                     this.editor.txt.append(imgHtml)
                 }
             })

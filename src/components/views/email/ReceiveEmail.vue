@@ -49,13 +49,14 @@
                         class="pointer"
                         style="width:100px;"
                         @click="showDetail(row,idx)"
-                    >{{row.sender}}</td>
+                    >{{row.title}}</td>
                     <td
                         class="pointer"
                         style="width:760px;padding:5px;"
                         @click="showDetail(row,idx)"
                         v-html="getText(row.content)"
                     ></td>
+                    <td>{{row.sender}}</td>
                     <td
                         class="pointer"
                         @click="showDetail(row,idx)"
@@ -103,9 +104,9 @@ export default {
                 platform_sign: '',
                 dates: []
             },
-            headers: ['标题?发件人??', '内容', '收件日期'],
+            headers: ['标题', '内容', '发件人', '收件日期'],
             list: [],
-            total: 2,
+            total: 0,
             pageNo: 1,
             pageSize: 25,
 
@@ -228,6 +229,7 @@ export default {
 .dia-inner {
     min-width: 1000px;
     max-width: 80vw;
+    min-height: 600px;
     max-height: 80vh;
     overflow: auto;
 }

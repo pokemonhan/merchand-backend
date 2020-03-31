@@ -62,7 +62,7 @@
                         @click="showDetail(row,idx)"
                     >{{getText(row.content)}}</td>
                     <td class="pointer" @click="showDetail(row,idx)">{{row.send_time}}</td>
-                    <td :class="['bold',row.status?'green':'red']" >{{row.status===1?'开启':row.status===0?'关闭':'???'}}</td>
+                    <td :class="['bold',row.is_send?'green':'red']" >{{row.is_send===1?'已发送':row.is_send===0?'未发送':'???'}}</td>
                 </template>
             </Table>
             <Page

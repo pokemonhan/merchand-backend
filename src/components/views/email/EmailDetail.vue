@@ -22,11 +22,11 @@
                     </li>
                     <li>
                         <span>发件人:</span>
-                        <span>{{content.platform_sign}}</span>
+                        <span>{{content.sender}}</span>
                     </li>
                     <li>
                         <span>发送时间:</span>
-                        <span>{{content.send_time}}</span>
+                        <span>{{content.created_at}}</span>
                     </li>
                     <li v-if="isSend">
                         <span>收件人:</span>
@@ -86,11 +86,12 @@ export default {
             if (this.isSend) {
                 this.getSentList()
             } else {
-                this.getRecei_list()
+                this.getReceiveList()
             }
         },
         // 获取 收件箱
-        getRecei_list() {
+        getReceiveList() {
+            // console.log('获取');
             let para = {
                 pageSize: this.pageSize,
                 page: Math.ceil(this.list_idx / this.pageSize)
@@ -104,7 +105,7 @@ export default {
                     list.forEach((item, index) => {
                         // 后台数据的第几个,存入content_obj 中.
                         let idx = (para.page - 1) * this.pageSize + index + 1
-                        this.content_obj[String(idx)] = item && item.email
+                        this.content_obj[String(idx)] = item
                     })
                     this.content = this.content_obj[this.list_idx] || {}
                 }
@@ -125,7 +126,7 @@ export default {
                     list.forEach((item, index) => {
                         // 后台数据的第几个,存入content_obj 中.
                         let idx = (para.page - 1) * this.pageSize + index + 1
-                        console.log('idx: ', idx);
+                        // console.log('idx: ', idx);
                         this.content_obj[String(idx)] = item
                     })
                     this.content = this.content_obj[this.list_idx] || {}
@@ -161,7 +162,7 @@ export default {
 
             // 2. 收件箱
         } else {
-            this.content = this.row && this.row.email
+            this.content = this.row
         }
         this.total = this.row.total
         // 这是后端数据的第几条

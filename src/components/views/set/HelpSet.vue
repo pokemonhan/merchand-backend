@@ -1,6 +1,5 @@
 <template>
     <div class="container">
-        <!-- 帮助设置 -->
         <div>
             <button
                 v-for="(item, index) in plant_opt"
@@ -9,103 +8,111 @@
                 @click="plantSelect(item)"
             >{{item.label}}</button>
         </div>
-        <div class="filter p10 mt20">
-            <ul class="left">
-                <li>
-                    <span>标题</span>
-                    <Input v-model="filter.title" />
-                </li>
-                <li>
-                    <span>启用状态</span>
-                    <Select v-model="filter.status" :options="status_opt"></Select>
-                </li>
-                <li>
-                    <button class="btn-blue" @click="getList">查询</button>
-                    <button class="btn-blue" @click="add">添加</button>
+        <div>
+            <div class="filter p10 mt20">
+                <ul class="left">
+                    <li>
+                        <span>标题</span>
+                        <Input v-model="filter.title" />
+                    </li>
+                    <li>
+                        <span>启用状态</span>
+                        <Select v-model="filter.status" :options="status_opt"></Select>
+                    </li>
+                    <li>
+                        <button class="btn-blue" @click="getList()">查询</button>
+                        <button class="btn-blue">添加帮助</button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div>
+            <ul>
+                <li v-for="(lv1,lv1_index) in plant_opt" :key="lv1_index">
+                    <div>
+                        <table>
+                            <td>
+                                <img v-if="show_help_list[lv1_index]" @click="hide_list(lv1,lv1_index)" style="width:20px;" src="../../../assets/image/hide.png" alt="">
+                                <img v-else @click="show_list(lv1,lv1_index)" style="width:20px;" src="../../../assets/image/show.png" alt="">
+                            </td>
+                            <td>{{lv1.label}}</td>
+                            <td>
+                                <Switchbox></Switchbox>
+                            </td>
+                            <td>
+                                <button>编辑</button>
+                                <button>删除</button>
+                            </td>
+                        </table>
+                    </div>
+
+                    <ul v-if="show_help_list[lv1_index] && lv1.child " >
+                        <li v-for="(lv2,lv2_index) in lv1.child" :key="lv2_index">
+                            <table>
+                                <td>{{lv2.label}}</td>
+                                <td>
+                                    <img style="width:100px;" src="../../../assets/image/announce/sysAnnounce.png" alt="">
+                                </td>
+                                <td>
+                                    <Switchbox></Switchbox>
+                                </td>
+                                <td>
+                                    <button>编辑</button>
+                                    <button>删除</button>
+                                </td>
+                            </table>
+                        </li>
+                    </ul>
                 </li>
             </ul>
         </div>
-        <div class="table mt20">
-            <Table :headers="headers" :column="list">
-                <template v-slot:item="{row,idx}">
-                    <!-- '编号','标题','图片','添加人','添加时间','是否启用','最后更新人','最后跟新时间','操作' -->
-                    <td>{{(pageNo-1)*pageSize+idx+1}}</td>
-                    <td>{{row.title}}</td>
-                    <td>
-                        <img
-                            v-if="row.pic"
-                            :src="head_path+row.pic"
-                            style="max-width:100px;max-height:100px;"
-                        />
-                    </td>
-                    <td>{{row.author && row.author.name}}</td>
-                    <td>{{row.created_at}}</td>
-                    <td>
-                        <Switchbox :value="row.status" @update="switchUpd($event,row)" />
-                    </td>
-                    <td>{{row.newer && row.newer.name}}</td>
-                    <td>{{row.updated_at}}</td>
-                    <td>
-                        <Upload
-                            style="width:100px;margin:0 auto;"
-                            title="更换图片"
-                            @change="upPicChange($event, row)"
-                            type="file"
-                        />
-                    </td>
-                </template>
-            </Table>
-
-            <Page
-                class="table-page"
-                :total="total"
-                :pageNo.sync="pageNo"
-                :pageSize.sync="pageSize"
-                @updateNo="updateNo"
-                @updateSize="updateSize"
-            />
-        </div>
-        <Dialog :show.sync="dia_show" title="添加">
-            <div class="dia-inner">
-                <div class="flex-center">
-                    <ul class="form">
-                        <li>
-                            <span>标题:</span>
-                            <Input class="w200" v-model="form.title" />
-                        </li>
-                        <li>
-                            <span>添加图片:</span>
-                            <Input style="width:98px" v-model="form.pic_path" />
-                            <Upload
-                                style="width:100px;"
-                                title="选择图片"
-                                @change="AddPicChange($event)"
-                                type="file"
-                            />
-                        </li>
-                        <li>
-                            <span>是否启用:</span>
-                            <Switchbox v-model="form.status" />
-                        </li>
-                        <li class="form-btn">
-                            <button class="btn-plain-large" @click="dia_show=false">取消</button>
-                            <button class="btn-blue-large ml50" @click="addCfm">确认</button>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </Dialog>
     </div>
 </template>
+
 <script>
 export default {
     data() {
         return {
             curr_btn: 1,
             plant_opt: [
-                { label: "H5帮助管理", value: 1 },
-                { label: "PC帮助管理", value: 2 },
-                { label: "APP帮助管理", value: 3 }
+                { 
+                    label: "H5帮助管理",
+                    value: 1 ,
+                    child:[
+                        { name: "会员列表", path: "/user/userlist" },
+                        { name: "登录记录", path: "/user/loginlog" },
+                        { name: "标签管理 ", path: "/user/tabmanage" },
+                        { name: "黑名单管理 ", path: "/user/blacklistmanage" },
+                        { name: "等级设置 ", path: "/user/levelsetting" },
+                        { name: "洗码设置 ", path: "/user/washsetting" }
+                    ]
+                },
+                { 
+                    label: "PC帮助管理", 
+                    value: 2 ,
+                    child:[
+                        { name: "入款订单", path: "/funds/incomeorder" },
+                        { name: "人工存取", path: "/funds/manualaccess" },
+                        { name: "出款审核", path: "/funds/paymentreview" },
+                        { name: "出款订单", path: "/funds/paymentorder" },
+                        { name: "资金账变", path: "/funds/fundchange" }
+                    ]
+                },
+                { 
+                    label: "APP帮助管理", 
+                    value: 3 ,
+                    child:[
+                        { name: "跑马灯消息", path: "/announce/marquee" },
+                        { name: "系统公告", path: "/announce/systemannounce" },
+                        { name: "登录弹窗公告 ", path: "/announce/loginpopup" },
+                        { name: "轮播公告 ", path: "/announce/carousel" }
+                    ]
+                },
+            ],
+            help_opt: [
+                { label: "充值失败？", value: 1 },
+                { label: "提现失败？", value: 2 },
+                { label: "游戏卡顿？", value: 3 }
             ],
             status_opt: [
                 { label: "全部", value: "" },
@@ -116,185 +123,48 @@ export default {
                 title: "",
                 status: ""
             },
-            protocol: window.location.protocol,
-            head_path:'',
-            headers: [
-                "编号",
-                "标题",
-                "图片",
-                "添加人",
-                "添加时间",
-                "是否启用",
-                "最后更新人",
-                "最后跟新时间",
-                "操作"
-            ],
-            list: [],
-            total: 0,
-            pageNo: 1,
-            pageSize: 25,
-            // dialog
-            curr_row: {},
-            dia_show: false,
-            dia_status: "",
-            form: {
-                title: "",
-                pic_path: "",
-                status: ""
-            }
+            show_help_list:[],
         };
     },
     methods: {
-        initForm() {
-            this.form = {
-                title: "",
-                pic_path: "",
-                status: 0
+        getList() {
+            let datas = {
+                type: this.curr_btn,
+                title: this.filter.title,
+                status: this.filter.status,
+                page: this.pageNo,
+                pageSize: this.pageSize
             };
+            // console.log('请求数据',datas)
+            let data = window.all.tool.rmEmpty(datas);
+            let { method, url } = this.$api.help_center_list;
+            this.$http({ method, url, data }).then(res => {
+                console.log("返回数据", res);
+                if (res && res.code == "200") {
+                    let arr = res.data.data || [];
+                }
+            });
         },
         plantSelect(item) {
             this.curr_btn = item.value;
-            this.getList();
         },
-        add() {
-            this.dia_show = true;
-            this.initForm();
+        show_list(item,index){
+            this.show_help_list[index]=true
+            this.$set(this.show_help_list,index,true)
+            // this.show_help_list=this.show_help_list.slice
         },
-        addCfm() {
-            let data = {
-                type: this.curr_btn,
-                title: this.form.title,
-                pic: this.form.pic_path,
-                status: this.form.status
-            };
-            // console.log('请求数据',data)
-            let { url, method } = this.$api.help_center_add;
-            this.$http({ method, url, data }).then(res => {
-                // console.log('返回数据',res)
-                if (res && res.code == "200") {
-                    this.$toast.success(res && res.message);
-                    this.dia_show = false;
-                    this.getList();
-                }
-            });
+        hide_list(item,index){
+            this.show_help_list[index]=false
+            this.$set(this.show_help_list,index,false)
         },
-        switchUpd(val, row) {
-            let data = {
-                id: row.id,
-                status: val ? 1 : 0
-            };
-            let { url, method } = this.$api.help_center_set;
-            this.$http({ method, url, data }).then(res => {
-                if (res && res.code == "200") {
-                    this.$toast.success(res && res.message);
-                    this.getList();
-                }
-            });
-        },
-        AddPicChange(e) {
-            let pic = e.target.files[0];
-            let basket = "set/help/uploads";
-            let formList = new FormData();
-            formList.append("file", pic, pic.name);
-            formList.append("basket", basket);
-            let { url, method } = this.$api.update_picture_database;
-            let data = formList;
-            let headers = { "Content-Type": "multipart/form-data" };
-            this.$http({ method, url, data, headers }).then(res => {
-                // console.log('返回数据',res)
-                if (res && res.code == "200") {
-                    this.$set(this.form, "pic_path", res.data.path);
-                }
-            });
-        },
-        upPicChange(e, row) {
-            let reader = new FileReader();
-            let pic = e.target.files[0];
-            let basket = "set/helpset/uploads";
-            var icon = "";
-            let form = new FormData();
-            form.append("file", pic, pic.name);
-            form.append("basket", basket);
-            let { url, method } = this.$api.update_picture_database;
-            let data = form;
-            let headers = { "Content-Type": "multipart/form-data" };
-            this.$http({ method, url, data, headers }).then(res => {
-                if (res && res.code == "200") {
-                    // returnData=res.data
-                    this.updatePicture(res.data, row.id);
-                }
-            });
-        },
-        updatePicture(data, id) {
-            console.log("id: ", id);
-            if (!data) return;
-            console.log(data);
-            let para = {
-                id: id,
-                pic: data.path
-            };
-            // console.log('请求数据',para);
-            let { url, method } = this.$api.help_center_set;
-            this.$http({ method, url, data: para }).then(res => {
-                // console.log("res", res);
-                if (res && res.code == "200") {
-                    this.getList();
-                }
-            });
-        },
-        updateNo(val) {
-            this.getList();
-        },
-        updateSize(val) {
-            this.pageNo=1;
-            this.getList();
-        },
-        getList() {
-            let data = {
-                type: this.curr_btn,
-                // title:this.filter.title,
-                // status:this.filter.status,
-                page:this.pageNo,
-                pageSize:this.pageSize
-            };
-            let { method, url } = this.$api.help_center_list;
-            this.$http({ method, url, data }).then(res => {
-                // console.log('返回数据',res)
-                if (res && res.code == "200") {
-                    this.list = res.data.data;
-                    this.total = res.data.total;
-                }
-            });
-        }
     },
-    mounted() {
-        this.head_path=this.protocol+'//pic.397017.com/';
-        this.getList();
-    }
+    mounted() {}
 };
 </script>
 
 <style scoped>
-.tab-img {
-    max-width: 150px;
-    max-height: 100px;
-}
-.flex-center {
-    display: flex;
-    justify-content: center;
-}
-.form li {
-    display: flex;
-    line-height: 30px;
-    margin-top: 20px;
-}
-.form li > span:first-child {
-    min-width: 5em;
-    text-align: right;
-    margin-right: 10px;
-}
-.form-btn {
-    width: fit-content;
-    margin: 0 auto;
+.help-switch {
+    transform: scale(0.9);
+    width: 100px;
 }
 </style>

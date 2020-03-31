@@ -74,7 +74,7 @@
                 @updateSize="updateSize"
             />
         </div>
-        <Dialog :show.sync="dia_show" :title="dia_title">
+        <Dialog :show.sync="dia_show" :title="dia_title" >
             <div class="dia-inner">
                 <div class="flex">
                     <ul class="form">
@@ -133,7 +133,7 @@
                             <Input class="w250" v-model="form.deposit_fee" />
                         </li>
                     </ul>
-                    <ul class="form">
+                    <ul class="form"  >
                         <li v-clickoutside="tagListShow">
                             <span>标签选择:</span>
                             <div class="tag-choose" @click="tag_show=true">
@@ -145,7 +145,7 @@
                                 >{{item.label}}</span>
                             </div>
                         </li>
-                        <li class="tagList" @click.stop>
+                        <li  @click.stop  >
                             <p
                                 v-show="tag_show"
                                 v-for="(item) in all_tag"
@@ -288,19 +288,17 @@ export default {
             let { url, method } = this.$api.tag_list;
             this.$http({ url, method }).then(res => {
                 if (res && res.code == "200") {
-                    // console.log('标签列表',res)
-                    if (
-                        res.data && res.data.data && Array.isArray(res.data.data)
-                    ) {
+                    console.log('标签列表',res)
+                    if (res.data && res.data.data && Array.isArray(res.data.data)) {
                         let arr = [];
                         for (var i = 0; i < res.data.data.length; i++) {
                             let item = res.data.data[i];
                             // console.log(item);
                             arr.push({ label: item.title, value: item.id });
                         }
-                        // console.log(arr);
+                        console.log(arr);
                         this.all_tag = arr;
-                        // console.log('all_tag: ', all_tag);
+                        console.log('all_tag: ', this.all_tag);
                     }
                 }
             });
@@ -482,13 +480,13 @@ export default {
                 last_editor_name: this.filter.update_person,
                 updated_at: updated_at,
                 page:this.pageNo,
-                pageSize:this.pageSize
+                pageSize:this.pageSize,
             };
             let params = window.all.tool.rmEmpty(para);
             let { method, url } = this.$api.offline_finance_list;
             this.$http({ method, url, params }).then(
                 res => {
-                    // console.log('返回数据',res)
+                    console.log('返回数据',res)
                     if (res && res.code == "200") {
                         this.list = res.data.data;
                         this.total = res.data.total;
@@ -574,7 +572,5 @@ export default {
 .allTag-list {
     margin-left: 95px;
 }
-.tagList{
-    width: 300px;
-}
+
 </style>

@@ -62,7 +62,7 @@
                             <span>更换图片:</span>
                             <img
                                 class="dia-img ml20"
-                                src="../../../assets/image/user/neko.png"
+                                src="../../../assets/image/announce/sysAnnounce.png"
                                 alt="图片刷新"
                             />
                             <Upload

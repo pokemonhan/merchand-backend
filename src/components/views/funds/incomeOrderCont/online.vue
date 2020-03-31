@@ -13,7 +13,12 @@
                 </li>
                 <li>
                     <span>时间范围</span>
-                    <Date type="datetimerange" style="width:300px;" v-model="filter.dates" @update="timeUpdate()" />
+                    <Date
+                        type="datetimerange"
+                        style="width:300px;"
+                        v-model="filter.dates"
+                        @update="timeUpdate()"
+                    />
                 </li>
                 <li>
                     <span>商户号</span>
@@ -81,42 +86,43 @@
                     <td>{{row.created_at}}</td>
                     <td>{{row.updated_at}}</td>
                     <td>
-                        <span class="a" @click="showDetail(row)">详情</span>
-                        <span class="a" @click="manualDepositclick(row)">手动入款</span>
+                        <button class="btn-blue" @click="showDetail(row)">详情</button>
+                        <button class="btn-blue" @click="manualDepositclick(row)">手动入款</button>
                     </td>
                 </template>
             </Table>
+            <div class="total-table">
+                <ul>
+                    <li>
+                        <span>合计:</span>
+                        <span>{{''}}</span>
+                    </li>
+                    <li>
+                        <span>充值金额:</span>
+                        <span>{{''}}</span>
+                    </li>
+                    <li>
+                        <span>实际到账:</span>
+                        <span>{{''}}</span>
+                    </li>
+                </ul>
+                <ul>
+                    <li>
+                        <span>总计:</span>
+                        <span>{{''}}</span>
+                    </li>
+                    <li>
+                        <span>实际到账:</span>
+                        <span>{{''}}</span>
+                    </li>
+                    <li>
+                        <span>实际到账:</span>
+                        <span>{{''}}</span>
+                    </li>
+                </ul>
+            </div>
         </div>
-        <div class="total-table">
-            <ul>
-                <li>
-                    <span>合计:</span>
-                    <span>{{''}}</span>
-                </li>
-                <li>
-                    <span>充值金额:</span>
-                    <span>{{''}}</span>
-                </li>
-                <li>
-                    <span>实际到账:</span>
-                    <span>{{''}}</span>
-                </li>
-            </ul>
-            <ul>
-                <li>
-                    <span>总计:</span>
-                    <span>{{''}}</span>
-                </li>
-                <li>
-                    <span>实际到账:</span>
-                    <span>{{''}}</span>
-                </li>
-                <li>
-                    <span>实际到账:</span>
-                    <span>{{''}}</span>
-                </li>
-            </ul>
-        </div>
+
         <Page
             class="table-page"
             :total="total"
@@ -234,7 +240,7 @@ export default {
     methods: {
         quickDateUpdate(dates) {
             // 同步时间筛选值
-            let arr=[dates[0]+' 00:00:00',dates[1]+' 00:00:00']
+            let arr = [dates[0] + " 00:00:00", dates[1] + " 00:00:00"];
             this.$set(this.filter, "dates", arr);
         },
         exportExcel() {
@@ -422,7 +428,7 @@ export default {
         },
         getList() {
             let created_at = "";
-             if (this.filter.dates[0] && this.filter.dates[1]) {
+            if (this.filter.dates[0] && this.filter.dates[1]) {
                 created_at = JSON.stringify([
                     this.filter.dates[0],
                     this.filter.dates[1]
@@ -441,8 +447,8 @@ export default {
                 platform_no: this.filter.vendor_order_id,
                 snap_merchant_no: this.filter.vendor_num_id,
                 snap_merchant: this.filter.vendor,
-                page:this.pageNo,
-                pageSize:this.pageSize,
+                page: this.pageNo,
+                pageSize: this.pageSize
             };
             // console.log("para: ", para);
             let params = window.all.tool.rmEmpty(para);
@@ -461,7 +467,7 @@ export default {
             this.getList();
         },
         updateSize(val) {
-            this.pageNo=1;
+            this.pageNo = 1;
             this.getList();
         }
     },
@@ -531,6 +537,13 @@ table {
 }
 .table .v-table {
     width: 2000px;
+}
+.total-table {
+    margin-top: 10px;
+    width: 2000px;
+}
+.total-table >ul {
+    justify-content: center;
 }
 .total-table table tr th {
     padding: 6px 8px;

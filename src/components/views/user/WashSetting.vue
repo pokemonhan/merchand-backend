@@ -268,8 +268,8 @@ export default {
         },
         getList() {
             let para = {
-                game_type_id: this.active_game + 1,
-                game_vendor_id: this.active_plant + 1,
+                game_type: this.active_game + 1,
+                game_vendor: this.active_plant + 1,
                 page:this.pageNo,
                 pageSize:this.pageSize
             };
@@ -281,14 +281,10 @@ export default {
                     console.log("res", res);
                     if (res && res.code == "200") {
                         this.list = res.data;
-                        this.total = res.data.length;
+                        this.total = res.data.total;
                         // { label: '编号' }
                         let vip_list = [];
-                        vip_list =
-                            (res.data &&
-                                res.data[0] &&
-                                res.data[0].percent_data) ||
-                            [];
+                        vip_list = (res.data && res.data[0] && res.data[0].percent_data) || [];
                         let vip_head = vip_list.map(item => {
                             return item.grade_name;
                         });

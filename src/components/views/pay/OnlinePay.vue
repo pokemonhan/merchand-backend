@@ -84,6 +84,7 @@
                             v-model="form.pay_method"
                             :options="pay_method_opt"
                         ></Select>
+                        {{form.pay_method}}
                     </li>
                     <li>
                         <span>前端名称:</span>
@@ -102,7 +103,7 @@
                         <!-- <Input class="w250" v-model="form.screte_key" /> -->
                         <Radio
                             class="mr50"
-                            label="密钥方式"
+                            label="密钥模式"
                             :value="form.secret_method"
                             val="1"
                             v-model="form.secret_method"
@@ -165,6 +166,7 @@
                                 :key="index"
                                 @click="closeTag(item,index)"
                             >{{item.label}}</span>
+
                         </div>
                     </li>
                     <li @click.stop>
@@ -280,7 +282,8 @@ export default {
             select: {},
             all_tag: [],
             tag_show: false,
-            showTag: []
+            showTag: [],
+            curr_row:{},
         };
     },
     methods: {
@@ -289,6 +292,7 @@ export default {
             this.$http({ url, method }).then(res => {
                 if (res && res.code == "200") {
                     this.pay_method_opt = this.backToSelOpt(res.data);
+                    console.log('列表',this.pay_method_opt)
                 }
             });
         },
@@ -300,6 +304,7 @@ export default {
                 }
             ];
             let back_list = list.map(item => {
+                console.log(item)
                 return { label: item.name, value: item.id };
             });
             return all.concat(back_list);
@@ -379,7 +384,7 @@ export default {
                 desc: this.form.specifcation,
                 backend_remark: this.form.mark
             };
-            // console.log('添加请求数据',datas)
+            console.log('添加请求数据',datas)
             let data=window.all.tool.rmEmpty(datas)
             let { url, method } = this.$api.online_finance_add;
             this.$http({ method, url, data }).then(res => {
@@ -390,16 +395,54 @@ export default {
                 }
             });
         },
-        edit() {
+        edit(row) {
             this.dia_status = "edit";
             this.dia_title = "编辑";
             this.dia_show = true;
+            this.addClearAll();
+            this.form={
+                pay_method: row.channel_id,
+                front_name:row.frontend_name,
+                merchant_num:row.merchant_code,
+                merchant_code:row.merchant_no,
+                secret_method:String(row.encrypt_mode),
+                merchant_key:row.merchant_secret,
+                merchant_public:row.public_key,
+                merchant_private:row.private_key,
+                certificate_path:row.certificate,
+                url:row.request_url,
+                third_href:row.vendor_url,
+                terminal:row.app_ip,
+                pay_limit:[row.min,row.max],
+                income_charge:row.handle_fee,
+                specifcation:row.desc,
+                mark:row.backend_remark	,
+                formtag:[row.tags && row.tags.tag_id ]
+            };
+            console.log('赋值',this.form)
+            this.showTag = [row.tags && row.tags.tag_id ];
+            console.log('标签',this.showTag)
         },
-        editCfm() {},
-        del() {
+        editCfm() {
+            
+        },
+        del(row) {
             this.mod_show = true;
+            this.curr_row=row
         },
-        modConf() {},
+        modConf() {
+            let data={
+                id:this.curr_row.id
+            }
+            let {method,url}=this.$api.online_finance_del;
+            this.$http({method,url,data}).then((res=>{
+                if(res && res.code=='200'){
+                    this.mod_show=false;
+                    this.$toast.success(res.message)
+                    this.getList();
+                }
+            }))
+        },
         updateNo(val) {
             this.getList();
         },
@@ -493,6 +536,7 @@ export default {
             let { method, url } = this.$api.online_finance_list;
             this.$http({ method: method, url: url, params: params }).then(
                 res => {
+                    console.log('列表数据',res)
                     if (res && res.code == "200") {
                         this.list = res.data.data;
                         this.total = res.data.total;

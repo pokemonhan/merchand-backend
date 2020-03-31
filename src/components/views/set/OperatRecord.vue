@@ -99,7 +99,7 @@ export default {
                     value: '2'
                 }
             ],
-            dia_show: true
+            dia_show: false
         }
     },
     methods: {

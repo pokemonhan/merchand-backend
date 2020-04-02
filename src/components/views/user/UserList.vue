@@ -786,7 +786,7 @@ export default {
         },
         unlockCfm(){
             let data={
-                guid:String(this,detail_list.guid)
+                guid:String(this.detail_list.guid)
             }
             let {method,url}=this.$api.user_list_unlock;
             this.$http({method,url,data}).then(res=>{

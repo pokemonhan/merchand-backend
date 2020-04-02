@@ -792,7 +792,7 @@ export default {
             this.$http({method,url,data}).then(res=>{
                 if(res && res.code=='200'){
                     this.unlock_show=false;
-                    this.userDetail();
+                    this.userDetail(this.curr_row);
                     this.$toast.success(res.message);
                 }
             })

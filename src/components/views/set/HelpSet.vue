@@ -161,7 +161,7 @@ export default {
             form: {
                 title: "",
                 pic_path: "",
-                status: ""
+                status: true
             },
             dia_title:'',
             dia_show:false,
@@ -176,7 +176,7 @@ export default {
             this.form={
                 title: "",
                 pic_path: "",
-                status: ""
+                status: true,
             }
         },
         addFather(){
@@ -213,9 +213,9 @@ export default {
                 type: this.curr_btn,
                 title: this.form.title,
                 pic: this.form.pic_path,
-                status: this.form.status ? 1 : 0
+                status: this.form.status ? "1" : "0"
             }
-            console.log('请求数据',data)
+            console.log('添加父级请求数据',datas)
             let data=window.all.tool.rmEmpty(datas)
             let { url, method } = this.$api.help_center_add;
             this.$http({ method, url, data }).then(res => {

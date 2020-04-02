@@ -75,6 +75,16 @@ export default {
         url:'/merchant-api/frontend-user/unlock',
         method:'post'
     },
+    //会员列表 - 修改会员标签
+    user_list_tag_edit:{
+        url:'/merchant-api/frontend-user/label',
+        method:'post'
+    },
+    //会员列表 - 加入黑名单
+    user_list_add_blackList:{
+        url:'/merchant-api/frontend-user/black',
+        method:'post'
+    },
     // 会员列表 - 登记记录
     user_login_log_list: {
         url: '/merchant-api/frontend-user/login-log',

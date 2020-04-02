@@ -172,7 +172,7 @@ export default {
         getLevList() {
             let { method, url } = this.$api.grade_list;
             this.$http({ method, url }).then(res => {
-                console.log("等级数据", res);
+                // console.log("等级数据", res);
                 if (res && res.code == "200") {
                     this.lev_list = res.data.data;
                 }
@@ -231,7 +231,7 @@ export default {
             console.log('请求数据',data)
             let { method, url } = this.$api.wash_code_add;
             this.$http({ method, url, data }).then(res => {
-                console.log('返回数据',res)
+                // console.log('返回数据',res)
                 if (res && res.code == "200") {
                     this.show_modal = false;
                     this.$toast.success(res && res.message);
@@ -256,7 +256,7 @@ export default {
             let data = {
                 id: this.curr_row.id
             };
-            console.log('请求数据',data)
+            // console.log('请求数据',data)
             let { method, url } = this.$api.bank_cards_del;
             this.$http({ method, url, data }).then(res => {
                 if (res && res.code == "200") {

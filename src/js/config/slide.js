@@ -106,7 +106,7 @@ const slider = (function () {
     if (element.nodeType) {
       // console.log('element.nodeType: ', element.nodeType);
       return element.nodeType == 1;
-      
+
     }
     // return true
   }

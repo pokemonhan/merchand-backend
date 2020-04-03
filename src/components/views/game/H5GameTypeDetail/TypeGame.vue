@@ -231,7 +231,7 @@ export default {
             this.$http({ method, url, params }).then(res => {
                 // console.log("列表👌👌👌👌: ", res);
                 if (res && res.code === "200") {
-                    this.total = res.data.length;
+                    this.total = res.data.total;
                     this.list = res.data.data;
                 }
             });

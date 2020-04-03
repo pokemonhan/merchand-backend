@@ -355,4 +355,16 @@ export default {
     max-height: 80vh;
     overflow: auto;
 }
+.total-table {
+    text-align: center;
+    margin-top: 10px;
+    width: 100%;
+}
+.total-table >ul {
+    justify-content: center;
+}
+.total-table ul li{
+    /* margin-left: 100px; */
+    width: 20%;
+}
 </style>

@@ -113,7 +113,7 @@
                                 <td style="height:42px;" v-if="EditUserTab" class="user-lab">
                                     <span class="mr5">会员标签</span>
                                     <Select v-model="user_tab" :options="user_tab_opt"></Select>
-                                    <button class="btn-blue">保存</button>
+                                    <button class="btn-blue" @click="editUserTabCfm()" >保存</button>
                                     <button class="btn-blue" @click="EditUserTab=false">取消</button>
                                 </td>
                                 <td style="height:42px;" v-if="!EditUserTab" class="user-lab">
@@ -343,7 +343,7 @@
                     <div class="infor">是否确定把该玩家加入黑名单！</div>
                     <span class="textarea-remark">
                         <span class="remark">备注:</span>
-                        <textarea class="textarea" cols="40" rows="10"></textarea>
+                        <textarea v-model="blackRemark" class="textarea" cols="40" rows="10"></textarea>
                     </span>
                     <div class="btns">
                         <button class="btn-plain-large mr50" @click="show_add_black_list=false">取消</button>
@@ -481,13 +481,10 @@ export default {
             },
             user_tab: "",
             EditUserTab: false,
-            user_tab_opt: [
-                { label: "危险会员", value: 1 },
-                { label: "普通会员", value: 2 }
-            ],
-
+            user_tab_opt: [],
             inner_mask_show: false,
             show_add_black_list: false,
+            blackRemark:'',
             curr_row: {},
             show_password: false,
             reset_title: "",
@@ -498,6 +495,38 @@ export default {
         };
     },
     methods: {
+        getSelectOpt(){
+            let {url,method}=this.$api.tag_list;
+            this.$http({url,method}).then(res=>{
+                if(res && res.code=='200'){
+                    if(res.data && res.data.data && Array.isArray(res.data.data)){
+                        let arr=[];
+                        for (var i=0;i<res.data.data.length;i++){
+                            let item=res.data.data[i];
+                            arr.push({label:item.title,value:item.id});
+                        }
+                        this.user_tab_opt=arr;
+                        // console.log('标签数据',this.user_tab_opt)
+                    }
+                }
+            })
+        },
+        editUserTabCfm(){
+            let data={
+                guid:this.detail_list.guid,
+                label:this.user_tab,
+            }
+            // console.log('修改标签请求数据',data)
+            let{method,url}=this.$api.user_list_tag_edit;
+            this.$http({method,url,data}).then(res=>{
+                // console.log('修改标签返回数据',res)
+                if(res && res.code=='200'){
+                    this.$toast.success(res.message);
+                    this.userDetail(this.curr_row);
+                    this.EditUserTab=false;
+                }
+            })
+        },
         clearForm() {
             this.form = {
                 account: "",
@@ -513,14 +542,14 @@ export default {
             }
             return true;
         },
-        getUserDetail(row) {},
         userDetail(row) {
+            // console.log('获取详情列表传入数据row',row)
             this.show_detail = true;
-            this.curr_row = row;
+            this.curr_row=row
             let data = {
-                guid: String(this.curr_row.guid)
+                guid: String(row.guid)
             };
-            // console.log("请求数据", data);
+            console.log("请求数据", data);
             let { method, url } = this.$api.user_list_detail;
             this.$http({ method, url, data }).then(res => {
                 // console.log("返回详情数据", res);
@@ -529,10 +558,25 @@ export default {
                 }
             });
         },
-        addBlackList() {
+        addBlackList(row) {
             this.show_add_black_list = true;
+            this.curr_row=row;
         },
-        addBlackListCfm() {},
+        addBlackListCfm() {
+            let datas={
+                id:this.curr_row.id,
+                remark:this.blackRemark
+            }
+            let data=window.all.tool.rmEmpty(datas)
+            let {method,url}=this.$api.user_list_add_blackList;
+            this.$http({method,url,data}).then(res=>{
+                if(res && res.code=='200'){
+                    this.$toast.success(res.message)
+                    this.show_add_black_list=false;
+                    this.getList();
+                }
+            })
+        },
         addAccClick() {
             this.inner_mask_show = true;
             this.clearForm();
@@ -583,7 +627,7 @@ export default {
             let params = window.all.tool.rmEmpty(para);
             let { method, url } = this.$api.user_list;
             this.$http({ method, url, params }).then(res => {
-                // console.log("返回数据", res);
+                console.log("返回数据", res);
                 if (res && res.code === "200") {
                     this.list = res.data.data;
                     this.total = res.data.total;
@@ -742,13 +786,13 @@ export default {
         },
         unlockCfm(){
             let data={
-                guid:String(this,detail_list.guid)
+                guid:String(this.detail_list.guid)
             }
             let {method,url}=this.$api.user_list_unlock;
             this.$http({method,url,data}).then(res=>{
                 if(res && res.code=='200'){
                     this.unlock_show=false;
-                    this.userDetail();
+                    this.userDetail(this.curr_row);
                     this.$toast.success(res.message);
                 }
             })
@@ -763,6 +807,7 @@ export default {
     },
     mounted() {
         this.getList();
+        this.getSelectOpt();
     }
 };
 </script>

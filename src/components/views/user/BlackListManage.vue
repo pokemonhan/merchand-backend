@@ -43,13 +43,13 @@
                     <td>{{row.account}}</td>
                     <td>{{row.register_time}}</td>
                     <td>{{row.last_login_time}}</td>
-                    <td>{{row.create_at}}</td>
+                    <td>{{row.created_at}}</td>
                     <td>{{row.last_login_ip}}</td>
                     <td>{{row.black_num}}</td>
                     <td>{{row.remark}}</td>
                     <td>
                         <button class="btn-green" @click="turnOnUser(row)">启用</button>
-                        <button class="btn-blue" @click="dtlShow()">详情</button>
+                        <button class="btn-blue" @click="dtlShow(row)">详情</button>
                     </td>
                 </template>
             </Table>
@@ -62,7 +62,6 @@
                 @updateSize="updateSize"
             />
         </div>
-
         <Modal
             :show="show_black_list_conf"
             title="黑名单管理"
@@ -71,26 +70,60 @@
             @close="show_black_list_conf=false"
             @confirm="blackListConfirm"
         ></Modal>
-        <div class="modal-mask" v-if="show_detail">
-            <div class="v-modal">
-                <div class="mod-head">
-                    <span>黑名单 详情</span>
-                    <i class="iconfont iconcuowuguanbi-" @click="show_detail=false"></i>
-                </div>
-                <div class="mod-body detail">
-                    <BlackListManageDetail :row="curr_row"></BlackListManageDetail>
+        <Dialog :show.sync="blackList_show" title="黑名单详情"  >
+            <div class="dia-inner" style="width:1200px" >
+                <div class="cont">
+                    <QuickQuery :date="quick_query" @update="quickDateUpdate" />
+                    <div class="filter p10">
+                        <ul class="left">
+                            <li>
+                                <span>进入黑名单日期</span>
+                                <Date
+                                    style="width:300px;"
+                                    type="datetimerange"
+                                    v-model="black.dates"
+                                    @update="blackTimeUpdate()"
+                                />
+                            </li>
+                            <li>
+                                <span>状态</span>
+                                <Select v-model="black.status" :options="status_opt"></Select>
+                            </li>
+                            <li style="margin-bottom:0;">
+                                <button class="btn-blue" @click="getBlackListDetail" >查询</button>
+                                <button class="btn-blue"  @click="clearBlack" >清空</button>
+                            </li>
+                        </ul>
+                    </div>
+                    <Table class="table" :headers="blackHeaders" :column="blackList">
+                        <template v-slot:item="{row}">
+                            <td>{{row.mobile}}</td>
+                            <td>{{row.guid}}</td>
+                            <td>{{row.account}}</td>
+                            <td>{{row.register_time}}</td>
+                            <td>{{row.last_login_time}}</td>
+                            <td>{{row.created_at}}</td>
+                            <td>{{row.remove_time}}</td>
+                            <td>{{row.last_login_ip}}</td>
+                            <td>{{row.remark}}</td>
+                        </template>
+                    </Table>
+                    <Page
+                        class="table-page"
+                        :total="blackTotal"
+                        :pageNo.sync="blackPageNo"
+                        :pageSize.sync="blackPageSize"
+                        @updateNo="blackUpdateNo"
+                        @updateSize="blackUpdateSize"
+                    />
                 </div>
             </div>
-        </div>
+        </Dialog>
     </div>
 </template>
 
 <script>
-import BlackListManageDetail from "./BlackListManageDetail.vue";
 export default {
-    components: {
-        BlackListManageDetail
-    },
     data() {
         return {
             quick_query: [],
@@ -116,14 +149,40 @@ export default {
 
             list: [],
             total: 0,
-            pageSize: 20,
+            pageSize: 25,
             pageNo: 1,
+
+            blackTotal:0,
+            blackPageNo:1,
+            blackPageSize:25,
             // modal
             modal_cont: "是否启用该账户",
             show_black_list_conf: false,
             show_detail: false,
             is_detail_show: "",
-            curr_row: {}
+            curr_row: {},
+            blackList_show:false,
+            black:{
+                dates:[],
+                status:''
+            },
+            blackHeaders:[
+                '会员账号',
+                '会员ID',
+                '账户余额',
+                '注册时间',
+                '最后登录时间',
+                '进入黑名单时间',
+                '解冻时间',
+                '最后登录IP',
+                '备注',
+            ],
+            blackList:[],
+            status_opt: [
+                { label: '全部', value: ""},
+                { label: '已解冻', value: "1" },
+                { label: '冻结', value: "0"}
+            ],
         };
     },
     methods: {
@@ -132,9 +191,17 @@ export default {
             this.quick_query = this.filter.dates;
         },
         dateUpdate(dates) {
-            console.log('传入时间',dates)
-            let arr=[dates[0]+' 00:00:00',dates[1]+' 00:00:00']
+            // console.log("传入时间", dates);
+            let arr = [dates[0] + " 00:00:00", dates[1] + " 00:00:00"];
             this.$set(this.filter, "dates", arr);
+        },
+        quickDateUpdate(dates) {
+            let arr = [dates[0] + " 00:00:00", dates[1] + " 00:00:00"];
+            this.$set(this.black, "dates", arr);
+        },
+        blackTimeUpdate() {
+            // 同步快捷查询时间
+            this.quick_query = this.black.dates
         },
         getList() {
             let createAt = "";
@@ -148,15 +215,15 @@ export default {
                 mobile: this.filter.mobile,
                 guid: this.filter.guid,
                 createAt: createAt,
-                page:this.pageNo,
-                pageSize:this.pageSize
+                page: this.pageNo,
+                pageSize: this.pageSize
             };
-            // console.log('请求数据',para)
+            console.log("请求数据", para);
             let params = window.all.tool.rmEmpty(para);
             let { method, url } = this.$api.black_list_list;
             this.$http({ method: method, url: url, params: params }).then(
                 res => {
-                    console.log('返回数据',res)
+                    console.log("返回数据", res);
                     if (res && res.code == "200") {
                         this.list = res.data.data;
                         this.total = res.data.total;
@@ -176,10 +243,17 @@ export default {
             this.getList();
         },
         updateSize(val) {
-            this.pageNo=1;
+            this.pageNo = 1;
             this.getList();
         },
-        turnOnUser() {
+        blackUpdateNo(val) {
+            this.getBlackListDetail();
+        },
+        blackUpdateSize(val) {
+            this.blackPageNo = 1;
+            this.getBlackListDetail();
+        },
+        turnOnUser(row) {
             this.show_black_list_conf = true;
             this.curr_row = row;
         },
@@ -187,6 +261,7 @@ export default {
             let data = {
                 id: this.curr_row.id
             };
+            console.log("加入黑名单请求数据", data);
             let { url, method } = this.$api.black_list_detail_remove;
             this.$http({ method, url, data }).then(res => {
                 // console.log(res)
@@ -197,13 +272,47 @@ export default {
                 }
             });
         },
-        dtlShow() {
-            this.show_detail = true;
+        dtlShow(row) {
+            this.blackList_show = true;
+            this.curr_row = row;
+            this.getBlackListDetail();
+        },
+        getBlackListDetail(){
+            let createAt = "";
+            if (this.black.dates[0] && this.black.dates[1]) {
+                createAt = JSON.stringify([
+                    this.black.dates[0],
+                    this.black.dates[1]
+                ]);
+            }
+            let para={
+                guid:this.curr_row.guid,
+                status:this.black.status,
+                createAt:createAt,
+                page: this.blackPageNo,
+                pageSize: this.blackPageSize
+            }
+            // console.log('黑名单详情请求数据',para)
+            let params = window.all.tool.rmEmpty(para)
+            let {method,url} =this.$api.black_list_detail_list;
+            this.$http({method:method,url:url,params:params}).then(res=>{
+                console.log(res)
+                if(res && res.code=='200'){
+                    this.blackList=res.data.data;
+                    this.blackTotal=res.data.total;
+                    // console.log('获取到的数据',this.blackList)
+                }
+            })
+        },
+        clearBlack(){
+            this.black={
+                dates:[],
+                status:'',
+            }
         }
     },
     mounted() {
         this.getList();
-        
     }
 };
 </script>
@@ -230,6 +339,19 @@ export default {
 .table {
     margin-top: 15px;
 }
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+.table {
+    margin-top: 10px;
+    width: 100%;
+    overflow-x: auto;
+}
+.table .v-table {
+    width: 1500px;
+}
+
 /* .g-head 公共区 */
 /* btn-blue 公共区 */
 /* table-page 公共区 */

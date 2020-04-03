@@ -16,7 +16,12 @@
 
                 <li>
                     <span>时间范围</span>
-                    <Date type="datetimerange" style="width:300px;" v-model="filter.dates" @update="timeUpdate()" />
+                    <Date
+                        type="datetimerange"
+                        style="width:300px;"
+                        v-model="filter.dates"
+                        @update="timeUpdate()"
+                    />
                 </li>
                 <li>
                     <span>审核状态</span>
@@ -26,17 +31,17 @@
                     <span>入款账号</span>
                     <Input v-model="filter.income_acc" />
                 </li>
-                <li >
+                <li>
                     <span>正式状态</span>
                     <Select v-model="filter.formal_status" :options="formal_status_opt"></Select>
                 </li>
-                <li >
+                <li>
                     <span>订单号</span>
                     <Input limit="en-num" v-model="filter.order_id" />
                 </li>
-                <li >
-                    <button class="btn-blue" @click="getList" >查询</button>
-                    <button class="btn-blue" @click="exportExcel()" >导出Excel</button>
+                <li>
+                    <button class="btn-blue" @click="getList">查询</button>
+                    <button class="btn-blue" @click="exportExcel()">导出Excel</button>
                     <button class="btn-red" @click="clearClick">清空</button>
                 </li>
             </ul>
@@ -56,7 +61,9 @@
                     <td>{{row.snap_account}}</td>
                     <td>{{row.money}}</td>
                     <td>{{row.arrive_money}}</td>
-                    <td :class="(review_status_obj[row.status]||{}).color">{{(review_status_obj[row.status]||{}).text}}</td>
+                    <td
+                        :class="(review_status_obj[row.status]||{}).color"
+                    >{{(review_status_obj[row.status]||{}).text}}</td>
                     <td>{{row.created_at}}</td>
                     <td>
                         <span class="a" @click="showDetail(row)">详情</span>
@@ -66,39 +73,40 @@
                     <td>{{row.a11}}</td>
                 </template>
             </Table>
+            <div class="total-table">
+                <table>
+                    <ul>
+                        <li>
+                            <span>合计:</span>
+                            <span>{{''}}</span>
+                        </li>
+                        <li>
+                            <span>充值金额:</span>
+                            <span>{{''}}</span>
+                        </li>
+                        <li>
+                            <span>实际到账:</span>
+                            <span>{{''}}</span>
+                        </li>
+                    </ul>
+                    <ul>
+                        <li>
+                            <span>总计:</span>
+                            <span>{{''}}</span>
+                        </li>
+                        <li>
+                            <span>实际到账:</span>
+                            <span>{{''}}</span>
+                        </li>
+                        <li>
+                            <span>实际到账:</span>
+                            <span>{{''}}</span>
+                        </li>
+                    </ul>
+                </table>
+            </div>
         </div>
-        <div class="total-table">
-            <table>
-                <tr>
-                    <th>
-                        <span>合计:</span>
-                        <span>{{''}}</span>
-                    </th>
-                    <th>
-                        <span>充值金额:</span>
-                        <span>{{''}}</span>
-                    </th>
-                    <th>
-                        <span>实际到账:</span>
-                        <span>{{''}}</span>
-                    </th>
-                </tr>
-                <tr>
-                    <th>
-                        <span>总计:</span>
-                        <span>{{''}}</span>
-                    </th>
-                    <th>
-                        <span>实际到账:</span>
-                        <span>{{''}}</span>
-                    </th>
-                    <th>
-                        <span>实际到账:</span>
-                        <span>{{''}}</span>
-                    </th>
-                </tr>
-            </table>
-        </div>
+
         <Page
             class="table-page"
             :total="total"
@@ -145,12 +153,12 @@ export default {
                 review_status: "0",
                 income_acc: "",
                 formal_status: "0",
-                order_id: "",
+                order_id: ""
             },
             review_status_opt: [
-                { label: "全部", value:"0" },
+                { label: "全部", value: "0" },
                 { label: "审核中", value: "1" },
-                { label: "审核通过", value:"2"},
+                { label: "审核通过", value: "2" },
                 { label: "审核拒绝", value: "3" }
             ],
             formal_status_opt: [
@@ -188,27 +196,38 @@ export default {
     methods: {
         quickDateUpdate(dates) {
             // 同步时间筛选值
-            let arr=[dates[0]+' 00:00:00',dates[1]+' 00:00:00']
+            let arr = [dates[0] + " 00:00:00", dates[1] + " 00:00:00"];
             this.$set(this.filter, "dates", arr);
         },
         timeUpdate() {
             // 同步快捷查询时间
             this.quick_query = this.filter.dates;
         },
-        exportExcel(){
-             import('../../../../js/config/Export2Excel').then(excel=>{
-                const tHeaders=this.headers
-                const data=this.list.map(item=>{
-                    return[item.order_no,item.user.mobile,item.user.guid,item.is_tester,item.snap_finance_type,item.snap_account,item.money,item.arrive_money,item.status,item.curr_list]
-                })
+        exportExcel() {
+            import("../../../../js/config/Export2Excel").then(excel => {
+                const tHeaders = this.headers;
+                const data = this.list.map(item => {
+                    return [
+                        item.order_no,
+                        item.user.mobile,
+                        item.user.guid,
+                        item.is_tester,
+                        item.snap_finance_type,
+                        item.snap_account,
+                        item.money,
+                        item.arrive_money,
+                        item.status,
+                        item.curr_list
+                    ];
+                });
                 excel.export_json_to_excel({
-                    header:tHeaders,
+                    header: tHeaders,
                     data,
-                    filename:excel,
-                    autoWidth:true,
-                    bookType:'xlsx'
-                })
-            })
+                    filename: excel,
+                    autoWidth: true,
+                    bookType: "xlsx"
+                });
+            });
         },
         clearClick() {
             this.filter = {
@@ -299,7 +318,7 @@ export default {
         offConfShow(row) {
             this.offline_conf = true;
         },
-        passConfShow(){},
+        passConfShow() {},
         offlineSavePicture(ref) {
             this.exportCanvasAsPNG(ref, "线下入款");
         },
@@ -308,7 +327,7 @@ export default {
         updateSize(val) {
             this.pageNo = 1;
         },
-        
+
         // canvas 转png 图片
         exportCanvasAsPNG(ref, fileName) {
             // let canvasElement = document.getElementById(id);
@@ -332,40 +351,45 @@ export default {
             aLink.click();
             document.body.removeChild(aLink);
         },
-        getList(){
+        getList() {
             // console.log(1)
-            let created_at=''
-            if(this.filter.dates[0] && this.filter.dates[1]){
-                created_at=JSON.stringify([this.filter.dates[0],this.filter.dates[1]])
+            let created_at = "";
+            if (this.filter.dates[0] && this.filter.dates[1]) {
+                created_at = JSON.stringify([
+                    this.filter.dates[0],
+                    this.filter.dates[1]
+                ]);
             }
-            let para={
-                is_online:"0",
-                mobile:this.filter.account, 
-                guid:this.filter.id,
-                created_at:created_at,
-                status:this.filter.review_status,
-                snap_account:this.filter.income_acc,
-                is_tester:this.filter.formal_status,
-                order_no:this.filter.order_id,
-                page:this.pageNo,
-                pageSize:this.pageSize,
+            let para = {
+                is_online: "0",
+                mobile: this.filter.account,
+                guid: this.filter.id,
+                created_at: created_at,
+                status: this.filter.review_status,
+                snap_account: this.filter.income_acc,
+                is_tester: this.filter.formal_status,
+                order_no: this.filter.order_id,
+                page: this.pageNo,
+                pageSize: this.pageSize
             };
             // console.log('请求数据',para)
-            let params=window.all.tool.rmEmpty(para);
-            let {method,url}=this.$api.founds_incomeorder_list;
-            this.$http({method:method,url:url,params:params}).then(res=>{
-                // console.log('返回数据：',res)
-                if(res && res.code=='200'){
-                    this.list=res.data.data;
-                    this.total=res.data.total;
+            let params = window.all.tool.rmEmpty(para);
+            let { method, url } = this.$api.founds_incomeorder_list;
+            this.$http({ method: method, url: url, params: params }).then(
+                res => {
+                    // console.log('返回数据：',res)
+                    if (res && res.code == "200") {
+                        this.list = res.data.data;
+                        this.total = res.data.total;
+                    }
                 }
-            })
+            );
         },
         updateNo(val) {
             this.getList();
         },
         updateSize(val) {
-            this.pageNo=1;
+            this.pageNo = 1;
             this.getList();
         }
     },
@@ -411,13 +435,18 @@ table {
 .table .v-table {
     width: 2000px;
 }
-.total-table table tr th {
-    padding: 6px 8px;
-    color: #6d93db;
-    background: #eef7fc;
-    font-weight: 400;
+.total-table {
+    text-align: center;
+    margin-top: 10px;
+    width: 2000px;
 }
-
+.total-table >ul {
+    justify-content: center;
+}
+.total-table ul li{
+    /* margin-left: 100px; */
+    width: 20%;
+}
 /* .modal-mask     样式在公共区... */
 .v-modal {
     min-width: 660px;
@@ -462,5 +491,4 @@ table {
 .save-btn .btn-blue-large {
     text-align: center;
 }
-
 </style>

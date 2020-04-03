@@ -95,29 +95,29 @@
                 <ul>
                     <li>
                         <span>合计:</span>
-                        <span>{{''}}</span>
+                        <span>{{'1000'}}</span>
                     </li>
                     <li>
                         <span>充值金额:</span>
-                        <span>{{''}}</span>
+                        <span>{{'1000'}}</span>
                     </li>
                     <li>
                         <span>实际到账:</span>
-                        <span>{{''}}</span>
+                        <span>{{'1000'}}</span>
                     </li>
                 </ul>
                 <ul>
                     <li>
                         <span>总计:</span>
-                        <span>{{''}}</span>
+                        <span>{{'1000'}}</span>
                     </li>
                     <li>
                         <span>实际到账:</span>
-                        <span>{{''}}</span>
+                        <span>{{'1000'}}</span>
                     </li>
                     <li>
                         <span>实际到账:</span>
-                        <span>{{''}}</span>
+                        <span>{{'1000'}}</span>
                     </li>
                 </ul>
             </div>
@@ -545,11 +545,9 @@ table {
 .total-table >ul {
     justify-content: center;
 }
-.total-table table tr th {
-    padding: 6px 8px;
-    color: #6d93db;
-    background: #eef7fc;
-    font-weight: 400;
+.total-table ul li{
+    /* margin-left: 100px; */
+    width: 20%;
 }
 /*  .v-modal 公共区 App.vue */
 .mod-body {

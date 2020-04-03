@@ -16,6 +16,7 @@ import $ from 'jquery'                          // jquery
 import xss from 'xss'
 Vue.use(plugins)
 window.$ = $
+window.$loading = false
 window.all = {
     tool,
     store,

@@ -129,7 +129,6 @@ export default {
         },
         del() {
             this.mod_status = 'del'
-
             this.mod_show = true
         },
         prevPage() {
@@ -170,12 +169,16 @@ export default {
         delConfirm() {
             // this.list
             console.log('this.list: ', this.list)
-            let delIdArray = this.list.map(item => {
+            let delIdArray = (this.list||[]).map(item => {
                 return item.id
             })
+            if(delIdArray.length===0) {
+                this.$toast.info('未选中任何邮件')
+                return
+            }
             console.log('delIdArray: ', delIdArray)
             let data = {
-                email_id: delIdArray[0],
+                email_id: JSON.stringify(delIdArray),
             }
             let { url, method } = this.$api.email_received_del
             this.$http({ method, url, data }).then(res => {

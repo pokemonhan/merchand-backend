@@ -1,7 +1,7 @@
 'use strict';
 import axios from 'axios'
 import router from '../router'
-
+// import { Loading } from 'element-ui'
 // 如果指令是 [npm run build --  inner]  那么inner 就是 HOST的内容 
 // ps:默认为 inner。  prod.env.js中设置
 let HOST = process.env.HOST
@@ -14,7 +14,7 @@ let hostList = {
 }
 // 有数据,但匹配不到就直接使用HOST地址 
 const BASE_PATH = hostList[HOST] || HOST
-window._bath_path=BASE_PATH
+window._bath_path = BASE_PATH
 // const BASE_PATH = hostList[HOST]
 // console.log('BASE_PATH: ', process.env);
 let http = axios.create({
@@ -23,7 +23,7 @@ let http = axios.create({
     // retry: 2,
     // retryDelay: 1000,
     // withCredentials : true,
-    
+
     header: {
         'Content-Type': 'application/json; charset=utf-8',
         // 'content-type' : 'application/x-www-form-urlencoded; charset=UTF-8',
@@ -36,9 +36,19 @@ let http = axios.create({
     },
 })
 
+// let loading = null
+let loadingEle = null
 
 // 请求预设 ---
 http.interceptors.request.use(req => {
+    if (!loadingEle) {
+        loadingEle = document.getElementById('g-loading')
+    }
+    if(loadingEle && loadingEle.style) {
+        loadingEle.style.display = 'block'
+    }
+
+    // loading = Loading.service({ text: '拼命加载中' })
     let Authorization = window.all.tool.getLocal('Authorization')
     // let expires = new Date(window.all.tool.getLocal('expires_at')).getTime()
     // let now = new Date().getTime()
@@ -50,11 +60,17 @@ http.interceptors.request.use(req => {
         //     // window._Vue_.$router.push('/login')
         // }
     }
+
     return req
 })
 
 // 后台返回数据 全局预设 ---
 http.interceptors.response.use(res => {
+    // loading 样式设置
+    if(loadingEle && loadingEle.style) {
+        loadingEle.style.display = 'none'
+    }
+
     // let data = res.data
     if (res && res.data) {
         if (res.data.code !== '200') {
@@ -73,7 +89,6 @@ http.interceptors.response.use(res => {
                 } else {
                     window.__vm__.$toast.error('出现服务问题或被禁止')
                 }
-                // console.log(res)
             }
         }
     } else {
@@ -91,7 +106,9 @@ http.interceptors.response.use(res => {
 
     return res.data
 }, (error) => {
-    // error && alert(error.response)
+    if(loadingEle && loadingEle.style) {
+        loadingEle.style.display = 'none'
+    }
     error && window.__vm__.$toast.error('出现网络服务问题')
     // return Promise.resolve(error)
 })

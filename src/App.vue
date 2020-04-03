@@ -16,6 +16,7 @@
         <div id="toast-box"></div>
         <div class="modal-mask" v-if="showMask"></div>
         <!-- <div id="message-box"></div> -->
+        <loading id="g-loading" show/>
     </div>
 </template>
 
@@ -39,7 +40,10 @@ export default {
         }
     },
     computed: {
-        ...mapGetters(['showMask'])
+        ...mapGetters(['showMask','loadingShow']),
+        loading() {
+            return window.$loading
+        }
     },
     methods: {
         playMusic() {
@@ -63,6 +67,7 @@ export default {
         setTimeout(() => {
             // self.playMusic()
         }, 400)
+        // this.$loading.show()
     }
 }
 </script>
@@ -118,6 +123,9 @@ export default {
     left: 50%;
     transform: translateX(-50%);
     z-index: 10002;
+}
+#g-loading {
+    display: none;
 }
 </style>
 
@@ -628,5 +636,27 @@ button:hover {
 }
 .bold{
     font-weight: bold;
+}
+/* 重写element ui loading 样式 */
+.el-loading-parent--relative .el-loading-mask {
+    position: fixed;
+    background-color: rgba(255,255,255,.9);
+    margin: 0;
+    top: 50%;
+    left: 50%;
+    height: 300px;
+    width: 300px;
+    margin-left: -150px;
+    margin-top: -150px;
+    -webkit-transition: opacity .3s;
+    transition: opacity .3s;
+    z-index: 10003;
+
+}
+/* 文字超出省略 */
+.text-ellipsis {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
 }
 </style>

@@ -166,6 +166,7 @@ export default {
             // 2. 收件箱
         } else {
             this.content = this.row
+            console.log('this.row: ', this.row);
         }
         this.total = this.row.total
         // 这是后端数据的第几条

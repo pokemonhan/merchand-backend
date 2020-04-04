@@ -26,7 +26,7 @@
 
                     <td v-for="(item,index) in row.percent_data" :key="index">{{item.percent}}%</td>
                     <td>
-                        <button class="btn-blue" @click="editWashModal(row)">编辑</button>
+                        <button class="btn-blue" @click="editWashModal(row,idx)">编辑</button>
                         <button class="btn-red" @click="delWashModal(row)">删除</button>
                     </td>
                 </template>
@@ -58,22 +58,21 @@
                             <td>
                                 <div>
                                     <span>打码额度:</span>
-                                    <Input class="w100 ml-10" v-model="wash_form.code_numbers[0]" />
-                                    <i class="iconfont iconsousuo ml-10"></i>
+                                    <Input class="w100 ml-10" v-model="wash_form.code_numbers[0]"/>
+                                    <i @click="getBetListFirst"  class="iconfont iconsousuo ml-10"></i>
                                 </div>
                             </td>
                             <td>
                                 <div>
                                     <span>打码额度:</span>
                                     <Input class="w100 ml-10" v-model="wash_form.code_numbers[1]" />
-                                    <i class="iconfont iconsousuo ml-10"></i>
                                 </div>
                             </td>
                             <td>
                                 <div v-if="is_edit">
                                     <span>打码额度:</span>
                                     <Input class="w100 ml-10" v-model="wash_form.code_numbers[2]" />
-                                    <i class="iconfont iconsousuo ml-10"></i>
+                                    <i @click="getBetListLast" class="iconfont iconsousuo ml-10"></i>
                                 </div>
                             </td>
                         </tr>
@@ -98,15 +97,14 @@
                             <td v-if="is_edit">
                                 <div class="edit-form">
                                     <span>{{item.name}}:</span>
-                                    <span class="ml-10">{{aaaaaa}}</span>
-                                    <span></span>
+                                    <span class="ml-10">{{wash_list_back[index] && wash_list_back[index].percent }}%</span>
                                 </div>
                             </td>
                         </tr>
                     </table>
                     <div style="margin-top:50px;text-align:center;">
                         <button class="btn-plain-large mr" @click="show_modal=false">取消</button>
-                        <button class="btn-blue-large" @click="diaCfm">保存</button>
+                        <button class="btn-blue-large" @click="diaCfm()">保存</button>
                     </div>
                 </div>
             </div>
@@ -163,9 +161,10 @@ export default {
             aaaaaa: {},
             lev_list: [],
             wash_list: [],
+            wash_list_back:[],            
             dia_status: "",
             curr_row: {},
-            bbbb: "0.8%"
+            row_id:{},
         };
     },
     methods: {
@@ -191,6 +190,40 @@ export default {
                 code_numbers: [],
                 rate: []
             };
+            this.wash_list=[]
+            this.wash_list_back=[]
+        },
+        //放大镜功能 查找  第一个
+        getBetListFirst(){
+            let firstBetList=[];
+            let search=this.wash_form.code_numbers[0];
+            if(search==''){
+                this.wash_list=[]
+            }
+            for(let i=0;i<this.list.length;i++){
+                 if(search==this.list[i].bet){
+                     firstBetList=this.list[i].percent_data
+                 }
+            }
+            if(firstBetList){
+                this.wash_list=firstBetList
+            }
+        },
+        //最后一个
+        getBetListLast(){
+            let lastBetList=[];
+            let search=this.wash_form.code_numbers[2];
+            if(search==''){
+                this.wash_list_back=[]
+            }
+            for(let i=0;i<this.list.length;i++){
+                if(search==this.list[i].bet){
+                    lastBetList=this.list[i].percent_data
+                }
+            }
+            if(lastBetList){
+                this.wash_list_back=lastBetList
+            }
         },
         diaCfm() {
             if (this.dia_status === "add") {
@@ -209,8 +242,10 @@ export default {
             let last = {};
             if (this.list.length === 0) {
                 last = {};
+                this.wash_form.code_numbers[0]=''
             } else {
                 last = (this.list || [])[this.list.length - 1];
+                this.wash_form.code_numbers[0]=this.list[this.list.length-1].bet
             }
             if (last && last.percent_data) {
                 this.wash_list = last.percent_data;
@@ -228,7 +263,7 @@ export default {
                 bet: String(this.wash_form.code_numbers[1]),
                 percent: JSON.stringify(percent)
             };
-            console.log('请求数据',data)
+            // console.log('请求数据',data)
             let { method, url } = this.$api.wash_code_add;
             this.$http({ method, url, data }).then(res => {
                 // console.log('返回数据',res)
@@ -239,13 +274,72 @@ export default {
                 }
             });
         },
-        editWashModal(row) {
+        editWashModal(row,idx) {
+            console.log('row',row)
+            this.initWash();
             this.add_title = false;
             this.show_modal = true;
             this.is_edit = true;
             this.dia_status = "edit";
+            this.row_id=row
+            //获取列表本条洗码率
+            let editPercent=row.percent_data;
+            let editWash=[]
+            for(let i=0;i<editPercent.length;i++){
+                editWash=editPercent[i].percent
+                this.wash_form.rate.push(editWash)
+            }
+            //获取本条打码量
+            this.wash_form.code_numbers[1]=row.bet;
+
+            //获取上一条打码数据
+            let frontWash={}
+            if(idx<1){
+                this.wash_form.code_numbers[0]=''
+                frontWash=[]
+            }else{
+                this.wash_form.code_numbers[0]=this.list[idx-1].bet;
+                frontWash=(this.list || [])[idx-1];
+            }
+            if(frontWash && frontWash.percent_data){
+                this.wash_list=frontWash.percent_data;
+            }
+            //获取下一条数据
+            let lastWash={}
+            if(idx==this.list.length-1){
+                this.wash_form.code_numbers[2]=''
+                lastWash=[]
+            }else{
+                this.wash_form.code_numbers[2]=this.list[idx+1].bet;
+                lastWash=(this.list || [])[idx+1];
+            }
+            if(lastWash && lastWash.percent_data){
+                this.wash_list_back=lastWash.percent_data
+            }
         },
-        editCfm() {},
+        editCfm() {
+            let percent = {};
+            for (let i = 0; i < this.lev_list.length; i++) {
+                let item = this.lev_list[i];
+                percent[item.experience_max] = this.wash_form.rate[i];
+            }
+            let data={
+                id:this.row_id.id,
+                game_type_id: this.active_game + 1,
+                game_vendor_id: this.active_plant + 1,
+                bet: String(this.wash_form.code_numbers[1]),
+                percent: JSON.stringify(percent)
+            }
+            console.log('请求数据',data)
+            let {method,url}=this.$api.wash_code_set;
+            this.$http({method,url,data}).then(res=>{
+                if(res && res.code=='200'){
+                    this.show_modal=false;
+                    this.$toast.success(res.message)
+                    this.getList();
+                }
+            })
+        },
         delWashModal(row) {
             // console.log(row);
             this.show_del_modal = true;
@@ -256,9 +350,10 @@ export default {
             let data = {
                 id: this.curr_row.id
             };
-            // console.log('请求数据',data)
-            let { method, url } = this.$api.bank_cards_del;
+            console.log('请求数据',data)
+            let { method, url } = this.$api.wash_code_del;
             this.$http({ method, url, data }).then(res => {
+                console.log('返回数据',res)
                 if (res && res.code == "200") {
                     this.show_del_modal = false;
                     this.$toast.success(res && res.message);
@@ -281,7 +376,7 @@ export default {
                     console.log("res", res);
                     if (res && res.code == "200") {
                         this.list = res.data;
-                        this.total = res.data.total;
+                        this.total = res.data.length;
                         // { label: '编号' }
                         let vip_list = [];
                         vip_list = (res.data && res.data[0] && res.data[0].percent_data) || [];

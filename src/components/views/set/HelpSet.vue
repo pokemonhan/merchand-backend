@@ -336,6 +336,7 @@ export default {
         },
         plantSelect(item) {
             this.curr_btn = item.value;
+            this.getList();
         },
         show_list(item, index) {
             this.show_help_list[index] = true;

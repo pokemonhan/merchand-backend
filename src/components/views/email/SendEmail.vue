@@ -27,7 +27,6 @@
                         <span class="ml50">
                             <Checkbox
                                 label="总控邮件"
-                                :disabled="Boolean(receivers)"
                                 v-model="is_head"
                                 @update="isHeadChange"
                             />
@@ -58,6 +57,10 @@
                         <li>
                             <span>我在吃火锅55</span>
                             <span>18967200</span>
+                            <i
+                                class="iconfont icontianjia contact-add"
+                                @click="addContact('18967200')"
+                            ></i>
                         </li>
                         <li>
                             <span>我在吃火锅</span>
@@ -75,7 +78,7 @@
                         <span>联系人</span>
                     </div>
                     <div v-show="contact_show" class="cont">
-                        <Tree style="width:420px;" :list="tree_list" @change="treeUpd" />
+                        <Tree style="width:420px;" class="ml20" :list="tree_list" @change="treeUpd" />
                     </div>
                 </div>
             </div>
@@ -263,7 +266,10 @@ export default {
                 is_timing: this.is_timing,
                 send_time: this.is_timing ? date : ''
             }
-
+            // 如果发给总控,个人发送列表为空.
+            if(this.is_head) {
+                data.receivers = ''
+            }
             data = window.all.tool.rmEmpty(data)
             this.getContent()
             let { url, method } = this.$api.email_send
@@ -275,6 +281,17 @@ export default {
                     // this.initForm()
                 }
             })
+        },
+        addContact(name) {
+            if (!name) return
+            if (!this.receivers) {
+                this.receivers = name
+            } else {
+                let receiversArray = this.receivers.split(',')
+                if (receiversArray.indexOf(name) === -1) {
+                    this.receivers += ',' + name
+                }
+            }
         },
         sendAtTime() {
             this.is_timing = 1
@@ -319,8 +336,10 @@ export default {
         },
         // 是否发给总控
         isHeadChange(val) {
-            console.log('val: ', val)
             this.recipient_show = !val
+            // if(val) {
+            //     this.receivers = ''
+            // }
         },
         clearPic() {
             this.pic_data = ''
@@ -437,7 +456,7 @@ export default {
         // https://www.kancloud.cn/wangfupeng/wangeditor3/335782  上传到图片 文档
         this.editor.create()
         this.editor.txt.append()
-        let editorDom = this.$refs.editor ||{}
+        let editorDom = this.$refs.editor || {}
         let header = editorDom.children[0] || {}
         header.style.padding = '6px 0'
     }
@@ -548,6 +567,10 @@ export default {
     display: flex;
     justify-content: center;
     padding-bottom: 20px;
+}
+.contact-add:hover {
+    color: #4c8bfd;
+    cursor: pointer;
 }
 .dia-inner {
     position: relative;

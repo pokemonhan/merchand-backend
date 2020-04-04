@@ -169,9 +169,10 @@ export default {
         delConfirm() {
             // this.list
             console.log('this.list: ', this.list)
-            let delIdArray = (this.list||[]).map(item => {
-                return item.id
+            let delIdArray = (this.list||[]).filter(item => {
+                return item.checked
             })
+            delIdArray = delIdArray.map(item => item.email_id)
             if(delIdArray.length===0) {
                 this.$toast.info('未选中任何邮件')
                 return

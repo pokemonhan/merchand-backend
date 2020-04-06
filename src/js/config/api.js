@@ -413,7 +413,7 @@ export default {
     // 已发邮件
     email_sent: {
         url: '/merchant-api/email/send-index',
-        method: 'get'
+        method: 'post'
     },
     // 短信推送
 

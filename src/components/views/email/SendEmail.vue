@@ -27,7 +27,6 @@
                         <span class="ml50">
                             <Checkbox
                                 label="总控邮件"
-                                :disabled="Boolean(receivers)"
                                 v-model="is_head"
                                 @update="isHeadChange"
                             />
@@ -58,6 +57,10 @@
                         <li>
                             <span>我在吃火锅55</span>
                             <span>18967200</span>
+                            <i
+                                class="iconfont icontianjia contact-add"
+                                @click="addContact('18967200')"
+                            ></i>
                         </li>
                         <li>
                             <span>我在吃火锅</span>
@@ -75,7 +78,7 @@
                         <span>联系人</span>
                     </div>
                     <div v-show="contact_show" class="cont">
-                        <Tree style="width:420px;" :list="tree_list" @change="treeUpd" />
+                        <Tree style="width:420px;" class="ml20" :list="tree_list" @change="treeUpd" />
                     </div>
                 </div>
             </div>
@@ -115,7 +118,7 @@
 <script>
 import Tree from '../../commonComponents/Tree.vue'
 import E from 'wangeditor'
-import {mapState} from 'vuex'
+import { mapState } from 'vuex'
 export default {
     name: 'SendEmail',
     components: {
@@ -172,6 +175,7 @@ export default {
             let opt = this.arrToOpt(date_arr)
             return opt
         },
+
         date_show() {
             let date =
                 this.send_time[0] +
@@ -190,13 +194,28 @@ export default {
         }
     },
     methods: {
+        initTime() {
+            let date = window.all.tool.formatDate(
+                new Date().valueOf() + 1 * 60 * 1000,
+                true
+            )
+            this.send_time = [
+                date.slice(0, 4),
+                date.slice(5, 7),
+                date.slice(8, 10),
+                date.slice(11, 13),
+                date.slice(14, 16),
+                date.slice(17, 18)
+            ]
+        },
         initForm() {
             this.receivers = ''
             this.is_head = ''
             this.title = ''
             this.editorContent = ''
             this.is_timing = 0
-            this.send_time = ['2020', '01', '01', '00', '00', '00']
+            // this.send_time = ['2020', '01', '01', '00', '00', '00']
+            // this.initTime()
             this.editor.txt.clear()
         },
         checkForm() {
@@ -220,7 +239,10 @@ export default {
         },
         sendEmail() {
             if (!this.checkForm()) return
-            let formatData = function(str = '') {
+            let formateReceiver = function(str = '') {
+                if (!str) {
+                    return ''
+                }
                 str = str.replace('，', ',')
                 str = str.replace(/\s+/g, '')
                 return JSON.stringify(str.split(','))
@@ -237,14 +259,17 @@ export default {
                 this.send_time[4] +
                 ':00'
             let data = {
-                receivers: formatData(this.receivers),
+                receivers: formateReceiver(this.receivers),
                 is_head: this.is_head ? 1 : 0,
                 title: this.title,
                 content: this.editorContent,
                 is_timing: this.is_timing,
                 send_time: this.is_timing ? date : ''
             }
-
+            // 如果发给总控,个人发送列表为空.
+            if(this.is_head) {
+                data.receivers = ''
+            }
             data = window.all.tool.rmEmpty(data)
             this.getContent()
             let { url, method } = this.$api.email_send
@@ -257,9 +282,21 @@ export default {
                 }
             })
         },
+        addContact(name) {
+            if (!name) return
+            if (!this.receivers) {
+                this.receivers = name
+            } else {
+                let receiversArray = this.receivers.split(',')
+                if (receiversArray.indexOf(name) === -1) {
+                    this.receivers += ',' + name
+                }
+            }
+        },
         sendAtTime() {
             this.is_timing = 1
             this.dia_show = true
+            this.initTime()
         },
         recipientUpd(val) {
             this.contact_show = !val
@@ -299,8 +336,10 @@ export default {
         },
         // 是否发给总控
         isHeadChange(val) {
-            console.log('val: ', val)
             this.recipient_show = !val
+            // if(val) {
+            //     this.receivers = ''
+            // }
         },
         clearPic() {
             this.pic_data = ''
@@ -417,6 +456,9 @@ export default {
         // https://www.kancloud.cn/wangfupeng/wangeditor3/335782  上传到图片 文档
         this.editor.create()
         this.editor.txt.append()
+        let editorDom = this.$refs.editor || {}
+        let header = editorDom.children[0] || {}
+        header.style.padding = '6px 0'
     }
 }
 </script>
@@ -479,7 +521,7 @@ export default {
     width: 500px;
     margin-left: 20px;
     border-radius: 5px;
-    border: 1px solid #f2f2f2;
+    border: 1px solid #ccc;
     user-select: text;
 }
 /* 最近联系人 */
@@ -491,10 +533,13 @@ export default {
 .right .contact .head {
     padding: 12px 10px;
     font-size: 16px;
-    color: #4c8bfd;
+    /* color: #4c8bfd; */
     background: #f2f2f2;
+    border-bottom: 1px solid #ccc;
 }
-
+.right .contact .head {
+    border-top: 1px solid #ccc;
+}
 .recent-contact .head span:nth-child(2) {
     font-size: 14px;
     margin-left: 160px;
@@ -522,6 +567,10 @@ export default {
     display: flex;
     justify-content: center;
     padding-bottom: 20px;
+}
+.contact-add:hover {
+    color: #4c8bfd;
+    cursor: pointer;
 }
 .dia-inner {
     position: relative;

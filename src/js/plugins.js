@@ -105,11 +105,16 @@ export default {
                 }, opt.duration)
             }
         }
+        // window.prototype.$loading = function(bool) {
+        //     let LoadingConstructor = Vue.extend(Loading)
+        //     let tpl = new LoadingConstructor().$mount().$el
 
+        // }
         // // $loading 注册
         // const LoadingConstructor = Vue.extend(Loading)
         // // 生成一个该子类的实例
         // const instance = new LoadingConstructor()
+        // window.$l = instance
         // // 将这个实例挂载在我创建的div上
         // // 并将此div加入全局挂载点内部
         // instance.$mount(document.createElement('div'))

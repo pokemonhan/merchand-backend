@@ -52,7 +52,7 @@
                     <td>{{row.order_no}}</td>
                     <td>{{row.user && row.user.mobile}}</td>
                     <td>{{row.user && row.user.guid}}</td>
-                    <td>{{row.account_type}}</td>
+                    <td>{{withdraw_obj[row.account_type].text}}</td>
                     <td>{{row.amount}}</td>
                     <td>{{row.audit_fee}}</td>
                     <td>{{row.amount_received}}</td>
@@ -109,7 +109,7 @@
         </div>
         <Dialog :show.sync="dia_show" :title="dia_title" >
             <div class="dia-inner" >
-                <PaymentOrderReviewDetail  :row="curr_row"  />
+                <PaymentOrderReviewDetail  :row="curr_row" @getList="getList"  :dia_show="dia_show" />
             </div>
         </Dialog>
     </div>
@@ -143,15 +143,15 @@ export default {
                 { label: "微信", value: "3"}
             ],
             color_obj: {
-                "0": {
+                "-2": {
                     color: "red",
                     text: "已拒绝"
                 },
-                "1": {
+                "2": {
                     color: "green",
                     text: "已通过"
                 },
-                "2": {
+                "1": {
                     color: "purple",
                     text: "待审核"
                 }
@@ -171,12 +171,12 @@ export default {
             ],
             payment_status_opt: [
                 { label: "全部", value: "" },
-                { label: "待出款", value: "0" },
-                { label: "已出款", value: "1"},
-                { label: "已拒绝", value: "2" },
+                { label: "待出款", value: "1" },
+                { label: "已出款", value: "2"},
+                { label: "已拒绝", value: "-2" },
             ],
             status_obj: {
-                '0': {
+                '-2': {
                     color: 'red',
                     button: 'btns-red',
                     text: '已拒绝'
@@ -191,6 +191,11 @@ export default {
                     button: 'btns-yellow',
                     text: '待审核'
                 }
+            },
+            withdraw_obj:{
+                '1':{text:'银行'},
+                '2':{text:'支付宝'},
+                '3':{text:'微信'}
             },
             // table
             headers: [
@@ -257,9 +262,10 @@ export default {
             this.pageNo=1;
             this.getList();
         },
-        statusShow(){
+        statusShow(row){
             this.dia_show=true
             this.dia_title='出款订单审核'
+            this.curr_row=row;
         },
         getList(){
             let operation_at=''
@@ -289,7 +295,6 @@ export default {
             })
         },
     },
-
     mounted() {
         this.getList();
     }

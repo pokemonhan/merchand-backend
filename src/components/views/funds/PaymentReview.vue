@@ -68,7 +68,7 @@
                     <td>{{row.amount_received}}</td>
                     <td>{{row.handing_fee}}</td>
                     <td>{{row.created_at}}</td>
-                    <td>{{row.reviewer_id}}</td>
+                    <td>{{row.reviewer &&row.reviewer.name }}</td>
                     <td>{{row.review_at}}</td>
                     <td :class="status_obj[row.status].color"  >{{status_obj[row.status].text}}</td>
                     <td>
@@ -137,7 +137,7 @@
         </div>
         <Dialog :show.sync="dia_show" :title="dia_title">
             <div class="dia-inner">
-                <PaymentReviewStatus v-if="dia_status==='statusShow'" :row="curr_row" />
+                <PaymentReviewStatus v-if="dia_status==='statusShow'" :row="curr_row"  @getList="getList" :dia_show="dia_show"/>
                 <PaymentReviewDetail v-if="dia_status==='checkAudit'" :userid="userid" />
             </div>
         </Dialog>
@@ -191,7 +191,7 @@ export default {
                 { label: "否", value: "0" }
             ],
             status_obj: {
-                "0": {
+                "-1": {
                     color: "red",
                     button: "btns-red",
                     text: "已拒绝"
@@ -201,7 +201,7 @@ export default {
                     button: "btns-green",
                     text: "已通过"
                 },
-                "2": {
+                "0": {
                     color: "purple",
                     button: "btns-yellow",
                     text: "审核中"
@@ -217,7 +217,7 @@ export default {
                 "出款手续费",
                 "申请时间",
                 "审核人",
-                "操作时间",
+                "审核时间",
                 "状态",
                 "操作"
             ],
@@ -322,7 +322,7 @@ export default {
             let { method, url } = this.$api.founds_interface_list;
             this.$http({ method: method, url: url, params: params }).then(
                 res => {
-                    // console.log('出款数据',res);
+                    console.log('出款数据',res);
                     if (res && res.code == "200") {
                         this.list = res.data.data;
                         this.total = res.data.total;

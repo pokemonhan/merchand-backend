@@ -19,7 +19,7 @@
                      </tr>
                      <tr>
                          <td>上级账号:</td>
-                         <td>{{row.parent && row.parent.mobile}}</td>
+                         <td>{{row.user && row.user.parent && row.user.parent.mobile}}</td>
                          <td>出款金额</td>
                          <td>{{row.amount}}</td>
                          <td>稽核扣款</td>
@@ -43,7 +43,7 @@
                      </tr>
                      <tr>
                          <td>状态:</td>
-                         <td :class="status_obj[0].color">{{status_obj[0].text}}</td>
+                         <td :class="status_obj[row.status].color">{{status_obj[row.status].text}}</td>
                          <td>申请时间</td>
                          <td>{{row.created_at}}</td>
                          <td>审核时间</td>
@@ -51,7 +51,7 @@
                      </tr>
                      <tr>
                          <td>审核人:</td>
-                         <td colspan="5">{{row.reviewer_id}}</td>
+                         <td colspan="5">{{row.reviewer && row.reviewer.name}}</td>
                          
                      </tr>
                      <tr>
@@ -61,7 +61,7 @@
                          </td>
                      </tr>
                  </table>
-                 <div class="all-btn" v-if="row.status==2" >
+                 <div class="all-btn" v-if="row.status==0" >
                      <button class="btn-plain-large mr50" @click="reject" >拒绝</button>
                      <button class="btn-blue-large" @click="pass" >通过</button>
                  </div>
@@ -73,6 +73,7 @@
 export default {
     props:{
         row: Object,
+        dia_show:Boolean,
     },
     data() {
         return {
@@ -84,7 +85,7 @@ export default {
                 '1': 'iconfont icongou green'
             },
             status_obj: {
-                '0': {
+                '-1': {
                     color: 'red',
                     button: 'btns-red',
                     text: '已拒绝'
@@ -94,7 +95,7 @@ export default {
                     button: 'btns-green',
                     text: '已通过'
                 },
-                '2': {
+                '0': {
                     color: 'purple',
                     button: 'btns-yellow',
                     text: '审核中'
@@ -104,28 +105,32 @@ export default {
     },
     methods: {
         reject(){
-            let data={
+            let datas={
                 id:this.row.id,
                 remark: String(this.table.remark),
             }
             console.log('审核拒绝请求数据',data)
+            let data=window.all.tool.rmEmpty(datas)
             let{method,url}=this.$api.founds_interface_examination_rejected;
             this.$http({method,url,data}).then(res=>{
                 console.log('拒绝审核返回数据',res)
                 if(res && res.code=='200'){
-                    this.$emit("dia_show",false)
+                    this.dia_show=false;
+                    this.$emit("getList")
                 }
             })
         },
         pass(){
-            let data={
+            let datas={
                 id:this.row.id,
                 remark:String(this.table.remark),
             }
+            let data=window.all.tool.rmEmpty(datas)
             let {method,url}=this.$api.founds_interface_examination_passed;
             this.$http({method,url,data}).then(res=>{
                 if(res && res.code=='200'){
-
+                    this.dia_show=false;
+                    this.$emit("getList")
                 }
             })
         },

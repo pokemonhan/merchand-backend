@@ -50,14 +50,14 @@
                                 </td>
                                 <td>{{lv1.title}}</td>
                                 <td>
-                                    <Switchbox :value="lv1.status"></Switchbox>
+                                    <Switchbox :value="lv1.status" @update="switchStatus($event,lv1)" ></Switchbox>
                                 </td>
                                 <td>最后更新时间：{{lv1.updated_at}}</td>
                                 <td>添加时间：{{lv1.created_at}}</td>
                                 <td>
                                     <button class="btn" @click="addSon(lv1)">添加</button>
                                     <button class="btn" @click="editFather(lv1)" >编辑</button>
-                                    <button class="btn-red" >删除</button>
+                                    <button class="btn-red" @click="delFather(lv1)" >删除</button>
                                 </td>
                             </tr>
                         </table>
@@ -87,7 +87,7 @@
                                         />
                                     </td>
                                     <td>
-                                        <Switchbox :value="lv2.status"></Switchbox>
+                                        <Switchbox :value="lv2.status"  @update="switchSonStatus($event,lv2)"></Switchbox>
                                     </td>
                                     <td>{{lv2.author}}</td>
                                     <td>{{lv2.created_at}}</td>
@@ -95,7 +95,7 @@
                                     <td>{{lv2.updated_at}}</td>
                                     <td>
                                         <button class="btn-edit" @click="editSon(lv2)" >编辑</button>
-                                        <button class="btn-del" >删除</button>
+                                        <button class="btn-del" @click="delSon(lv2)" >删除</button>
                                     </td>
                                 </tr>
                             </table>
@@ -134,6 +134,13 @@
                 </div>
             </div>
         </Dialog>
+        <Modal
+            :show.sync="mod_show"
+            title="删除"
+            content="是否删除该线下支付"
+            @cancel="mod_show=false"
+            @confirm="modConf"
+        ></Modal>
     </div>
 </template>
 
@@ -169,9 +176,83 @@ export default {
             protocol: window.location.protocol,
             head_path:'',
             curr_row:{},
+            mod_show:false,
+            curr_list:{},
+            curr_son_list:{},
+            del_status:''
         };
     },
     methods: {
+        switchStatus(val,lv1){
+            let data={
+                id:lv1.id,
+                status:val ? 1 : 0
+            }
+            let {url,method}=this.$api.help_center_set;
+            this.$http({method,url,data}).then(res=>{
+                if(res && res.code=='200'){
+                    this.$toast.success(res && res.message);
+                    this.getList();
+                }
+            })
+        },
+        switchSonStatus(val,lv2){
+            let data={
+                id:lv2.id,
+                status:val ? 1 : 0
+            }
+            let {url,method}=this.$api.help_center_set;
+            this.$http({method,url,data}).then(res=>{
+                if(res && res.code=='200'){
+                    this.$toast.success(res && res.message);
+                    this.getList();
+                }
+            })
+        },
+        delFather(lv1){
+            this.mod_show=true;
+            this.curr_list=lv1;
+            this.del_status='father'
+        },
+        delSon(lv2){
+            this.mod_show=true;
+            this.curr_son_list=lv2;
+            this.del_status='son'
+        },
+        modConf(){
+            if(this.del_status=='father'){
+                this.fatherDelCfm()
+            }
+            if(this.del_status=='son'){
+                this.sonDelCfm()
+            }
+        },
+        fatherDelCfm(){
+            let data = {
+                id: this.curr_list.id
+            };
+            let { url, method } = this.$api.help_center_del;
+            this.$http({ method, url, data }).then(res => {
+                if (res && res.code == "200") {
+                    this.$toast.success(res && res.message);
+                    this.mod_show = false;
+                    this.getList();
+                }
+            });
+        },
+        sonDelCfm(){
+            let data = {
+                id: this.curr_son_list.id
+            };
+            let { url, method } = this.$api.help_center_del;
+            this.$http({ method, url, data }).then(res => {
+                if (res && res.code == "200") {
+                    this.$toast.success(res && res.message);
+                    this.mod_show = false;
+                    this.getList();
+                }
+            });
+        },
         clearForm(){
             this.form={
                 title: "",
@@ -215,7 +296,7 @@ export default {
                 pic: this.form.pic_path,
                 status: this.form.status ? "1" : "0"
             }
-            console.log('添加父级请求数据',datas)
+            // console.log('添加父级请求数据',datas)
             let data=window.all.tool.rmEmpty(datas)
             let { url, method } = this.$api.help_center_add;
             this.$http({ method, url, data }).then(res => {
@@ -235,7 +316,7 @@ export default {
                 pic: this.form.pic_path,
                 status: this.form.status ? 1 : 0
             }
-            console.log('请求数据',data)
+            // console.log('请求数据',data)
             let { url, method } = this.$api.help_center_add;
             this.$http({ method, url, data }).then(res => {
                 // console.log('返回数据',res)
@@ -276,6 +357,7 @@ export default {
             let datas={
                 id:this.curr_row.id,
                 pic:this.form.pic_path,
+                title:this.form.title,
                 status:this.form.status ? 1 : 0
             }
             let data = window.all.tool.rmEmpty(datas)
@@ -303,6 +385,7 @@ export default {
             let datas={
                 id:this.curr_row.id,
                 pic:this.form.pic_path,
+                title:this.form.title,
                 status:this.form.status ? 1 : 0
             }
             let data = window.all.tool.rmEmpty(datas)

@@ -9,14 +9,16 @@
                 <TabNav class="tab-nav"></TabNav>
                 <!-- <router-view class="router-view"/> -->
                 <transition name="fade-transform" mode="out-in">
-                    <router-view class="router-view" />
+                    <keep-alive :include="keepAliveInclude" :exclude="keepAliveExclude">
+                        <router-view v-if="isRouterAlive" class="router-view" />
+                    </keep-alive>
                 </transition>
             </div>
         </div>
         <div id="toast-box"></div>
         <div class="modal-mask" v-if="showMask"></div>
         <!-- <div id="message-box"></div> -->
-        <loading id="g-loading" show/>
+        <loading id="g-loading" show />
     </div>
 </template>
 
@@ -34,13 +36,24 @@ export default {
         Aside,
         TabNav
     },
+    provide() {
+        return {
+            reload: this.reload
+        }
+    },
     data() {
         return {
-            play: true
+            play: true,
+            isRouterAlive: true,
         }
     },
     computed: {
-        ...mapGetters(['showMask','loadingShow']),
+        ...mapGetters([
+            'showMask',
+            'loadingShow',
+            'keepAliveInclude',
+            'keepAliveExclude'
+        ]),
         loading() {
             return window.$loading
         }
@@ -60,6 +73,12 @@ export default {
                 play = false
                 // audio = null;
             })
+        },
+        reload() {
+            this.isRouterAlive = false
+            this.$nextTick(function(){
+                this.isRouterAlive = true
+            })
         }
     },
     mounted() {
@@ -73,14 +92,13 @@ export default {
 </script>
 
 <style scoped>
-
 .app-header {
     width: 100%;
 }
 .app-content {
     /* max-width: 1200px; */
     display: flex;
-     min-width: 1200px;
+    min-width: 1200px;
     max-width: 2220px;
     margin: 20px auto 0 auto;
     /* float: left; */
@@ -548,8 +566,8 @@ button:hover {
 .red {
     color: #f44;
 }
-.purple{
-    color: #9900FF;
+.purple {
+    color: #9900ff;
 }
 /* 背景色 */
 .bg-orange {
@@ -572,7 +590,6 @@ button:hover {
 }
 .w200 {
     width: 200px;
-    
 }
 .w250 {
     width: 250px;
@@ -617,30 +634,30 @@ button:hover {
 }
 .total-table ul {
     display: flex;
-    height:40px;
+    height: 40px;
     line-height: 40px;
     padding-left: 10px;
     font-weight: bold;
     color: #4c8bfd;
-    background:rgba(229,247,255,1);
+    background: rgba(229, 247, 255, 1);
 }
 .total-table ul > li {
     margin-right: 100px;
 }
-.g-form > li{
+.g-form > li {
     display: flex;
     align-items: center;
 }
-.g-form > li > span:first-child{
+.g-form > li > span:first-child {
     border: 1px solid #000;
 }
-.bold{
+.bold {
     font-weight: bold;
 }
 /* 重写element ui loading 样式 */
 .el-loading-parent--relative .el-loading-mask {
     position: fixed;
-    background-color: rgba(255,255,255,.9);
+    background-color: rgba(255, 255, 255, 0.9);
     margin: 0;
     top: 50%;
     left: 50%;
@@ -648,10 +665,9 @@ button:hover {
     width: 300px;
     margin-left: -150px;
     margin-top: -150px;
-    -webkit-transition: opacity .3s;
-    transition: opacity .3s;
+    -webkit-transition: opacity 0.3s;
+    transition: opacity 0.3s;
     z-index: 10003;
-
 }
 /* 文字超出省略 */
 .text-ellipsis {

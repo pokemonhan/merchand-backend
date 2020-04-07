@@ -105,7 +105,7 @@ export default {
             list: [],
             total: 0,
             pageNo: 1,
-            pageSize: 25,
+            pageSize: 3,
 
             curr_row: {},
             dia_show: false,

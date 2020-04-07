@@ -20,7 +20,7 @@
         <button class="btn-arrow" @click="scrollRight">
             <i class="iconfont iconyoufanyeyouhua"></i>
         </button>
-
+        <button class="btn-green refresh" @click="refresh">刷新</button>
         <div
             v-show="true"
             ref="tooltip"
@@ -42,6 +42,7 @@ export default {
     // components: {
     //     'context-menu': VueContextMenu
     // },
+    inject: ['reload'], // 注入， 来自app.js
     data() {
         return {
             // menu_list: [],
@@ -58,10 +59,31 @@ export default {
         }
     },
     computed: {
-        ...mapState(['tab_nav_list'])
+        ...mapState(['tab_nav_list', 'keepAliveExclude'])
     },
     methods: {
-        ...mapMutations(['updateTab_nav_list']),
+        ...mapMutations(['updateTab_nav_list', 'updateKeepAliveExclude']),
+        refresh() {
+            let path = this.$route.path
+            // 设置当前 路由不保持 keepalive
+            let curr_tab = this.tab_nav_list.find(
+                item => item.path === this.$route.path
+            )
+            // 原来的排除数组
+            let origenExclude = this.keepAliveExclude.slice()
+            
+            let temp_arr = origenExclude.slice()
+            temp_arr.push(curr_tab.name)
+            this.updateKeepAliveExclude(temp_arr)
+
+            // this.$router.replace('/page404') // 跳转到空页面,
+            setTimeout(() => {
+                // this.$router.replace({ path: path })
+                this.reload() // 刷新页面
+                // 再使其缓存
+                this.updateKeepAliveExclude(origenExclude)
+            }, 50)
+        },
         scrollLeft() {
             let ul = this.$refs.ul
             if (!ul) return
@@ -293,7 +315,11 @@ export default {
     opacity: 0.2;
     transition: all 0.2s;
 }
-
+.refresh {
+    height: 26px;
+    white-space: nowrap;
+    line-height: 12px;
+}
 .context-menu {
     position: fixed;
     z-index: 10;

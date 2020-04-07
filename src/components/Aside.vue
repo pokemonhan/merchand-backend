@@ -7,7 +7,7 @@
                     @click="expandMenu(lev1,lev1_index)"
                 >
                     <i :class="['iconfont '+lev1.icon, 'mr5']"></i>
-                    <span class="title-name">{{lev1.name}}</span>
+                    <span class="title-name">{{lev1.label}}</span>
                     <span v-if="lev1.children" class="iconfont iconup right"></span>
                 </span>
 
@@ -20,7 +20,7 @@
                             @click="expandMenu(lev2, lev1_index+'_'+lev2_index)"
                         >
                             <!-- <i :class="['iconfont', i.icon]"></i> -->
-                            <span>{{lev2.name}}</span>
+                            <span>{{lev2.label}}</span>
                             <span v-if="lev2.children" class="iconfont iconup right"></span>
                         </span>
 
@@ -32,7 +32,7 @@
                                     @click="expandMenu(lev3, lev3_index)"
                                 >
                                     <!-- <i :class="['iconfont', i.icon]"></i> -->
-                                    <span>{{lev3.name}}</span>
+                                    <span>{{lev3.labe}}</span>
                                     <span v-if="lev3.children" class="iconfont iconup right"></span>
                                 </span>
                             </li>
@@ -102,10 +102,12 @@ export default {
             // let list = []
             return Object.keys(obj).map((key, index) => {
                 let item = obj[key]
+                console.log('item: ', item);
 
                 let template = {
                     id: item.id,
                     label: item.label,
+                    icon: item.icon,
                     en_name: item.en_name,
                     path: item.route,
                     display: item.display,
@@ -133,17 +135,16 @@ export default {
             // return list
         },
         getMenuList() {
-            this.menu_list = window.all.tool.getLocal('menu')||window.all.menu_list
-            return
             if(!window.all.tool.getLocal('Authorization')){
                 return
             }
             if (window.all.tool.getLocal('menu')) {
-                this.menu_list = window.all.tool.getLocal('menu')||window.all.menu_list
+                this.menu_list = window.all.tool.getLocal('menu')
             } else {
                 let { method, url } = this.$api.current_admin_menu
 
                 this.$http({ method, url }).then(res => {
+                    console.log('res: ', res);
                     if (res && res.code === '200') {
                         let menu = this.objToArr(res.data)
                         this.menu_list = menu
@@ -174,6 +175,22 @@ export default {
                     }
                 })
             }
+            let data = {
+                // pageSize: this.form.id,
+                // page: this.form.
+            }
+            data = window.all.tool.rmEmpty(data)
+                                                   
+            let { url, method } = this.$api.current_admin_menu
+            this.$http({ method, url, data }).then(res => {
+                // console.log('列表👌👌👌👌: ', res)
+                if (res && res.code === '200') {
+                    this.$toast.success(res.message)
+                    //this.mod_show = false
+                    //this.dia_show = false
+                    this.getList()
+                }
+            })
             getPreChain(menu)
             this.chain = (chain_temp || '').split('-')
             // console.log('menu: ', menu)

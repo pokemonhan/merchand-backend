@@ -368,7 +368,6 @@ export default {
                 '2022',
                 '2023',
                 '2024',
-                '2024',
                 '2025'
             ]
             this.year_opt = this.arrToOpt(year_arr)

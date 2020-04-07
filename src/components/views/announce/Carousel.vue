@@ -123,6 +123,9 @@
                         </ul>
                     </div>
                 </li>
+                <li v-if="list.length<1" class="emptyPic" >
+                    <img src="../../../assets/image/empty.png">
+                </li>
             </ul>
             <!-- </div> -->
         </div>
@@ -355,6 +358,7 @@ export default {
     padding: 10px;
 }
 .car-cont {
+    
     display: flex;
     margin-top: 25px;
 }
@@ -362,11 +366,12 @@ export default {
     /* margin-top: 20px; */
     border-right: 1px solid #bfbfbf;
 }
+
 .form .w250 {
     width: 300px;
 }
 .form {
-    width: 370px;
+    width: 400px;
     /* border: 1px solid #000; */
 }
 .form > li {
@@ -391,7 +396,8 @@ export default {
     margin-left: 20px;
 }
 .right {
-    margin-left: 100px;
+    width: 100%;
+    margin-left: 4%;
 }
 .right > li {
     display: flex;
@@ -459,5 +465,12 @@ export default {
 .inf-right > ul > li {
     margin-top: 15px;
 }
+.emptyPic{
+    text-align: center;
 
+}
+.emptyPic img{
+    width: 350px;
+    height: 100%;
+}
 </style>

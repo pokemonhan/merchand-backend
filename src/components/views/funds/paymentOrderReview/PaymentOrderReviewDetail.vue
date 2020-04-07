@@ -84,7 +84,6 @@
 export default {
     props:{
         row: Object,
-        dia_show:Boolean,
     },
     data() {
         return {
@@ -133,7 +132,7 @@ export default {
             let{method,url}=this.$api.founds_paymentorder_examination_rejected;
             this.$http({method,url,data}).then(res=>{
                 if(res && res.code=='200'){
-                    this.dia_show=false
+                    this.$emit("closeDia")
                     this.$emit("getList")
                 }
             })
@@ -147,7 +146,7 @@ export default {
             let {method,url}=this.$api.founds_paymentorder_examination_passed;
             this.$http({method,url,data}).then(res=>{
                 if(res && res.code=='200'){
-                    this.dia_show=false
+                    this.$emit("closeDia")
                     this.$emit("getList")
                 }
             })

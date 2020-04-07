@@ -137,7 +137,7 @@
         </div>
         <Dialog :show.sync="dia_show" :title="dia_title">
             <div class="dia-inner">
-                <PaymentReviewStatus v-if="dia_status==='statusShow'" :row="curr_row"  @getList="getList" :dia_show="dia_show"/>
+                <PaymentReviewStatus v-if="dia_status==='statusShow'" :row="curr_row"  @getList="getList" @closeDia="closeDia"/>
                 <PaymentReviewDetail v-if="dia_status==='checkAudit'" :userid="userid" />
             </div>
         </Dialog>
@@ -329,6 +329,9 @@ export default {
                     }
                 }
             );
+        },
+        closeDia(){
+            this.dia_show=false
         }
     },
     mounted() {

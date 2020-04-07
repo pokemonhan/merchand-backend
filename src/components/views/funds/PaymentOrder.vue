@@ -109,7 +109,7 @@
         </div>
         <Dialog :show.sync="dia_show" :title="dia_title" >
             <div class="dia-inner" >
-                <PaymentOrderReviewDetail  :row="curr_row" @getList="getList"  :dia_show="dia_show" />
+                <PaymentOrderReviewDetail  :row="curr_row" @getList="getList"  @closeDia="closeDia" />
             </div>
         </Dialog>
     </div>
@@ -294,6 +294,9 @@ export default {
                 }
             })
         },
+        closeDia(){
+            this.dia_show=false
+        }
     },
     mounted() {
         this.getList();

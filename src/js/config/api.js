@@ -634,7 +634,6 @@ export default {
     },
 
 
-    /*=========================== 推广配置 ===========================--*/
 
 
     /*=========================== 设置管理 ===========================--*/
@@ -695,7 +694,26 @@ export default {
         url:'/merchant-api/config/edit',
         method:'post'
     },
-
+    //推广配置 - 列表
+    promotion_configuration_list:{
+        url:'/merchant-api/promotion-pic/index',
+        method:'post'
+    },
+    //推广配置 - 添加
+    promotion_configuration_add:{
+        url:'/merchant-api/promotion-pic/do-add',
+        method:'post'
+    },
+    //推广配置 - 编辑
+    promotion_configuration_edit:{
+        url:'/merchant-api/promotion-pic/edit',
+        method:'post'
+    },
+    //推广配置 - 删除
+    promotion_configuration_del:{
+        url:'/merchant-api/promotion-pic/delete',
+        method:'post'
+    },
     // ------- 客服设置 ----------------
     // 客服设置-列表
     customer_service_list: {

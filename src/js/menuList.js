@@ -101,21 +101,13 @@ let menuList = [
                     ]
                 },
                 {
-                    name: "推广配置",
-                    // path: '/promote',
-                    icon: "iconnet",
-                    children: [
-                        { name: "推广配置", path: "/promote/promoteconfig" },
-                        { name: "推广图片配置", path: "/promote/picconfig" },
-                    ]
-                },
-                {
                     name: "设置管理",
                     // path: '/set',
                     icon: "iconspeaker-5",
                     children: [
                         { name: "管理员分组", path: "/set/adminsort" },
                         { name: "全域设置", path: "/set/allareaset" },
+                        { name: "推广图片配置", path: "/set/picconfig" },
                         { name: "客服设置", path: "/set/serviceset" },
                         { name: "帮助设置", path: "/set/helpset" },
                         { name: "操作记录", path: "/set/operatrecord" },

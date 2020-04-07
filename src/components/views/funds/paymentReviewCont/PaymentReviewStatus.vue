@@ -73,7 +73,6 @@
 export default {
     props:{
         row: Object,
-        dia_show:Boolean,
     },
     data() {
         return {
@@ -115,7 +114,7 @@ export default {
             this.$http({method,url,data}).then(res=>{
                 console.log('拒绝审核返回数据',res)
                 if(res && res.code=='200'){
-                    this.dia_show=false;
+                    this.$emit("closeDia")
                     this.$emit("getList")
                 }
             })
@@ -129,7 +128,7 @@ export default {
             let {method,url}=this.$api.founds_interface_examination_passed;
             this.$http({method,url,data}).then(res=>{
                 if(res && res.code=='200'){
-                    this.dia_show=false;
+                    this.$emit("closeDia")
                     this.$emit("getList")
                 }
             })

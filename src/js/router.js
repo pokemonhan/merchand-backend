@@ -68,14 +68,15 @@ const OnlinePay = () => import('../components/views/pay/OnlinePay.vue')         
 const ExportBank = () => import('../components/views/pay/ExportBank.vue')                      // 出款银行管理
 /* 金流管理 */
 
-/* 推广配置 */
-const PromoteConfig = () => import('../components/views/promote/PromoteConfig.vue')             // 推广配置
-const PicConfig = () => import('../components/views/promote/PicConfig.vue')                     // 推广图片配置
-/* 推广配置 */
+// /* 推广配置 */
+// const PromoteConfig = () => import('../components/views/promote/PromoteConfig.vue')             // 推广配置
+// const PicConfig = () => import('../components/views/promote/PicConfig.vue')                     // 推广图片配置
+// /* 推广配置 */
 
 /* 设置管理 */
 const AdminSort = () => import('../components/views/set/AdminSort.vue')                        // 管理员分组
 const AllAreaSet = () => import('../components/views/set/AllAreaSet.vue')                      // 全域设置
+const PicConfig = () => import('../components/views/set/PicConfig.vue')                     // 推广图片配置
 const ServiceSet = () => import('../components/views/set/ServiceSet.vue')                      // 客服设置
 const HelpSet = () => import('../components/views/set/HelpSet.vue')                            // 帮助设置
 const OperatRecord = () => import('../components/views/set/OperatRecord.vue')                  // 帮助设置
@@ -307,15 +308,6 @@ const router = new Router({
             component: ExportBank
         },
 
-        /* -----------------------------------  推广配置 ------------------------------------*/
-        {
-            path: '/promote/promoteconfig',
-            component: PromoteConfig
-        },
-        {
-            path: '/promote/picconfig',
-            component: PicConfig
-        },
         /* -----------------------------------  设置管理 ------------------------------------*/
         {
             path: '/set/adminsort',
@@ -324,6 +316,10 @@ const router = new Router({
         {
             path: '/set/allareaset',
             component: AllAreaSet
+        },
+        {
+            path: '/set/picconfig',
+            component: PicConfig
         },
         {
             path: '/set/serviceset',

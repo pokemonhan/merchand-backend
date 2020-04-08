@@ -42,14 +42,13 @@
         <div class="table mt20">
             <Table :headers="headers" :column="list">
                 <template v-slot:item="{row}">
-                    <td>{{row.type && row.type.name}}</td>
-                    <td>{{row.name}}</td>
+                    <td>{{row.type}}</td>
                     <td>{{row.username}}</td>
                     <td>{{row.account}}</td>
-                    <td>{{row.min}}~{{row.max}}</td>
-                    <td>{{row.author && row.author.name}}</td>
+                    <td>{{row.min_amount}}~{{row.max_amount}}</td>
+                    <td>{{row.author}}</td>
                     <td>{{row.created_at}}</td>
-                    <td>{{row.last_editor && row.last_editor.name}}</td>
+                    <td>{{row.last_editor}}</td>
                     <td>{{row.updated_at}}</td>
                     <td>
                         <Switchbox
@@ -90,10 +89,10 @@
                             <span>所属银行:</span>
                             <Select style="width:250px;" v-model="form.bank" :options="bank_opt"></Select>
                         </li>
-                        <li>
+                        <!-- <li>
                             <span>名称:</span>
                             <Input class="w250" v-model="form.accountName" />
-                        </li>
+                        </li> -->
                         <li>
                             <span>二维码:</span>
                             <Input v-model="form.qrcode" style="width:126px" />
@@ -198,7 +197,6 @@ export default {
             type_opt: [],
             headers: [
                 "入款类型",
-                "收款名称",
                 "收款姓名",
                 "入款账号",
                 "支付限额",
@@ -221,7 +219,7 @@ export default {
             form: {
                 inconm: 1,
                 bank: "",
-                accountName: "",
+                // accountName: "",
                 qrcode: "",
                 accountNumber: "",
                 name: "",
@@ -335,7 +333,7 @@ export default {
             this.form = {
                 inconm: "",
                 bank: "",
-                accountName: "",
+                // accountName: "",
                 qrcode: "",
                 accountNumber: "",
                 name: "",
@@ -348,6 +346,7 @@ export default {
                 description: "",
             };
             this.showTag=[];
+            this.tag_show=false
         },
         add() {
             this.dia_status = "add";
@@ -378,7 +377,7 @@ export default {
             let datas = {
                 type_id: this.form.inconm,
                 bank_id: bank_id,
-                name: this.form.accountName,
+                // name: this.form.accountName,
                 qrcode: this.form.qrcode,
                 account: this.form.accountNumber,
                 username: this.form.name,
@@ -423,18 +422,18 @@ export default {
             this.dia_show = true;
             this.addClearAll();
             this.form = {
-                inconm: row.type_id,
+                inconm: row.type,
                 bank: row.bank_id,
-                accountName: row.username,
+                // accountName: row.username,
                 qrcode: row.qrcode,
                 accountNumber: row.account,
                 name: row.username,
                 bank_card: row.account,
                 bank_address: row.branch,
-                minimum_deposit: row.min,
-                maxmum_deposit: row.max,
-                deposit_fee: row.fee,
-                formtag:[],
+                minimum_deposit: row.min_amount,
+                maxmum_deposit: row.max_amount,
+                deposit_fee: row.fee_cost,
+                formtag:row.tags[1].id,
                 description: row.remark
             };
         },

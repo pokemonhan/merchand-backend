@@ -694,22 +694,22 @@ export default {
         url:'/merchant-api/config/edit',
         method:'post'
     },
-    //推广配置 - 列表
+    //推广图片配置 - 列表
     promotion_configuration_list:{
         url:'/merchant-api/promotion-pic/index',
         method:'post'
     },
-    //推广配置 - 添加
+    //推广图片配置 - 添加
     promotion_configuration_add:{
         url:'/merchant-api/promotion-pic/do-add',
         method:'post'
     },
-    //推广配置 - 编辑
+    //推广图片配置 - 编辑
     promotion_configuration_edit:{
         url:'/merchant-api/promotion-pic/edit',
         method:'post'
     },
-    //推广配置 - 删除
+    //推广图片配置 - 删除
     promotion_configuration_del:{
         url:'/merchant-api/promotion-pic/delete',
         method:'post'

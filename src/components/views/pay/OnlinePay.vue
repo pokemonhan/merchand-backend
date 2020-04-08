@@ -44,12 +44,12 @@
                     <td>{{row.channel && row.channel.name}}</td>
                     <td>{{row.merchant_code}}</td>
                     <td>{{row.merchant_no}}</td>
-                    <td>{{row.encrypt_mode}}</td>
+                    <td>{{row.encrypt_mode==1?'密钥模式':'证书模式'}}</td>
                     <td>{{row.frontend_name}}</td>
-                    <td>{{row.min}}~{{row.max}}</td>
-                    <td>{{row.author && row.author.name}}</td>
+                    <td>{{row.min_amount}}~{{row.max_amount}}</td>
+                    <td>{{row.author}}</td>
                     <td>{{row.created_at}}</td>
-                    <td>{{row.last_editor && row.last_editor.name}}</td>
+                    <td>{{row.last_editor}}</td>
                     <td>{{row.updated_at}}</td>
                     <td>
                         <Switchbox
@@ -84,7 +84,6 @@
                             v-model="form.pay_method"
                             :options="pay_method_opt"
                         ></Select>
-                        {{form.pay_method}}
                     </li>
                     <li>
                         <span>前端名称:</span>
@@ -401,7 +400,7 @@ export default {
             this.dia_show = true;
             this.addClearAll();
             this.form={
-                pay_method: row.channel_id,
+                pay_method: row.channel.id,
                 front_name:row.frontend_name,
                 merchant_num:row.merchant_code,
                 merchant_code:row.merchant_no,

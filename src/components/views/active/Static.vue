@@ -63,7 +63,7 @@
                     </li>
                     <li>
                         <span>活动图片:</span>
-                        <Input style="width:100px;" v-model="form.pic_path" />
+                        <Input style="width:172px;" v-model="form.pic_path" />
                         <Upload
                             style="width:125px;"
                             title="上传图片"

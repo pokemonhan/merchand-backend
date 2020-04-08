@@ -16,7 +16,8 @@
                     <Select v-model="filter.status" :options="status_opt"></Select>
                 </li>
                 <li>
-                    <button class="btn-blue" >查询</button>
+                    <button class="btn-blue" @click="getList">查询</button>
+                    <button class="btn-blue" @click="add">添加</button>
                 </li>
             </ul>
         </div>
@@ -27,20 +28,21 @@
                     <td>
                         <img
                             class="table-img"
-                            src="../../../assets/image/announce/sysAnnounce.png"
-                            alt
+                            :src="head_path+row.pic"
+                            style="max-width:100px;min-height:100px"
                         />
                     </td>
-                    <td>{{row.a1}}</td>
+                    <td>{{row.author}}</td>
+                    <td>{{row.created_at}}</td>
                     <td>
-                        <Switchbox v-model="row.status" />
+                        <Switchbox v-model="row.status" :value="row.status" @update="switchStatus($event,row)" />
                     </td>
 
-                    <td>{{row.a1}}</td>
-                    <td>{{row.a2}}</td>
-                    <td>{{row.a2}}</td>
+                    <td>{{row.last_editor}}</td>
+                    <td>{{row.updated_at}}</td>
                     <td>
-                        <button class="btn-blue" @click="changePic(row)">更换图片</button>
+                        <button class="btn-blue" @click="edit(row)">编辑</button>
+                        <button class="btn-red" @click="del(row)" >删除</button>
                     </td>
                 </template>
             </Table>
@@ -54,23 +56,19 @@
                 @updateSize="updateSize"
             />
         </div>
-        <Dialog :show.sync="dia_show" title="更换图?片">
+        <Dialog :show.sync="dia_show" :title="dia_title">
             <div class="dia-inner">
                 <div>
                     <ul class="form">
                         <li>
-                            <span>更换图片:</span>
-                            <img
-                                class="dia-img ml20"
-                                src="../../../assets/image/announce/sysAnnounce.png"
-                                alt="图片刷新"
-                            />
+                            <span v-if="dia_status=='edit'" >更换图片:</span>
+                            <span v-if="dia_status=='add'">选择图片:</span>
+                            <Input class="ml20" v-model="form.pic" />
                             <Upload
-                                class="ml20"
                                 title="选择图片"
                                 accept="image/png, image/jpg, image/gif"
                                 v-model="form.pic"
-                                @change="upPicChange"
+                                @change="upPicChange($event)"
                             />
                         </li>
                         <li class="mt20">
@@ -80,11 +78,18 @@
                     </ul>
                     <div class="conf-btns">
                         <button class="btn-plain-large" @click="dia_show=false">取消</button>
-                        <button class="btn-blue-large ml20">确认</button>
+                        <button class="btn-blue-large ml20" @click="diaCfm" >确认</button>
                     </div>
                 </div>
             </div>
         </Dialog>
+        <Modal
+            :show.sync="mod_show"
+            title="删除"
+            content="是否删除该活动"
+            @cancel="mod_show=false"
+            @confirm="modConf"
+        ></Modal>
     </div>
 </template>
 <script>
@@ -92,13 +97,13 @@ export default {
     data() {
         return {
             btns_opt: [
-                { label: 'H5推广管理', value: 'h5' },
-                { label: 'PC推广管理', value: 'pc' },
-                { label: 'APP推广管理', value: 'app' }
+                { label: 'PC推广管理', value: '1' },
+                { label: 'H5推广管理', value: '2' },
+                { label: 'APP推广管理', value: '3' }
             ],
-            curr_btn: 'h5',
+            curr_btn: '1',
             filter: {
-                acc: ''
+                status: ''
             },
             status_opt: [
                 { label: '全部', value: '' },
@@ -115,22 +120,7 @@ export default {
                 '最后跟新时间',
                 '操作'
             ],
-            list: [
-                {
-                    a1: '64646466',
-                    a2: 'sdfsdfdsf',
-                    a3: '充支好礼',
-                    a4: '1',
-                    a5: '2019-02-02 21:30'
-                },
-                {
-                    a1: '64646466',
-                    a2: 'sdfsdfdsf',
-                    a3: '充支好礼',
-                    a4: '1',
-                    a5: '2019-02-02 21:30'
-                }
-            ],
+            list: [],
             total: 0,
             pageNo: 1,
             pageSize: 25,
@@ -141,21 +131,157 @@ export default {
             form: {
                 pic: '',
                 status: true
-            }
+            },
+            dia_title:'',
+            dia_status:'',
+            head_path:'',
+            protocol: window.location.protocol,
+            curr_row:{},
+            mod_show:false,
         }
     },
     methods: {
+        switchStatus(val,row){
+            let datas={
+                id:row.id,
+                pic:row.pic,
+                status:val ? 1 : 0
+            }
+            let data=window.all.tool.rmEmpty(datas)
+            let{method,url}=this.$api.promotion_configuration_edit
+            this.$http({method,url,data}).then(res=>{
+                if(res && res.code=='200'){
+                    this.$toast.success(res.message)
+                    this.getList()
+                }
+            })
+        },
+        clearForm(){
+            this.form={
+                pic: '',
+                status: true
+            }
+        },
+        diaCfm(){
+            if(this.dia_status=='add'){
+                this.addCfm()
+            }
+            if(this.dia_status=='edit'){
+                this.editCfm()
+            }
+        },
+        add(){
+            this.dia_show=true
+            this.clearForm()
+            this.dia_status='add'
+            this.dia_title='添加'
+        },
+        addCfm(){
+            let data={
+                device:this.curr_btn,
+                pic:this.form.pic,
+                status:this.form.status,
+            }
+            console.log('请求数据',data)
+            let {method,url}=this.$api.promotion_configuration_add
+            this.$http({method,url,data}).then(res=>{
+                console.log('添加返回数据',res)
+                if(res && res.code=='200'){
+                    this.dia_show=false
+                    this.$toast.success(res.message)
+                    this.getList()
+                }
+            })
+        },
         plantSelect(item) {
             this.curr_btn = item.value
+            this.getList()
         },
-        changePic() {
+        edit(row) {
             this.dia_show = true
+            this.clearForm()
+            this.dia_status='edit'
+            this.dia_title='编辑'
+            this.form={
+                id:row.id,
+                pic:row.pic,
+                status:row.status,
+            }
         },
-        upPicChange() {},
+        editCfm(){
+            let data={
+                id:this.form.id,
+                pic:this.form.pic,
+                status:this.form.status ? 1 : 0
+            }
+            console.log('请求数据',data)
+            let {method,url}=this.$api.promotion_configuration_edit
+            this.$http({method,url,data}).then(res=>{
+                if(res && res.code=='200'){
+                    this.dia_show=false;
+                    this.$toast.success(res.message)
+                    this.getList();
+                }
+            })
+        },
+        del(row){
+            this.mod_show=true
+            this.curr_row=row
+        },
+        modConf(){
+            let data={
+                id:this.curr_row.id
+            }
+            // console.log('删除请求数据',data)
+            let {method,url}=this.$api.promotion_configuration_del;
+            this.$http({method,url,data}).then(res=>{
+                if(res && res.code=='200'){
+                    this.mod_show=false
+                    this.$toast.success(res.message)
+                    this.getList()
+                }
+            })
+        },
+        upPicChange(e) {
+            let pic = e.target.files[0];
+            let basket = "set/picconfig/uploads";
+            let formList = new FormData();
+            formList.append("file", pic, pic.name);
+            formList.append("basket", basket);
+            let { url, method } = this.$api.update_picture_database;
+            let data = formList;
+            let headers = { "Content-Type": "multipart/form-data" };
+            this.$http({ method, url, data, headers }).then(res => {
+                // console.log(res)
+                if (res && res.code == "200") {
+                    this.form.pic = res.data.path;
+                }
+            });
+        },
         updateNo(val) {},
-        updateSize(val) {}
+        updateSize(val) {},
+        getList(){
+            let datas={
+                device:this.curr_btn,
+                status:this.filter.status,
+                pageNo:this.pageNo,
+                pageSize:this.pageSize,
+            }
+            let data=window.all.tool.rmEmpty(datas);
+            let {method,url}=this.$api.promotion_configuration_list
+            this.$http({method,url,data}).then(res=>{
+                console.log('res',res)
+                if(res && res.code=='200'){
+                    this.list=res.data.data
+                    this.total=res.data.total
+                }
+            })
+        },
     },
-    mounted() {}
+    mounted() {
+        this.head_path=this.protocol+'//pic.397017.com/'
+        this.getList();
+    }
 }
 </script>
 

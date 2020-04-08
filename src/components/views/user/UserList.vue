@@ -86,14 +86,8 @@
                 @updateSize="updateSize"
             />
         </div>
-        <Dialog
-            class="modal-mask"
-            :show.sync="show_detail"
-            title="详情"
-            v-for="(item,index) in detail_list"
-            :key="index"
-        >
-            <div class="dia-inner">
+        <Dialog class="modal-mask" :show.sync="show_detail" title="详情" >
+            <div class="dia-inner" >
                 <div class="mod-body">
                     <!-- 个人资料信息-图片 -->
                     <div class="row1 pic">
@@ -252,31 +246,31 @@
                             <ul>
                                 <li>
                                     <span>最后登录设备:</span>
-                                    <span>{{item.device}}</span>
+                                    <span>{{login_device_obj[detail_list.other_info && detail_list.other_info.device || ''].text}}</span>
                                 </li>
                                 <li>
                                     <span>最后登录IP:</span>
-                                    <span>{{item.last_login_ip}}</span>
+                                    <span>{{detail_list.other_info && detail_list.other_info.last_login_ip}}</span>
                                 </li>
                                 <li>
                                     <span>最后登录地址:</span>
-                                    <span>{{item.last_login_address}}</span>
+                                    <span>{{detail_list.other_info && detail_list.other_info.last_login_address}}</span>
                                 </li>
                             </ul>
                         </div>
                         <div class="list">
                             <ul>
                                 <li>
-                                    <span>最后登录时间:</span>
-                                    <span>{{item.last_login_time}}</span>
+                                    <span>最后登录:</span>
+                                    <span>{{detail_list.other_info && detail_list.other_info.last_login_time}}</span>
                                 </li>
                                 <li>
                                     <span>距今登录:</span>
-                                    <span>{{item.last_seen_time}}</span>
+                                    <span>{{detail_list.other_info && detail_list.other_info.last_seen_time}}</span>
                                 </li>
                                 <li>
                                     <span>注册IP:</span>
-                                    <span>{{item.register_ip}}</span>
+                                    <span>{{detail_list.other_info && detail_list.other_info.register_ip}}</span>
                                 </li>
                             </ul>
                         </div>
@@ -284,15 +278,15 @@
                             <ul>
                                 <li>
                                     <span>注册时间:</span>
-                                    <span>{{item.created_at}}</span>
+                                    <span>{{detail_list.other_info && detail_list.other_info.created_at}}</span>
                                 </li>
                                 <li>
                                     <span>登录次数:</span>
-                                    <span>{{item.number_of_logins}}</span>
+                                    <span>{{detail_list.other_info && detail_list.other_info.number_of_logins}}</span>
                                 </li>
                                 <li>
                                     <span>推广渠道:</span>
-                                    <span>{{'IOS'}}</span>
+                                    <span>{{detail_list.other_info && detail_list.other_info.register_type}}</span>
                                 </li>
                             </ul>
                         </div>
@@ -494,6 +488,12 @@ export default {
             detail_list: {},
             Ali_show:false,
             unlock_show:false,
+            login_device_obj:{
+                '':{text:''},
+                '1':{text:'PC'},
+                '2':{text:'H5'},
+                '3':{text:'APP'}
+            }
         };
     },
     methods: {
@@ -554,7 +554,7 @@ export default {
             console.log("请求数据", data);
             let { method, url } = this.$api.user_list_detail;
             this.$http({ method, url, data }).then(res => {
-                // console.log("返回详情数据", res);
+                console.log("返回详情数据", res);
                 if (res && res.code == "200") {
                     this.detail_list = res.data;
                 }

@@ -54,6 +54,7 @@
 import GameReportDetail from './GameReoprtDetail'
 
 export default {
+    name: 'GameReport',
     components:{
         GameReportDetail
     },

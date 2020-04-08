@@ -330,6 +330,7 @@
 </template>
 <script>
 export default {
+    name: 'AllAreaSet',
     data() {
         return {
             set_btns: [],

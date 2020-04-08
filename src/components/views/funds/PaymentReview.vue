@@ -1,6 +1,6 @@
 <template>
     <div class="container">
-        <!-- 入款审核 -->
+        <!-- 出款审核 -->
 
         <QuickQuery :date="quick_query" @update="qqUpd" />
         <!-- <Date v-model="filter.dates[0]" @update="timeUpdate()" /> -->
@@ -150,6 +150,7 @@ import PaymentReviewStatus from "./paymentReviewCont/PaymentReviewStatus";
 import PaymentReviewDetail from "./paymentReviewCont/PaymentReviewDetail.vue";
 
 export default {
+    name: 'PaymentReview',
     components: {
         PaymentReviewStatus,
         PaymentReviewDetail

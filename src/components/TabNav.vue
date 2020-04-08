@@ -1,5 +1,5 @@
 <template>
-    <div class="tab-nav" v-if="$route.path!=='/home' && tab_nav_list.length>0" ref="tabNav">
+    <div class="tab-nav" v-if="$route.path!=='/home/home' && tab_nav_list.length>0" ref="tabNav">
         <button class="btn-arrow" @click="scrollLeft">
             <i class="iconfont iconzuofanyezuohua"></i>
         </button>
@@ -361,29 +361,6 @@ export default {
     background-color: #4c84fd;
 }
 
-/* tooltip */
-
-/* 
-.tooltip .tooltiptext {
-    visibility: visible;
-    position: absolute;
-    top: 114px;
-    z-index: 1;
-
-    padding: 0 10px;
-    text-align: center;
-    border-radius: 4px;
-    color: rgb(93, 131, 168);
-
-    background-color: #fff;
-    box-shadow: 1px 1px 4px 0 rgb(163, 163, 163);
-    transition: all .3s;
-}
-
-.tooltip:hover .tooltiptext {
-    visibility: visible;
-} */
-
 /* .tooltip  */
 .tooltip {
     position: fixed;
@@ -395,9 +372,9 @@ export default {
     box-shadow: 1px 1px 0 rgb(150, 150, 150);
 }
 .tooltip-active {
-    position: fixed;
+    position: absolute;
     z-index: 10;
-    top: 50px;
+    top: 60px;
     padding: 2px 4px;
 
     font-size: 12px;

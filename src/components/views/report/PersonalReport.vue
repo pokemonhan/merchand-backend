@@ -53,6 +53,7 @@
 
 <script>
 export default {
+    name: 'PersonalReport',
     data() {
         return {
             filter:{

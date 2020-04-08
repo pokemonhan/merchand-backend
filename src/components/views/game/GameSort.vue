@@ -66,6 +66,7 @@
     </div>
 </template> <script>
 export default {
+    name: 'GameSort',
     data() {
         return {
             buttons: [

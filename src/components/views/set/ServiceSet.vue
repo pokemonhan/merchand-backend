@@ -23,6 +23,7 @@
 import QQwechatService from './ServiceSetDir/QQwechatService'
 import OnlineService from './ServiceSetDir/OnlineService'
 export default {
+    name: 'ServiceSet',
     components: {
         QQwechatService,
         OnlineService

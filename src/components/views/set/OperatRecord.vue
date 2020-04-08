@@ -8,9 +8,9 @@
                 </li>
                 <li>
                     <span>日期选择</span>
-                    <Date v-model="filter.dates[0]" />
-                    <span style="margin:0 5px;">~</span>
-                    <Date v-model="filter.dates[1]" />
+                    <Date type="daterange" v-model="filter.dates" />
+                    <!-- <span style="margin:0 5px;">~</span>
+                    <Date v-model="filter.dates[1]" /> -->
                 </li>
                 <li>
                     <button class="btn-blue">查询</button>
@@ -65,6 +65,7 @@
 
 <script>
 export default {
+    name: 'OperatRecord',
     // props: {
     //     id: {
     //         require: true,

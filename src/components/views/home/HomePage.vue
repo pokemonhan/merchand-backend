@@ -250,7 +250,8 @@
 
 <script>
 export default {
-    name: 'HomePage',
+    // name: 'HomePage',
+    name: "Home",
     data() {
         return {
             is_show_login: true,

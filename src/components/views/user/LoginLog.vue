@@ -54,6 +54,7 @@
 
 <script>
 export default {
+    name: "LoginLog",
     data() {
         return {
             // game_plant: "2",

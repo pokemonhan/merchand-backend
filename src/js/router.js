@@ -53,8 +53,8 @@ const UserWash = () => import('../components/views/report/UserWash.vue')        
 const GameH5 = () => import('../components/views/game/GameH5.vue')                                     // H5游戏管理
 const GamePC = () => import('../components/views/game/GamePC.vue')                                     // PC游戏管理
 const GameApp = () => import('../components/views/game/GameApp.vue')                                   // APP 游戏管理
-const PlantForm = () => import('../components/views/game/PlantForm.vue')                       // 平台管理
-const Sort = () => import('../components/views/game/Sort.vue')                                 // 分类管理
+const PlatForm = () => import('../components/views/game/PlatForm.vue')                       // 平台管理
+const GameSort = () => import('../components/views/game/GameSort.vue')                                 // 分类管理
 /* 游戏管理 */
 
 /* 活动管理 */
@@ -98,7 +98,6 @@ const router = new Router({
     routes: [
         {
             path: '/',
-            // component: 
             redirect:'/login'
         },
 
@@ -108,7 +107,7 @@ const router = new Router({
         },
 
         {
-            path: '/home',
+            path: '/home/home',
             component: HomePage
         },
 
@@ -276,12 +275,12 @@ const router = new Router({
             component: GameApp
         },
         {
-            path: '/game/plantform',
-            component: PlantForm
+            path: '/game/platform',
+            component: PlatForm
         },
         {
             path: '/game/gamesort',
-            component: Sort
+            component: GameSort
         },
 
         /* -----------------------------------  活动管理 ------------------------------------*/

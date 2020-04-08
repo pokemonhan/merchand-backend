@@ -123,6 +123,7 @@
 
 <script>
 export default {
+    name: "WashSetting",
     data() {
         return {
             games: ["刺激棋牌", "经典棋牌", "电子游艺", "趣味竞猜"],

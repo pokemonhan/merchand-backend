@@ -48,6 +48,7 @@
 </template>
 <script>
 export default {
+    name: 'ExportBank',
     data() {
         return {
             filter: {

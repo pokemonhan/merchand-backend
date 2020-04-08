@@ -124,6 +124,7 @@
 
 <script>
 export default {
+    name: "BlackListManage",
     data() {
         return {
             quick_query: [],

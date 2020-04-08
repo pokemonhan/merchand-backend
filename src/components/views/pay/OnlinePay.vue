@@ -219,6 +219,7 @@
 </template>
 <script>
 export default {
+    name: 'OnlinePay',
     data() {
         return {
             filter: {

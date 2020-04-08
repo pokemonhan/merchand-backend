@@ -23,6 +23,7 @@
 import HotGame from './H5GameTypeDetail/HotGame.vue'
 import TypeGame from './H5GameTypeDetail/TypeGame.vue'
 export default {
+    name: 'GameH5',
     components: {
         HotGame,
         TypeGame

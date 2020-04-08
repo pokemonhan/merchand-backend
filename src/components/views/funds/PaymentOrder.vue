@@ -119,6 +119,7 @@
 import PaymentOrderReviewDetail from './paymentOrderReview/PaymentOrderReviewDetail'
 
 export default {
+    name: 'PaymentOrder',
     components:{
         PaymentOrderReviewDetail,
     },

@@ -1,5 +1,5 @@
 <template>
-    <div class="tab-nav" v-if="$route.path!=='/home' && tab_nav_list.length>0" ref="tabNav">
+    <div class="tab-nav" v-if="$route.path!=='/home/home' && tab_nav_list.length>0" ref="tabNav">
         <button class="btn-arrow" @click="scrollLeft">
             <i class="iconfont iconzuofanyezuohua"></i>
         </button>
@@ -20,7 +20,7 @@
         <button class="btn-arrow" @click="scrollRight">
             <i class="iconfont iconyoufanyeyouhua"></i>
         </button>
-
+        <button class="btn-green refresh" @click="refresh">刷新</button>
         <div
             v-show="true"
             ref="tooltip"
@@ -42,6 +42,7 @@ export default {
     // components: {
     //     'context-menu': VueContextMenu
     // },
+    inject: ['reload'], // 注入， 来自app.js
     data() {
         return {
             // menu_list: [],
@@ -58,10 +59,31 @@ export default {
         }
     },
     computed: {
-        ...mapState(['tab_nav_list'])
+        ...mapState(['tab_nav_list', 'keepAliveExclude'])
     },
     methods: {
-        ...mapMutations(['updateTab_nav_list']),
+        ...mapMutations(['updateTab_nav_list', 'updateKeepAliveExclude']),
+        refresh() {
+            let path = this.$route.path
+            // 设置当前 路由不保持 keepalive
+            let curr_tab = this.tab_nav_list.find(
+                item => item.path === this.$route.path
+            )
+            // 原来的排除数组
+            let origenExclude = this.keepAliveExclude.slice()
+            
+            let temp_arr = origenExclude.slice()
+            temp_arr.push(curr_tab.name)
+            this.updateKeepAliveExclude(temp_arr)
+
+            // this.$router.replace('/page404') // 跳转到空页面,
+            setTimeout(() => {
+                // this.$router.replace({ path: path })
+                this.reload() // 刷新页面
+                // 再使其缓存
+                this.updateKeepAliveExclude(origenExclude)
+            }, 50)
+        },
         scrollLeft() {
             let ul = this.$refs.ul
             if (!ul) return
@@ -293,7 +315,11 @@ export default {
     opacity: 0.2;
     transition: all 0.2s;
 }
-
+.refresh {
+    height: 26px;
+    white-space: nowrap;
+    line-height: 12px;
+}
 .context-menu {
     position: fixed;
     z-index: 10;
@@ -335,29 +361,6 @@ export default {
     background-color: #4c84fd;
 }
 
-/* tooltip */
-
-/* 
-.tooltip .tooltiptext {
-    visibility: visible;
-    position: absolute;
-    top: 114px;
-    z-index: 1;
-
-    padding: 0 10px;
-    text-align: center;
-    border-radius: 4px;
-    color: rgb(93, 131, 168);
-
-    background-color: #fff;
-    box-shadow: 1px 1px 4px 0 rgb(163, 163, 163);
-    transition: all .3s;
-}
-
-.tooltip:hover .tooltiptext {
-    visibility: visible;
-} */
-
 /* .tooltip  */
 .tooltip {
     position: fixed;
@@ -369,9 +372,9 @@ export default {
     box-shadow: 1px 1px 0 rgb(150, 150, 150);
 }
 .tooltip-active {
-    position: fixed;
+    position: absolute;
     z-index: 10;
-    top: 50px;
+    top: 60px;
     padding: 2px 4px;
 
     font-size: 12px;

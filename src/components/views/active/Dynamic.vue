@@ -103,6 +103,7 @@
 <script>
 import Detail from "./dynamicDetail/DynamicDetail.vue";
 export default {
+    name: 'Dynamic',
     components: {
         Detail: Detail
     },

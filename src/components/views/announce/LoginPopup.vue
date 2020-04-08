@@ -132,7 +132,8 @@
 
 <script>
 export default {
-    props: {},
+    // props: {},
+    name: 'LoginPopup',
     data() {
         return {
             buttons: [

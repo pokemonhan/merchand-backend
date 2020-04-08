@@ -95,6 +95,7 @@
     </div>
 </template> <script>
 export default {
+    name: 'Static',
     data() {
         return {
             buttons: [

@@ -94,6 +94,7 @@
 </template>
 <script>
 export default {
+    name: 'PicConfig',
     data() {
         return {
             btns_opt: [

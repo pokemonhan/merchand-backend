@@ -103,6 +103,7 @@
 
 <script>
 export default {
+    name: "TabManage",
     data() {
         return {
             user_acc: "",
@@ -322,6 +323,7 @@ export default {
 .form > li {
     display: flex;
     /* justify-content: center; */
+    align-items: center;
     margin-top: 20px;
 }
 .form > li > span:first-child {

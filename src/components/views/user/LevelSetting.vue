@@ -147,6 +147,7 @@
 
 <script>
 export default {
+    name: "LevelSetting",
     data() {
         return {
             game_plant: '2',

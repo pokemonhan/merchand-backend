@@ -186,6 +186,7 @@
 
 <script>
 export default {
+    name: 'SystemAnnounce',
     data() {
         return {
             filter: {

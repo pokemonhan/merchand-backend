@@ -23,6 +23,7 @@
 import HotGame from './PCGameTypeDetail/HotGame.vue'
 import TypeGame from './PCGameTypeDetail/TypeGame.vue'
 export default {
+    name: 'GamePC',
     components: {
         HotGame,
         TypeGame

@@ -1,8 +1,8 @@
 <template>
     <div class="container">
         <QuickQuery :date="quick_query" @update="qqUpd" />
-        <div class="filter" >
-            <ul  class="left">
+        <div class="filter">
+            <ul class="left">
                 <li>
                     <span>会员账号</span>
                     <Input class="w90" v-model="filter.account" />
@@ -13,7 +13,12 @@
                 </li>
                 <li>
                     <span>日期</span>
-                    <Date type="datetimerange" style="width:300px;" v-model="filter.dates" @update="timeUpdate()" />
+                    <Date
+                        type="datetimerange"
+                        style="width:300px;"
+                        v-model="filter.dates"
+                        @update="timeUpdate()"
+                    />
                 </li>
                 <li>
                     <span>游戏平台</span>
@@ -43,8 +48,15 @@
                 </template>
             </Table>
         </div>
-        <Page class="table-page" :total="total" :pageNo.sync="pageNo" :pageSize.sync="pageSize" @update="updateNo" @updateSize="updateSize" />
-        <Dialog :show.sync="show_detail" title="明细" >
+        <Page
+            class="table-page"
+            :total="total"
+            :pageNo.sync="pageNo"
+            :pageSize.sync="pageSize"
+            @update="updateNo"
+            @updateSize="updateSize"
+        />
+        <Dialog :show.sync="show_detail" title="明细">
             <UserWashDetail></UserWashDetail>
         </Dialog>
     </div>
@@ -54,24 +66,25 @@
 <script>
 import UserWashDetail from './UserWashDetail'
 export default {
-  components:{
-      UserWashDetail,
-  },
+    name: 'UserWash',
+    components: {
+        UserWashDetail
+    },
     data() {
         return {
-            quick_query:[],
-            filter:{
-                accpunt:'',
-                userId:'',
-                dates:[],
-                game_platform:'',
-                game_platform_opt:[
-                    {label:'全部',value:''},
-                    {label:'开元棋盘',value:'1'},
-                    {label:'龙城棋盘',value:'2'},
+            quick_query: [],
+            filter: {
+                accpunt: '',
+                userId: '',
+                dates: [],
+                game_platform: '',
+                game_platform_opt: [
+                    { label: '全部', value: '' },
+                    { label: '开元棋盘', value: '1' },
+                    { label: '龙城棋盘', value: '2' }
                 ]
             },
-            headers:[
+            headers: [
                 '日期',
                 '会员账号',
                 '游戏平台',
@@ -80,54 +93,57 @@ export default {
                 '历史累计洗码',
                 '当前有效投注',
                 '洗码彩金',
-                '查看洗码明细',
+                '查看洗码明细'
             ],
-            list:[
-                {
-
-                },
-            ],
-            show_detail:false,
-            total:100,
-            pageNo:1,
-            pageSize:25,
-        };
+            list: [{}],
+            show_detail: false,
+            total: 100,
+            pageNo: 1,
+            pageSize: 25
+        }
     },
     methods: {
-        qqUpd(dates){
-            let arr = [dates[0] + " 00:00:00", dates[1] + " 00:00:00"];
-            this.$set(this.filter, "dates", arr);
+        qqUpd(dates) {
+            let arr = [dates[0] + ' 00:00:00', dates[1] + ' 00:00:00']
+            this.$set(this.filter, 'dates', arr)
         },
-        timeUpdate(){
-            this.quick_query=this.filter.dates
+        timeUpdate() {
+            this.quick_query = this.filter.dates
         },
-        clearFilter(){
-            this.filter={
-                dates:[]
+        clearFilter() {
+            this.filter = {
+                dates: []
             }
         },
-        updateNo(val){},
-        updateSize(val){},
-        exportExcel(){
-            import('../../../js/config/Export2Excel').then(excel=>{
-                const tHeader=this.headers
-                const data=this.list.map(item=>{
-                    return[item.a1,item.a2,item.a3,item.a4,item.a5,item.a6,item.a7,item.a8,]
+        updateNo(val) {},
+        updateSize(val) {},
+        exportExcel() {
+            import('../../../js/config/Export2Excel').then(excel => {
+                const tHeader = this.headers
+                const data = this.list.map(item => {
+                    return [
+                        item.a1,
+                        item.a2,
+                        item.a3,
+                        item.a4,
+                        item.a5,
+                        item.a6,
+                        item.a7,
+                        item.a8
+                    ]
                 })
                 excel.export_json_to_excel({
-                    header:tHeader,
+                    header: tHeader,
                     data,
-                    filename:excel,
-                    autoWidth:true,
-                    bookType:'xlsx'
+                    filename: excel,
+                    autoWidth: true,
+                    bookType: 'xlsx'
                 })
             })
-        },
+        }
     },
-    mounted() {
-
-    },
-};
+    mounted() {}
+}
 </script>
 
 <style scoped>
@@ -142,7 +158,7 @@ export default {
 .filter .left li {
     margin-top: 10px;
 }
-    .table{
-        margin-top:20px;
-    }
+.table {
+    margin-top: 20px;
+}
 </style>

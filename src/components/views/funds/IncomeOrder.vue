@@ -25,6 +25,7 @@
 import Offline from './incomeOrderCont/offline.vue'
 import Online from './incomeOrderCont/online.vue'
 export default {
+    name: "IncomeOrder",
     components: {
         Offline: Offline,
         Online: Online

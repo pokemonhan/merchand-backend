@@ -146,6 +146,7 @@
 
 <script>
 export default {
+    name: 'HelpSet',
     data() {
         return {
             curr_btn: 1,

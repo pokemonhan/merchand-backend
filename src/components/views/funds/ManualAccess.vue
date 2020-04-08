@@ -24,6 +24,7 @@
 import Deposit from './manualAccessCont/Deposit'
 import Withhold from './manualAccessCont/Withhold'
 export default {
+    name: 'ManualAccess',
     components: {
         Deposit,
         Withhold

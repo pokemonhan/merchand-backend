@@ -1,26 +1,26 @@
 <template>
     <div class="contain" ref="contain">
         <ul class="level-1">
-            <li v-for="(lev1, lev1_index) in menu_list" :key="lev1_index">
+            <li v-for="(lev1, lev1_index) in (menu_list||[]).filter(item=>item.display)" :key="lev1_index">
                 <span
                     :class="['title',$route.path == lev1.path&&(!lev1.children)?'active-menu':'',curr_ul(lev1)?'lev1-active':'']"
                     @click="expandMenu(lev1,lev1_index)"
                 >
                     <i :class="['iconfont '+lev1.icon, 'mr5']"></i>
-                    <span class="title-name">{{lev1.name}}</span>
+                    <span class="title-name">{{lev1.label}}</span>
                     <span v-if="lev1.children" class="iconfont iconup right"></span>
                 </span>
 
                 <!-- 二级菜单 -->
                 <ul :ref="lev1_index" :class="['level2',curr_ul(lev1)?'active-ul':'']">
-                    <li v-for="(lev2, lev2_index) in lev1.children" :key="lev2_index">
+                    <li v-for="(lev2, lev2_index) in (lev1.children||[]).filter(item=>item.display)" :key="lev2_index">
                         <!-- 标题 -->
                         <span
                             :class="['title',$route.path == lev2.path?'active-menu':'']"
                             @click="expandMenu(lev2, lev1_index+'_'+lev2_index)"
                         >
                             <!-- <i :class="['iconfont', i.icon]"></i> -->
-                            <span>{{lev2.name}}</span>
+                            <span>{{lev2.label}}</span>
                             <span v-if="lev2.children" class="iconfont iconup right"></span>
                         </span>
 
@@ -32,7 +32,7 @@
                                     @click="expandMenu(lev3, lev3_index)"
                                 >
                                     <!-- <i :class="['iconfont', i.icon]"></i> -->
-                                    <span>{{lev3.name}}</span>
+                                    <span>{{lev3.labe}}</span>
                                     <span v-if="lev3.children" class="iconfont iconup right"></span>
                                 </span>
                             </li>
@@ -47,6 +47,7 @@
 <script>
 import { mapState, mapMutations, mapGetters } from 'vuex'
 import Slide from '../js/config/slide'
+import menuList from '../js/menuList'
 export default {
     data() {
         return {
@@ -78,14 +79,27 @@ export default {
             // console.log("这个index", index);
             if (!item.children) {
                 this.$router.push(item.path)
-
+                let curr_path = item.path
+                let curr_item = {}
+                
+                menuList.forEach(item => {
+                    if(item.children) {
+                        item.children.forEach(child => {
+                            if(child.path === curr_path) {
+                                curr_item = child
+                            }
+                        })
+                    }
+                })
                 let list = this.tab_nav_list
                 // 导航条没有该页面 就添加进去
+                // console.log('curr_item: ', curr_item);
                 let isHadTab = list.find(tab => tab.path === item.path)
                 if (!isHadTab) {
                     list.push({
-                        label: item.name,
-                        path: item.path
+                        label: curr_item.label,
+                        name: curr_item.name,
+                        path: curr_item.path
                     })
                     this.updateTab_nav_list(list)
                 }
@@ -102,10 +116,12 @@ export default {
             // let list = []
             return Object.keys(obj).map((key, index) => {
                 let item = obj[key]
+                // console.log('item: ', item);
 
                 let template = {
                     id: item.id,
                     label: item.label,
+                    icon: item.icon,
                     en_name: item.en_name,
                     path: item.route,
                     display: item.display,
@@ -114,13 +130,6 @@ export default {
                     level: item.level
                 }
 
-                // TODO: 后期改为以其他关键字作为匹配. 设置icon
-                let curr_menu = window.all.menu_list.filter(
-                    menu => menu.label === item.label
-                )
-                if (curr_menu.length) {
-                    template.icon = curr_menu[0].icon
-                }
                 if (item.child) {
                     template.children = this.objToArr(
                         item.child,
@@ -133,17 +142,16 @@ export default {
             // return list
         },
         getMenuList() {
-            this.menu_list = window.all.tool.getLocal('menu')||window.all.menu_list
-            return
             if(!window.all.tool.getLocal('Authorization')){
                 return
             }
             if (window.all.tool.getLocal('menu')) {
-                this.menu_list = window.all.tool.getLocal('menu')||window.all.menu_list
+                this.menu_list = window.all.tool.getLocal('menu')
             } else {
                 let { method, url } = this.$api.current_admin_menu
 
                 this.$http({ method, url }).then(res => {
+                    console.log('res: ', res);
                     if (res && res.code === '200') {
                         let menu = this.objToArr(res.data)
                         this.menu_list = menu
@@ -174,6 +182,22 @@ export default {
                     }
                 })
             }
+            let data = {
+                // pageSize: this.form.id,
+                // page: this.form.
+            }
+            data = window.all.tool.rmEmpty(data)
+                                                   
+            let { url, method } = this.$api.current_admin_menu
+            this.$http({ method, url, data }).then(res => {
+                // console.log('列表👌👌👌👌: ', res)
+                if (res && res.code === '200') {
+                    this.$toast.success(res.message)
+                    //this.mod_show = false
+                    //this.dia_show = false
+                    this.getList()
+                }
+            })
             getPreChain(menu)
             this.chain = (chain_temp || '').split('-')
             // console.log('menu: ', menu)

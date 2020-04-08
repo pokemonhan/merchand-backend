@@ -77,6 +77,7 @@
     </div>
 </template> <script>
 export default {
+    name: 'PlatForm',
     data() {
         return {
             buttons: [

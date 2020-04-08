@@ -415,6 +415,7 @@
 
 <script>
 export default {
+    name: "UserList",
     data() {
         return {
             filter: {

@@ -42,7 +42,7 @@
 
 
 export default {
-  
+    name: 'CompanyReport',
     data() {
         return {
             quick_query:[],

@@ -219,6 +219,7 @@
 <script>
 import SmsPushDetail from './SmsPushDetail'
 export default {
+    name: 'SmsPush',
     components: {
         SmsPushDetail: SmsPushDetail
     },

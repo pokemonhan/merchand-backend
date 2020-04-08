@@ -183,7 +183,7 @@
 
 <script>
 export default {
-    components: {},
+    name: 'OfflinePay',
     data() {
         return {
             filter: {

@@ -52,6 +52,7 @@
 <script>
 import ActiveReportDetail from './ActiveReportDetail'
 export default {
+    name: 'ActiveReport',
     components:{
         ActiveReportDetail
     },

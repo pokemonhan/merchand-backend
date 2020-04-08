@@ -23,6 +23,7 @@
 import HotGame from './AppGameTypeDetail/HotGame.vue'
 import TypeGame from './AppGameTypeDetail/TypeGame.vue'
 export default {
+    name: 'GameApp',
     components: {
         HotGame,
         TypeGame

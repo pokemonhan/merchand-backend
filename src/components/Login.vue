@@ -116,7 +116,7 @@ export default {
                         window.all.tool.setLocal('name', res.data.name)
                         window.all.tool.setLocal('email', res.data.email)
                         this.$toast.success('登陆成功')
-                        this.$router.push('/home')
+                        this.$router.push('/home/home')
                     }
                 })
             }

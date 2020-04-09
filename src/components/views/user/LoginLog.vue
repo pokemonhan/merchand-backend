@@ -108,10 +108,9 @@ export default {
                 pageSize:this.pageSize
 
             };
-            console.log("请求数据", para);
-            let params = window.all.tool.rmEmpty(para);
+            let data = window.all.tool.rmEmpty(para);
             let { method, url } = this.$api.user_login_log_list;
-            this.$http({ method: method, url: url, params: params }).then(
+            this.$http({ method: method, url: url, data }).then(
                 res => {
                     console.log("res", res);
                     if (res && res.code == "200") {

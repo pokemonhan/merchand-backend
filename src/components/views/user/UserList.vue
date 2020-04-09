@@ -627,9 +627,9 @@ export default {
                 pageSize: this.pageSize
             };
             // console.log("请求数据", para);
-            let params = window.all.tool.rmEmpty(para);
+            let data = window.all.tool.rmEmpty(para);
             let { method, url } = this.$api.user_list;
-            this.$http({ method, url, params }).then(res => {
+            this.$http({ method, url, data }).then(res => {
                 console.log("返回数据", res);
                 if (res && res.code === "200") {
                     this.list = res.data.data;

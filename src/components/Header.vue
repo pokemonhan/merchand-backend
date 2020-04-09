@@ -238,7 +238,7 @@ export default {
                 url: this.$api.logout.url
                 // data: params
             }).then(res => {
-                if (res.code === '200') {
+                if (res && res.code === '200') {
                     self.$toast('登出成功')
                 }
             });

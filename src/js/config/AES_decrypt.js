@@ -18,6 +18,7 @@ var privateKey = "-----BEGIN PRIVATE KEY-----MIICdgIBADANBgkqhkiG9w0BAQEFAASCAmA
 
 function AES_decrypt(data) {
     // console.log('后端数据: ', data);
+    if(!data.data) return data
     let cryptData = data.data
     let cryptDataArr = cryptData.split("hDdoAPaXI3S")
 

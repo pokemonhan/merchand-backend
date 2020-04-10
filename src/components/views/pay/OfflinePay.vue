@@ -300,7 +300,7 @@ export default {
             this.form.formtag[item.value] = false;
             this.showTag.splice(index, 1);
         },
-        tagChange() {
+        tagChange(item) {
             let show_arr = [];
             for (let key in this.form.formtag) {
                 let item = this.form.formtag[key];
@@ -367,21 +367,19 @@ export default {
                 bank_id=''
             }
             let datas = {
-                type_id: this.form.inconm,
-                bank_id: bank_id,
+                type_id: String(this.form.inconm),
+                bank_id:String(bank_id),
                 qrcode: this.form.qrcode,
                 account: this.form.accountNumber,
                 username: this.form.name,
                 account: this.form.bank_card,
                 branch: this.form.bank_address,
-                min: this.form.minimum_deposit,
-                max: this.form.maxmum_deposit,
+                min_amount: this.form.minimum_deposit,
+                max_amount: this.form.maxmum_deposit,
                 fee: this.form.deposit_fee,
-                tags: JSON.stringify(
-                    this.showTag.map(item => {
+                tags:this.showTag.map(item => {
                         return String(item.value);
-                    })
-                ),
+                }),
                 reamrk: this.form.description
             };
             let data=window.all.tool.rmEmpty(datas);
@@ -414,12 +412,17 @@ export default {
             this.dia_show = true;
             this.addClearAll();
             let tagsId=row.tags
-            let tagsGroup=[]
-            for(var i=0;i<tagsId.length;i++){
-                tagsGroup.push(JSON.stringify(tagsId[i].id))
-
+            console.log('tagsId',tagsId)
+            let tagGroup=tagsId.map(item=>{
+                return item.id
+            })
+            console.log('tagGroup',tagGroup)
+            for(var i=0;i<tagGroup.length;i++){
+                this.form.formtag[tagGroup[i]]=true
             }
+            console.log('this.form.formtag',this.form.formtag[1])
             this.form = {
+                id:row.id,
                 inconm: row.type && row.type.id,
                 bank: row.bank && row.bank.id,
                 qrcode: row.qrcode,
@@ -430,23 +433,26 @@ export default {
                 minimum_deposit:String(row.min_amount),
                 maxmum_deposit:String(row.max_amount),
                 deposit_fee:String(row.fee_cost),
-                formtag:tagsGroup,
+                formtag:[],
                 description: row.remark
             };
-            this.tagChange();
+            // this.tagChange();
         },
         editCfm(){
+            let tagId=this.form.formtag;
+            
             let datas={
+                id:this.form.id,
                 type_id:this.form.inconm,
                 bank_id:this.form.bank,
                 qrcode:this.form.qrcode,
                 username:this.form.name,
                 account:this.form.bank_card,
                 branch:this.form.bank_address,
-                min:this.form.minimum_deposit,
-                max:this.form.maxmum_deposit,
+                min_amount:this.form.minimum_deposit,
+                max_amount:this.form.maxmum_deposit,
                 fee:this.form.deposit_fee,
-                tags:this.form.formtag,
+                tags:tagId,
                 reamrk:this.form.description
             }
             let data=window.all.tool.rmEmpty(datas)

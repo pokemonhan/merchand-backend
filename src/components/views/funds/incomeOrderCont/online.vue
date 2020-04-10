@@ -434,7 +434,7 @@ export default {
                     this.filter.dates[1]
                 ]);
             }
-            let para = {
+            let datas = {
                 is_online: "1",
                 mobile: this.filter.account,
                 guid: this.filter.acc_id,
@@ -451,9 +451,9 @@ export default {
                 pageSize: this.pageSize
             };
             // console.log("para: ", para);
-            let params = window.all.tool.rmEmpty(para);
+            let data = window.all.tool.rmEmpty(datas);
             let { method, url } = this.$api.founds_incomeorder_list;
-            this.$http({ method: method, url: url, params: params }).then(
+            this.$http({ method: method, url: url, data:data }).then(
                 res => {
                     // console.log("列表返回数据",res)
                     if (res && res.code == "200") {

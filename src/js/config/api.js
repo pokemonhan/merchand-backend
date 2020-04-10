@@ -182,7 +182,7 @@ export default {
     // ----入款订单 - 列表
     founds_incomeorder_list:{
         url:'/merchant-api/recharge-order/index',
-        method:'get'
+        method:'post'
     },
 
     // ----入款订单 - 获取支付方式

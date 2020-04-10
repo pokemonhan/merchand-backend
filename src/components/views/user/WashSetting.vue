@@ -168,6 +168,7 @@ export default {
             row_id:{},
         };
     },
+    
     methods: {
         getLevList() {
             let { method, url } = this.$api.grade_list;

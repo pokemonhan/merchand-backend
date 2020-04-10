@@ -179,6 +179,7 @@ export default {
                 }
             } else {
                 requestObj[url] = now
+                
                 return $http(opt)
             }
         };

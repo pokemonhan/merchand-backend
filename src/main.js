@@ -15,12 +15,6 @@ import menu_list from './js/menuList'           // 菜单目录
 import $ from 'jquery'                          // jquery
 import xss from 'xss'
 
-import JsEncrypt from 'jsencrypt'
-
-import CryptoJS from './js/utils'
-
-Vue.prototype.CryptoJS=CryptoJS
-Vue.prototype.jsEncrypt=JsEncrypt
 Vue.use(plugins)
 window.$ = $
 window.all = {

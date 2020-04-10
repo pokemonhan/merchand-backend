@@ -112,7 +112,7 @@ export default {
             let { method, url } = this.$api.user_login_log_list;
             this.$http({ method: method, url: url, data }).then(
                 res => {
-                    console.log("res", res);
+                    // console.log("res", res);
                     if (res && res.code == "200") {
                         this.list = res.data.data;
                     }

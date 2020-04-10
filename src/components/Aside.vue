@@ -154,7 +154,6 @@ export default {
                 let { method, url } = this.$api.current_admin_menu
 
                 this.$http({ method, url }).then(res => {
-                    console.log('res: ', res);
                     if (res && res.code === '200') {
                         let menu = this.objToArr(res.data)
                         this.menu_list = menu

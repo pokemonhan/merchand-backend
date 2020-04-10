@@ -92,14 +92,18 @@ http.interceptors.response.use(res => {
 
     if (res && res.data) {
         res.data = AES_decrypt(res.data)
+        
         let message = res.message || res.data.message
         if (res.status === 200) {
 
             if (res.data.code !== '200') {
+                // console.log('code !=200 : ', res.data);
                 message = message || 'data.code is not 200!'
                 window.__vm__.$toast.error(message)
+
             }
         } else {
+            // console.log('出错时: ', res.data);
             if (res.status === 401) {
                 message = message || '401 未登录，或者没权限'
                 window.__vm__.$toast.error(message)

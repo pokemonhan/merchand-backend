@@ -614,7 +614,7 @@ export default {
                     this.filter.dates[1]
                 ]);
             }
-            let datas = {
+            let para = {
                 mobile: this.filter.account,
                 guid: this.filter.userid,
                 createdAt: createdAt,

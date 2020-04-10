@@ -42,7 +42,7 @@
         <div class="table mt20">
             <Table :headers="headers" :column="list">
                 <template v-slot:item="{row}">
-                    <td>{{row.type}}</td>
+                    <td>{{row.type && row.type.name}}</td>
                     <td>{{row.username}}</td>
                     <td>{{row.account}}</td>
                     <td>{{row.min_amount}}~{{row.max_amount}}</td>
@@ -89,10 +89,6 @@
                             <span>所属银行:</span>
                             <Select style="width:250px;" v-model="form.bank" :options="bank_opt"></Select>
                         </li>
-                        <!-- <li>
-                            <span>名称:</span>
-                            <Input class="w250" v-model="form.accountName" />
-                        </li> -->
                         <li>
                             <span>二维码:</span>
                             <Input v-model="form.qrcode" style="width:126px" />
@@ -148,7 +144,7 @@
                             <p
                                 v-show="tag_show"
                                 v-for="(item) in all_tag"
-                                :key="item.value"
+                                :key="item.value+''"
                                 class="allTag-list"
                             >
                                 <input
@@ -286,17 +282,13 @@ export default {
             let { url, method } = this.$api.tag_list;
             this.$http({ url, method }).then(res => {
                 if (res && res.code == "200") {
-                    console.log('标签列表',res)
                     if (res.data && res.data.data && Array.isArray(res.data.data)) {
                         let arr = [];
                         for (var i = 0; i < res.data.data.length; i++) {
                             let item = res.data.data[i];
-                            // console.log(item);
                             arr.push({ label: item.title, value: item.id });
                         }
-                        console.log(arr);
                         this.all_tag = arr;
-                        console.log('all_tag: ', this.all_tag);
                     }
                 }
             });
@@ -312,7 +304,6 @@ export default {
             let show_arr = [];
             for (let key in this.form.formtag) {
                 let item = this.form.formtag[key];
-                console.log("item: ", item);
                 if (item) {
                     show_arr.push(key);
                 }
@@ -364,6 +355,7 @@ export default {
             let data = formList;
             let headers = { "Content-Type": "multipart/form-data" };
             this.$http({ method, url, data, headers }).then(res => {
+                console.log('上传图片返回数据',res)
                 if (res && res.code == "200") {
                     this.form.qrcode = res.data.path;
                 }
@@ -377,7 +369,6 @@ export default {
             let datas = {
                 type_id: this.form.inconm,
                 bank_id: bank_id,
-                // name: this.form.accountName,
                 qrcode: this.form.qrcode,
                 account: this.form.accountNumber,
                 username: this.form.name,
@@ -394,6 +385,7 @@ export default {
                 reamrk: this.form.description
             };
             let data=window.all.tool.rmEmpty(datas);
+            // console.log('请求数据',data)
             let { url, method } = this.$api.offline_finance_add;
             this.$http({ method, url, data }).then(res => {
                 if (res && res.code == "200") {
@@ -421,21 +413,53 @@ export default {
             this.dia_title = "修改";
             this.dia_show = true;
             this.addClearAll();
+            let tagsId=row.tags
+            let tagsGroup=[]
+            for(var i=0;i<tagsId.length;i++){
+                tagsGroup.push(JSON.stringify(tagsId[i].id))
+
+            }
             this.form = {
-                inconm: row.type,
-                bank: row.bank_id,
-                // accountName: row.username,
+                inconm: row.type && row.type.id,
+                bank: row.bank && row.bank.id,
                 qrcode: row.qrcode,
                 accountNumber: row.account,
                 name: row.username,
                 bank_card: row.account,
                 bank_address: row.branch,
-                minimum_deposit: row.min_amount,
-                maxmum_deposit: row.max_amount,
-                deposit_fee: row.fee_cost,
-                formtag:row.tags[1].id,
+                minimum_deposit:String(row.min_amount),
+                maxmum_deposit:String(row.max_amount),
+                deposit_fee:String(row.fee_cost),
+                formtag:tagsGroup,
                 description: row.remark
             };
+            this.tagChange();
+        },
+        editCfm(){
+            let datas={
+                type_id:this.form.inconm,
+                bank_id:this.form.bank,
+                qrcode:this.form.qrcode,
+                username:this.form.name,
+                account:this.form.bank_card,
+                branch:this.form.bank_address,
+                min:this.form.minimum_deposit,
+                max:this.form.maxmum_deposit,
+                fee:this.form.deposit_fee,
+                tags:this.form.formtag,
+                reamrk:this.form.description
+            }
+            let data=window.all.tool.rmEmpty(datas)
+            console.log('请求数据',data)
+            let {method,url}=this.$api.offline_finance_set
+            this.$http({method,url,data}).then(res=>{
+                console.log('返回数据',res)
+                if(res && res.code=='200'){
+                    this.dia_show=false;
+                    this.$toast.success(res.message)
+                    this.getList();
+                }
+            })
         },
         del(row) {
             this.mod_show = true;
@@ -470,7 +494,7 @@ export default {
             if(this.filter.dates[0] && this.filter.dates[1]){
                 updated_at=JSON.stringify([this.filter.dates[0],this.filter.dates[1]])
             }
-            let para = {
+            let datas = {
                 type_id: this.filter.type,
                 account: this.filter.account,
                 username: this.filter.name,
@@ -481,14 +505,14 @@ export default {
                 page:this.pageNo,
                 pageSize:this.pageSize,
             };
-            let params = window.all.tool.rmEmpty(para);
+            let data = window.all.tool.rmEmpty(datas);
             let { method, url } = this.$api.offline_finance_list;
-            this.$http({ method, url, params }).then(
+            this.$http({ method, url, data }).then(
                 res => {
                     console.log('返回数据',res)
                     if (res && res.code == "200") {
-                        this.list = res.data.data;
-                        this.total = res.data.total;
+                        this.list = res.data;
+                        this.total = res.data.length;
                     } 
                 }
             );

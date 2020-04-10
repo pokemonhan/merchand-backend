@@ -572,7 +572,7 @@ export default {
     // 线下支付配置 - 列表
     offline_finance_list: {
         url: '/merchant-api/offline-finance/index',
-        method: 'get',
+        method: 'post',
     },
 
     // 线下支付配置 - 删除

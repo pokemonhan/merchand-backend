@@ -109,7 +109,7 @@ http.interceptors.response.use(res => {
                 router.push('/login')
             }
             if (res.status === 403) {
-                message = message || '403, 请注意权限'
+                message = message || '403, 禁止访问: 访问被拒绝'
                 window.__vm__.$toast.error(message)
             }
         }

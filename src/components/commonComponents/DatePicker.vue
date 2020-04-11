@@ -25,11 +25,13 @@
             ></i>
             <i v-else class="iconfont iconrili"></i>-->
         </div>
-        <!-- 已选 -->
+
+
+        <!-- 已选 下方选择框-->
         <transition name="date-picker">
             <div class="date-container">
                 <div v-show="showPanel" :class="['date-box', pickerClassName]" ref="date-box">
-                    <!-- 当前选中 -->
+                    <!-- 当前选中 顶部-->
                     <div class="date-info">
                         <span>
                             <i @click="changeYear('-')" class="iconfont iconzuofanyezuohua"></i>
@@ -256,6 +258,7 @@
                             <!-- 时间 -->
                         </div>
                     </div>
+                    <!-- 底部 1时间 2按钮 -->
                     <div class="select-time" v-if="type==='datetime' || type==='datetimerange'">
                         <div @click="chooseTime" class="pointer">{{step===4 ? '选择日期' : '选择时间'}}</div>
                         <div>
@@ -265,6 +268,14 @@
                     </div>
                     <div style="padding-left:150px;" v-else>
                         <button class="clear-btn" @click="clear" v-if="clearable">清空</button>
+                    </div>
+                    <div class="mt5 mb5" v-if="quickdate&&(type==='daterange'||type=='datetimerange')">
+                        <button class="btns-plain-blue" @click="quickSelect('today')">今天</button>
+                        <button class="btns-plain-blue" @click="quickSelect('yesterday')">昨天</button>
+                        <button class="btns-plain-blue" @click="quickSelect('lastweek')">上周</button>
+                        <button class="btns-plain-blue" @click="quickSelect('thisweek')">本周</button>
+                        <button class="btns-plain-blue" @click="quickSelect('lastmonth')">上月</button>
+                        <button class="btns-plain-blue" @click="quickSelect('thismonth')">本月</button>
                     </div>
                 </div>
             </div>
@@ -296,6 +307,10 @@ export default {
         disabled: {
             type: Boolean,
             default: () => false
+        },
+        quickdate: {    // 今天,昨天,本月等.快速选择
+            type:Boolean,
+            defalut: () => false
         }
         // ,
         // furture:{
@@ -350,7 +365,7 @@ export default {
             pickerClassName: 'bottom-expand',
             beginStartYear: 0,
             beginEndYear: 0,
-            time_obj: {}, // 时间相关参数
+            time_obj: {} // 时间相关参数
         }
     },
     methods: {
@@ -694,7 +709,7 @@ export default {
             ))
             this.preMonthLastDate = this.getDaysInOneMonth(
                 this.startYear,
-                this.startMonth
+                this.startMonth-1
             )
             this.beforeThisMonthDays = new Date(
                 `${this.startYear}-${this.startMonth}-1`
@@ -932,6 +947,95 @@ export default {
             this.endDate = date.getDate()
             this.beginStartYear = this.startYear - 9
             this.beginEndYear = this.endYear - 9
+        },
+        quickSelect(val) {
+            let formatDate = window.all.tool.formatDate
+            var now = new Date() //当前日期
+
+            var nowYear = now.getFullYear() // 当前年
+            var nowMonth = now.getMonth() // 当前月
+            var nowDay = now.getDate() // 当前日
+
+            var nowDayOfWeek = now.getDay() // 今天是本周的第几天
+            // (周日获取的是第0天,设置为7天)
+            if (nowDayOfWeek === 0) {
+                nowDayOfWeek = 7
+            }
+
+            // 今天
+            function getToday() {
+                return [new Date(), new Date().valueOf() + 1000 * 60 * 60 * 24]
+            }
+            // 昨天
+            function getYesterday() {
+                let yesterday = new Date().valueOf() - 1000 * 60 * 60 * 24
+                let start = new Date(yesterday)
+                let end = new Date()
+                return [start, end]
+            }
+            // 上周
+            function getLastweek() {
+                let start = new Date(
+                    nowYear,
+                    nowMonth,
+                    nowDay - nowDayOfWeek - 6
+                )
+                let end = new Date(nowYear, nowMonth, nowDay - nowDayOfWeek + 1)
+                return [start, end]
+            }
+            // 本周
+            function getThisweek() {
+                let start = new Date(
+                    nowYear,
+                    nowMonth,
+                    nowDay - nowDayOfWeek + 1
+                )
+                let end = new Date(
+                    nowYear,
+                    nowMonth,
+                    nowDay + (7 - nowDayOfWeek) + 1
+                )
+                return [start, end]
+            }
+            //  获得某月的天数 下面备用
+            function getMonthDays(myMonth) {
+                var monthStartDate = new Date(nowYear, myMonth, 1)
+                var monthEndDate = new Date(nowYear, myMonth + 1, 1)
+                var days =
+                    (monthEndDate - monthStartDate) / (1000 * 60 * 60 * 24)
+                return days
+            }
+            // 上月
+            function getLastmonth() {
+                let start = new Date(nowYear, nowMonth - 1, 1)
+                let end = new Date(nowYear, nowMonth, 1)
+                return [start, end]
+            }
+            // 本月
+            function getThismonth() {
+                let start = new Date(nowYear, nowMonth, 1)
+                let end = new Date(nowYear, nowMonth + 1, 1)
+                return [start, end]
+            }
+            let time_obj = {
+                today: getToday(),
+                yesterday: getYesterday(),
+                lastweek: getLastweek(),
+                thisweek: getThisweek(),
+                lastmonth: getLastmonth(),
+                thismonth: getThismonth()
+            }
+            let [start, end] = time_obj[val]
+            // console.log('today: ', today);
+            let time = this.type === 'datetimerange' ? ' 00:00:00' : ''
+            this.formatDateString([
+                formatDate(start) + time,
+                formatDate(end) + time
+            ])
+            this.initDays()
+            this.$emit('update', this.resultTime)
+            this.closePanel()
+            // console.log('this.resultTime: ', this.resultTime);
         }
     },
     mounted() {
@@ -1087,12 +1191,16 @@ export default {
 }
 .date-box {
     position: absolute;
-    left: 0;
+    left: -50%;
     box-shadow: 0 1px 6px rgba(0, 0, 0, 0.2);
     border-radius: 4px;
     background: #fff;
     z-index: 10;
     overflow: hidden;
+}
+.date .date-box,
+.datetime .date-box {
+    left: 0;
 }
 .list-container {
     display: flex;
@@ -1145,6 +1253,7 @@ export default {
 }
 .date-box .week-list {
     color: #c5c8ce;
+    text-align: center;
 }
 .date-box .date-list li {
     width: 30px;

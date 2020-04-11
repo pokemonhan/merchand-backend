@@ -519,10 +519,10 @@ export default {
                 guid:this.detail_list.guid,
                 label:this.user_tab,
             }
-            // console.log('修改标签请求数据',data)
+            console.log('修改标签请求数据',data)
             let{method,url}=this.$api.user_list_tag_edit;
             this.$http({method,url,data}).then(res=>{
-                // console.log('修改标签返回数据',res)
+                console.log('修改标签返回数据',res)
                 if(res && res.code=='200'){
                     this.$toast.success(res.message);
                     this.userDetail(this.curr_row);
@@ -614,7 +614,7 @@ export default {
                     this.filter.dates[1]
                 ]);
             }
-            let para = {
+            let datas = {
                 mobile: this.filter.account,
                 guid: this.filter.userid,
                 createdAt: createdAt,
@@ -627,7 +627,7 @@ export default {
                 pageSize: this.pageSize
             };
             // console.log("请求数据", para);
-            let data = window.all.tool.rmEmpty(para);
+            let data = window.all.tool.rmEmpty(datas);
             let { method, url } = this.$api.user_list;
             this.$http({ method, url, data }).then(res => {
                 console.log("返回数据", res);

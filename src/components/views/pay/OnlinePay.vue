@@ -522,7 +522,7 @@ export default {
             if(this.filter.update_dates[0] && this.filter.update_dates[1] ){
                 updated_at=JSON.stringify([this.filter.update_dates[0],this.filter.update_dates[1]])
             }
-            let para = {
+            let datas = {
                 merchant_code: this.filter.merchant_num,
                 front_name: this.filter.front_name,
                 created_at: created_at,
@@ -532,9 +532,9 @@ export default {
                 page:this.pageNo,
                 pageSize:this.pageSize
             };
-            let params = window.all.tool.rmEmpty(para);
+            let data = window.all.tool.rmEmpty(datas);
             let { method, url } = this.$api.online_finance_list;
-            this.$http({ method: method, url: url, params: params }).then(
+            this.$http({ method: method, url: url, data:data }).then(
                 res => {
                     console.log('列表数据',res)
                     if (res && res.code == "200") {

@@ -42,7 +42,7 @@ let loadingEle = null
 
 // 请求预设 ---
 http.interceptors.request.use(req => {
-    console.log('req: ', req);
+    // console.log('req: ', req);
     if (!loadingEle) {
         loadingEle = document.getElementById('g-loading')
     }
@@ -89,11 +89,11 @@ http.interceptors.response.use(res => {
     if (loadingEle && loadingEle.style) {
         loadingEle.style.display = 'none'
     }
-
+    let message = res.message || res.data.message || ''
     if (res && res.data) {
         res.data = AES_decrypt(res.data)
         
-        let message = res.message || res.data.message
+        
         if (res.status === 200) {
 
             if (res.data.code !== '200') {

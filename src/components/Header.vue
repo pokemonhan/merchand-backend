@@ -301,7 +301,7 @@ export default {
     /* font-size: 13px; */
 }
 .content {
-    /* height: 100%; */
+    height: 70px;
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;

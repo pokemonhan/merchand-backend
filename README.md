@@ -1,6 +1,6 @@
 # jianghu 商户后台
 
-> A Vue.js project
+> A Vue.js project 
 
 ## Build Setup
 ![avatar](/static/样板.png)

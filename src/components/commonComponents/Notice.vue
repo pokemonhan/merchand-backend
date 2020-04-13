@@ -77,7 +77,7 @@ export default {
 }
 .notice-enter-active,
 .notice-leave-active {
-    transition: all .2s ease;
+    transition: all .2s linear;
 }
 .vue-notice {
     position: relative;

@@ -17,7 +17,8 @@
         </div>
         <div id="toast-box"></div>
         <div class="modal-mask" v-if="showMask"></div>
-        <!-- <div id="message-box"></div> -->
+        <div id="message-box"></div>
+        <div id="notice-box"></div>
         <loading id="g-loading" show />
     </div>
 </template>
@@ -44,7 +45,7 @@ export default {
     data() {
         return {
             play: true,
-            isRouterAlive: true,
+            isRouterAlive: true
         }
     },
     computed: {
@@ -76,7 +77,7 @@ export default {
         },
         reload() {
             this.isRouterAlive = false
-            this.$nextTick(function(){
+            this.$nextTick(function() {
                 this.isRouterAlive = true
             })
         }
@@ -87,6 +88,10 @@ export default {
             // self.playMusic()
         }, 400)
         // this.$loading.show()
+        // this.$notice({
+        //     title: '标题',
+        //     message: '这是邮箱的内容'
+        // })
     }
 }
 </script>
@@ -141,6 +146,14 @@ export default {
     left: 50%;
     transform: translateX(-50%);
     z-index: 10002;
+}
+#notice-box {
+    position: fixed;
+    z-index: 30;
+    right: 7px;
+    bottom: 10px;
+    max-height: 90vh;
+    overflow-y: auto;
 }
 #g-loading {
     display: none;

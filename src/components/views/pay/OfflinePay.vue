@@ -38,7 +38,7 @@
                 </li>
             </ul>
         </div>
-        
+
         <div class="table mt20">
             <Table :headers="headers" :column="list">
                 <template v-slot:item="{row}">
@@ -73,7 +73,7 @@
                 @updateSize="updateSize"
             />
         </div>
-        <Dialog :show.sync="dia_show" :title="dia_title" >
+        <Dialog :show.sync="dia_show" :title="dia_title">
             <div class="dia-inner">
                 <div class="flex">
                     <ul class="form">
@@ -128,7 +128,7 @@
                             <Input class="w250" v-model="form.deposit_fee" />
                         </li>
                     </ul>
-                    <ul class="form"  >
+                    <ul class="form">
                         <li v-clickoutside="tagListShow">
                             <span>标签选择:</span>
                             <div class="tag-choose" @click="tag_show=true">
@@ -140,7 +140,7 @@
                                 >{{item.label}}</span>
                             </div>
                         </li>
-                        <li  @click.stop  >
+                        <li @click.stop class="chooseTag" style="display:block" >
                             <p
                                 v-show="tag_show"
                                 v-for="(item) in all_tag"
@@ -148,11 +148,12 @@
                                 class="allTag-list"
                             >
                                 <input
+                                    class="choosebox"
                                     type="checkbox"
                                     v-model="form.formtag[item.value]"
                                     @change="tagChange(item)"
                                 />
-                                {{item.label}}
+                                <span >{{item.label}}</span>
                             </p>
                         </li>
                         <li class="declare">
@@ -179,7 +180,7 @@
 
 <script>
 export default {
-    name: 'OfflinePay',
+    name: "OfflinePay",
     data() {
         return {
             filter: {
@@ -188,7 +189,7 @@ export default {
                 name: "",
                 add_dates: [],
                 update_person: "",
-                dates: [],
+                dates: []
             },
             type_opt: [],
             headers: [
@@ -227,7 +228,7 @@ export default {
                 deposit_fee: "",
                 description: ""
             },
-            
+
             menu_list: [],
             tag_show: false, // TODO  改为false
             all_tag: [],
@@ -270,9 +271,7 @@ export default {
             });
         },
         backToBankSelOpt(list = []) {
-            let all = [
-
-            ];
+            let all = [];
             let bank_list = list.map(item => {
                 return { label: item.name, value: item.id };
             });
@@ -282,7 +281,11 @@ export default {
             let { url, method } = this.$api.tag_list;
             this.$http({ url, method }).then(res => {
                 if (res && res.code == "200") {
-                    if (res.data && res.data.data && Array.isArray(res.data.data)) {
+                    if (
+                        res.data &&
+                        res.data.data &&
+                        Array.isArray(res.data.data)
+                    ) {
                         let arr = [];
                         for (var i = 0; i < res.data.data.length; i++) {
                             let item = res.data.data[i];
@@ -304,12 +307,14 @@ export default {
             let show_arr = [];
             for (let key in this.form.formtag) {
                 let item = this.form.formtag[key];
+                // console.log('this.form.formtag',this.form.formtag[key])
                 if (item) {
                     show_arr.push(key);
                 }
                 this.showTag = this.all_tag.filter(item => {
                     return show_arr.indexOf(String(item.value)) !== -1;
                 });
+                // console.log('showTag',this.showTag)
             }
         },
         diaCfm() {
@@ -332,12 +337,12 @@ export default {
                 bank_address: "",
                 minimum_deposit: "",
                 maxmum_deposit: "",
-                formtag:[],
+                formtag: [],
                 deposit_fee: "",
-                description: "",
+                description: ""
             };
-            this.showTag=[];
-            this.tag_show=false
+            this.showTag = [];
+            this.tag_show = false;
         },
         add() {
             this.dia_status = "add";
@@ -355,20 +360,20 @@ export default {
             let data = formList;
             let headers = { "Content-Type": "multipart/form-data" };
             this.$http({ method, url, data, headers }).then(res => {
-                console.log('上传图片返回数据',res)
+                console.log("上传图片返回数据", res);
                 if (res && res.code == "200") {
                     this.form.qrcode = res.data.path;
                 }
             });
         },
         addCfm() {
-            let bank_id=this.form.bank
-            if(this.form.inconm!=1){
-                bank_id=''
+            let bank_id = this.form.bank;
+            if (this.form.inconm != 1) {
+                bank_id = "";
             }
             let datas = {
                 type_id: String(this.form.inconm),
-                bank_id:String(bank_id),
+                bank_id: String(bank_id),
                 qrcode: this.form.qrcode,
                 account: this.form.accountNumber,
                 username: this.form.name,
@@ -377,13 +382,13 @@ export default {
                 min_amount: this.form.minimum_deposit,
                 max_amount: this.form.maxmum_deposit,
                 fee: this.form.deposit_fee,
-                tags:this.showTag.map(item => {
-                        return String(item.value);
+                tags: this.showTag.map(item => {
+                    return String(item.value);
                 }),
                 reamrk: this.form.description
             };
-            let data=window.all.tool.rmEmpty(datas);
-            // console.log('请求数据',data)
+            let data = window.all.tool.rmEmpty(datas);
+            console.log("请求数据", data);
             let { url, method } = this.$api.offline_finance_add;
             this.$http({ method, url, data }).then(res => {
                 if (res && res.code == "200") {
@@ -407,22 +412,25 @@ export default {
             });
         },
         edit(row) {
+            // console.log("this.all_tag", this.all_tag);
             this.dia_status = "edit";
             this.dia_title = "修改";
             this.dia_show = true;
             this.addClearAll();
-            let tagsId=row.tags
-            console.log('tagsId',tagsId)
-            let tagGroup=tagsId.map(item=>{
-                return item.id
-            })
-            console.log('tagGroup',tagGroup)
-            for(var i=0;i<tagGroup.length;i++){
-                this.form.formtag[tagGroup[i]]=true
+            let tagsId = row.tags;
+            // console.log("tagsId", tagsId);
+            let tagGroup = tagsId.map(item => {
+                return item.id;
+            });
+            // console.log("tagGroup", tagGroup);
+            //设置chaeckbox为true 原始传入tags为true
+            for (var i = 0; i < tagGroup.length; i++) {
+                this.form.formtag[tagGroup[i]] = true;
             }
-            console.log('this.form.formtag',this.form.formtag[1])
+            //标签选择栏显示原始标签
+            this.tagChange();
             this.form = {
-                id:row.id,
+                id: row.id,
                 inconm: row.type && row.type.id,
                 bank: row.bank && row.bank.id,
                 qrcode: row.qrcode,
@@ -430,42 +438,41 @@ export default {
                 name: row.username,
                 bank_card: row.account,
                 bank_address: row.branch,
-                minimum_deposit:String(row.min_amount),
-                maxmum_deposit:String(row.max_amount),
-                deposit_fee:String(row.fee_cost),
-                formtag:[],
+                minimum_deposit: String(row.min_amount),
+                maxmum_deposit: String(row.max_amount),
+                deposit_fee: String(row.fee_cost),
+                formtag: [],
                 description: row.remark
             };
-            // this.tagChange();
         },
-        editCfm(){
-            let tagId=this.form.formtag;
-            
-            let datas={
-                id:this.form.id,
-                type_id:this.form.inconm,
-                bank_id:this.form.bank,
-                qrcode:this.form.qrcode,
-                username:this.form.name,
-                account:this.form.bank_card,
-                branch:this.form.bank_address,
-                min_amount:this.form.minimum_deposit,
-                max_amount:this.form.maxmum_deposit,
-                fee:this.form.deposit_fee,
-                tags:tagId,
-                reamrk:this.form.description
-            }
-            let data=window.all.tool.rmEmpty(datas)
-            console.log('请求数据',data)
-            let {method,url}=this.$api.offline_finance_set
-            this.$http({method,url,data}).then(res=>{
-                console.log('返回数据',res)
-                if(res && res.code=='200'){
-                    this.dia_show=false;
-                    this.$toast.success(res.message)
+        editCfm() {
+            let datas = {
+                id: this.form.id,
+                type_id: this.form.inconm,
+                bank_id: this.form.bank,
+                qrcode: this.form.qrcode,
+                username: this.form.name,
+                account: this.form.bank_card,
+                branch: this.form.bank_address,
+                min_amount: this.form.minimum_deposit,
+                max_amount: this.form.maxmum_deposit,
+                fee: this.form.deposit_fee,
+                tags: this.showTag.map(item => {
+                    return String(item.value);
+                }),
+                reamrk: this.form.description
+            };
+            let data = window.all.tool.rmEmpty(datas);
+            console.log("请求数据", data);
+            let { method, url } = this.$api.offline_finance_set;
+            this.$http({ method, url, data }).then(res => {
+                console.log("返回数据", res);
+                if (res && res.code == "200") {
+                    this.dia_show = false;
+                    this.$toast.success(res.message);
                     this.getList();
                 }
-            })
+            });
         },
         del(row) {
             this.mod_show = true;
@@ -488,17 +495,23 @@ export default {
             this.getList();
         },
         updateSize(val) {
-            this.pageNo=1;
+            this.pageNo = 1;
             this.getList();
         },
         getList() {
-            let created_at=''
-            if(this.filter.add_dates[0] && this.filter.add_dates[1]){
-                created_at=JSON.stringify([this.filter.add_dates[0],this.filter.add_dates[1]])
+            let created_at = "";
+            if (this.filter.add_dates[0] && this.filter.add_dates[1]) {
+                created_at = JSON.stringify([
+                    this.filter.add_dates[0],
+                    this.filter.add_dates[1]
+                ]);
             }
-            let updated_at=''
-            if(this.filter.dates[0] && this.filter.dates[1]){
-                updated_at=JSON.stringify([this.filter.dates[0],this.filter.dates[1]])
+            let updated_at = "";
+            if (this.filter.dates[0] && this.filter.dates[1]) {
+                updated_at = JSON.stringify([
+                    this.filter.dates[0],
+                    this.filter.dates[1]
+                ]);
             }
             let datas = {
                 type_id: this.filter.type,
@@ -508,20 +521,18 @@ export default {
                 created_at: created_at,
                 last_editor_name: this.filter.update_person,
                 updated_at: updated_at,
-                page:this.pageNo,
-                pageSize:this.pageSize,
+                page: this.pageNo,
+                pageSize: this.pageSize
             };
             let data = window.all.tool.rmEmpty(datas);
             let { method, url } = this.$api.offline_finance_list;
-            this.$http({ method, url, data }).then(
-                res => {
-                    console.log('返回数据',res)
-                    if (res && res.code == "200") {
-                        this.list = res.data;
-                        this.total = res.data.length;
-                    } 
+            this.$http({ method, url, data }).then(res => {
+                console.log("返回数据", res);
+                if (res && res.code == "200") {
+                    this.list = res.data;
+                    this.total = res.data.length;
                 }
-            );
+            });
         }
     },
     mounted() {
@@ -598,8 +609,19 @@ export default {
     box-sizing: border-box;
     white-space: nowrap;
 }
-.allTag-list {
-    margin-left: 95px;
+.chooseTag {
+    width: 350px;
+    min-height: 30px;
+    margin-left: 84px;
 }
+.chooseTag p {
+    width: 175px;
 
+}
+.allTag-list {
+    display: inline-block; 
+}
+.choosebox {
+    vertical-align: middle;
+}
 </style>

@@ -610,7 +610,7 @@ export default {
     // 线上金流配置 - 列表
     online_finance_list: {
         url: '/merchant-api/online-finance/index',
-        method: 'get',
+        method: 'post',
     },
     // 线上金流配置 - 获取编辑线上金流前置数据 (需要的标签选择内容)
     online_finance_label_list: {
@@ -632,8 +632,16 @@ export default {
         url: '/merchant-api/online-finance/status',
         method: 'post',
     },
-
-
+    //出款银行管理 - 列表
+    payment_bank_list:{
+        url:'/merchant-api/online-finance/bank/index',
+        method:'post'
+    },
+    //出款银行管理 - 改变状态
+    payment_bank_status:{
+        url:'/merchant-api/online-finance/bank/status',
+        method:'post'
+    },
 
 
     /*=========================== 设置管理 ===========================--*/

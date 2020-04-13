@@ -165,10 +165,9 @@
                                 :key="index"
                                 @click="closeTag(item,index)"
                             >{{item.label}}</span>
-
                         </div>
                     </li>
-                    <li @click.stop>
+                    <li @click.stop class="chooseTag" style="display:block">
                         <p
                             v-show="tag_show"
                             v-for="(item) in all_tag"
@@ -176,11 +175,12 @@
                             class="allTag-list"
                         >
                             <input
+                                class="choosebox"
                                 type="checkbox"
                                 v-model="form.formtag[item.value]"
                                 @change="tagChange(item)"
                             />
-                            {{item.label}}
+                            <span >{{item.label}}</span>
                         </p>
                     </li>
                     <li>
@@ -219,7 +219,7 @@
 </template>
 <script>
 export default {
-    name: 'OnlinePay',
+    name: "OnlinePay",
     data() {
         return {
             filter: {
@@ -229,7 +229,7 @@ export default {
                 update_dates: [],
                 front_name: "",
                 merchant_code: "",
-                update_person: "",
+                update_person: ""
             },
 
             headers: [
@@ -283,16 +283,17 @@ export default {
             all_tag: [],
             tag_show: false,
             showTag: [],
-            curr_row:{},
+            curr_row: {}
         };
     },
     methods: {
         getSelectOpt() {
             let { url, method } = this.$api.online_finance_channel_list;
             this.$http({ url, method }).then(res => {
+                // console.log("返回数据", res);
                 if (res && res.code == "200") {
                     this.pay_method_opt = this.backToSelOpt(res.data);
-                    console.log('列表',this.pay_method_opt)
+                    // console.log('列表',this.pay_method_opt)
                 }
             });
         },
@@ -304,7 +305,7 @@ export default {
                 }
             ];
             let back_list = list.map(item => {
-                console.log(item)
+                // console.log(item)
                 return { label: item.name, value: item.id };
             });
             return all.concat(back_list);
@@ -374,23 +375,25 @@ export default {
                 // certificate: this.form.certificate_path,
                 request_url: this.form.url,
                 vendor_url: this.form.third_href,
-                app_id:this.form.terminal,
-                tags:JSON.stringify( this.showTag.map(item => {
+                app_id: this.form.terminal,
+                tags: JSON.stringify(
+                    this.showTag.map(item => {
                         return String(item.value);
-                })),
+                    })
+                ),
                 min: this.form.pay_limit[0],
                 max: this.form.pay_limit[1],
                 handle_fee: this.form.income_charge,
                 desc: this.form.specifcation,
                 backend_remark: this.form.mark
             };
-            console.log('添加请求数据',datas)
-            let data=window.all.tool.rmEmpty(datas)
+            console.log("添加请求数据", datas);
+            let data = window.all.tool.rmEmpty(datas);
             let { url, method } = this.$api.online_finance_add;
             this.$http({ method, url, data }).then(res => {
                 // console.log('添加返回数据',res)
-                if(res && res.code=='200'){
-                    this.dia_show=false;
+                if (res && res.code == "200") {
+                    this.dia_show = false;
                     this.getList();
                 }
             });
@@ -400,54 +403,99 @@ export default {
             this.dia_title = "编辑";
             this.dia_show = true;
             this.addClearAll();
-            this.form={
-                pay_method: row.channel.id,
-                front_name:row.frontend_name,
-                merchant_num:row.merchant_code,
-                merchant_code:row.merchant_no,
-                secret_method:String(row.encrypt_mode),
-                merchant_key:row.merchant_secret,
-                merchant_public:row.public_key,
-                merchant_private:row.private_key,
-                certificate_path:row.certificate,
-                url:row.request_url,
-                third_href:row.vendor_url,
-                terminal:row.app_ip,
-                pay_limit:[row.min,row.max],
-                income_charge:row.handle_fee,
-                specifcation:row.desc,
-                mark:row.backend_remark	,
-                formtag:[row.tags && row.tags.tag_id ]
+            let tagsId = row.tags;
+            // console.log("tagsId", tagsId);
+            let tagGroup = tagsId.map(item => {
+                return item.id;
+            });
+            // console.log("tagGroup", tagGroup);
+            //设置chaeckbox为true 原始传入tags为true
+            for (var i = 0; i < tagGroup.length; i++) {
+                this.form.formtag[tagGroup[i]] = true;
+            }
+            //标签选择栏显示原始标签
+            this.tagChange();
+            this.form = {
+                id:row.id,
+                pay_method: row.channel && row.channel.id,
+                front_name: row.frontend_name,
+                merchant_num: row.merchant_code,
+                merchant_code: row.merchant_no,
+                secret_method: String(row.encrypt_mode),
+                merchant_key: row.merchant_secret,
+                merchant_public: row.public_key,
+                merchant_private: row.private_key,
+                certificate_path: row.certificate,
+                url: row.request_url,
+                third_href: row.vendor_url,
+                terminal: row.app_id,
+                pay_limit: [String(row.min_amount), String(row.max_amount)],
+                income_charge: row.handle_fee,
+                specifcation: row.desc,
+                mark: row.backend_remark,
+                formtag: []
             };
-            console.log('赋值',this.form)
-            this.showTag = [row.tags && row.tags.tag_id ];
-            console.log('标签',this.showTag)
         },
         editCfm() {
-            
+            let datas={
+                id:this.form.id,
+                channel_id:this.form.pay_method,
+                frontend_name:this.form.front_name,
+                merchant_code:this.form.merchant_num,
+                merchant_no:this.form.merchant_code,
+                encrypt_mode:this.form.secret_method,
+                merchant_secret:this.form.merchant_key,
+                public_key:this.form.merchant_public,
+                private_key:this.form.merchant_private,
+                certificate:this.form.certificate_path,
+                request_url:this.form.url,
+                vendor_url:this.form.third_href,
+                app_id:this.form.terminal,
+                tags:JSON.stringify(
+                    this.showTag.map(item => {
+                        return String(item.value);
+                    })
+                ),
+                min_amount:this.form.pay_limit[0],
+                max_amount:this.form.pay_limit[1],
+                handle_fee:this.form.income_charge,
+                desc:this.form.specifcation,
+                backend_remark:this.form.mark
+            }
+            let data=window.all.tool.rmEmpty(datas)
+            console.log('编辑请求数据',data)
+            let {method,url}=this.$api.online_finance_edit;
+            this.$http({methhod,url,data}).then(res=>{
+                console.log('编辑返回数据',res)
+                if(res && res.code=='200'){
+                    this.dia_show=false
+                    this.$toast.success(res.message)
+                    this.getList()
+                }
+            })
         },
         del(row) {
             this.mod_show = true;
-            this.curr_row=row
+            this.curr_row = row;
         },
         modConf() {
-            let data={
-                id:this.curr_row.id
-            }
-            let {method,url}=this.$api.online_finance_del;
-            this.$http({method,url,data}).then((res=>{
-                if(res && res.code=='200'){
-                    this.mod_show=false;
-                    this.$toast.success(res.message)
+            let data = {
+                id: this.curr_row.id
+            };
+            let { method, url } = this.$api.online_finance_del;
+            this.$http({ method, url, data }).then(res => {
+                if (res && res.code == "200") {
+                    this.mod_show = false;
+                    this.$toast.success(res.message);
                     this.getList();
                 }
-            }))
+            });
         },
         updateNo(val) {
             this.getList();
         },
         updateSize(val) {
-            this.pageNo=1;
+            this.pageNo = 1;
             this.getList();
         },
 
@@ -501,7 +549,7 @@ export default {
             for (let key in this.form.formtag) {
                 // this.form.formtag[key]
                 let item = this.form.formtag[key];
-                console.log("item: ", item);
+                // console.log("item: ", item);
                 if (item) {
                     show_arr.push(key);
                 }
@@ -514,13 +562,19 @@ export default {
             }
         },
         getList() {
-            let created_at=''
-            if(this.filter.dates[0] && this.filter.dates[1]){
-                created_at=JSON.stringify([this.filter.dates[0],this.filter.dates[1]])
+            let created_at = "";
+            if (this.filter.dates[0] && this.filter.dates[1]) {
+                created_at = JSON.stringify([
+                    this.filter.dates[0],
+                    this.filter.dates[1]
+                ]);
             }
-            let updated_at=''
-            if(this.filter.update_dates[0] && this.filter.update_dates[1] ){
-                updated_at=JSON.stringify([this.filter.update_dates[0],this.filter.update_dates[1]])
+            let updated_at = "";
+            if (this.filter.update_dates[0] && this.filter.update_dates[1]) {
+                updated_at = JSON.stringify([
+                    this.filter.update_dates[0],
+                    this.filter.update_dates[1]
+                ]);
             }
             let datas = {
                 merchant_code: this.filter.merchant_num,
@@ -529,20 +583,19 @@ export default {
                 updated_at: updated_at,
                 author_name: this.filter.person,
                 last_editor_name: this.filter.update_person,
-                page:this.pageNo,
-                pageSize:this.pageSize
+                page: this.pageNo,
+                pageSize: this.pageSize
             };
             let data = window.all.tool.rmEmpty(datas);
+            console.log('请求数据',data)
             let { method, url } = this.$api.online_finance_list;
-            this.$http({ method: method, url: url, data:data }).then(
-                res => {
-                    console.log('列表数据',res)
-                    if (res && res.code == "200") {
-                        this.list = res.data.data;
-                        this.total = res.data.total;
-                    }
+            this.$http({ method: method, url: url, data: data }).then(res => {
+                console.log("列表数据", res);
+                if (res && res.code == "200") {
+                    this.list = res.data;
+                    this.total = res.data.length;
                 }
-            );
+            });
         }
     },
     mounted() {
@@ -613,7 +666,18 @@ export default {
     box-sizing: border-box;
     white-space: nowrap;
 }
+.chooseTag {
+    width: 250px;
+    min-height: 10px;
+    margin-left: 84px;
+}
+.chooseTag p {
+    width: 125px;
+}
 .allTag-list {
-    margin-left: 95px;
+    display: inline-block; 
+}
+.choosebox {
+    vertical-align: middle;
 }
 </style>

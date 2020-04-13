@@ -1,7 +1,7 @@
 <template>
     <span :class="['v-input', size]">
         <input
-            :class="[,disabled?'disabled':'']"
+            :class="[disabled?'disabled':'']"
             :type="type==='password'? 'password':'text'"
             ref="input"
             :placeholder="placeholder"
@@ -9,13 +9,21 @@
             @input="input"
             @keyup.enter="pressEnter"
             @keyup="keyup"
-            @change="change"
+            @focus="$emit('focus')"
+            @blur="$emit('blur')"
             :maxlength="maxlength"
             :disabled="disabled"
             :autocomplete="autocomplete"
         />
-        <i v-if="icon" :class="['iconfont', icon]"></i>
+        <i v-if="icon" :class="['iconfont', icon,'icon-input']"></i>
         
+        <span v-show="showerr||(required&&!value)" class="error-message">
+            <i class="iconfont iconjinggao1-"></i>
+            {{errmsg}}
+        </span>
+        <span>
+
+        </span>
     </span>
 </template>
 
@@ -38,15 +46,28 @@ export default {
             default: ""
         },
         placeholder: String,
-        value: String,
+        value: [String, Number],
         maxlength: [Number,String],
         autocomplete:{
             type: String,
+        },
+        showerr: {
+            type: Boolean,
+            default: false
+        },
+        errmsg: {
+            type: String,
+            default: ''
+        },
+        // 当required为true时, 值为空,就会提示
+        required: {
+            type: Boolean,
+            default: false
         }
     },
     model: {
         prop: "value",
-        event: "update" // 原来是input
+        event: "keyup" // 原来是input
     },
     data() {
         return {
@@ -58,8 +79,8 @@ export default {
                 "p-integer": /\D/g,                      //  正整数
                 "no-zh-cn": /[\u4E00-\u9FA5]*/g,         // 非中文
                 "en-num": /[\W_]/g,                      // 字母和数字
-                "en": /[\W_0-9]/g,                      // 字母
-                "word": /[\W]/g,                         // 字母数字下划线
+                "en": /[\W_0-9]/g,                       // 字母
+                "word": /[^\w\-]/g                         // 字母数字下划线
             }
         };
     },
@@ -73,14 +94,11 @@ export default {
             this.$emit("input", this.val);
             this.$emit("update", this.val);
         },
-        change() {
-            this.$emit("update", this.val)
-        },
         pressEnter() {
             this.$emit("enter");
         },
         keyup() {
-            this.regs[this.limit] && (this.val = (this.val||'').toString().replace(this.regs[this.limit], ""));
+            this.regs[this.limit] && (this.val = this.val.toString().replace(this.regs[this.limit], ""));
             // console.log(this.val)
             this.$emit("keyup", this.val);
             this.$emit("update", this.val);
@@ -98,10 +116,11 @@ export default {
     /* width: 100%; */
     position: relative;
     /* min-height: 26px; */
-    min-width: 80px;
+    /* min-width: 100px; */
     /* background: #fff; */
 }
 .disabled {
+    color: #888;
     cursor: not-allowed;
 }
 input::placeholder{
@@ -142,7 +161,7 @@ input::placeholder{
 .v-input input:focus {
     border-color: #2d8cf0;
 }
-.v-input i {
+.v-input .icon-input {
     position: absolute;
     right: 10px;
     color: #808695;
@@ -156,5 +175,18 @@ input::placeholder{
 }
 .normal .iconfont {
     font-size: 18px;
+}
+.error-message {
+    position: absolute;
+    top: 25px;
+    left: 1em;
+    font-size: 12px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: #ef583d;
+}
+.error-message .iconjinggao1- {
+    font-size: 13px;
 }
 </style>>

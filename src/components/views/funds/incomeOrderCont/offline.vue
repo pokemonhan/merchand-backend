@@ -352,7 +352,7 @@ export default {
             document.body.removeChild(aLink);
         },
         getList() {
-            // console.log(1)
+            console.log(1)
             let created_at = "";
             if (this.filter.dates[0] && this.filter.dates[1]) {
                 created_at = JSON.stringify([
@@ -377,7 +377,7 @@ export default {
             let { method, url } = this.$api.founds_incomeorder_list;
             this.$http({ method: method, url: url, params: params }).then(
                 res => {
-                    // console.log('返回数据：',res)
+                    console.log('返回数据：',res)
                     if (res && res.code == "200") {
                         this.list = res.data.data;
                         this.total = res.data.total;

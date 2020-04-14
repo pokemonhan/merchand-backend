@@ -103,8 +103,13 @@ export default {
         };
     },
     methods: {
-        updateNo(val) {},
-        updateSize(val) {},
+        updateNo(val) {
+            this.getList();
+        },
+        updateSize(val) {
+            this.pageNo = 1;
+            this.getList();
+        },
         getList() {
             let datas = {
                 bank: this.filter.acc,
@@ -139,7 +144,7 @@ export default {
         },
         enableCfm() {
             let data = {
-                id: this.curr_row.id,
+                bank_id: this.curr_row.id,
                 status: 1
             };
             let { method, url } = this.$api.payment_bank_status;
@@ -160,7 +165,7 @@ export default {
         },
         disableCfm() {
             let data = {
-                id: this.curr_row.id,
+                bank_id: this.curr_row.id,
                 status: 0
             };
             let { method, url } = this.$api.payment_bank_status;

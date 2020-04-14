@@ -273,7 +273,7 @@ export default {
             if(this.filter.operate_dates[0] && this.filter.operate_dates[1]){
                 operation_at=JSON.stringify([this.filter.operate_dates[0],this.filter.operate_dates[1]])
             }
-            let para={
+            let datas={
                 order_no:this.filter.order_no,
                 mobile:this.filter.account,
                 guid:this.filter.acc_id,
@@ -285,9 +285,9 @@ export default {
                 page:this.pageNo,
                 pageSize:this.pageSize
             }
-            let params=window.all.tool.rmEmpty(para);
+            let data=window.all.tool.rmEmpty(datas);
             let {method,url}=this.$api.founds_paymentorder_list;
-            this.$http({method:method,url:url,params:params}).then(res=>{
+            this.$http({method:method,url:url,data:data}).then(res=>{
                 console.log('返回数据',res)
                 if(res && res.code=='200'){
                     this.list=res.data.data;

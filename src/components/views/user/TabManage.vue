@@ -48,7 +48,7 @@
                 </div>
                 
             </div>
-        </div> -->
+        </div>-->
         <Dialog class="modal-mask" :show.sync="mod_show" title="编辑">
             <div class="dia-inner">
                 <div class="mod-body">
@@ -142,7 +142,7 @@ export default {
             this.getList();
         },
         updateSize(val) {
-            this.pageNo=1;
+            this.pageNo = 1;
             this.getList();
         },
         initForm() {
@@ -225,7 +225,6 @@ export default {
 
         diaCfm() {
             if (this.dia_status === "addTab") {
-                // console.log('this.dia_status: ', this.dia_status);
                 this.addCfm();
             }
             if (this.dia_status === "editTab") {
@@ -247,25 +246,21 @@ export default {
                     this.$toast.success(res && res.message);
                     this.show_delete_tab_conf = false;
                     this.getList();
-                } else {
-                    if (res && res.message !== "") {
-                        
-                    }
                 }
             });
         },
         getList() {
-            // let para = {
-            //     page:this.pageNo,
-            //     pageSize:this.pageSize
-            // };
-            // let params = window.all.tool.rmEmpty(para);
+            let datas = {
+                page: this.pageNo,
+                pageSize: this.pageSize
+            };
+            let data = window.all.tool.rmEmpty(datas);
             let { method, url } = this.$api.tag_list;
-            this.$http({ method, url}).then(res => {
-                // console.log("res", res);
+            this.$http({ method, url, data }).then(res => {
+                console.log("res", res);
                 if (res && res.code == "200") {
                     this.list = res.data.data;
-                    this.total=res.data.total;
+                    this.total = res.data.total;
                 }
             });
         }

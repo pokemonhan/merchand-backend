@@ -189,7 +189,7 @@ export default {
             if (this.filter.dates[0] && this.filter.dates[1]) {
                 created_at = [this.filter.dates[0],this.filter.dates[1]]
             }
-            let para={
+            let datas={
                 mobile:this.filter.account,
                 guid:this.filter.game_id,
                 created_at:created_at,
@@ -198,10 +198,10 @@ export default {
                 page:this.pageNo,
                 pageSize:this.pageSize,
             };
-            console.log('请求数据',para);
-            let params=window.all.tool.rmEmpty(para);
+            console.log('请求数据',datas);
+            let data=window.all.tool.rmEmpty(datas);
             let {method,url}=this.$api.founds_manualaccess_artificial_charge_recording;
-            this.$http({method:method,url:url,params:params}).then(res=>{
+            this.$http({method:method,url:url,data:data}).then(res=>{
                 console.log('返回数据：',res)
                 if(res && res.code=='200'){
                     this.list=res.data.data;

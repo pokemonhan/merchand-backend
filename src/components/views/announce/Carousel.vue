@@ -334,12 +334,12 @@ export default {
             })
         },
         getList() {
-            let para = {
+            let datas = {
                 device: this.curr_btn
             };
-            let params = window.all.tool.rmEmpty(para);
+            let data = window.all.tool.rmEmpty(datas);
             let { url, method } = this.$api.announce_carousel_list;
-            this.$http({ method, url, params }).then(res => {
+            this.$http({ method, url, data }).then(res => {
                 // console.log('返回数据',res)
                 if (res && res.code == "200") {
                     this.list = res.data.data;

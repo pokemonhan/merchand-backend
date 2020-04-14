@@ -53,7 +53,6 @@
                     <span>商户</span>
                     <Input limit="number" v-model="filter.vendor" />
                 </li>
-                <li style="margin-left:-10px"></li>
                 <li class="mb10">
                     <button class="btn-blue" @click="getList">查询</button>
                     <button class="btn-blue" @click="exportExcel()">导出Excel</button>
@@ -401,13 +400,13 @@ export default {
             });
         },
         getPayMethodSel() {
-            let params = {
+            let data = {
                 is_online: 1
             };
             // console.log("请求数据", param);
 
             let { url, method } = this.$api.founds_incomeorder_pay_method;
-            this.$http({ method, url, params }).then(res => {
+            this.$http({ method, url, data }).then(res => {
                 // console.log("返回数据", res);
                 if (res && res.code == "200") {
                     this.pay_way_opt = this.backToSelOpt(res.data);

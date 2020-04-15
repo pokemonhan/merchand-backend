@@ -156,18 +156,18 @@ export default {
             })
         },
         getList() {
-            let para = {
+            let datas = {
                 hot_new: 1,
                 vendor_id: this.filter.vendor_id,
                 name: this.filter.name,
                 page:this.pageNo,
                 pageSize:this.pageSize
             };
-            let params = window.all.tool.rmEmpty(para);
+            let data = window.all.tool.rmEmpty(datas);
             this.$http({
                 method: this.$api.game_pc_list.method,
                 url: this.$api.game_pc_list.url,
-                params: params
+                data:data
             }).then(res => {
                 // console.log("res", res);
                 if (res && res.code === "200") {

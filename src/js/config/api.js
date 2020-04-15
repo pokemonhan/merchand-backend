@@ -460,25 +460,25 @@ export default {
     // H5游戏管理 - 列表
     game_h5_list: {
         url: '/merchant-api/game/index',
-        method: 'get'
+        method: 'post'
     },
 
     // PC游戏管理 - 列表
     game_pc_list: {
         url: '/merchant-api/game/index',
-        method: 'get'
+        method: 'post'
     },
     // APP游戏管理 - 列表
     game_app_list: {
         url: '/merchant-api/game/index',
-        method: 'get'
+        method: 'post'
     },
 
 
     // 平台管理 - 列表
     game_vendor: {
         url: '/merchant-api/game-vendor/index',
-        method: 'get'
+        method: 'post'
     },
     // 平台管理 - 更改状态与维护
     game_vendor_status_set: {

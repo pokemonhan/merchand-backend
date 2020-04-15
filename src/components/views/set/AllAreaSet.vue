@@ -5,7 +5,7 @@
             <div class="set-label">设置选项:</div>
             <button
                 :class="['mt20',curr_set_btn===item.id?'btn-blue':'btn-plain']"
-                v-for="(item, index) in set_btns" 
+                v-for="(item, index) in set_btns"
                 :key="index"
                 @click="setChange(item)"
             >{{item.name}}</button>
@@ -15,10 +15,18 @@
                 <span>设置内容:</span>
                 <button class="btn-blue-large mr20">重置</button>
             </div>
-            <div class="set_conment" >
-                <ul>
-                    <li >
-
+            <div class="set_conment">
+                <ul v-for="(item,index) in childs" :key="index" class="form" >
+                    <li>
+                        <div class="li-left" >
+                            <span>{{item.name}}:</span>
+                            <Input/>
+                            <span>是否启动:</span>
+                            <span >
+                                <Switchbox />
+                            </span>
+                            <Select/>
+                        </div>
                     </li>
                 </ul>
             </div>
@@ -27,62 +35,69 @@
 </template>
 <script>
 export default {
-    name: 'AllAreaSet',
+    name: "AllAreaSet",
     data() {
         return {
             set_btns: [],
             curr_set_btn: 3,
-            set_name:[],
+            set_name: [],
             // 注册登录设定
             login_set: {
-                aa: '',
+                aa: "",
                 status: true
             },
             // 游戏设定
             game_set: {
-                aa: '', // 临时这样, 建议后台数据一致
+                aa: "", // 临时这样, 建议后台数据一致
                 status: true
             },
             // 活动金额限制设定
             active_limit_set: {
-                aa: '',
-                status: true,
+                aa: "",
+                status: true
             },
             // 出入款设定
             payment_form: {
-                aa: '',
+                aa: "",
                 status: false
             },
 
             //
             chat_lev_opt: [
-                { label: '全部', value: '' },
-                { label: 'VIP1', value: 0 },
-                { label: 'VIP2', value: 1 },
-                { label: 'VIP3', value: 2 }
+                { label: "全部", value: "" },
+                { label: "VIP1", value: 0 },
+                { label: "VIP2", value: 1 },
+                { label: "VIP3", value: 2 }
             ],
-            list:[],
-        }
+            list: [],
+            childs: []
+        };
     },
     methods: {
         setChange(item) {
+            if(!item) return
             this.curr_set_btn = item.id;
-            console.log(item.id)
+            this.childs = item.childs;
+            
+            console.log(item.id);
+            console.log("childs", this.childs);
         },
-        getTitleList(){
-            let {method,url}=this.$api.allarea_set_list;
-            this.$http({method,url}).then(res=>{
-                console.log('返回数据',res)
-                if(res && res.code=='200'){
-                    this.set_btns=res.data
+        getTitleList() {
+            let { method, url } = this.$api.allarea_set_list;
+            this.$http({ method, url }).then(res => {
+                console.log("返回数据", res);
+                if (res && res.code == "200") {
+                    this.set_btns = res.data || [];
+                    let firstBtn=this.set_btns[0]
+                    this.setChange(firstBtn)
                 }
-            })
-        },
+            });
+        }
     },
     mounted() {
         this.getTitleList();
     }
-}
+};
 </script>
 
 <style scoped>
@@ -121,6 +136,7 @@ export default {
 }
 .form .li-left > span:first-child,
 .form .li-right > span:first-child {
+    font-size: 12px;
     min-width: 200px;
     margin-right: 10px;
     text-align: right;

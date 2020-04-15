@@ -158,7 +158,7 @@ export default {
             })
         },
         getList() {
-            let para = {
+            let datas = {
                 hot_new: 1,
                 vendor_id: this.filter.vendor_id,
                 name: this.filter.name,
@@ -167,9 +167,9 @@ export default {
                 pageSize:this.pageSize
             };
             // console.log('请求数据',para)
-            let params = window.all.tool.rmEmpty(para);
+            let data = window.all.tool.rmEmpty(datas);
             let {url,method}=this.$api.game_h5_list;
-            this.$http({method, url, params}).then(res => {
+            this.$http({method, url, data}).then(res => {
                 console.log("列表返回数据", res);
                 if (res && res.code == "200") {
                     this.list = res.data.data || [];

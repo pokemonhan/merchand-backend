@@ -12,7 +12,8 @@
                 </span>
 
                 <!-- 二级菜单 -->
-                <ul :ref="lev1_index" :class="['level2',curr_ul(lev1)?'active-ul':'']">
+                <ul
+                 :ref="lev1_index" :class="['level2',curr_ul(lev1)?'active-ul':'']">
                     <li v-for="(lev2, lev2_index) in (lev1.children||[]).filter(item=>item.display)" :key="lev2_index">
                         <!-- 标题 -->
                         <span
@@ -22,7 +23,7 @@
                             <!-- <i :class="['iconfont', i.icon]"></i> -->
                             <span>{{lev2.label}}</span>
                             <span v-if="lev2.children" class="iconfont iconup right"></span>
-                        </span>
+      鳟                  </span>
 
                         <!-- ---------    三级菜单 ------------------------->
                         <ul :ref="lev1_index+'_'+lev2_index" class="level3">

@@ -308,14 +308,14 @@ export default {
             });
         },
         getList() {
-            let para = {
+            let datas = {
                 title: this.filter.header,
                 page: this.pageNo,
                 pageSize: this.pageSize
             };
-            let params = window.all.tool.rmEmpty(para);
+            let data = window.all.tool.rmEmpty(datas);
             let { url, method } = this.$api.announce_marquee_list;
-            this.$http({ url, method, params }).then(res => {
+            this.$http({ url, method, data }).then(res => {
                 // console.log(res)
                 if (res && res.code == "200") {
                     this.list = res.data.data;

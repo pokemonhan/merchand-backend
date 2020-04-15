@@ -306,16 +306,16 @@ export default {
             this.pic_dia_show = true;
         },
         getList() {
-            let para = {
+            let datas = {
                 device: this.head_act_btn,
                 title: this.filter.title,
                 page:this.pageNo,
                 pageSize:this.pageSize
             };
             // console.log('请求数据',para)
-            let params = window.all.tool.rmEmpty(para);
+            let data = window.all.tool.rmEmpty(datas);
             let { url, method } = this.$api.announce_loginpopup_list;
-            this.$http({ url, method, params }).then(res => {
+            this.$http({ url, method, data }).then(res => {
                 // console.log('返回数据',res)
                 if (res && res.code == "200") {
                     this.list = res.data.data;

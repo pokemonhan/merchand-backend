@@ -306,7 +306,7 @@ export default {
                     this.filter.operater_dates[1]
                 ]);
             }
-            let para = {
+            let datas = {
                 mobile: this.filter.account,
                 order_no: this.filter.order_no,
                 created_at: created_at,
@@ -318,10 +318,10 @@ export default {
                 page: this.pageNo,
                 pageSize: this.pageSize
             };
-            // console.log('请求数据',para)
-            let params = window.all.tool.rmEmpty(para);
+            // console.log('请求数据',datas)
+            let data = window.all.tool.rmEmpty(datas);
             let { method, url } = this.$api.founds_interface_list;
-            this.$http({ method: method, url: url, params: params }).then(
+            this.$http({ method: method, url: url, data:data }).then(
                 res => {
                     console.log('出款数据',res);
                     if (res && res.code == "200") {

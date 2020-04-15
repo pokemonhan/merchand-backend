@@ -94,7 +94,7 @@ export default {
     // 标签管理 - 列表 -------
     tag_list: {
         url: '/merchant-api/user-tags/index',
-        method: 'get'
+        method: 'post'
     },
     // 标签管理 - 添加
     tag_add: {
@@ -138,7 +138,7 @@ export default {
     // ---- 等级管理 - 列表
     grade_list: {
         url: '/merchant-api/user-grade/index',
-        method: 'get',
+        method: 'post',
     },
     // ---- 等级管理 - 添加
     grade_add: {
@@ -188,7 +188,7 @@ export default {
     // ----入款订单 - 获取支付方式
     founds_incomeorder_pay_method:{
         url:'/merchant-api/recharge-order/get-finance-types',
-        method:'get'
+        method:'post'
     },
 
     // ---- 入款订单 - 手动入款
@@ -218,7 +218,7 @@ export default {
     // ---- 人工存取 - 人工存款记录
     founds_manualaccess_artificial_recharge_recording:{
         url:'/merchant-api/handle-save-buckle/save-index',
-        method:'get'
+        method:'post'
     },
 
     // ---- 人工存取 - 人工扣款
@@ -236,7 +236,7 @@ export default {
     // ---- 出款审核 - 列表
     founds_interface_list:{
         url:'/merchant-api/withdraw-order/check-index',
-        method:'get'
+        method:'post'
     },
 
     // ---- 出款审核 - 审核通过
@@ -254,7 +254,7 @@ export default {
     // ---- 出款订单 - 列表
     founds_paymentorder_list:{
         url:'/merchant-api/withdraw-order/out-index',
-        method:'get'
+        method:'post'
     },
 
     // ---- 出款订单 - 出款通过
@@ -280,7 +280,7 @@ export default {
     //跑马灯消息 - 列表
     announce_marquee_list:{
         url:'/merchant-api/marquee-notice/index',
-        method:'get'
+        method:'post'
     },
 
     //跑马灯消息 - 编辑
@@ -310,7 +310,7 @@ export default {
     // 系统公告 - 列表
     announce_systemannounce_list:{
         url:'/merchant-api/system-notice/index',
-        method:'get'
+        method:'post'
     },
 
     // 系统公告 - 编辑
@@ -341,7 +341,7 @@ export default {
     // 登录弹窗公告 - 列表
     announce_loginpopup_list:{
         url:'/merchant-api/login-notice/index',
-        method:'get'
+        method:'post'
     },
 
     //登录弹窗公告 - 编辑
@@ -372,7 +372,7 @@ export default {
     //轮播公告 - 列表
     announce_carousel_list:{
         url:'/merchant-api/carousel-notice/index',
-        method:'get'
+        method:'post'
     },
 
     //轮播公告 - 编辑
@@ -649,7 +649,7 @@ export default {
     // 管理员分组 -分组列表
     admin_group_list: {
         url: '/merchant-api/merchant-admin-group/detail',
-        method: 'get'
+        method: 'post'
     },
     // 管理员分组-分组添加
     admin_group_add: {

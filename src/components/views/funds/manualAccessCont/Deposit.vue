@@ -188,7 +188,7 @@ export default {
             if (this.filter.dates[0] && this.filter.dates[1]) {
                 created_at = JSON.stringify([this.filter.dates[0],this.filter.dates[1]])
             }
-            let para = {
+            let datas = {
                 mobile: this.filter.account,
                 guid: this.filter.account_id,
                 created_at: created_at,
@@ -198,14 +198,14 @@ export default {
                 pageSize:this.pageSize
             };
             // console.log('请求数据',para);
-            let params = window.all.tool.rmEmpty(para);
+            let data = window.all.tool.rmEmpty(datas);
             let {
                 method,
                 url
             } = this.$api.founds_manualaccess_artificial_recharge_recording;
-            this.$http({ method: method, url: url, params: params }).then(
+            this.$http({ method: method, url: url, data:data }).then(
                 res => {
-                    // console.log("返回数据：", res);
+                    console.log("返回数据：", res);
                     if (res && res.code == "200") {
                         this.list = res.data.data;
                         this.total = res.data.total;
@@ -253,7 +253,7 @@ export default {
             console.log(data)
             let {url,method}=this.$api.founds_manualaccess_artificial_recharge;
             this.$http({method,url,data}).then(res=>{
-                // console.log('返回数据',res)
+                console.log('返回数据',res)
                 if(res && res.code=='200'){
                     this.$toast.success(res && res.message);
                     this.dia_show=false;

@@ -1,7 +1,7 @@
 <template>
     <div class="contain" ref="contain">
         <ul class="level-1">
-            <li v-for="(lev1, lev1_index) in (menu_list||[]).filter(item=>item.display)" :key="lev1_index">
+            <li v-for="(lev1, lev1_index) in (menu_list||[]).filter(item=>item.display || true)" :key="lev1_index">
                 <span
                     :class="['title',$route.path == lev1.path&&(!lev1.children)?'active-menu':'',curr_ul(lev1)?'lev1-active':'']"
                     @click="expandMenu(lev1,lev1_index)"
@@ -13,7 +13,7 @@
 
                 <!-- 二级菜单 -->
                 <ul :ref="lev1_index" :class="['level2',curr_ul(lev1)?'active-ul':'']">
-                    <li v-for="(lev2, lev2_index) in (lev1.children||[]).filter(item=>item.display)" :key="lev2_index">
+                    <li v-for="(lev2, lev2_index) in (lev1.children||[]).filter(item=>item.display || true)" :key="lev2_index">
                         <!-- 标题 -->
                         <span
                             :class="['title',$route.path == lev2.path?'active-menu':'']"
@@ -144,17 +144,19 @@ export default {
         getMenuList() {
 
             if(!window.all.tool.getLocal('Authorization')) return
-            // this.menu_list = window.all.menu_list
-            // console.log('this.menu_list: ', this.menu_list);
-            // window.all.tool.setLocal('menu', this.menu_list)
-            // return
+            this.menu_list = window.all.menu_list
+            console.log('this.menu_list: ', this.menu_list);
+            window.all.tool.setLocal('menu', this.menu_list)
+            return
             if (window.all.tool.getLocal('menu')) {
                 this.menu_list = window.all.tool.getLocal('menu')
             } else {
                 let { method, url } = this.$api.current_admin_menu
 
                 this.$http({ method, url }).then(res => {
+                    console.log('res',res)
                     if (res && res.code === '200') {
+                        if(!res.data) return
                         let menu = this.objToArr(res.data)
                         this.menu_list = menu
                         window.all.tool.setLocal('menu', menu)

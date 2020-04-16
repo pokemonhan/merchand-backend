@@ -16,16 +16,32 @@
                 <button class="btn-blue-large mr20">重置</button>
             </div>
             <div class="set_conment">
-                <ul v-for="(item,index) in childs" :key="index" class="form" >
+                <ul v-for="(item,index) in childs" :key="index" class="form">
                     <li>
-                        <div class="li-left" >
+                        <div class="li-left">
                             <span>{{item.name}}:</span>
-                            <Input/>
-                            <span>是否启动:</span>
-                            <span >
-                                <Switchbox />
-                            </span>
-                            <Select/>
+                            <Input v-model="form.content" v-if="item.editable_type.indexOf('1')!=-1" />
+                            <div  v-if="item.editable_type.indexOf('1')!=-1" >
+                                <i class="orange iconfont iconjinggao1- ml5"></i>
+                                <i class="green iconfont iconchenggong- ml5"></i>
+                            </div>
+                            <button v-if="item.editable_type.indexOf('1')!=-1" class="btn-blue">保存</button>
+                            <span v-if="item.editable_type.indexOf('2')!=-1" class="textCfm">是否开启:</span>
+                            <Switchbox
+                                v-model="form.status"
+                                v-if="item.editable_type.indexOf('2')!=-1"
+                                class="switchchoose"
+                            />
+                            <!-- <div  v-if="item.editable_type.indexOf('2')!=-1" >
+                                <i class="orange iconfont iconjinggao1- ml5"></i>
+                                <i class="green iconfont iconchenggong- ml5"></i>
+                            </div> -->
+                            <Select v-model="form.select_type" :options="type_opt" v-if="item.editable_type.indexOf('3')!=-1" />
+                            <div  v-if="item.editable_type.indexOf('3')!=-1" >
+                                <i class="orange iconfont iconjinggao1- ml5"></i>
+                                <i class="green iconfont iconchenggong- ml5"></i>
+                            </div>
+                            <button v-if="item.editable_type.indexOf('3')!=-1" class="btn-blue">保存</button>
                         </div>
                     </li>
                 </ul>
@@ -40,47 +56,29 @@ export default {
         return {
             set_btns: [],
             curr_set_btn: 3,
-            set_name: [],
-            // 注册登录设定
-            login_set: {
-                aa: "",
-                status: true
-            },
-            // 游戏设定
-            game_set: {
-                aa: "", // 临时这样, 建议后台数据一致
-                status: true
-            },
-            // 活动金额限制设定
-            active_limit_set: {
-                aa: "",
-                status: true
-            },
-            // 出入款设定
-            payment_form: {
-                aa: "",
-                status: false
-            },
-
-            //
-            chat_lev_opt: [
+            type_opt: [
                 { label: "全部", value: "" },
                 { label: "VIP1", value: 0 },
                 { label: "VIP2", value: 1 },
                 { label: "VIP3", value: 2 }
             ],
+            form:{
+                content:'',
+                status:'',
+                select_type:'',
+            },
             list: [],
             childs: []
         };
     },
     methods: {
         setChange(item) {
-            if(!item) return
+            if (!item) return;
+            console.log("item", item);
             this.curr_set_btn = item.id;
             this.childs = item.childs;
+            // console.log("childs", this.childs);
             
-            console.log(item.id);
-            console.log("childs", this.childs);
         },
         getTitleList() {
             let { method, url } = this.$api.allarea_set_list;
@@ -88,8 +86,8 @@ export default {
                 console.log("返回数据", res);
                 if (res && res.code == "200") {
                     this.set_btns = res.data || [];
-                    let firstBtn=this.set_btns[0]
-                    this.setChange(firstBtn)
+                    let firstBtn = this.set_btns[0];
+                    this.setChange(firstBtn);
                 }
             });
         }
@@ -111,10 +109,17 @@ export default {
     font-weight: 800;
 }
 .set-cont {
+    font-weight: bold;
+    font-size: 14px;
     margin-top: 20px;
     margin-left: 10px;
     display: flex;
     justify-content: space-between;
+}
+.form {
+    display: inline-block;
+    text-align: center;
+    min-width: 500px;
 }
 .form > li {
     display: flex;
@@ -128,21 +133,26 @@ export default {
 .form > li > div .v-input,
 .form > li > div .v-select {
     /* width: 150px; */
-    width: 200px;
+    width: 180px;
 }
 .form > li .li-left {
     /* border: 1px solid #000; */
     min-width: 450px;
 }
-.form .li-left > span:first-child,
-.form .li-right > span:first-child {
+.form .li-left > span:first-child {
     font-size: 12px;
-    min-width: 200px;
+    font-weight: bold;
+    min-width: 170px;
     margin-right: 10px;
     text-align: right;
 }
-.flex-center {
-    display: flex;
-    justify-content: center;
+.textCfm {
+    width: 60px;
+    font-weight: bold;
+    margin-left: 20px;
+}
+.switchchoose {
+    width: 30px;
+    transform: scale(0.7);
 }
 </style>

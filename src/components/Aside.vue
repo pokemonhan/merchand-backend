@@ -1,7 +1,7 @@
 <template>
     <div class="contain" ref="contain">
         <ul class="level-1">
-            <li v-for="(lev1, lev1_index) in (menu_list||[]).filter(item=>item.display || true)" :key="lev1_index">
+            <li v-for="(lev1, lev1_index) in (menu_list||[]).filter(item=>item.display)" :key="lev1_index">
                 <span
                     :class="['title',$route.path == lev1.path&&(!lev1.children)?'active-menu':'',curr_ul(lev1)?'lev1-active':'']"
                     @click="expandMenu(lev1,lev1_index)"
@@ -12,8 +12,9 @@
                 </span>
 
                 <!-- 二级菜单 -->
-                <ul :ref="lev1_index" :class="['level2',curr_ul(lev1)?'active-ul':'']">
-                    <li v-for="(lev2, lev2_index) in (lev1.children||[]).filter(item=>item.display || true)" :key="lev2_index">
+                <ul
+                 :ref="lev1_index" :class="['level2',curr_ul(lev1)?'active-ul':'']">
+                    <li v-for="(lev2, lev2_index) in (lev1.children||[]).filter(item=>item.display)" :key="lev2_index">
                         <!-- 标题 -->
                         <span
                             :class="['title',$route.path == lev2.path?'active-menu':'']"

@@ -519,7 +519,7 @@ export default {
     //静态活动 - 列表
     static_active_list:{
         url:'/merchant-api/activity-static/index',
-        method:'get'
+        method:'post'
     },
     //静态活动 - 编辑
     static_active_edit:{
@@ -539,7 +539,7 @@ export default {
     //动态活动 - 列表
     dynamic_active_list:{
         url:'/merchant-api/activity-dyn/index',
-        method:'get'
+        method:'post'
     },
     //动态活动 - 改变状态
     dynamic_active_change_status:{

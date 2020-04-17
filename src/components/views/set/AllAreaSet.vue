@@ -4,7 +4,7 @@
         <div class="head-set">
             <div class="set-label">设置选项:</div>
             <button
-                :class="['mt20',curr_set_btn===item.id?'btn-blue':'btn-plain']"
+                :class="['mt20',curr_row.id===item.id?'btn-blue':'btn-plain']"
                 v-for="(item, index) in set_btns"
                 :key="index"
                 @click="setChange(item)"
@@ -19,25 +19,33 @@
                 <ul v-for="(item,index) in childs" :key="index" class="form">
                     <li>
                         <div class="li-left">
+                            <!-- 名称 -->
                             <span>{{item.name}}:</span>
-                            <Input v-model="form.content" v-if="item.editable_type.indexOf('1')!=-1" />
-                            <div  v-if="item.editable_type.indexOf('1')!=-1" >
+                            <!-- 输入框 -->
+                            <Input v-model="item.value" v-if="item.editable_type.indexOf('1')!=-1" />
+                            <div v-if="item.editable_type.indexOf('1')!=-1">
                                 <i class="orange iconfont iconjinggao1- ml5"></i>
                                 <i class="green iconfont iconchenggong- ml5"></i>
                             </div>
-                            <button v-if="item.editable_type.indexOf('1')!=-1" class="btn-blue">保存</button>
+                            <button
+                                v-if="item.editable_type.indexOf('1')!=-1"
+                                class="btn-blue"
+                                @click="save(item)"
+                            >保存</button>
+                            <!-- 开关按钮 -->
                             <span v-if="item.editable_type.indexOf('2')!=-1" class="textCfm">是否开启:</span>
                             <Switchbox
-                                v-model="form.status"
+                                v-model="item.status"
                                 v-if="item.editable_type.indexOf('2')!=-1"
                                 class="switchchoose"
                             />
-                            <!-- <div  v-if="item.editable_type.indexOf('2')!=-1" >
-                                <i class="orange iconfont iconjinggao1- ml5"></i>
-                                <i class="green iconfont iconchenggong- ml5"></i>
-                            </div> -->
-                            <Select v-model="form.select_type" :options="type_opt" v-if="item.editable_type.indexOf('3')!=-1" />
-                            <div  v-if="item.editable_type.indexOf('3')!=-1" >
+                            <!-- 下拉框 -->
+                            <Select
+                                v-model="item.value"
+                                :options="type_opt"
+                                v-if="item.editable_type.indexOf('3')!=-1"
+                            />
+                            <div v-if="item.editable_type.indexOf('3')!=-1">
                                 <i class="orange iconfont iconjinggao1- ml5"></i>
                                 <i class="green iconfont iconchenggong- ml5"></i>
                             </div>
@@ -55,30 +63,30 @@ export default {
     data() {
         return {
             set_btns: [],
-            curr_set_btn: 3,
+            curr_row: {},
             type_opt: [
                 { label: "全部", value: "" },
-                { label: "VIP1", value: 0 },
-                { label: "VIP2", value: 1 },
-                { label: "VIP3", value: 2 }
+                { label: "VIP1", value: "0" },
+                { label: "VIP2", value: "1" },
+                { label: "VIP3", value: "2" }
             ],
-            form:{
-                content:'',
-                status:'',
-                select_type:'',
+            form: {
+                content: "",
+                status: "",
+                select_type: ""
             },
             list: [],
-            childs: []
+            childs: [],
+            isFirst: true
         };
     },
     methods: {
         setChange(item) {
             if (!item) return;
-            console.log("item", item);
-            this.curr_set_btn = item.id;
+            // console.log("item", item);
+            this.curr_row = item;
             this.childs = item.childs;
             // console.log("childs", this.childs);
-            
         },
         getTitleList() {
             let { method, url } = this.$api.allarea_set_list;
@@ -86,8 +94,51 @@ export default {
                 console.log("返回数据", res);
                 if (res && res.code == "200") {
                     this.set_btns = res.data || [];
-                    let firstBtn = this.set_btns[0];
-                    this.setChange(firstBtn);
+                    //判断第一次进入
+                    if (this.isFirst) {
+                        let firstBtn = this.set_btns[0];
+                        this.setChange(firstBtn);
+                        this.isFirst = false;
+                    }else{
+                        // let  curr_item=res.data.find(item=>this.curr_row.id===item.id)
+                        let curr_item={}
+                        for(var i=0;i<res.data.length;i++){
+                            // curr_item=res.data[i].id
+                            let item=res.data[i]
+                            if(this.curr_row.id===item.id){
+                                curr_item=item
+                            }
+                        }
+                        // console.log('发音',curr_item)
+                        this.setChange(curr_item)
+                    }
+                }
+            });
+        },
+        save(item) {
+            let key = "";
+            if (item.editable_type == "1") {
+                key = "value";
+            }
+            if (item.editable_type == "2") {
+                key = "status";
+            }
+            if (item.editable_type == "3") {
+                key = "value";
+            }
+            let datas = {
+                sign: item.sign,
+                key: key,
+                value: item.value
+            };
+            // console.log('item1111',item)
+            // console.log('请求数据',datas)
+            let data = window.all.tool.rmEmpty(datas);
+            let { method, url } = this.$api.allarea_set_save;
+            this.$http({ method, url, data }).then(res => {
+                if (res && res.code == "200") {
+                    this.$toast.success(res.message);
+                    this.getTitleList();
                 }
             });
         }

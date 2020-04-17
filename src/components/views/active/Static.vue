@@ -290,15 +290,15 @@ export default {
             this.getList();
         },
         getList() {
-            let para = {
+            let datas = {
                 device: this.curr_btn,
                 title: this.filter.title,
                 page:this.pageNo,
                 pageSize:this.pageSize
             };
-            let params = window.all.tool.rmEmpty(para);
+            let data = window.all.tool.rmEmpty(datas);
             let { method, url } = this.$api.static_active_list;
-            this.$http({ method, url, params }).then(res => {
+            this.$http({ method, url, data }).then(res => {
                 // console.log('返回数据',res);
                 if (res && res.code == "200") {
                     this.total = res.data.total;

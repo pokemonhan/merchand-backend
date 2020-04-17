@@ -14,7 +14,7 @@
                 </li>
                 <li>
                     <button class="btn-blue" @click="getList">查询</button>
-                    <button class="btn-blue" @click="sortCfm" >确定</button>
+                    <button class="btn-blue" @click="sortCfm">确定</button>
                 </li>
             </ul>
         </div>
@@ -107,7 +107,7 @@ export default {
             this.$http({ method, url, data }).then(res => {
                 if (res && res.code === "200") {
                     this.$toast.success(res && res.message);
-                    this.list=[]
+                    this.list = [];
                     this.getList();
                 }
             });
@@ -132,43 +132,43 @@ export default {
             }
             this.list = this.list.slice();
         },
-        sortCfm(){
-            let length=this.list && this.list.length;
-            if(!length) return;
-            let param=this.list.map((item,index)=>{
+        sortCfm() {
+            let length = this.list && this.list.length;
+            if (!length) return;
+            let param = this.list.map((item, index) => {
                 return {
-                    id:item.id,
-                    sort:length-index
+                    id: item.id,
+                    sort: length - index
                 };
             });
-            param=JSON.stringify(param);
-            let data={
-                sorts:param
+            param = JSON.stringify(param);
+            let data = {
+                sorts: param
             };
             this.$http({
-                method:this.$api.game_order.method,
-                url:this.$api.game_order.url,
-                data:data
-            }).then(res=>{
-                if(res && res.code=='200'){
-                    alert("执行成功")
+                method: this.$api.game_order.method,
+                url: this.$api.game_order.url,
+                data: data
+            }).then(res => {
+                if (res && res.code == "200") {
+                    alert("执行成功");
                     this.getList();
                 }
-            })
+            });
         },
         getList() {
-            let para = {
+            let datas = {
                 hot_new: 1,
                 vendor_id: this.filter.vendor_id,
                 name: this.filter.name,
-                page:this.pageNo,
-                pageSize:this.pageSize
+                page: this.pageNo,
+                pageSize: this.pageSize
             };
-            let params = window.all.tool.rmEmpty(para);
+            let data = window.all.tool.rmEmpty(datas);
             this.$http({
                 method: this.$api.game_app_list.method,
                 url: this.$api.game_app_list.url,
-                params: params
+                data: data
             }).then(res => {
                 console.log("res", res);
                 if (res && res.code === "200") {
@@ -181,9 +181,9 @@ export default {
             this.getList();
         },
         updateSize(val) {
-            this.pageNo=1;
+            this.pageNo = 1;
             this.getList();
-        },
+        }
     },
     // watch: {
     //     'type_id'(to, from){

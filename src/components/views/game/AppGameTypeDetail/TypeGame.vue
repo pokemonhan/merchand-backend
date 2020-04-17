@@ -187,7 +187,7 @@ export default {
             });
         },
         getList() {
-            let para = {
+            let datas = {
                 // is_hot
                 // TODO
                 type_id: this.type_id, // 分类游戏,(上面的按钮,不包括热门游戏)
@@ -198,10 +198,10 @@ export default {
                 pageSize:this.pageSize
             };
             // console.log(para);
-            let params = window.all.tool.rmEmpty(para);
+            let data = window.all.tool.rmEmpty(datas);
 
             let { url, method } = this.$api.game_app_list;
-            this.$http({ method, url, params }).then(res => {
+            this.$http({ method, url, data }).then(res => {
                 // console.log("列表👌👌👌👌: ", res);
                 if (res && res.code === "200") {
                     this.total = res.data.total;

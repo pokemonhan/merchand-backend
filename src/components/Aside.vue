@@ -23,7 +23,7 @@
                             <!-- <i :class="['iconfont', i.icon]"></i> -->
                             <span>{{lev2.label}}</span>
                             <span v-if="lev2.children" class="iconfont iconup right"></span>
-      鳟                  </span>
+                        </span>
 
                         <!-- ---------    三级菜单 ------------------------->
                         <ul :ref="lev1_index+'_'+lev2_index" class="level3">
@@ -145,17 +145,19 @@ export default {
         getMenuList() {
 
             if(!window.all.tool.getLocal('Authorization')) return
-            // this.menu_list = window.all.menu_list
-            // console.log('this.menu_list: ', this.menu_list);
-            // window.all.tool.setLocal('menu', this.menu_list)
-            // return
+            this.menu_list = window.all.menu_list
+            console.log('this.menu_list: ', this.menu_list);
+            window.all.tool.setLocal('menu', this.menu_list)
+            return
             if (window.all.tool.getLocal('menu')) {
                 this.menu_list = window.all.tool.getLocal('menu')
             } else {
                 let { method, url } = this.$api.current_admin_menu
 
                 this.$http({ method, url }).then(res => {
+                    console.log('res',res)
                     if (res && res.code === '200') {
+                        if(!res.data) return
                         let menu = this.objToArr(res.data)
                         this.menu_list = menu
                         window.all.tool.setLocal('menu', menu)

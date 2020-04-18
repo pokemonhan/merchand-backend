@@ -61,106 +61,110 @@
 
 <script>
 export default {
-    name: 'FundChange',
+    name: "FundChange",
     // props: {},
     data() {
         return {
             quick_query: [],
             filter: {
-                account: '',
-                userid: '',
+                account: "",
+                userid: "",
                 date: [],
-                status: '0'
+                status: "0"
             },
             acc_change_opt: [
-                { label: '全部', value: '0' },
-                { label: '充值', value: '1' },
-                { label: '取款', value: '2' },
-                { label: '转出', value: '3' },
-                { label: '转入', value: '4' },
-                { label: '优惠', value: '4' },
-                { label: '签到', value: '5' },
-                { label: '抢红包', value: '6' },
-                { label: '首充送', value: '7' },
-                { label: '注册送', value: '8' },
-                { label: '幸运转盘', value: '9' },
-                { label: '有奖竞猜', value: '10' }
+                { label: "全部", value: "0" },
+                { label: "充值", value: "1" },
+                { label: "取款", value: "2" },
+                { label: "转出", value: "3" },
+                { label: "转入", value: "4" },
+                { label: "优惠", value: "4" },
+                { label: "签到", value: "5" },
+                { label: "抢红包", value: "6" },
+                { label: "首充送", value: "7" },
+                { label: "注册送", value: "8" },
+                { label: "幸运转盘", value: "9" },
+                { label: "有奖竞猜", value: "10" }
             ],
             headers: [
-                { label: '流水编号' },
-                { label: '账变类型' },
-                { label: '资金流向' },
-                { label: '会员账户' },
-                { label: '会员ID' },
-                { label: '帐变前金额' },
-                { label: '账变金额' },
-                { label: '账变后金额' },
-                { label: '冻结金额' },
-                { label: '账变时间' }
+                { label: "流水编号" },
+                { label: "账变类型" },
+                { label: "资金流向" },
+                { label: "会员账户" },
+                { label: "会员ID" },
+                { label: "帐变前金额" },
+                { label: "账变金额" },
+                { label: "账变后金额" },
+                { label: "冻结金额" },
+                { label: "账变时间" }
             ],
             list: [
                 {
-                    a1: '13245678989',
-                    a2: '4561342',
-                    a3: 'D45678944654',
-                    a4: '优惠存款',
-                    a5: '100',
-                    a6: '100',
-                    a7: '50',
-                    a8: '2019/09/25 18：17：30'
+                    a1: "13245678989",
+                    a2: "4561342",
+                    a3: "D45678944654",
+                    a4: "优惠存款",
+                    a5: "100",
+                    a6: "100",
+                    a7: "50",
+                    a8: "2019/09/25 18：17：30"
                 },
                 {
-                    a1: '13245678989',
-                    a2: '4561342',
-                    a3: 'D45678944654',
-                    a4: '优惠存款',
-                    a5: '100',
-                    a6: '100',
-                    a7: '50',
-                    a8: '2019/09/25 18：17：30'
+                    a1: "13245678989",
+                    a2: "4561342",
+                    a3: "D45678944654",
+                    a4: "优惠存款",
+                    a5: "100",
+                    a6: "100",
+                    a7: "50",
+                    a8: "2019/09/25 18：17：30"
                 }
             ],
             total: 0,
             pageNo: 1,
             pageSize: 25
-        }
+        };
     },
     methods: {
         dateUpdate(dates) {
-            let arr = [dates[0] + ' 00:00:00', dates[1] + ' 00:00:00']
-            this.$set(this.filter, 'date', arr)
+            let arr = [dates[0] + " 00:00:00", dates[1] + " 00:00:00"];
+            this.$set(this.filter, "date", arr);
         },
         timeUpdate() {
-            this.quick_query = this.filter.date
+            this.quick_query = this.filter.date;
         },
         clearFilter() {
             this.filter = {
-                account: '',
-                userid: '',
+                account: "",
+                userid: "",
                 date: [],
-                status: '0'
-            }
+                status: "0"
+            };
         },
         updateNo(val) {},
         updateSize(val) {},
+
+        //等待接口 
         exportExcel() {
-            import('../../../js/config/Export2Excel').then(excel => {
-                const tHeaders = this.headers
+            import("../../../js/config/Export2Excel").then(excel => {
+                const tHeaders = this.headers;
                 const data = this.list.map(item => {
-                    return []
-                })
+                    return [
+                        
+                    ];
+                });
                 excel.export_json_to_excel({
                     header: tHeaders,
                     data,
-                    filename: excel,
+                    filename: "资金账变",
                     autoWidth: true,
-                    bookType: 'xlsx'
-                })
-            })
+                    bookType: "xlsx"
+                });
+            });
         }
     },
     mounted() {}
-}
+};
 </script>
 
 <style scoped>

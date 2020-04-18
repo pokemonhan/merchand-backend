@@ -280,11 +280,10 @@ export default {
             let formList = new FormData();
             formList.append("file", pic, pic.name);
             formList.append("basket", basket);
-            let { url, method } = this.$api.update_picture_database;
             let data = formList;
+            let { url, method } = this.$api.update_picture_database;
             let headers = { "Content-Type": "multipart/form-data" };
             this.$http({ method, url, data, headers }).then(res => {
-                // console.log(res)
                 if (res && res.code == "200") {
                     this.$set(this.form, "pic_path", res.data.path);
                 }

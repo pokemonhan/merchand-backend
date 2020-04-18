@@ -659,7 +659,7 @@ export default {
                 excel.export_json_to_excel({
                     header: tHeaders,
                     data,
-                    filename: excel,
+                    filename: "会员列表",
                     autoWidth: true,
                     bookType: "xlsx"
                 });

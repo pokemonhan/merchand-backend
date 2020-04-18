@@ -25,7 +25,7 @@
                             <Input v-model="item.value" v-if="item.editable_type.indexOf('1')!=-1" />
                             <div v-if="item.editable_type.indexOf('1')!=-1">
                                 <i class="orange iconfont iconjinggao1- ml5"></i>
-                                <i class="green iconfont iconchenggong- ml5"></i>
+                                <i v-if="successMessage.code=='200'"  class="green iconfont iconchenggong- ml5"></i>
                             </div>
                             <button
                                 v-if="item.editable_type.indexOf('1')!=-1"
@@ -38,6 +38,7 @@
                                 v-model="item.status"
                                 v-if="item.editable_type.indexOf('2')!=-1"
                                 class="switchchoose"
+                                @update="switchStatus($event,item)"
                             />
                             <!-- 下拉框 -->
                             <Select
@@ -49,7 +50,7 @@
                                 <i class="orange iconfont iconjinggao1- ml5"></i>
                                 <i class="green iconfont iconchenggong- ml5"></i>
                             </div>
-                            <button v-if="item.editable_type.indexOf('3')!=-1" class="btn-blue">保存</button>
+                            <button v-if="item.editable_type.indexOf('3')!=-1" class="btn-blue" @click="seleSave(item)" >保存</button>
                         </div>
                     </li>
                 </ul>
@@ -77,7 +78,8 @@ export default {
             },
             list: [],
             childs: [],
-            isFirst: true
+            isFirst: true,
+            successMessage:{},
         };
     },
     methods: {
@@ -116,19 +118,27 @@ export default {
             });
         },
         save(item) {
-            let key = "";
-            if (item.editable_type == "1") {
-                key = "value";
-            }
-            if (item.editable_type == "2") {
-                key = "status";
-            }
-            if (item.editable_type == "3") {
-                key = "value";
-            }
             let datas = {
                 sign: item.sign,
-                key: key,
+                key: "value",
+                value: item.value
+            };
+            // console.log('item1111',item)
+            // console.log('请求数据',datas)
+            let data = window.all.tool.rmEmpty(datas);
+            let { method, url } = this.$api.allarea_set_save;
+            this.$http({ method, url, data }).then(res => {
+                if (res && res.code == "200") {
+                    this.$toast.success(res.message);
+                    this.getTitleList();
+                    this.successMessage=res
+                }
+            });
+        },
+        seleSave(item){
+            let datas = {
+                sign: item.sign,
+                key: "value",
                 value: item.value
             };
             // console.log('item1111',item)
@@ -141,7 +151,25 @@ export default {
                     this.getTitleList();
                 }
             });
-        }
+        },
+        switchStatus(val, item) {
+            console.log('item',item)
+            let datas = {
+                sign: item.sign,
+                key: "status",
+                value: String(val ? 1 : 0)
+            };
+            // console.log('请求数据',datas)
+            let data = window.all.tool.rmEmpty(datas);
+            let { method, url } = this.$api.allarea_set_save;
+            this.$http({ method, url, data }).then(res => {
+                // console.log('返回数据',res)
+                if (res && res.code == "200") {
+                    this.$toast.success(res.message);
+                    this.getTitleList();
+                }
+            });
+        },
     },
     mounted() {
         this.getTitleList();

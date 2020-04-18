@@ -233,7 +233,7 @@ export default {
                 excel.export_json_to_excel({
                     header: tHeaders,
                     data,
-                    filename: excel,
+                    filename: "人工存款记录",
                     autoWidth: true,
                     bookType: "xlsx"
                 });

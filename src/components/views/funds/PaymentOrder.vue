@@ -22,10 +22,7 @@
                 </li>
                 <li>
                     <span>出款状态</span>
-                    <Select
-                        v-model="filter.payment_status"
-                        :options="payment_status_opt"
-                    ></Select>
+                    <Select v-model="filter.payment_status" :options="payment_status_opt"></Select>
                 </li>
                 <li>
                     <span>是否被稽核扣款</span>
@@ -37,11 +34,16 @@
                 </li>
                 <li>
                     <span>审核时间</span>
-                    <Date type="datetimerange" style="width:300px;" v-model="filter.operate_dates" @update="timeUpdate()" />
+                    <Date
+                        type="datetimerange"
+                        style="width:300px;"
+                        v-model="filter.operate_dates"
+                        @update="timeUpdate()"
+                    />
                 </li>
                 <li>
-                    <button class="btn-blue" @click="getList" >查询</button>
-                    <button class="btn-blue"  @click="exportExcel()" >导出excel</button>
+                    <button class="btn-blue" @click="getList">查询</button>
+                    <button class="btn-blue" @click="exportExcel()">导出excel</button>
                     <button class="btn-red" @click="clearAll">清空</button>
                 </li>
             </ul>
@@ -63,7 +65,7 @@
                         <span :class="color_obj[row.status].color">{{color_obj[row.status].text}}</span>
                     </td>
                     <td>
-                        <button 
+                        <button
                             :class="status_obj[row.status].button"
                             @click="statusShow(row)"
                         >{{status_obj[row.status].text}}</button>
@@ -107,21 +109,21 @@
                 @updateSize="updateSize"
             />
         </div>
-        <Dialog :show.sync="dia_show" :title="dia_title" >
-            <div class="dia-inner" >
-                <PaymentOrderReviewDetail  :row="curr_row" @getList="getList"  @closeDia="closeDia" />
+        <Dialog :show.sync="dia_show" :title="dia_title">
+            <div class="dia-inner">
+                <PaymentOrderReviewDetail :row="curr_row" @getList="getList" @closeDia="closeDia" />
             </div>
         </Dialog>
     </div>
 </template>
 
 <script>
-import PaymentOrderReviewDetail from './paymentOrderReview/PaymentOrderReviewDetail'
+import PaymentOrderReviewDetail from "./paymentOrderReview/PaymentOrderReviewDetail";
 
 export default {
-    name: 'PaymentOrder',
-    components:{
-        PaymentOrderReviewDetail,
+    name: "PaymentOrder",
+    components: {
+        PaymentOrderReviewDetail
     },
     data() {
         return {
@@ -138,10 +140,10 @@ export default {
                 is_audit_withhold: ""
             },
             type_opt: [
-                { label: "全部", value: ""},
-                { label: "银行卡", value: "1"},
+                { label: "全部", value: "" },
+                { label: "银行卡", value: "1" },
                 { label: "支付宝", value: "2" },
-                { label: "微信", value: "3"}
+                { label: "微信", value: "3" }
             ],
             color_obj: {
                 "-2": {
@@ -160,9 +162,9 @@ export default {
             total: 0,
             pageNo: 1,
             pageSize: 25,
-            dia_show:false,
-            dia_title:'出款订单审核',
-            curr_row:{},
+            dia_show: false,
+            dia_title: "出款订单审核",
+            curr_row: {},
 
             modal_conf_content: "",
             is_audit_withhold_opt: [
@@ -173,30 +175,30 @@ export default {
             payment_status_opt: [
                 { label: "全部", value: "" },
                 { label: "待出款", value: "1" },
-                { label: "已出款", value: "2"},
-                { label: "已拒绝", value: "-2" },
+                { label: "已出款", value: "2" },
+                { label: "已拒绝", value: "-2" }
             ],
             status_obj: {
-                '-2': {
-                    color: 'red',
-                    button: 'btns-red',
-                    text: '已拒绝'
+                "-2": {
+                    color: "red",
+                    button: "btns-red",
+                    text: "已拒绝"
                 },
-                '2': {
-                    color: 'green',
-                    button: 'btns-green',
-                    text: '已出款'
+                "2": {
+                    color: "green",
+                    button: "btns-green",
+                    text: "已出款"
                 },
-                '1': {
-                    color: 'purple',
-                    button: 'btns-yellow',
-                    text: '待审核'
+                "1": {
+                    color: "purple",
+                    button: "btns-yellow",
+                    text: "待审核"
                 }
             },
-            withdraw_obj:{
-                '1':{text:'银行'},
-                '2':{text:'支付宝'},
-                '3':{text:'微信'}
+            withdraw_obj: {
+                "1": { text: "银行" },
+                "2": { text: "支付宝" },
+                "3": { text: "微信" }
             },
             // table
             headers: [
@@ -214,29 +216,41 @@ export default {
                 "操作"
             ],
 
-            list: [],
+            list: []
         };
     },
 
     methods: {
-        exportExcel(){
-            import('../../../js/config/Export2Excel').then(excel=>{
-                const tHeaders=this.headers
-                const data=this.list.map(item=>{
-                    return[item.order_no,item.user.mobile,item.user.guid,item.account_type,item.amount,item.audit_fee,item.amount_received,item.handing_fee,item.created_at,item.reviewer.name,item.status]
-                })
+        exportExcel() {
+            import("../../../js/config/Export2Excel").then(excel => {
+                const tHeaders = this.headers;
+                const data = this.list.map(item => {
+                    return [
+                        item.order_no,
+                        item.user.mobile,
+                        item.user.guid,
+                        item.account_type,
+                        item.amount,
+                        item.audit_fee,
+                        item.amount_received,
+                        item.handing_fee,
+                        item.created_at,
+                        item.reviewer.name,
+                        item.status
+                    ];
+                });
                 excel.export_json_to_excel({
-                    header:tHeaders,
+                    header: tHeaders,
                     data,
-                    filename:excel,
-                    autoWidth:true,
-                    bookType:'xlsx'
-                })
-            })
+                    filename: "出款订单",
+                    autoWidth: true,
+                    bookType: "xlsx"
+                });
+            });
         },
         qqUpd(dates) {
             //同步时间筛选值
-            let arr=[dates[0]+' 00:00:00',dates[1]+' 00:00:00']
+            let arr = [dates[0] + " 00:00:00", dates[1] + " 00:00:00"];
             this.$set(this.filter, "operate_dates", arr);
         },
         timeUpdate() {
@@ -260,43 +274,46 @@ export default {
             this.getList();
         },
         updateSize(val) {
-            this.pageNo=1;
+            this.pageNo = 1;
             this.getList();
         },
-        statusShow(row){
-            this.dia_show=true
-            this.dia_title='出款订单审核'
-            this.curr_row=row;
+        statusShow(row) {
+            this.dia_show = true;
+            this.dia_title = "出款订单审核";
+            this.curr_row = row;
         },
-        getList(){
-            let operation_at=''
-            if(this.filter.operate_dates[0] && this.filter.operate_dates[1]){
-                operation_at=JSON.stringify([this.filter.operate_dates[0],this.filter.operate_dates[1]])
+        getList() {
+            let operation_at = "";
+            if (this.filter.operate_dates[0] && this.filter.operate_dates[1]) {
+                operation_at = JSON.stringify([
+                    this.filter.operate_dates[0],
+                    this.filter.operate_dates[1]
+                ]);
             }
-            let datas={
-                order_no:this.filter.order_no,
-                mobile:this.filter.account,
-                guid:this.filter.acc_id,
-                amount_type:this.filter.payment_type,
-                status:this.filter.payment_status,
-                is_audit:this.filter.is_audit_withhold,
-                admin:this.filter.auditor,
-                operation_at:operation_at,
-                page:this.pageNo,
-                pageSize:this.pageSize
-            }
-            let data=window.all.tool.rmEmpty(datas);
-            let {method,url}=this.$api.founds_paymentorder_list;
-            this.$http({method:method,url:url,data:data}).then(res=>{
-                console.log('返回数据',res)
-                if(res && res.code=='200'){
-                    this.list=res.data.data;
-                    this.total=res.data.total;
+            let datas = {
+                order_no: this.filter.order_no,
+                mobile: this.filter.account,
+                guid: this.filter.acc_id,
+                amount_type: this.filter.payment_type,
+                status: this.filter.payment_status,
+                is_audit: this.filter.is_audit_withhold,
+                admin: this.filter.auditor,
+                operation_at: operation_at,
+                page: this.pageNo,
+                pageSize: this.pageSize
+            };
+            let data = window.all.tool.rmEmpty(datas);
+            let { method, url } = this.$api.founds_paymentorder_list;
+            this.$http({ method: method, url: url, data: data }).then(res => {
+                console.log("返回数据", res);
+                if (res && res.code == "200") {
+                    this.list = res.data.data;
+                    this.total = res.data.total;
                 }
-            })
+            });
         },
-        closeDia(){
-            this.dia_show=false
+        closeDia() {
+            this.dia_show = false;
         }
     },
     mounted() {
@@ -328,10 +345,10 @@ export default {
     margin-top: 10px;
     width: 100%;
 }
-.total-table >ul {
+.total-table > ul {
     justify-content: center;
 }
-.total-table ul li{
+.total-table ul li {
     /* margin-left: 100px; */
     width: 20%;
 }

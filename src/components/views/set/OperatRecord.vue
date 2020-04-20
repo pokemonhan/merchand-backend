@@ -4,7 +4,11 @@
             <ul class="left">
                 <li>
                     <span>管理员</span>
-                    <Select v-model="filter.vendor" :options="vendor_opt"></Select>
+                    <Input v-model="filter.vendor"/>
+                </li>
+                <li>
+                    <span>IP搜索</span>
+                    <Input v-model="filter.dataIP"/>
                 </li>
                 <li>
                     <span>日期选择</span>
@@ -13,14 +17,14 @@
                     <Date v-model="filter.dates[1]" /> -->
                 </li>
                 <li>
-                    <button class="btn-blue">查询</button>
+                    <button class="btn-blue" @click="getList" >查询</button>
                 </li>
                 
             </ul>
         </div>
         <div>
             <ul class="opera-list">
-                <li v-for="(item, index) in 5" :key="index">
+                <li v-for="(item, index) in list" :key="index">
                     <span>{{'2分钟前'}}</span>
                     <div class="pic-cont">
                         <img
@@ -76,31 +80,11 @@ export default {
         return {
             filter: {
                 vendor: '',
-                name: '',
-                sort: '',
+                dataIP:'',
                 dates: []
             },
-            vendor_opt: [
-                {
-                    label: '抢庄牛牛',
-                    value: '1'
-                },
-                {
-                    label: '百家乐',
-                    value: '2'
-                }
-            ],
-            name_opt: [
-                {
-                    label: '抢庄牛牛',
-                    value: '1'
-                },
-                {
-                    label: '百家乐',
-                    value: '2'
-                }
-            ],
-            dia_show: false
+            dia_show: false,
+            list:{},
         }
     },
     methods: {
@@ -108,23 +92,27 @@ export default {
             this.dia_show = true
         },
         getList() {
-            console.log('🎈等待接口中...')
-            // let params = {id:this.id}
-            // let { url, method } = this.$api.game_vendor_list
-            // this.$http({
-            //     method: method,
-            //     url: url,
-            //     data: params
-            // }).then(res => {
-            //     if (res && res.code === '200') {
-            //         self.total = res.data.total
-            //         self.list = res.data.data
-            //     } else {
-            //         if (res && res.message !== '') {
-            //             self.toast.error(res.message)
-            //         }
-            //     }
-            // })
+            let createdAt='';
+            if (this.filter.dates[0] && this.filter.dates[1]) {
+                createdAt =JSON.stringify([
+                    String(this.filter.dates[0]),
+                    String(this.filter.dates[1])
+                ]);
+            }
+            let datas={
+                data_ip:this.filter.dataIP,
+                admin_name:this.filter.vendor,
+                created_at:createdAt,
+            }
+            console.log('请求数据',datas)
+            let data=window.all.tool.rmEmpty(datas)
+            let {method,url}=this.$api.operation_record_list
+            this.$http({method,url,data}).then(res=>{
+                console.log('返回数据',res)
+                if(res && res.code=='200'){
+                    this.list=res.data.data
+                }
+            })
         },
         // 计算时间间隔, 即显示 多久以前
         pastTime(val) {

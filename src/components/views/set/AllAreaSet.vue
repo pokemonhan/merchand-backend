@@ -25,7 +25,7 @@
                             <Input v-model="item.value" v-if="item.editable_type.indexOf('1')!=-1" />
                             <div v-if="item.editable_type.indexOf('1')!=-1">
                                 <i class="orange iconfont iconjinggao1- ml5"></i>
-                                <i v-if="successMessage.code=='200'"  class="green iconfont iconchenggong- ml5"></i>
+                                <i v-if="iconSaved[isTrue]" class="green iconfont iconchenggong- ml5"></i>
                             </div>
                             <button
                                 v-if="item.editable_type.indexOf('1')!=-1"
@@ -79,7 +79,10 @@ export default {
             list: [],
             childs: [],
             isFirst: true,
-            successMessage:{},
+            iconSaved:{},
+            isSaved:'',
+            //保存图片显示变量
+            isTrue:'',
         };
     },
     methods: {
@@ -123,6 +126,7 @@ export default {
                 key: "value",
                 value: item.value
             };
+
             // console.log('item1111',item)
             // console.log('请求数据',datas)
             let data = window.all.tool.rmEmpty(datas);
@@ -131,7 +135,12 @@ export default {
                 if (res && res.code == "200") {
                     this.$toast.success(res.message);
                     this.getTitleList();
-                    this.successMessage=res
+                    //显示已保存图标
+                    this.iconSaved=item
+                    this.iconSaved.sign=true
+                    this.isTrue="sign"
+                    this.iconSaved[this.isTrue]=true
+                    console.log('11111',this.iconSaved[this.isTrue])
                 }
             });
         },

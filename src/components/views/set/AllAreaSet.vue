@@ -13,6 +13,7 @@
         <div>
             <div class="set-cont">
                 <span>设置内容:</span>
+                <button v-if="button_show==37" class="btn-blue-large mr20" @click="cashBackShow" >返利说明</button>
                 <button class="btn-blue-large mr20">重置</button>
             </div>
             <div class="set_conment">
@@ -56,6 +57,11 @@
                 </ul>
             </div>
         </div>
+        <Dialog :show.sync="cash_show" :title="cash_title" >
+            <div>
+                <span></span>
+            </div>
+        </Dialog>
     </div>
 </template>
 <script>
@@ -83,6 +89,9 @@ export default {
             isSaved:'',
             //保存图片显示变量
             isTrue:'',
+            button_show:'',
+            cash_show:false,
+            cash_title:'',
         };
     },
     methods: {
@@ -91,6 +100,7 @@ export default {
             // console.log("item", item);
             this.curr_row = item;
             this.childs = item.childs;
+            this.button_show=item.id
             // console.log("childs", this.childs);
         },
         getTitleList() {
@@ -179,6 +189,10 @@ export default {
                 }
             });
         },
+        cashBackShow(){
+            this.cash_show=true
+            this.cash_title="返利说明"
+        },
     },
     mounted() {
         this.getTitleList();
@@ -204,6 +218,7 @@ export default {
     display: flex;
     justify-content: space-between;
 }
+
 .form {
     display: inline-block;
     text-align: center;

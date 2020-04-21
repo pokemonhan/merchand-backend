@@ -65,18 +65,17 @@ http.interceptors.request.use(req => {
     if (req.data) {
         let upload = '/merchant-api/upload'
         // 上传图片不加密
-        if(req.url !== upload) {
+        if (req.url !== upload) {
             let data = JSON.parse(JSON.stringify(req.data))
-            var encrypt_data = AES_encrypt(data);
-            // console.log('进来加密encrypt_data: ', encrypt_data);
-            let request = {
-                data: encrypt_data
+            if (JSON.stringify(data) !== "{}") {
+                var encrypt_data = AES_encrypt(data);
+                let request = {
+                    data: encrypt_data
+                }
+                req.data = request
             }
-            req.data = request
-
         }
     }
-
     return req
 })
 
@@ -92,8 +91,8 @@ http.interceptors.response.use(res => {
     let message = res.message || res.data.message || ''
     if (res && res.data) {
         res.data = AES_decrypt(res.data)
-        
-        
+
+
         if (res.status === 200) {
 
             if (res.data.code !== '200') {

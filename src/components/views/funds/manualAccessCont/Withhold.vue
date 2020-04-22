@@ -38,7 +38,7 @@
                     <td>{{row.order_no}}</td>
                     <td>{{row.user && row.user.mobile}}</td>
                     <td>{{row.user && row.user.guid}}</td>
-                    <td>{{row.type}}</td>
+                    <td>{{row.type==1?'误存扣款':'其他'}}</td>
                     <td>
                         <i :class="icon_obj[row.user && row.user.is_tester]"></i>
                     </td>
@@ -198,11 +198,11 @@ export default {
                 page:this.pageNo,
                 pageSize:this.pageSize,
             };
-            console.log('请求数据',datas);
+            // console.log('请求数据',datas);
             let data=window.all.tool.rmEmpty(datas);
             let {method,url}=this.$api.founds_manualaccess_artificial_charge_recording;
             this.$http({method:method,url:url,data:data}).then(res=>{
-                console.log('返回数据：',res)
+                // console.log('返回数据：',res)
                 if(res && res.code=='200'){
                     this.list=res.data.data;
                     this.total=res.data.total;
@@ -246,7 +246,7 @@ export default {
                money:this.form.withhold_amount,
                remark:this.form.remark,
             }
-            console.log(data)
+            // console.log(data)
             let {url,method}=this.$api.founds_manualaccess_artificial_charge;
             this.$http({method,url,data}).then(res=>{
                 // console.log('返回数据',res)

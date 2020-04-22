@@ -40,7 +40,7 @@
                     <td>{{row.order_no}}</td>
                     <td>{{row.user && row.user.mobile}}</td>
                     <td>{{row.user && row.user.guid}}</td>
-                    <td>{{row.type}}</td>
+                    <td>{{row.type==1?'优惠赠送':'洗码赠送'}}</td>
                     <td>
                         <i :class="icon_obj[row.user && row.user.is_tester]"></i>
                     </td>

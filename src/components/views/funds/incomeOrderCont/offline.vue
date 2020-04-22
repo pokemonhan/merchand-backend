@@ -323,9 +323,12 @@ export default {
             this.exportCanvasAsPNG(ref, "线下入款");
         },
         offlineIncomeConfirm() {},
-        updateNo(val) {},
+        updateNo(val) {
+            this.getList();
+        },
         updateSize(val) {
             this.pageNo = 1;
+            this.getList();
         },
 
         // canvas 转png 图片

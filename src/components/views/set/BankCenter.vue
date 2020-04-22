@@ -159,7 +159,7 @@ export default {
             let data=window.all.tool.rmEmpty(datas) 
             let {method,url}=this.$api.bank_cards_list
             this.$http({method,url,data}).then(res=>{
-                // console.log('返回数据',res)
+                console.log('返回数据',res)
                 if(res && res.code=='200'){
                     this.list=res.data.data
                     this.total=res.data.total

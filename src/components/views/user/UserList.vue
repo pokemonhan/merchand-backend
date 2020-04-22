@@ -439,8 +439,8 @@ export default {
             pwdReg: /^[0-9A-Za-z]{8,16}$/,
             online_state_opt: [
                 { label: "全部", value: "" },
-                { label: "在线", value: "0" },
-                { label: "离线", value: "1" }
+                { label: "在线", value: "1" },
+                { label: "离线", value: "0" }
             ],
             is_tester_opt: [
                 { label: "全部", value: "" },
@@ -618,15 +618,15 @@ export default {
                 mobile: this.filter.account,
                 guid: this.filter.userid,
                 createdAt: createdAt,
-                isOnline: this.filter.online_state,
+                is_online: this.filter.online_state,
                 parent_mobile: this.filter.parent_account,
                 lastLoginIp: this.filter.loginIP,
                 registerIp: this.filter.registIP,
-                // isTest:this.filter.is_tester,
+                isTest:this.filter.is_tester,
                 page: this.pageNo,
                 pageSize: this.pageSize
             };
-            // console.log("请求数据", para);
+            console.log("请求数据", datas);
             let data = window.all.tool.rmEmpty(datas);
             let { method, url } = this.$api.user_list;
             this.$http({ method, url, data }).then(res => {

@@ -144,7 +144,7 @@ export default {
         },
         getMenuList() {
 
-            // if(!window.all.tool.getLocal('Authorization')) return
+            if(!window.all.tool.getLocal('Authorization')) return
             // this.menu_list = window.all.menu_list
             // console.log('this.menu_list: ', this.menu_list);
             // window.all.tool.setLocal('menu', this.menu_list)

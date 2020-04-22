@@ -10,7 +10,7 @@
                 </li>
 
                 <li>
-                    <button class="btn-blue" @click="getList" >查询</button>
+                    <button class="btn-blue" @click="getList">查询</button>
                 </li>
             </ul>
         </div>
@@ -19,20 +19,36 @@
                 <template v-slot:item="{row}">
                     <td>{{row.activity && row.activity.name}}</td>
                     <td>
-                        <img style="max-width:200px;max-height:200px;"  :src="head_path+row.pc_pic" alt />
+                        <img
+                            style="max-width:200px;max-height:200px;"
+                            :src="head_path+row.pc_pic"
+                            alt
+                        />
                     </td>
                     <td>
-                        <img style="max-width:200px;max-height:200px;"  :src="head_path+row.h5_pic" alt />
+                        <img
+                            style="max-width:200px;max-height:200px;"
+                            :src="head_path+row.h5_pic"
+                            alt
+                        />
                     </td>
                     <td>
-                        <img style="max-width:200px;max-height:200px;"  :src="head_path+row.app_pic" alt />
+                        <img
+                            style="max-width:200px;max-height:200px;"
+                            :src="head_path+row.app_pic"
+                            alt
+                        />
                     </td>
 
                     <td>{{row.last_editor && rowm.last_editor.name}}</td>
                     <td>{{row.updated_at}}</td>
                     <td>{{row.end_time}}</td>
                     <td>
-                        <Switchbox class="switch-select" :value="row.status" @update="switchStatus($event,row)" />
+                        <Switchbox
+                            class="switch-select"
+                            :value="row.status"
+                            @update="switchStatus($event,row)"
+                        />
                     </td>
                     <td>
                         <button class="btns-blue" @click="upPic(row)">上传图片</button>
@@ -103,7 +119,7 @@
 <script>
 import Detail from "./dynamicDetail/DynamicDetail.vue";
 export default {
-    name: 'Dynamic',
+    name: "Dynamic",
     components: {
         Detail: Detail
     },
@@ -139,22 +155,22 @@ export default {
                 app_pic_path: ""
             },
             protocol: window.location.protocol,
-            head_path:'',
+            head_path: ""
         };
     },
     methods: {
-        switchStatus(val,row){
-            let data={
-                id:row.id,
-                status:val ? 1 : 0
-            }
-            let {url,method}=this.$api.dynamic_active_change_status;
-            this.$http({method,url,data}).then(res=>{
-                if(res && res.code=='200'){
+        switchStatus(val, row) {
+            let data = {
+                id: row.id,
+                status: val ? 1 : 0
+            };
+            let { url, method } = this.$api.dynamic_active_change_status;
+            this.$http({ method, url, data }).then(res => {
+                if (res && res.code == "200") {
                     this.$toast.success(res && res.message);
                     this.getList();
                 }
-            })
+            });
         },
         edit() {
             this.dia_status = "edit";
@@ -222,41 +238,41 @@ export default {
                 h5_pic: this.form.h5_pic_path,
                 app_pic: this.form.app_pic_path
             };
-            let {url,method}=this.$api.dynamic_active_upload_pic;
-            this.$http({method,url,data}).then(res=>{
-                if(res && res.code=='200'){
+            let { url, method } = this.$api.dynamic_active_upload_pic;
+            this.$http({ method, url, data }).then(res => {
+                if (res && res.code == "200") {
                     this.$toast.success(res && res.message);
-                    this.dia_show=false;
+                    this.dia_show = false;
                     this.getList();
                 }
-            })
+            });
         },
         updateNo(val) {
             this.getList();
         },
         updateSize(val) {
-            this.pageNo=1;
+            this.pageNo = 1;
             this.getList();
         },
-        getList(){
-            let para={
-                name:this.filter.name,
-                page:this.pageNo,
-                pageSize:this.pageSize
-            }
-            let params=window.all.tool.rmEmpty(para);
-            let {method,url}=this.$api.dynamic_active_list;
-            this.$http({method,url,params}).then(res=>{
-                console.log('返回数据结构',res)
-                if(res && res.code=='200'){
-                    this.list=res.data.data;
-                    this.total=res.data.total;
+        getList() {
+            let datas = {
+                name: this.filter.name,
+                page: this.pageNo,
+                pageSize: this.pageSize
+            };
+            let data = window.all.tool.rmEmpty(datas);
+            let { method, url } = this.$api.dynamic_active_list;
+            this.$http({ method, url, data }).then(res => {
+                console.log("返回数据结构", res);
+                if (res && res.code == "200") {
+                    this.list = res.data.data;
+                    this.total = res.data.total;
                 }
-            })
-        },
+            });
+        }
     },
     mounted() {
-        this.head_path=this.protocol+'//pic.397017.com/'
+        this.head_path = this.protocol + "//pic.397017.com/";
         this.getList();
     }
 };

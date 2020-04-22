@@ -53,7 +53,7 @@
 
                 <li>
                     <button class="btn-blue" @click="getList">查询</button>
-                    <button class="btn-blue">导出</button>
+                    <button class="btn-blue" @click="exportExcel()" >导出</button>
                     <button class="btn-red" @click="clearfilter">清空</button>
                 </li>
             </ul>
@@ -330,6 +330,32 @@ export default {
                     }
                 }
             );
+        },
+        exportExcel() {
+            import("../../../js/config/Export2Excel").then(excel => {
+                const tHeaders = this.headers;
+                const data = this.list.map(item => {
+                    return [
+                        item.user.guid,
+                        item.user.id,
+                        item.amount,
+                        item.audit_fee,
+                        item.amount_received,
+                        item.handing_fee,
+                        item.created_at,
+                        item.reviewer,
+                        item.reviewer_at,
+                        item.status,
+                    ];
+                });
+                excel.export_json_to_excel({
+                    header: tHeaders,
+                    data,
+                    filename: "出款审核",
+                    autoWidth: true,
+                    bookType: "xlsx"
+                });
+            });
         },
         closeDia(){
             this.dia_show=false

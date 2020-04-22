@@ -13,6 +13,7 @@
         <div>
             <div class="set-cont">
                 <span>设置内容:</span>
+                <button v-if="button_show==37" class="btn-blue-large mr20" @click="cashBackShow" >返利说明</button>
                 <button class="btn-blue-large mr20">重置</button>
             </div>
             <div class="set_conment">
@@ -25,7 +26,7 @@
                             <Input v-model="item.value" v-if="item.editable_type.indexOf('1')!=-1" />
                             <div v-if="item.editable_type.indexOf('1')!=-1">
                                 <i class="orange iconfont iconjinggao1- ml5"></i>
-                                <i class="green iconfont iconchenggong- ml5"></i>
+                                <i v-if="iconSaved[isTrue]" class="green iconfont iconchenggong- ml5"></i>
                             </div>
                             <button
                                 v-if="item.editable_type.indexOf('1')!=-1"
@@ -38,6 +39,7 @@
                                 v-model="item.status"
                                 v-if="item.editable_type.indexOf('2')!=-1"
                                 class="switchchoose"
+                                @update="switchStatus($event,item)"
                             />
                             <!-- 下拉框 -->
                             <Select
@@ -49,12 +51,17 @@
                                 <i class="orange iconfont iconjinggao1- ml5"></i>
                                 <i class="green iconfont iconchenggong- ml5"></i>
                             </div>
-                            <button v-if="item.editable_type.indexOf('3')!=-1" class="btn-blue">保存</button>
+                            <button v-if="item.editable_type.indexOf('3')!=-1" class="btn-blue" @click="seleSave(item)" >保存</button>
                         </div>
                     </li>
                 </ul>
             </div>
         </div>
+        <Dialog :show.sync="cash_show" :title="cash_title" >
+            <div>
+                <span></span>
+            </div>
+        </Dialog>
     </div>
 </template>
 <script>
@@ -77,7 +84,14 @@ export default {
             },
             list: [],
             childs: [],
-            isFirst: true
+            isFirst: true,
+            iconSaved:{},
+            isSaved:'',
+            //保存图片显示变量
+            isTrue:'',
+            button_show:'',
+            cash_show:false,
+            cash_title:'',
         };
     },
     methods: {
@@ -86,6 +100,7 @@ export default {
             // console.log("item", item);
             this.curr_row = item;
             this.childs = item.childs;
+            this.button_show=item.id
             // console.log("childs", this.childs);
         },
         getTitleList() {
@@ -116,19 +131,33 @@ export default {
             });
         },
         save(item) {
-            let key = "";
-            if (item.editable_type == "1") {
-                key = "value";
-            }
-            if (item.editable_type == "2") {
-                key = "status";
-            }
-            if (item.editable_type == "3") {
-                key = "value";
-            }
             let datas = {
                 sign: item.sign,
-                key: key,
+                key: "value",
+                value: item.value
+            };
+
+            // console.log('item1111',item)
+            // console.log('请求数据',datas)
+            let data = window.all.tool.rmEmpty(datas);
+            let { method, url } = this.$api.allarea_set_save;
+            this.$http({ method, url, data }).then(res => {
+                if (res && res.code == "200") {
+                    this.$toast.success(res.message);
+                    this.getTitleList();
+                    //显示已保存图标
+                    this.iconSaved=item
+                    this.iconSaved.sign=true
+                    this.isTrue="sign"
+                    this.iconSaved[this.isTrue]=true
+                    console.log('11111',this.iconSaved[this.isTrue])
+                }
+            });
+        },
+        seleSave(item){
+            let datas = {
+                sign: item.sign,
+                key: "value",
                 value: item.value
             };
             // console.log('item1111',item)
@@ -141,7 +170,29 @@ export default {
                     this.getTitleList();
                 }
             });
-        }
+        },
+        switchStatus(val, item) {
+            console.log('item',item)
+            let datas = {
+                sign: item.sign,
+                key: "status",
+                value: String(val ? 1 : 0)
+            };
+            // console.log('请求数据',datas)
+            let data = window.all.tool.rmEmpty(datas);
+            let { method, url } = this.$api.allarea_set_save;
+            this.$http({ method, url, data }).then(res => {
+                // console.log('返回数据',res)
+                if (res && res.code == "200") {
+                    this.$toast.success(res.message);
+                    this.getTitleList();
+                }
+            });
+        },
+        cashBackShow(){
+            this.cash_show=true
+            this.cash_title="返利说明"
+        },
     },
     mounted() {
         this.getTitleList();
@@ -167,6 +218,7 @@ export default {
     display: flex;
     justify-content: space-between;
 }
+
 .form {
     display: inline-block;
     text-align: center;

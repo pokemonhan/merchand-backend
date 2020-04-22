@@ -501,7 +501,7 @@ export default {
     // 分类管理 - 列表
     game_type_list: {
         url: '/merchant-api/game-type/index',
-        method: 'get'
+        method: 'post'
     },
     // 分类管理 - 更改状态
     game_type_status_set: {
@@ -720,6 +720,11 @@ export default {
     //推广图片配置 - 删除
     promotion_configuration_del:{
         url:'/merchant-api/promotion-pic/delete',
+        method:'post'
+    },
+    //操作记录 - 列表
+    operation_record_list:{
+        url:'/merchant-api/operation-log/index',
         method:'post'
     },
     // ------- 客服设置 ----------------

@@ -505,7 +505,16 @@ button:hover {
     color: #fff;
     background: #fa0;
 }
-
+.btns-plain-blue {
+    border: 1px solid #4c8bfd;
+    background: #e5eaf5;
+    color: #4c8bfd;
+}
+.btns-plain {
+    border: 1px solid #4c8bfd;
+    background: #f6f9fb;
+    color: #4c8bfd;
+}
 /* *星符号 */
 .require::before {
     content: '*';

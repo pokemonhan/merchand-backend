@@ -113,6 +113,7 @@ const Tool = {
             ele = ele[0]
         }
         ele.style.maxHeight = 'none'
+        ele.style.overflow = 'hidden'
         let offsetHeight = ele.offsetHeight
         ele.style.maxHeight = '0'
         setTimeout(() => {
@@ -121,6 +122,7 @@ const Tool = {
         setTimeout(() => {
             ele.style.maxHeight = 'none'
             ele.style.display = 'block'
+            // ele.style.overflow = ''
 
         }, time + 100)
     },
@@ -134,13 +136,14 @@ const Tool = {
             // }
         }
         ele.style.maxHeight = ele.offsetHeight + 'px'
+        ele.style.overflow = 'hidden'
         setTimeout(() => {
             ele.style.maxHeight = '0'
         }, 20)
         setTimeout(() => {
             ele.style.maxHeight = 'none'
             ele.style.display = 'none'
-
+            // ele.style.overflow = ''
         }, time + 100)
     },
     slideToggle(ele, time = 200) {
@@ -153,17 +156,20 @@ const Tool = {
         // 如果有就slideUp
         if (offsetHeight) {
             ele.style.maxHeight = ele.offsetHeight + 'px'
+            ele.style.overflow = 'hidden'
             setTimeout(() => {
                 ele.style.maxHeight = '0'
             }, 20)
             setTimeout(() => {
                 ele.style.display = 'none'
                 ele.style.maxHeight = 'none'
+                // ele.style.overflow = ''
             }, time + 100)
             // 没有就 slideDown
         } else {
             ele.style.maxHeight = 'none'
             ele.style.display = 'block'
+            ele.style.overflow = 'hidden'
             let offsetHeight = ele.offsetHeight
             ele.style.maxHeight = '0'
             setTimeout(() => {
@@ -172,6 +178,7 @@ const Tool = {
             setTimeout(() => {
                 ele.style.maxHeight = 'none'
                 ele.style.display = 'block'
+                // ele.style.overflow = ''
             }, time + 100)
         }
     },

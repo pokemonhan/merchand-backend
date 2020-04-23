@@ -48,6 +48,7 @@ const components = {
     Loading,
     Tooltip,
     // DragTree
+    Notice,
 }
 
 let requestObj = {}

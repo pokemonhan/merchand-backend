@@ -8,20 +8,27 @@
                     <i v-else-if="type==='error'" class="notice-error iconfont iconcuowuguanbi-"></i>
                     <i v-else-if="type==='info'" class="notice-info iconfont iconinfor"></i>
                     <span class="title">{{title}}</span>
+                    <!-- 关闭按钮 【x】 -->
                     <i :class="['close','iconfont iconicon-test']" @click="close"></i>
                 </div>
-                <div class="content">{{message}}</div>
+
+                <div class="content mt10">{{message}}</div>
+                <div class="opera-button">
+                    <button class="btns-plain" @click="go">去处理</button>
+                    <button class="btns-plain" @click="laterRemind">稍后提醒</button>
+                </div>
             </div>
         </div>
     </transition>
 </template>
 
 <script>
+import router from '../../js/router'
 export default {
     name: 'notice',
     props: {
         title: {
-            type: String,
+            type: String
             // default: () => 'title is null'
         },
         message: {
@@ -36,6 +43,10 @@ export default {
         duration: {
             type: Number,
             default: () => 3000
+        },
+        jump: {
+            type: String,
+            defalut: ''
         }
     },
     data() {
@@ -46,6 +57,37 @@ export default {
     methods: {
         close() {
             this.show = false
+        },
+        go() {
+            this.show = false
+            let self = this
+            if (this.jump) {
+                let path_obj = {
+                    notice_of_withdraw: '/funds/paymentorder',      // 出款订单
+                    notice_of_recharge_on: '/funds/incomeorder',    // 线上入款通知
+                    notice_of_recharge_off: '/funds/incomeorder',   // 线下入款通知
+                    notice_of_email: '/email/receiveemail',         // 邮件通知
+                    notice_of_withdraw_audit: '/funds/paymentreview' // 出款审核通知
+                }
+                let path = path_obj[this.jump] || ''
+                path && router.push(path)
+                
+            }
+        },
+        laterRemind() {
+            this.show = false
+            // 5分钟后 提醒
+            // setTimeout(() => {
+            //     this.show = true
+            // }, 2000)
+            let self = this
+            setTimeout(() => {
+                self.$notice({
+                    title: '通知',
+                    message: this.message,
+                    jump: this.jump
+                })
+            }, 3 * 1000)
         }
     },
     mounted() {
@@ -58,7 +100,6 @@ export default {
 </script>
 
 <style scoped>
-
 .notice-enter {
     position: relative;
     opacity: 0;
@@ -77,7 +118,7 @@ export default {
 }
 .notice-enter-active,
 .notice-leave-active {
-    transition: all .2s linear;
+    transition: all 0.2s linear;
 }
 .vue-notice {
     position: relative;
@@ -93,7 +134,7 @@ export default {
 }
 .vue-notice .inner {
     height: 100%;
-    padding: 16px 20px;
+    padding: 12px 20px;
     border-radius: 4px;
     box-shadow: 0 1px 6px rgba(0, 0, 0, 0.2);
     background-color: #fff;
@@ -118,7 +159,7 @@ export default {
     color: #ed4014;
 }
 .title {
-    font-size: 18px;
+    font-size: 14px;
     font-weight: 600;
 }
 .close {
@@ -126,9 +167,18 @@ export default {
     position: absolute;
     right: 10px;
     top: 15px;
+    color: #9c7267;
 }
 .close:hover {
     font-size: 20px;
-    color: #ed4014;
+    color: rgb(245, 81, 40);
+}
+.mt10 {
+    margin-top: 10px;
+}
+.opera-button {
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-around;
 }
 </style>

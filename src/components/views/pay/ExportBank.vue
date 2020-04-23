@@ -22,14 +22,14 @@
                 <template v-slot:item="{row,idx}">
                     <td>{{(pageNo-1)*pageSize+idx+1}}</td>
                     <td>{{row.bank}}</td>
-                    <td
-                        :class="row.status?'green':'red'"
-                    >{{row.status===1?'开启':row.status===0?'关闭':'???'}}</td>
                     <td>{{row.last_editor}}</td>
                     <td>{{row.updated_at}}</td>
                     <td>
-                        <button class="btn-blue" v-if="row.status===0" @click="enable(row)">启用</button>
-                        <button class="btn-red" v-if="row.status===1" @click="disable(row)">禁用</button>
+                        <Switchbox
+                            class="switch-select"
+                            :value="row.status"
+                            @update="switchStatus($event,row)"
+                        />
                     </td>
                 </template>
             </Table>
@@ -43,13 +43,6 @@
                 @updateSize="updateSize"
             />
         </div>
-        <Modal
-            :show.sync="mod_show"
-            :title="dia_title"
-            :content="dia_content"
-            @cancel="mod_show=false"
-            @confirm="modConf"
-        ></Modal>
     </div>
 </template>
 <script>
@@ -69,29 +62,11 @@ export default {
             headers: [
                 "编号",
                 "银行名称",
-                "状态",
                 "最后更新人",
                 "最后更新时间",
-                "操作"
+                "是否启用"
             ],
-            list: [
-                {
-                    a1: "64646466",
-                    a2: "sdfsdfdsf",
-                    a3: "充支好礼",
-                    a4: "1",
-                    a5: "2019-02-02 21:30",
-                    status: 1
-                },
-                {
-                    a1: "64646466",
-                    a2: "sdfsdfdsf",
-                    a3: "充支好礼",
-                    a4: "1",
-                    a5: "2019-02-02 21:30",
-                    status: 0
-                }
-            ],
+            list: [],
             total: 0,
             pageNo: 1,
             pageSize: 25,
@@ -127,57 +102,20 @@ export default {
                 }
             });
         },
-        modConf() {
-            if (this.dia_status == "enable") {
-                this.enableCfm();
+        switchStatus(val,row){
+            console.log(row)
+            let data={
+                bank_id:row.id,
+                status:val ? 1 : 0
             }
-            if (this.dia_status == "disable") {
-                this.disableCfm();
-            }
-        },
-        enable(row) {
-            this.dia_status = "enable";
-            this.mod_show = true;
-            this.dia_title = "启用";
-            this.dia_content = "是否启用该银行";
-            this.curr_row = row;
-        },
-        enableCfm() {
-            let data = {
-                bank_id: this.curr_row.id,
-                status: 1
-            };
-            let { method, url } = this.$api.payment_bank_status;
-            this.$http({ method, url, data }).then(res => {
-                if (res && res.code == "200") {
-                    this.$toast.success(res.message);
-                    this.mod_show = false;
-                    this.getList();
+            let {method,url}=this.$api.payment_bank_status
+            this.$http({method,url,data}).then(res=>{
+                if(res && res.code=='200'){
+                    this.$toast.success(res && res.message)
+                    this.getList()
                 }
-            });
+            })
         },
-        disable(row) {
-            this.dia_status = "disable";
-            this.mod_show = true;
-            this.dia_title = "禁用";
-            this.dia_content = "是否禁用该银行";
-            this.curr_row = row;
-        },
-        disableCfm() {
-            let data = {
-                bank_id: this.curr_row.id,
-                status: 0
-            };
-            let { method, url } = this.$api.payment_bank_status;
-            this.$http({ method, url, data }).then(res => {
-                console.log("返回信息", res);
-                if (res && res.code == "200") {
-                    this.$toast.success(res.message);
-                    this.mod_show = false;
-                    this.getList();
-                }
-            });
-        }
     },
     mounted() {
         this.getList();

@@ -18,7 +18,7 @@
                     class="btn-blue-large mr20"
                     @click="cashBackShow"
                 >返利说明</button>
-                <button class="btn-blue-large mr20" @click="reset(res_set)" >重置</button>
+                <button class="btn-blue-large mr20" @click="reset(res_set)">重置</button>
             </div>
             <div class="set_conment">
                 <ul v-for="(item,index) in childs" :key="index" class="form">
@@ -46,8 +46,16 @@
                                 v-model="item.status"
                                 v-if="item.editable_type.indexOf('2')!=-1"
                                 class="switchchoose"
-                                @update="switchStatus($event,item)"
                             />
+                            <div v-if="item.editable_type.indexOf('2')!=-1">
+                                <i class="orange iconfont iconjinggao1- ml5"></i>
+                                <i class="green iconfont iconchenggong- ml5"></i>
+                            </div>
+                            <button
+                                v-if="item.editable_type.indexOf('2')!=-1"
+                                class="btn-blue"
+                                @click="saveSwitch(item)"
+                            >保存</button>
                             <!-- 下拉框 -->
                             <Select
                                 v-model="item.value"
@@ -109,15 +117,13 @@ export default {
             button_show: "",
             cash_show: false,
             cash_title: "",
-            res_set:[]
+            res_set: []
         };
     },
     methods: {
         //重置功能
-        reset(res_set){
-            console.log(1)
-            this.set_btns=this.res_set
-            this.setChange(res_set)
+        reset(res_set) {
+            this.getTitleList();
         },
         //点击设置选项按钮  item为最大所有列表
         setChange(item) {
@@ -128,14 +134,14 @@ export default {
             this.button_show = item.id;
             // console.log("childs", this.childs);
         },
-        //获取列表 
+        //获取列表
         getTitleList() {
             let { method, url } = this.$api.allarea_set_list;
             this.$http({ method, url }).then(res => {
                 console.log("返回数据", res);
                 if (res && res.code == "200") {
                     this.set_btns = res.data || [];
-                    this.res_set=res.data || [];
+                    this.res_set = res.data || [];
                     //判断第一次进入
                     if (this.isFirst) {
                         let firstBtn = this.set_btns[0];
@@ -182,6 +188,23 @@ export default {
                 }
             });
         },
+        //按钮保存
+        saveSwitch(item) {
+            let datas = {
+                sign: item.sign,
+                key: "status",
+                value: String(item.status ? 1 : 0)
+            };
+            let data = window.all.tool.rmEmpty(datas);
+            let { method, url } = this.$api.allarea_set_save;
+            this.$http({ method, url, data }).then(res => {
+                // console.log('返回数据',res)
+                if (res && res.code == "200") {
+                    this.$toast.success(res.message);
+                    this.getTitleList();
+                }
+            });
+        },
         //下拉框保存  item为列表下的childs
         seleSave(item) {
             let datas = {
@@ -194,25 +217,6 @@ export default {
             let data = window.all.tool.rmEmpty(datas);
             let { method, url } = this.$api.allarea_set_save;
             this.$http({ method, url, data }).then(res => {
-                if (res && res.code == "200") {
-                    this.$toast.success(res.message);
-                    this.getTitleList();
-                }
-            });
-        },
-        //按钮保存  item为列表下的childs
-        switchStatus(val, item) {
-            console.log("item", item);
-            let datas = {
-                sign: item.sign,
-                key: "status",
-                value: String(val ? 1 : 0)
-            };
-            // console.log('请求数据',datas)
-            let data = window.all.tool.rmEmpty(datas);
-            let { method, url } = this.$api.allarea_set_save;
-            this.$http({ method, url, data }).then(res => {
-                // console.log('返回数据',res)
                 if (res && res.code == "200") {
                     this.$toast.success(res.message);
                     this.getTitleList();
@@ -268,6 +272,9 @@ export default {
 .form > li > div .v-select {
     /* width: 150px; */
     width: 180px;
+}
+.form > li > div .v-switch {
+    width: 100px;
 }
 .form > li .li-left {
     /* border: 1px solid #000; */

@@ -206,10 +206,10 @@ export default {
                 pageSize: this.pageSize,
                 page: this.pageNo
             }
-            let params = window.all.tool.rmEmpty(para)
+            let data = window.all.tool.rmEmpty(para)
 
             let { url, method } = this.$api.email_received
-            this.$http({ method, url, params }).then(res => {
+            this.$http({ method, url, data }).then(res => {
                 console.log('列表: ', res)
                 if (res && res.code === '200') {
                     this.total = res.data.total

@@ -79,7 +79,7 @@
                             <span>{{curr_row.ip}}</span>
                         </div>
                         <div>
-                            <span>代理:</span>
+                            <span>浏览器:</span>
                             <span>{{curr_row.user_agent}}</span>
                         </div>
                     </li>

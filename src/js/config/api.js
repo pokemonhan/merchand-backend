@@ -403,7 +403,7 @@ export default {
     // 收件箱
     email_received: {
         url: '/merchant-api/email/received-index',
-        method: 'get'
+        method: 'post'
     },
     // 删除邮件 (收件箱)
     email_received_del: {

@@ -444,8 +444,8 @@ export default {
             ],
             is_tester_opt: [
                 { label: "全部", value: "" },
-                { label: "是", value: "0" },
-                { label: "否", value: "1" }
+                { label: "是", value: "1" },
+                { label: "否", value: "0" }
             ],
             headers: [
                 "在线状态",
@@ -617,12 +617,12 @@ export default {
             let datas = {
                 mobile: this.filter.account,
                 guid: this.filter.userid,
-                createdAt: createdAt,
+                created_at: createdAt,
                 is_online: this.filter.online_state,
                 parent_mobile: this.filter.parent_account,
-                lastLoginIp: this.filter.loginIP,
-                registerIp: this.filter.registIP,
-                isTest:this.filter.is_tester,
+                last_login_ip: this.filter.loginIP,
+                register_ip: this.filter.registIP,
+                is_tester:this.filter.is_tester,
                 page: this.pageNo,
                 pageSize: this.pageSize
             };

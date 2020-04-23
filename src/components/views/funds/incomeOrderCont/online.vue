@@ -468,7 +468,7 @@ export default {
         updateSize(val) {
             this.pageNo = 1;
             this.getList();
-        }
+        },
     },
     mounted() {
         this.getPayMethodSel();

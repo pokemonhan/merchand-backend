@@ -101,9 +101,9 @@ export default {
             }
             let para = {
                 mobile: this.filter.mobile,
-                uniqueld: this.filter.uniqueld,
-                createAt: createdAt,
-                lastLoginIp: this.filter.lastLoginIp,
+                guid: this.filter.uniqueld,
+                created_at: createdAt,
+                last_login_ip: this.filter.lastLoginIp,
                 page:this.pageNo,
                 pageSize:this.pageSize
 

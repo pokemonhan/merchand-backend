@@ -31,7 +31,7 @@
                             <div v-if="item.editable_type.indexOf('1')!=-1">
                                 <i class="orange iconfont iconjinggao1- ml5"></i>
                                 <i
-                                    v-if="iconSaved[isTrue]"
+                                    v-show="iconSaved[isTrue]"
                                     class="green iconfont iconchenggong- ml5"
                                 ></i>
                             </div>

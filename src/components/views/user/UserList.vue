@@ -69,10 +69,10 @@
                     <td>{{row.last_login_ip}}</td>
                     <td>{{row.created_at}}</td>
                     <td>{{row.last_login_time}}</td>
-                    <td>{{row.status==1? '是':'否'}}</td>
+                    <td>{{row.status==0? '是':'否'}}</td>
                     <td>
                         <button class="btn-blue" @click="userDetail(row)">详情</button>
-                        <button  v-if="row.status==0"  class="btn-blue" @click="addBlackList(row)">加入黑名单</button>
+                        <button  v-if="row.status==1"  class="btn-blue" @click="addBlackList(row)">加入黑名单</button>
                     </td>
                 </template>
             </Table>

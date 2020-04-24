@@ -42,18 +42,18 @@
         <div class="table">
             <Table :headers="headers" :column="list">
                 <template v-slot:item="{row}">
-                    <td>{{row.a1}}</td>
-                    <td>{{row.a2}}</td>
-                    <td>{{row.a3}}</td>
-                    <td>{{row.a4}}</td>
-                    <td>{{row.a5}}</td>
-                    <td>{{row.a6}}</td>
-                    <td>{{row.a7}}</td>
+                    <td>{{row.mobile}}</td>
+                    <td>{{row.guid}}</td>
+                    <td>{{row.order_number}}</td>
+                    <td>{{row.type}}</td>
+                    <td>{{row.amount}}</td>
+                    <td>{{row.demand_bet}}</td>
+                    <td>{{row.achieved_bet}}</td>
                     <td>
-                        <span :class="status_opt[row.a8].color">{{status_opt[row.a8].text}}</span>
+                        <span :class="status_opt[row.status].color">{{status_opt[row.status].text}}</span>
                     </td>
-                    <td>{{row.a9}}</td>
-                    <td>{{row.a10}}</td>
+                    <td>{{row.created_at}}</td>
+                    <td>{{row.achieved_time}}</td>
                 </template>
             </Table>
             <Page
@@ -82,7 +82,7 @@ export default {
                 user_state_opt: [
                     { label: '全部', value: '' },
                     { label: '已完成', value: '1' },
-                    { label: '未完成', value: '2' }
+                    { label: '未完成', value: '0' }
                 ]
             },
             headers: [
@@ -97,50 +97,13 @@ export default {
                 '生成时间',
                 '稽核时间'
             ],
-            list: [
-                {
-                    a1: '13245678942',
-                    a2: '4563287',
-                    a3: 'D45678944654',
-                    a4: '优惠存款',
-                    a5: '100',
-                    a6: '100',
-                    a7: '100',
-                    a8: '1',
-                    a9: '2019/5/8 18:17:30',
-                    a10: '2019/5/10 18:17:30'
-                },
-                {
-                    a1: '13245678942',
-                    a2: '4563287',
-                    a3: 'D45678944654',
-                    a4: '优惠存款',
-                    a5: '100',
-                    a6: '100',
-                    a7: '100',
-                    a8: '0',
-                    a9: '2019/5/8 18:17:30',
-                    a10: '2019/5/10 18:17:30'
-                },
-                {
-                    a1: '13245678942',
-                    a2: '4563287',
-                    a3: 'D45678944654',
-                    a4: '优惠存款',
-                    a5: '100',
-                    a6: '100',
-                    a7: '100',
-                    a8: '1',
-                    a9: '2019/5/8 18:17:30',
-                    a10: '2019/5/10 18:17:30'
-                }
-            ],
+            list: [],
             status_opt: {
                 '1': { text: '已完成', color: 'green' },
                 '0': { text: '未完成', color: 'red' }
             },
             quick_query: [],
-            total: 100,
+            total: '',
             pageNo: 1,
             pageSize: 25
         }
@@ -158,37 +121,71 @@ export default {
                 const tHeader = this.headers
                 const data = this.list.map(item => {
                     return [
-                        item.a1,
-                        item.a2,
-                        item.a3,
-                        item.a4,
-                        item.a5,
-                        item.a6,
-                        item.a7,
-                        item.a8,
-                        item.a9,
-                        item.a10
+                        item.mobile,
+                        item.guid,
+                        item.order_number,
+                        item.type,
+                        item.amount,
+                        item.demand_bet,
+                        item.achieved_bet,
+                        item.status==1 ? '已完成' : '未完成',
+                        item.created_at,
+                        item.achieved_time
                     ]
                 })
                 excel.export_json_to_excel({
                     header: tHeader,
                     data,
-                    filename: excel,
+                    filename: '会员稽核列表',
                     autoWidth: true,
                     bookType: 'xlsx'
                 })
             })
         },
-
         clearFilter() {
             this.filter = {
-                dates: []
+                account:'',
+                userid:'',
+                dates: [],
+                user_state:''
             }
         },
-        updateNo(val) {},
-        updateSize(val) {}
+        updateNo(val) {
+            this.getList();
+        },
+        updateSize(val) {
+            this.pageNo = 1;
+            this.getList();
+        },
+        getList(){
+            let created_at = "";
+            if (this.filter.dates[0] && this.filter.dates[1]) {
+                createdAt = JSON.stringify([
+                    this.filter.dates[0],
+                    this.filter.dates[1]
+                ]);
+            }
+            let datas={
+                mobile:this.filter.account,
+                guid:this.filter.userid,
+                created_at:created_at,
+                status:this.filter.user_state
+            }
+            console.log('请求数据',datas)
+            let data =window.all.tool.rmEmpty(datas)
+            let {method,url}=this.$api.member_audit_list
+            this.$http({method,url,data}).then(res=>{
+                console.log('返回数据',res)
+                if(res && res.code=='200'){
+                    this.list=res.data.data
+                    this.total=res.data.total
+                }
+            })
+        }
     },
-    mounted() {}
+    mounted() {
+        this.getList()
+    }
 }
 </script>
 

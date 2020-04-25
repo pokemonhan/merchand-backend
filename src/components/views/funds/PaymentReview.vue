@@ -53,7 +53,7 @@
 
                 <li>
                     <button class="btn-blue" @click="getList">查询</button>
-                    <button class="btn-blue" @click="exportExcel()" >导出</button>
+                    <button class="btn-blue" @click="exportExcel()">导出</button>
                     <button class="btn-red" @click="clearfilter">清空</button>
                 </li>
             </ul>
@@ -62,7 +62,7 @@
             <Table :headers="headers" :column="list">
                 <template v-slot:item="{row}">
                     <td>{{row.user && row.user.mobile}}</td>
-                    <td>{{row.user && row.user.id}}</td>
+                    <td>{{row.user && row.user.guid}}</td>
                     <td>{{row.amount}}</td>
                     <td>{{row.audit_fee}}</td>
                     <td>{{row.amount_received}}</td>
@@ -70,13 +70,13 @@
                     <td>{{row.created_at}}</td>
                     <td>{{row.reviewer &&row.reviewer.name }}</td>
                     <td>{{row.review_at}}</td>
-                    <td :class="status_obj[row.status].color"  >{{status_obj[row.status].text}}</td>
+                    <td :class="status_obj[row.status].color">{{status_obj[row.status].text}}</td>
                     <td>
                         <button
                             :class="status_obj[row.status].button"
                             @click="statusShow(row)"
                         >{{status_obj[row.status].text}}</button>
-                        <button class="btns-blue" @click="checkAudit">查看稽核</button>
+                        <button class="btns-blue" @click="checkAudit(row)">查看稽核</button>
                     </td>
                 </template>
             </Table>
@@ -137,8 +137,13 @@
         </div>
         <Dialog :show.sync="dia_show" :title="dia_title">
             <div class="dia-inner">
-                <PaymentReviewStatus v-if="dia_status==='statusShow'" :row="curr_row"  @getList="getList" @closeDia="closeDia"/>
-                <PaymentReviewDetail v-if="dia_status==='checkAudit'" :userid="userid" />
+                <PaymentReviewStatus
+                    v-if="dia_status==='statusShow'"
+                    :row="curr_row"
+                    @getList="getList"
+                    @closeDia="closeDia"
+                />
+                <PaymentReviewDetail v-if="dia_status==='checkAudit'" :all="curr_row" />
             </div>
         </Dialog>
     </div>
@@ -150,7 +155,7 @@ import PaymentReviewStatus from "./paymentReviewCont/PaymentReviewStatus";
 import PaymentReviewDetail from "./paymentReviewCont/PaymentReviewDetail.vue";
 
 export default {
-    name: 'PaymentReview',
+    name: "PaymentReview",
     components: {
         PaymentReviewStatus,
         PaymentReviewDetail
@@ -230,8 +235,7 @@ export default {
             curr_row: {},
             dia_show: false,
             dia_status: "",
-            userid: "",
-            dia_title: "",
+            dia_title: ""
         };
     },
     methods: {
@@ -275,8 +279,8 @@ export default {
             this.dia_show = true;
             this.dia_title = "出款订单审核";
         },
-        checkAudit() {
-            console.log("点击");
+        checkAudit(row) {
+            this.curr_row = row;
             this.dia_status = "checkAudit";
             this.dia_show = true;
             this.dia_title = "查看稽核";
@@ -321,15 +325,13 @@ export default {
             // console.log('请求数据',datas)
             let data = window.all.tool.rmEmpty(datas);
             let { method, url } = this.$api.founds_interface_list;
-            this.$http({ method: method, url: url, data:data }).then(
-                res => {
-                    console.log('出款数据',res);
-                    if (res && res.code == "200") {
-                        this.list = res.data.data;
-                        this.total = res.data.total;
-                    }
+            this.$http({ method: method, url: url, data: data }).then(res => {
+                console.log("出款数据", res);
+                if (res && res.code == "200") {
+                    this.list = res.data.data;
+                    this.total = res.data.total;
                 }
-            );
+            });
         },
         exportExcel() {
             import("../../../js/config/Export2Excel").then(excel => {
@@ -345,7 +347,7 @@ export default {
                         item.created_at,
                         item.reviewer,
                         item.reviewer_at,
-                        item.status,
+                        item.status
                     ];
                 });
                 excel.export_json_to_excel({
@@ -357,8 +359,8 @@ export default {
                 });
             });
         },
-        closeDia(){
-            this.dia_show=false
+        closeDia() {
+            this.dia_show = false;
         }
     },
     mounted() {
@@ -390,10 +392,10 @@ export default {
     margin-top: 10px;
     width: 100%;
 }
-.total-table >ul {
+.total-table > ul {
     justify-content: center;
 }
-.total-table ul li{
+.total-table ul li {
     /* margin-left: 100px; */
     width: 20%;
 }

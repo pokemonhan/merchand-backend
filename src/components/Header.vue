@@ -296,7 +296,7 @@ export default {
             let event_name = 'PlatformNoticeEvent'
             window.Echo.channel(channel_name).listen(event_name, res => {
                 if (res) {
-                    console.log('🍉 res: ', res);
+                    // console.log('🍉 res: ', res);
                     this.$notice({
                         title: '通知',
                         message: res.message || 'message is null',

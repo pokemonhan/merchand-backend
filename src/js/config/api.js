@@ -250,7 +250,11 @@ export default {
         url:'/merchant-api/withdraw-order/check-refuse',
         method:'post'
     },
-
+    // ---- 出款审核 - 查看稽核
+    founds_interface_examination_view_audit:{
+        url:'/merchant-api/withdraw-order/audit',
+        method:'post'
+    },
     // ---- 出款订单 - 列表
     founds_paymentorder_list:{
         url:'/merchant-api/withdraw-order/out-index',

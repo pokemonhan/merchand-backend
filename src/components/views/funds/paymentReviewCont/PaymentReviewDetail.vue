@@ -14,6 +14,9 @@
                     <span>状态</span>
                     <Select v-model="filter.status" :options="status_opt"></Select>
                 </li>
+                <li>
+                    <button class="btn-blue" @click="getAuditList()" >查询</button>
+                </li>
             </ul>
             <!-- <div>
                 <button class="btn-blue">查询</button>
@@ -23,15 +26,15 @@
 
         <Table style="margin-top:20px;" :headers="headers" :column="list">
             <template v-slot:item="{row}">
-                <td>{{row.a1}}</td>
-                <td>{{row.a2}}</td>
-                <td>{{row.a3}}</td>
-                <td>{{row.a4}}</td>
-                <td>{{row.a5}}</td>
-                <td>{{row.a6}}</td>
-                <td>{{row.a7}}</td>
-                <td>{{row.a8}}</td>
-                <td>{{row.a9}}</td>
+                <td>{{row.mobile}}</td>
+                <td>{{row.guid}}</td>
+                <td>{{row.order_number}}</td>
+                <td>{{row.type}}</td>
+                <td>{{row.amount}}</td>
+                <td>{{row.demand_bet}}</td>
+                <td>{{row.achieved_bet}}</td>
+                <td :class="[row.status==1?'green':'red']" >{{row.status==1? '已完成':'未完成'}}</td>
+                <td>{{row.created_at}}</td>
             </template>
         </Table>
         <Page
@@ -49,10 +52,7 @@
 export default {
     name: 'PaymentReviewDetail',
     props: {
-        userid: {
-            type: String,
-            default: ''
-        }
+        all: Object,
     },
     data() {
         return {
@@ -64,7 +64,7 @@ export default {
             status_opt: [
                 { label: '全部', value: '' },
                 { label: '已完成', value: '1' },
-                { label: '未完成', value: '2' }
+                { label: '未完成', value: '0' }
             ],
             status_color:{
                 '0':'red',
@@ -81,20 +81,60 @@ export default {
                 { label: '状态' },
                 { label: '稽核时间' }
             ],
-            list: [
-                { a1: '13245678989', a2: '4561342', a3: 'D45678944654', a4: '优惠存款', a5: '100', a6: '100', a7: '50', a8: '1', a9: '2019/09/25 18：17：30' }, { a1: '13245678989', a2: '4561342', a3: 'D45678944654', a4: '优惠存款', a5: '100', a6: '100', a7: '50', a8: '0', a9: '2019/09/25 18：17：30' },
-            ],
+            list: [],
             total: 0,
             pageNo: 1,
             pageSize: 25
         }
     },
     methods: {
-        updateNo(val) {},
-        updateSize(val) {},
+        updateNo(val) {
+            this.getAuditList();
+        },
+        updateSize(val) {
+            this.pageNo = 1;
+            this.getAuditList();
+        },
+        getList(){
+            // console.log('all',this.all)
+            let datas={
+                guid:this.all.user && this.all.user.guid,
+                mobile:this.all.user && this.all.user.mobile,
+            }
+            let data=window.all.tool.rmEmpty(datas)
+            console.log('请求数据',data)
+            let {method,url}=this.$api.founds_interface_examination_view_audit
+            this.$http({method,url,data}).then(res=>{
+                console.log('返回数据',res)
+                if(res && res.code=='200'){
+                    this.list=res.data.data
+                    this.total=res.data.total
+                }
+            })
+        },
+        getAuditList(){
+            // console.log('all',this.all)
+            let datas={
+                guid:this.filter.user_account,
+                mobile:this.filter.userid,
+                status:this.filter.status,
+                page:this.pageNo,
+                pageSize:this.pageSize,
+            }
+            let data=window.all.tool.rmEmpty(datas)
+            console.log('请求数据',data)
+            let {method,url}=this.$api.founds_interface_examination_view_audit
+            this.$http({method,url,data}).then(res=>{
+                console.log('返回数据',res)
+                if(res && res.code=='200'){
+                    this.list=res.data.data
+                    this.total=res.data.total
+                }
+            })
+        },
     },
     mounted() {
-        console.log(this.userid,'userid')
+        this.getList()
     }
 }
 </script>

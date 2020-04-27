@@ -27,11 +27,11 @@
                             <!-- 名称 -->
                             <span>{{item.name}}:</span>
                             <!-- 输入框 -->
-                            <Input v-model="item.value" v-if="item.editable_type.indexOf('1')!=-1" />
+                            <Input @update="changeInputDate(item)" v-model="item.value" v-if="item.editable_type.indexOf('1')!=-1" />
                             <div v-if="item.editable_type.indexOf('1')!=-1">
-                                <i class="orange iconfont iconjinggao1- ml5"></i>
+                                <i v-if="input_show[item.sign]" class="orange iconfont iconjinggao1- ml5"></i>
                                 <i
-                                    v-show="iconSaved[isTrue]"
+                                    v-if="iconSaved[item.sign]"
                                     class="green iconfont iconchenggong- ml5"
                                 ></i>
                             </div>
@@ -46,10 +46,11 @@
                                 v-model="item.status"
                                 v-if="item.editable_type.indexOf('2')!=-1"
                                 class="switchchoose"
+                                @update="changeSwitchDate(item)"
                             />
                             <div v-if="item.editable_type.indexOf('2')!=-1">
-                                <i class="orange iconfont iconjinggao1- ml5"></i>
-                                <i class="green iconfont iconchenggong- ml5"></i>
+                                <i v-if="switch_show[item.sign]" class="orange iconfont iconjinggao1- ml5"></i>
+                                <i v-if="switchSaved[item.sign]" class="green iconfont iconchenggong- ml5"></i>
                             </div>
                             <button
                                 v-if="item.editable_type.indexOf('2')!=-1"
@@ -58,13 +59,14 @@
                             >保存</button>
                             <!-- 下拉框 -->
                             <Select
+                                @update="changeSelectDate(item)"
                                 v-model="item.value"
                                 :options="type_opt"
                                 v-if="item.editable_type.indexOf('3')!=-1"
                             />
                             <div v-if="item.editable_type.indexOf('3')!=-1">
-                                <i class="orange iconfont iconjinggao1- ml5"></i>
-                                <i class="green iconfont iconchenggong- ml5"></i>
+                                <i v-if="select_show[item.sign]" class="orange iconfont iconjinggao1- ml5"></i>
+                                <i v-if="selectSaved[item.sign]" class="green iconfont iconchenggong- ml5"></i>
                             </div>
                             <button
                                 v-if="item.editable_type.indexOf('3')!=-1"
@@ -117,7 +119,12 @@ export default {
             button_show: "",
             cash_show: false,
             cash_title: "",
-            res_set: []
+            res_set: [],
+            input_show:{},
+            switch_show:{},
+            switchSaved:{},
+            selectSaved:{},
+            select_show:{},
         };
     },
     methods: {
@@ -142,6 +149,7 @@ export default {
                 if (res && res.code == "200") {
                     this.set_btns = res.data || [];
                     this.res_set = res.data || [];
+                    
                     //判断第一次进入
                     if (this.isFirst) {
                         let firstBtn = this.set_btns[0];
@@ -180,13 +188,15 @@ export default {
                     this.$toast.success(res.message);
                     this.getTitleList();
                     //显示已保存图标
-                    this.iconSaved = item;
-                    this.iconSaved.sign = true;
-                    this.isTrue = "sign";
-                    this.iconSaved[this.isTrue] = true;
-                    console.log("11111", this.iconSaved[this.isTrue]);
+                    this.iconSaved[item.sign] = true;
                 }
             });
+        },
+        changeInputDate(item){
+            console.log(1111)
+            if(item.value!==this.childs.value){
+                this.input_show[item.sign]=true
+            }
         },
         //按钮保存
         saveSwitch(item) {
@@ -202,8 +212,14 @@ export default {
                 if (res && res.code == "200") {
                     this.$toast.success(res.message);
                     this.getTitleList();
+                    this.switchSaved[item.sign] = true;
                 }
             });
+        },
+        changeSwitchDate(item){
+            if(item.value!==this.childs.value){
+                this.switch_show[item.sign]=true
+            }
         },
         //下拉框保存  item为列表下的childs
         seleSave(item) {
@@ -220,8 +236,14 @@ export default {
                 if (res && res.code == "200") {
                     this.$toast.success(res.message);
                     this.getTitleList();
+                    this.selectSaved[item.sign] = true;
                 }
             });
+        },
+        changeSelectDate(item){
+            if(item.value!==this.childs.value){
+                this.select_show[item.sign]=true
+            }
         },
         //返利说明
         cashBackShow() {

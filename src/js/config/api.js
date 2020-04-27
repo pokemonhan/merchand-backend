@@ -699,7 +699,16 @@ export default {
         url: '/merchant-api/merchant-admin-user/search-admin',
         method: 'post'
     },
-
+    //管理员 - 修改状态
+    admin_user_status_set:{
+        url:'/merchant-api/merchant-admin-user/switch-admin',
+        method:'post'
+    },
+    // 管理员 - 修改密码
+    admin_user_other_pwd_set:{
+        url:'/merchant-api/merchant-admin-user/update-password',
+        method:'post'
+    },
     // 全域设置 - 列表
     allarea_set_list:{
         url:'/merchant-api/config/index',

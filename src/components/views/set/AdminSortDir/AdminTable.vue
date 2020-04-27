@@ -8,15 +8,13 @@
             <template v-slot:item="{row}">
                 <td>{{row.name}}</td>
                 <td>{{row.email}}</td>
-                <td
-                    :class="[row.status?'green':'red']"
-                >{{row.status===1?'启用':row.status===0?'禁用':'出错!!!'}}</td>
                 <td>
-                    <button class="btns-blue" @click="editPwd(row)">修改密码?</button>
-                    <button
-                        :class="[row.status?'btns-red':'btns-green']"
-                        @click="memberStatusSwitch(row)"
-                    >{{row.status===1?'禁用':row.status===0?'启用':'出错'}}?</button>
+                    <Switchbox class="switch-select"
+                    :value="row.status"
+                    @update="modConf($event,row)" />
+                </td>
+                <td>
+                    <button class="btns-blue" @click="editPwd(row)">修改密码</button>
                 </td>
             </template>
         </Table>
@@ -91,13 +89,6 @@
                 </div>
             </div>
         </Dialog>
-        <Modal
-            :show.sync="mod_show"
-            title="禁用"
-            content="确认禁用该成员"
-            @cancel="mod_show=false"
-            @confirm="modConf"
-        ></Modal>
     </div>
 </template>
 
@@ -117,7 +108,7 @@ export default {
         return {
             // table
             isSearch: false, // 是否是点击搜索按钮的结果(而不是点击查看或者编辑)
-            headers: ['名称', '邮箱', '状态', '操作'],
+            headers: ['名称', '邮箱', '是否启用', '操作'],
             list: [],
             total: 0,
             pageNo: 1,
@@ -265,21 +256,6 @@ export default {
             this.dia_title = `修改密码: ${row.name}`
             this.dia_show = 'edit_pwd'
         },
-        memberStatusSwitch(row) {
-            let status = row.status
-            this.curr_row = row
-            if (status === 1) {
-                this.mod_title = '禁用'
-                this.mod_status = 'turnOff'
-                this.mod_cont = '是否确认禁用该成员!'
-            } else if (status === 0) {
-                this.mod_status = 'turnOn'
-                this.mod_title = '启用'
-                this.mod_cont = '是否确认启用该成员!'
-            }
-            this.mod_show = true
-        },
-
         // 检查编辑 密码
         checkEditPwd() {
             let regExp = /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{8,16}$/
@@ -309,28 +285,26 @@ export default {
                 name: this.curr_row.name,
                 password: this.editForm.pwd
             }
-            let { method, url } = this.$api.admin_user_other_pwd_set // 🙃
+            let { method, url } = this.$api.admin_user_other_pwd_set 
             this.$http({ method, url, data }).then(res => {
                 // console.log('res: ', res)
                 if (res && res.code === '200') {
                     res.message && this.$toast.success(res.message)
                     this.dia_show = ''
-                    // this.getList()
-                } else {
-                    res.message && this.$toast.error(res.message)
+                    this.getList()
                 }
             })
         },
         // 目前里面只有禁用
         // 禁用管理员
-        modConf() {
+        modConf(val,row) {
             let data = {
-                id: this.curr_row.id,
-                status: this.curr_row.status ? 0 : 1
+                id: row.id,
+                status: val ? 0 : 1
             }
-        
+
             let { url, method } = this.$api.admin_user_status_set
-            this.$http({ method, url, data }).then(res => { // 🙃
+            this.$http({ method, url, data }).then(res => { 
             // console.log('列表👌👌👌👌: ', res)
                 if (res && res.code === '200') {
         

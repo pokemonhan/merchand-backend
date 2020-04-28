@@ -330,6 +330,7 @@ export default {
         },
         // 创建分组 ——确认
         groupAddCfm() {
+            console.log(1111)
             if (this.form.group_name === '') {
                 return this.$toast.error('组名称不可以为空！')
             }

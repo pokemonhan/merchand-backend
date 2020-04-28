@@ -27,11 +27,18 @@
                             <!-- 名称 -->
                             <span>{{item.name}}:</span>
                             <!-- 输入框 -->
-                            <Input v-model="item.value" v-if="item.editable_type.indexOf('1')!=-1" />
+                            <Input
+                                @update="changeInputDate(item)"
+                                v-model="item.value"
+                                v-if="item.editable_type.indexOf('1')!=-1"
+                            />
                             <div v-if="item.editable_type.indexOf('1')!=-1">
-                                <i class="orange iconfont iconjinggao1- ml5"></i>
                                 <i
-                                    v-show="iconSaved[isTrue]"
+                                    v-if="input_show[item.sign]"
+                                    class="orange iconfont iconjinggao1- ml5"
+                                ></i>
+                                <i
+                                    v-if="iconSaved[item.sign]"
                                     class="green iconfont iconchenggong- ml5"
                                 ></i>
                             </div>
@@ -46,10 +53,17 @@
                                 v-model="item.status"
                                 v-if="item.editable_type.indexOf('2')!=-1"
                                 class="switchchoose"
+                                @update="changeSwitchDate(item)"
                             />
                             <div v-if="item.editable_type.indexOf('2')!=-1">
-                                <i class="orange iconfont iconjinggao1- ml5"></i>
-                                <i class="green iconfont iconchenggong- ml5"></i>
+                                <i
+                                    v-if="switch_show[item.sign]"
+                                    class="orange iconfont iconjinggao1- ml5"
+                                ></i>
+                                <i
+                                    v-if="switchSaved[item.sign]"
+                                    class="green iconfont iconchenggong- ml5"
+                                ></i>
                             </div>
                             <button
                                 v-if="item.editable_type.indexOf('2')!=-1"
@@ -58,13 +72,20 @@
                             >保存</button>
                             <!-- 下拉框 -->
                             <Select
+                                @update="changeSelectDate(item)"
                                 v-model="item.value"
                                 :options="type_opt"
                                 v-if="item.editable_type.indexOf('3')!=-1"
                             />
                             <div v-if="item.editable_type.indexOf('3')!=-1">
-                                <i class="orange iconfont iconjinggao1- ml5"></i>
-                                <i class="green iconfont iconchenggong- ml5"></i>
+                                <i
+                                    v-if="select_show[item.sign]"
+                                    class="orange iconfont iconjinggao1- ml5"
+                                ></i>
+                                <i
+                                    v-if="selectSaved[item.sign]"
+                                    class="green iconfont iconchenggong- ml5"
+                                ></i>
                             </div>
                             <button
                                 v-if="item.editable_type.indexOf('3')!=-1"
@@ -117,7 +138,16 @@ export default {
             button_show: "",
             cash_show: false,
             cash_title: "",
-            res_set: []
+            res_set: [],
+            input_show: {},
+            switch_show: {},
+            switchSaved: {},
+            selectSaved: {},
+            select_show: {},
+            before_data: [],
+            initial_data: {},
+            childs_data: {},
+            switch_initial_data: {}
         };
     },
     methods: {
@@ -128,17 +158,24 @@ export default {
         //点击设置选项按钮  item为最大所有列表
         setChange(item) {
             if (!item) return;
+            if (item.id === this.curr_row.id) return;
             // console.log("item", item);
             this.curr_row = item;
-            this.childs = item.childs;
+            this.childs = item.childs || [];
             this.button_show = item.id;
             // console.log("childs", this.childs);
+            //获取原始数值保存
+            for (var i = 0; i < this.childs.length; i++) {
+                let child = this.childs[i];
+                this.initial_data[child.sign] = child.value;
+                this.switch_initial_data[child.sign] = child.status;
+            }
         },
         //获取列表
         getTitleList() {
             let { method, url } = this.$api.allarea_set_list;
             this.$http({ method, url }).then(res => {
-                console.log("返回数据", res);
+                // console.log("返回数据", res);
                 if (res && res.code == "200") {
                     this.set_btns = res.data || [];
                     this.res_set = res.data || [];
@@ -170,9 +207,6 @@ export default {
                 key: "value",
                 value: item.value
             };
-
-            // console.log('item1111',item)
-            // console.log('请求数据',datas)
             let data = window.all.tool.rmEmpty(datas);
             let { method, url } = this.$api.allarea_set_save;
             this.$http({ method, url, data }).then(res => {
@@ -180,13 +214,16 @@ export default {
                     this.$toast.success(res.message);
                     this.getTitleList();
                     //显示已保存图标
-                    this.iconSaved = item;
-                    this.iconSaved.sign = true;
-                    this.isTrue = "sign";
-                    this.iconSaved[this.isTrue] = true;
-                    console.log("11111", this.iconSaved[this.isTrue]);
+                    this.iconSaved[item.sign] = true;
                 }
             });
+        },
+        changeInputDate(item) {
+            if (item.value !== this.initial_data[item.sign]) {
+                this.input_show[item.sign] = true;
+            } else {
+                this.input_show[item.sign] = false;
+            }
         },
         //按钮保存
         saveSwitch(item) {
@@ -202,8 +239,20 @@ export default {
                 if (res && res.code == "200") {
                     this.$toast.success(res.message);
                     this.getTitleList();
+                    this.switchSaved[item.sign] = true;
                 }
             });
+        },
+        changeSwitchDate(item) {
+            // console.log("item", item.status);
+            // console.log("initial_data", this.switch_initial_data[item.sign]);
+            if (
+                item.status != this.switch_initial_data[item.sign]
+            ) {
+                this.switch_show[item.sign] = true;
+            } else {
+                this.switch_show[item.sign] = false;
+            }
         },
         //下拉框保存  item为列表下的childs
         seleSave(item) {
@@ -220,8 +269,16 @@ export default {
                 if (res && res.code == "200") {
                     this.$toast.success(res.message);
                     this.getTitleList();
+                    this.selectSaved[item.sign] = true;
                 }
             });
+        },
+        changeSelectDate(item) {
+            if (item.value !== this.initial_data[item.sign]) {
+                this.select_show[item.sign] = true;
+            } else {
+                this.select_show[item.sign] = false;
+            }
         },
         //返利说明
         cashBackShow() {

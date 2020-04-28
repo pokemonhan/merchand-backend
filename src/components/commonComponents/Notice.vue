@@ -63,7 +63,7 @@ export default {
             let self = this
             if (this.jump) {
                 let path_obj = {
-                    notice_of_withdraw: '/funds/paymentorder',      // 出款订单
+                    notice_of_withdraw: '/funds/paymentreview',      // 出款订单
                     notice_of_recharge_on: '/funds/incomeorder',    // 线上入款通知
                     notice_of_recharge_off: '/funds/incomeorder',   // 线下入款通知
                     notice_of_email: '/email/receiveemail',         // 邮件通知

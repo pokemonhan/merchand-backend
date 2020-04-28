@@ -69,10 +69,14 @@
                     <td>{{row.last_login_ip}}</td>
                     <td>{{row.created_at}}</td>
                     <td>{{row.last_login_time}}</td>
-                    <td>{{row.status==0? '是':'否'}}</td>
+                    <td>{{row.status==0  ? '是':'否'}}</td>
                     <td>
                         <button class="btn-blue" @click="userDetail(row)">详情</button>
-                        <button  v-if="row.status==1"  class="btn-blue" @click="addBlackList(row)">加入黑名单</button>
+                        <button
+                            v-if="row.status==1"
+                            class="btn-blue"
+                            @click="addBlackList(row)"
+                        >加入黑名单</button>
                     </td>
                 </template>
             </Table>
@@ -86,17 +90,13 @@
                 @updateSize="updateSize"
             />
         </div>
-        <Dialog class="modal-mask" :show.sync="show_detail" title="详情" >
-            <div class="dia-inner" >
+        <Dialog class="modal-mask" :show.sync="show_detail" title="详情">
+            <div class="dia-inner">
                 <div class="mod-body">
                     <!-- 个人资料信息-图片 -->
                     <div class="row1 pic">
                         <div>
-                            <img
-                                class="avator"
-                                :src="detail_list.avatar"
-                                alt="没有图片"
-                            />
+                            <img class="avator" :src="detail_list.avatar" alt="没有图片" />
                         </div>
                         <div class="user-info">
                             <tr>
@@ -108,7 +108,7 @@
                                 <td style="height:42px;" v-if="EditUserTab" class="user-lab">
                                     <span class="mr5">会员标签</span>
                                     <Select v-model="user_tab" :options="user_tab_opt"></Select>
-                                    <button class="btn-blue" @click="editUserTabCfm()" >保存</button>
+                                    <button class="btn-blue" @click="editUserTabCfm()">保存</button>
                                     <button class="btn-blue" @click="EditUserTab=false">取消</button>
                                 </td>
                                 <td style="height:42px;" v-if="!EditUserTab" class="user-lab">
@@ -161,8 +161,14 @@
                                 </li>
                                 <li>
                                     <span>账号状态:</span>
-                                    <span :class="[detail_list.status==1?'green':'red']" >{{detail_list.status==1?'正常':'禁用'}}</span>
-                                    <button v-if="detail_list.status==0" class="btn-blue" @click="unlock()" >解锁</button>
+                                    <span
+                                        :class="[detail_list.status==1?'green':'red']"
+                                    >{{detail_list.status==1?'正常':'禁用'}}</span>
+                                    <button
+                                        v-if="detail_list.status==0"
+                                        class="btn-blue"
+                                        @click="unlock()"
+                                    >解锁</button>
                                 </li>
                             </ul>
                         </div>
@@ -399,7 +405,7 @@
                 </div>
             </div>
         </Dialog>
-        <Dialog :show.sync="unlock_show" title="账号解锁" >
+        <Dialog :show.sync="unlock_show" title="账号解锁">
             <div class="dia-inner">
                 <div class="ali-inner">
                     <div class="infor">是否确定解锁改账号？</div>
@@ -434,7 +440,7 @@ export default {
                 withdrawPassword: "",
                 confWithdrawPassword: "",
                 passwordMsg: "",
-                withdrawPasswordMsg:"",
+                withdrawPasswordMsg: ""
             },
             pwdReg: /^[0-9A-Za-z]{8,16}$/,
             online_state_opt: [
@@ -481,54 +487,58 @@ export default {
             user_tab_opt: [],
             inner_mask_show: false,
             show_add_black_list: false,
-            blackRemark:'',
+            blackRemark: "",
             curr_row: {},
             show_password: false,
             reset_title: "",
             reset_status: "",
             detail_list: {},
-            Ali_show:false,
-            unlock_show:false,
-            login_device_obj:{
-                '':{text:''},
-                '1':{text:'PC'},
-                '2':{text:'H5'},
-                '3':{text:'APP'}
+            Ali_show: false,
+            unlock_show: false,
+            login_device_obj: {
+                "": { text: "" },
+                "1": { text: "PC" },
+                "2": { text: "H5" },
+                "3": { text: "APP" }
             }
         };
     },
     methods: {
-        getSelectOpt(){
-            let {url,method}=this.$api.tag_list;
-            this.$http({url,method}).then(res=>{
-                if(res && res.code=='200'){
-                    if(res.data && res.data.data && Array.isArray(res.data.data)){
-                        let arr=[];
-                        for (var i=0;i<res.data.data.length;i++){
-                            let item=res.data.data[i];
-                            arr.push({label:item.title,value:item.id});
+        getSelectOpt() {
+            let { url, method } = this.$api.tag_list;
+            this.$http({ url, method }).then(res => {
+                if (res && res.code == "200") {
+                    if (
+                        res.data &&
+                        res.data.data &&
+                        Array.isArray(res.data.data)
+                    ) {
+                        let arr = [];
+                        for (var i = 0; i < res.data.data.length; i++) {
+                            let item = res.data.data[i];
+                            arr.push({ label: item.title, value: item.id });
                         }
-                        this.user_tab_opt=arr;
+                        this.user_tab_opt = arr;
                         // console.log('标签数据',this.user_tab_opt)
                     }
                 }
-            })
+            });
         },
-        editUserTabCfm(){
-            let data={
-                guid:this.detail_list.guid,
-                label:this.user_tab,
-            }
-            console.log('修改标签请求数据',data)
-            let{method,url}=this.$api.user_list_tag_edit;
-            this.$http({method,url,data}).then(res=>{
-                console.log('修改标签返回数据',res)
-                if(res && res.code=='200'){
+        editUserTabCfm() {
+            let data = {
+                guid: this.detail_list.guid,
+                label: this.user_tab
+            };
+            console.log("修改标签请求数据", data);
+            let { method, url } = this.$api.user_list_tag_edit;
+            this.$http({ method, url, data }).then(res => {
+                console.log("修改标签返回数据", res);
+                if (res && res.code == "200") {
                     this.$toast.success(res.message);
                     this.userDetail(this.curr_row);
-                    this.EditUserTab=false;
+                    this.EditUserTab = false;
                 }
-            })
+            });
         },
         clearForm() {
             this.form = {
@@ -548,7 +558,7 @@ export default {
         userDetail(row) {
             // console.log('获取详情列表传入数据row',row)
             this.show_detail = true;
-            this.curr_row=row
+            this.curr_row = row;
             let data = {
                 guid: String(row.guid)
             };
@@ -563,22 +573,22 @@ export default {
         },
         addBlackList(row) {
             this.show_add_black_list = true;
-            this.curr_row=row;
+            this.curr_row = row;
         },
         addBlackListCfm() {
-            let datas={
-                id:this.curr_row.id,
-                remark:this.blackRemark
-            }
-            let data=window.all.tool.rmEmpty(datas)
-            let {method,url}=this.$api.user_list_add_blackList;
-            this.$http({method,url,data}).then(res=>{
-                if(res && res.code=='200'){
-                    this.$toast.success(res.message)
-                    this.show_add_black_list=false;
+            let datas = {
+                id: this.curr_row.id,
+                remark: this.blackRemark
+            };
+            let data = window.all.tool.rmEmpty(datas);
+            let { method, url } = this.$api.user_list_add_blackList;
+            this.$http({ method, url, data }).then(res => {
+                if (res && res.code == "200") {
+                    this.$toast.success(res.message);
+                    this.show_add_black_list = false;
                     this.getList();
                 }
-            })
+            });
         },
         addAccClick() {
             this.inner_mask_show = true;
@@ -622,7 +632,7 @@ export default {
                 parent_mobile: this.filter.parent_account,
                 last_login_ip: this.filter.loginIP,
                 register_ip: this.filter.registIP,
-                is_tester:this.filter.is_tester,
+                is_tester: this.filter.is_tester,
                 page: this.pageNo,
                 pageSize: this.pageSize
             };
@@ -726,11 +736,19 @@ export default {
                 this.$set(this.reset, "withdrawPasswordMsg", "密码不能为空");
                 return !this.reset.withdrawPasswordMsg;
             }
-            if (this.reset.withdrawPassword != this.reset.confWithdrawPassword) {
-                this.$set(this.reset, "withdrawPasswordMsg", "两次输入密码不一致");
+            if (
+                this.reset.withdrawPassword != this.reset.confWithdrawPassword
+            ) {
+                this.$set(
+                    this.reset,
+                    "withdrawPasswordMsg",
+                    "两次输入密码不一致"
+                );
                 return !this.reset.withdrawPasswordMsg;
             } else {
-                this.reset.withdrawPasswordMsg = this.pwdReg.test(this.reset.withdrawPassword)
+                this.reset.withdrawPasswordMsg = this.pwdReg.test(
+                    this.reset.withdrawPassword
+                )
                     ? ""
                     : "请输入8-16个字母及数字组合";
             }
@@ -742,7 +760,7 @@ export default {
             this.reset_title = "重置取款密码";
             this.clearReset();
         },
-        withdrawPwdUpdate(){
+        withdrawPwdUpdate() {
             this.checkWithdrawReset();
         },
         reWidthdrawPwdCfm() {
@@ -752,53 +770,56 @@ export default {
                 withdrawals_password_confirmation: this.reset
                     .confWithdrawPassword
             };
-            if(this.checkWithdrawReset()){
-            let { method, url } = this.$api.user_list_reset_without_password;
-            this.$http({ method, url, data }).then(res => {
-                if (res && res.code == "200") {
-                    this.$toast.success(res.message);
-                    this.show_password = false;
-                }
-            });
+            if (this.checkWithdrawReset()) {
+                let {
+                    method,
+                    url
+                } = this.$api.user_list_reset_without_password;
+                this.$http({ method, url, data }).then(res => {
+                    if (res && res.code == "200") {
+                        this.$toast.success(res.message);
+                        this.show_password = false;
+                    }
+                });
             }
         },
         //查看银行 跳转至银行卡反差中心
         viewBank() {
-            this.$router.push('/set/bankcenter')
-            this.show_detail=false
+            this.$router.push("/set/bankcenter");
+            this.show_detail = false;
         },
         clearAli() {
-            this.Ali_show=true;
+            this.Ali_show = true;
         },
-        clearAliCfm(){
-            let data={
-                guid:String(this.detail_list.guid),
-            }
+        clearAliCfm() {
+            let data = {
+                guid: String(this.detail_list.guid)
+            };
             // console.log('请求数据',data)
-            let {method,url}=this.$api.user_list_clear_alipay;
-            this.$http({method,url,data}).then(res=>{
+            let { method, url } = this.$api.user_list_clear_alipay;
+            this.$http({ method, url, data }).then(res => {
                 // console.log('返回数据',res)
-                if(res && res.code=='200'){
-                    this.Ali_show=false;
+                if (res && res.code == "200") {
+                    this.Ali_show = false;
                     this.$toast.success(res.message);
                 }
-            })
+            });
         },
-        unlock(){
-            this.unlock_show=true;
+        unlock() {
+            this.unlock_show = true;
         },
-        unlockCfm(){
-            let data={
-                guid:String(this.detail_list.guid)
-            }
-            let {method,url}=this.$api.user_list_unlock;
-            this.$http({method,url,data}).then(res=>{
-                if(res && res.code=='200'){
-                    this.unlock_show=false;
+        unlockCfm() {
+            let data = {
+                guid: String(this.detail_list.guid)
+            };
+            let { method, url } = this.$api.user_list_unlock;
+            this.$http({ method, url, data }).then(res => {
+                if (res && res.code == "200") {
+                    this.unlock_show = false;
                     this.userDetail(this.curr_row);
                     this.$toast.success(res.message);
                 }
-            })
+            });
         },
         updateNo(val) {
             this.getList();
@@ -1066,12 +1087,12 @@ table {
     font-size: 12px;
     color: red;
 }
-.ali-inner{
+.ali-inner {
     text-align: center;
     font-size: 14px;
     margin-top: 8%;
 }
-.ali-btns{
+.ali-btns {
     margin-top: 8%;
 }
 </style>

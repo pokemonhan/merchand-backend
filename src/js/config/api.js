@@ -250,7 +250,11 @@ export default {
         url:'/merchant-api/withdraw-order/check-refuse',
         method:'post'
     },
-
+    // ---- 出款审核 - 查看稽核
+    founds_interface_examination_view_audit:{
+        url:'/merchant-api/withdraw-order/audit',
+        method:'post'
+    },
     // ---- 出款订单 - 列表
     founds_paymentorder_list:{
         url:'/merchant-api/withdraw-order/out-index',
@@ -695,7 +699,16 @@ export default {
         url: '/merchant-api/merchant-admin-user/search-admin',
         method: 'post'
     },
-
+    //管理员 - 修改状态
+    admin_user_status_set:{
+        url:'/merchant-api/merchant-admin-user/switch-admin',
+        method:'post'
+    },
+    // 管理员 - 修改密码
+    admin_user_other_pwd_set:{
+        url:'/merchant-api/merchant-admin-user/update-password',
+        method:'post'
+    },
     // 全域设置 - 列表
     allarea_set_list:{
         url:'/merchant-api/config/index',

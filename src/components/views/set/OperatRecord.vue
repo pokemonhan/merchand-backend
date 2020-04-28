@@ -1,59 +1,61 @@
 <template>
-    <div class="container">
-        <div class="filter p10">
-            <ul class="left">
-                <li>
-                    <span>管理员</span>
-                    <Input v-model="filter.vendor" />
-                </li>
-                <li>
-                    <span>IP搜索</span>
-                    <Input v-model="filter.dataIP" />
-                </li>
-                <li>
-                    <span>日期选择</span>
-                    <Date style="width:300px" type="datetimerange" v-model="filter.dates" />
-                    <!-- <span style="margin:0 5px;">~</span>
-                    <Date v-model="filter.dates[1]" />-->
-                </li>
-                <li>
-                    <button class="btn-blue" @click="getList">查询</button>
-                    <button class="btn-blue" @click="clearAll">清空</button>
-                </li>
-            </ul>
-        </div>
-        <div>
-            <ul class="opera-list">
-                <li v-for="(item, index) in list" :key="index">
-                    <span style="min-width:150px;text-align:right;">{{timeAgo(item.created_at)}}</span>
-                    <div class="pic-cont">
-                        <img class="img" src="../../../assets/image/head.jpg" alt="图片丢失" />
-                        <div :class="[index!==list.length-1?'vertical-bar':'']"></div>
-                    </div>
-                    <div class="opera-cont">
-                        <div class="cont-left">
-                            <div class="cont-title">{{item.title}}</div>
-                            <div class="mt8">
-                                <span>操作时间:</span>
-                                <span>{{item.created_at}}</span>
+    <div class="container" >
+        <div class="operalog" ref="operalog">
+            <div class="filter p10">
+                <ul class="left">
+                    <li>
+                        <span>管理员</span>
+                        <Input v-model="filter.vendor" />
+                    </li>
+                    <li>
+                        <span>IP搜索</span>
+                        <Input v-model="filter.dataIP" />
+                    </li>
+                    <li>
+                        <span>日期选择</span>
+                        <Date style="width:300px" type="datetimerange" v-model="filter.dates" />
+                        <!-- <span style="margin:0 5px;">~</span>
+                        <Date v-model="filter.dates[1]" />-->
+                    </li>
+                    <li>
+                        <button class="btn-blue" @click="getList">查询</button>
+                        <button class="btn-blue" @click="clearAll">清空</button>
+                    </li>
+                </ul>
+            </div>
+            <div>
+                <ul class="opera-list">
+                    <li v-for="(item, index) in list" :key="index">
+                        <span style="min-width:150px;text-align:right;">{{timeAgo(item.created_at)}}</span>
+                        <div class="pic-cont">
+                            <img class="img" src="../../../assets/image/head.jpg" alt="图片丢失" />
+                            <div :class="[index!==list.length-1?'vertical-bar':'']"></div>
+                        </div>
+                        <div class="opera-cont">
+                            <div class="cont-left">
+                                <div class="cont-title">{{item.title}}</div>
+                                <div class="mt8">
+                                    <span>操作时间:</span>
+                                    <span>{{item.created_at}}</span>
+                                </div>
+                            </div>
+                            <div class="cont-right">
+                                <button class="btn-blue" @click="detail(item)">查看详情</button>
                             </div>
                         </div>
-                        <div class="cont-right">
-                            <button class="btn-blue" @click="detail(item)">查看详情</button>
-                        </div>
-                    </div>
-                </li>
-            </ul>
-        </div>
-        <div>
-            <Page
-                class="table-page"
-                :total="total"
-                :pageNo.sync="pageNo"
-                :pageSize.sync="pageSize"
-                @updateNo="updateNo"
-                @updateSize="updateSize"
-            />
+                    </li>
+                </ul>
+            </div>
+            <!-- <div class="mb20">
+                <Page
+                    class="table-page"
+                    :total="total"
+                    :pageNo.sync="pageNo"
+                    :pageSize.sync="pageSize"
+                    @updateNo="updateNo"
+                    @updateSize="updateSize"
+                />
+            </div> -->
         </div>
         <Dialog :show.sync="dia_show" title="操作详情">
             <div class="dia-inner">
@@ -110,7 +112,8 @@ export default {
             total: 0,
             pageNo: 1,
             pageSize: 25,
-            curr_row: {}
+            curr_row: {},
+            isOver:false //是否都加载完了
         };
     },
     methods: {
@@ -118,7 +121,18 @@ export default {
             this.dia_show = true;
             this.curr_row = item;
         },
+        // 第一次加载
+        firstLoad() {
+            this.pageNo = 1
+            this.getList().then(res => {
+                if (res.data) {
+                    this.list = res.data.data
+                    this.total = res.data.toal
+                }
+            })
+        },
         getList() {
+            return new Promise((resolve,reject)=>{
             let createdAt = "";
             if (this.filter.dates[0] && this.filter.dates[1]) {
                 createdAt = JSON.stringify([
@@ -133,23 +147,17 @@ export default {
                 page: this.pageNo,
                 pageSize: this.pageSize
             };
-            //data为空则不传data
-            // if (JSON.stringify(data) === "{}") {
-            //     return false; // 如果为空,返回false
-            // }
-            // Object.keys(datas);
-            // if (Object.keys(datas).length === 0) {
-            //     return false;
-            // }
             let data = window.all.tool.rmEmpty(datas);
             let { method, url } = this.$api.operation_record_list;
-            this.$http({ method, url }).then(res => {
-                console.log("返回数据", res);
+            this.$http({ method, url , data}).then(res => {
+                // console.log("返回数据", res);
                 if (res && res.code == "200") {
-                    this.list = res.data.data;
-                    this.total=res.data.total
+                    resolve(res)
+                }else{
+                    reject(res)
                 }
-            });
+            })
+            })
         },
         clearAll() {
             this.filter = {
@@ -158,84 +166,109 @@ export default {
                 dates: []
             };
         },
-        updateNo(val) {
-            this.getList()
-        },
-        updateSize(val) {
-            this.pageNo = 1
-            this.getList()
-        },
+        // updateNo(val) {
+        //     this.getList();
+        // },
+        // updateSize(val) {
+        //     this.pageNo = 1;
+        //     this.getList();
+        // },
 
         // 计算时间间隔, 即显示 多久以前
         timeAgo(time) {
-            let reg = /^(\d{1,4})(-|\/)(\d{1,2})\2(\d{1,2}) (\d{1,2}):(\d{1,2}):(\d{1,2})$/
-            if (!reg.test(time)) return
-            let dateTimeStamp = new Date(time)
+            let reg = /^(\d{1,4})(-|\/)(\d{1,2})\2(\d{1,2}) (\d{1,2}):(\d{1,2}):(\d{1,2})$/;
+            if (!reg.test(time)) return;
+            let dateTimeStamp = new Date(time);
 
             //dateTimeStamp是一个时间毫秒，注意时间戳是秒的形式，在这个毫秒的基础上除以1000，就是十位数的时间戳。13位数的都是时间毫秒。
-            var minute = 1000 * 60 //把分，时，天，周，半个月，一个月用毫秒表示
-            var hour = minute * 60
-            var day = hour * 24
-            var week = day * 7
-            var halfamonth = day * 15
-            var month = day * 30
-            var now = new Date().getTime() //获取当前时间毫秒
-            var diffValue = now - dateTimeStamp //时间差
+            var minute = 1000 * 60; //把分，时，天，周，半个月，一个月用毫秒表示
+            var hour = minute * 60;
+            var day = hour * 24;
+            var week = day * 7;
+            var halfamonth = day * 15;
+            var month = day * 30;
+            var now = new Date().getTime(); //获取当前时间毫秒
+            var diffValue = now - dateTimeStamp; //时间差
 
             if (diffValue < 0) {
-                return
+                return;
             }
-            var minC = diffValue / minute //计算时间差的分，时，天，周，月
-            var hourC = diffValue / hour
-            var dayC = diffValue / day
-            var weekC = diffValue / week
-            var monthC = diffValue / month
-            let result = '--'
+            var minC = diffValue / minute; //计算时间差的分，时，天，周，月
+            var hourC = diffValue / hour;
+            var dayC = diffValue / day;
+            var weekC = diffValue / week;
+            var monthC = diffValue / month;
+            let result = "--";
             if (monthC >= 1 && monthC <= 3) {
-                result = ' ' + parseInt(monthC) + '月前'
+                result = " " + parseInt(monthC) + "月前";
             } else if (weekC >= 1 && weekC <= 3) {
-                result = ' ' + parseInt(weekC) + '周前'
+                result = " " + parseInt(weekC) + "周前";
             } else if (dayC >= 1 && dayC <= 6) {
-                result = ' ' + parseInt(dayC) + '天前'
+                result = " " + parseInt(dayC) + "天前";
             } else if (hourC >= 1 && hourC <= 23) {
-                result = ' ' + parseInt(hourC) + '小时前'
+                result = " " + parseInt(hourC) + "小时前";
             } else if (minC >= 1 && minC <= 59) {
-                result = ' ' + parseInt(minC) + '分钟前'
+                result = " " + parseInt(minC) + "分钟前";
             } else if (diffValue >= 0 && diffValue <= minute) {
-                result = '刚刚'
+                result = "刚刚";
             } else {
-                var datetime = new Date()
-                datetime.setTime(dateTimeStamp)
-                var Nyear = datetime.getFullYear()
+                var datetime = new Date();
+                datetime.setTime(dateTimeStamp);
+                var Nyear = datetime.getFullYear();
                 var Nmonth =
                     datetime.getMonth() + 1 < 10
-                        ? '0' + (datetime.getMonth() + 1)
-                        : datetime.getMonth() + 1
+                        ? "0" + (datetime.getMonth() + 1)
+                        : datetime.getMonth() + 1;
                 var Ndate =
                     datetime.getDate() < 10
-                        ? '0' + datetime.getDate()
-                        : datetime.getDate()
+                        ? "0" + datetime.getDate()
+                        : datetime.getDate();
                 var Nhour =
                     datetime.getHours() < 10
-                        ? '0' + datetime.getHours()
-                        : datetime.getHours()
+                        ? "0" + datetime.getHours()
+                        : datetime.getHours();
                 var Nminute =
                     datetime.getMinutes() < 10
-                        ? '0' + datetime.getMinutes()
-                        : datetime.getMinutes()
+                        ? "0" + datetime.getMinutes()
+                        : datetime.getMinutes();
                 var Nsecond =
                     datetime.getSeconds() < 10
-                        ? '0' + datetime.getSeconds()
-                        : datetime.getSeconds()
-                result = Nyear + '-' + Nmonth + '-' + Ndate
+                        ? "0" + datetime.getSeconds()
+                        : datetime.getSeconds();
+                result = Nyear + "-" + Nmonth + "-" + Ndate;
             }
-            return result
+            return result;
+        },
+        // 滚动加载
+        scroll(person) {
+            let isLoading = false
+            let ele = this.$refs.operalog
+            ele.onscroll = () => {
+                // 距离底部200px时加载一次
+                let scrollHeight = ele.scrollHeight
+                let scrollTop = ele.scrollTop
+                let offsetHeight = ele.offsetHeight
+                let bottomOfWindow = scrollHeight - scrollTop - offsetHeight
+                // console.log('🍹 isLoading: ', isLoading)
+                if (bottomOfWindow < 200 && isLoading == false) {
+                    let totalPage = Math.ceil(this.total / this.pageSize)
+                    // 如果是加载到最后一条 
+                    if (this.pageNo > totalPage) return
+                    isLoading = true
+                    this.pageNo++ // 请求下一页
+                    this.getList().then(res => {
+                        isLoading = false
+                        if (res.data) {
+                            this.list = this.list.concat(res.data.data || [])
+                        }
+                    })
+                }
+            }
         }
-
     },
     mounted() {
-        this.getList();
-        // this.pastTime()
+        this.firstLoad()
+        this.scroll()
     }
 };
 </script>
@@ -246,7 +279,10 @@ export default {
     max-height: 80vh;
     overflow: auto;
 }
-
+.operalog {
+    height: calc(100vh - 170px);
+    overflow: auto;
+}
 .opera-list {
     /* margin-left: 100px; */
     width: 730px;
@@ -324,5 +360,4 @@ export default {
     display: flex;
     justify-content: center;
 }
-
 </style>

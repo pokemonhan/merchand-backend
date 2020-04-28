@@ -155,7 +155,8 @@ export default {
                 conf_pwd: '',
                 verificCode: ''
             },
-            err_tips: ['', '', '', '']
+            err_tips: ['', '', '', ''],
+            isSocketOpen: false
         }
     },
     methods: {
@@ -284,26 +285,34 @@ export default {
         passwordConf() {
             this.err_tips = ['', '', '', '']
             if (this.checkPwd()) {
-                console.log('执行内容')
+                // console.log('执行内容')
             }
         },
         socket() {
             let channel_pre = 'jianghuhuyu_database_merchant_notice_'
-            let platform_sign = 'JHHY'
+            let platform_sign = window.all.tool.getLocal('platform_sign')
+            if (!platform_sign || this.isSocketOpen === true) return
             let channel_name = channel_pre + platform_sign
             // channel_name = 'jianghuhuyu_ethan_database_merchant_notice_JHHY'
             // 事件名
             let event_name = 'PlatformNoticeEvent'
+            this.isSocketOpen = true
             window.Echo.channel(channel_name).listen(event_name, res => {
                 if (res) {
-                    console.log('🍉 res: ', res);
                     this.$notice({
                         title: '通知',
                         message: res.message || 'message is null',
-                        jump: res.message_type,
+                        jump: res.message_type
                     })
                 }
             })
+        }
+    },
+    watch: {
+        $route(from, to) {
+            if (from.path === '/login') {
+                this.socket()
+            }
         }
     },
     mounted() {

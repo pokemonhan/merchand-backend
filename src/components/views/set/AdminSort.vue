@@ -344,7 +344,7 @@ export default {
             this.$http({ method, url, data }).then(res => {
                 if (res && res.code === '200') {
                     this.$toast.success(res.message)
-                    this.getGroupList() // 刷新分组列表
+                    // this.getGroupList() // 刷新分组列表
                 }
             })
         },

@@ -37,7 +37,7 @@
             </div>
 
             <!--------- 右边的 页面 ---------->
-            <div class="cont-right">
+            <div class="cont-center">
                 <div class="edit-form">
                     <div>
                         <span
@@ -47,7 +47,6 @@
                     <div class="edit-name">
                         <p class="mb10">组名称:</p>
                         <Input
-                            style="width:300px;"
                             :disabled="form.id===1"
                             v-model="form.group_name"
                         />
@@ -55,28 +54,7 @@
                     </div>
                     <div class="edit-authority">
                         <p class="mb10">选择组权限:</p>
-                        <!-- <div class="show-selected" @click="openTree">
-                            <span
-                                class="sel-item"
-                                v-for="(item, index) in authority_list"
-                                :key="index"
-                                @click.stop
-                            >
-                                <span>{{item.label}}</span>
-                                <i class="iconfont iconcuowuguanbi-" @click.stop="tabClose(item)"></i>
-                            </span>
-                        </div>-->
-                        <!-- v-clickoutside="closeTree" -->
-                        <!-- <div
-                            v-show="tree_show"
-                            ref="tree"
-                            class="drop-list"
-                            v-clickoutside="closeTree"
-                        >
-                            <Tree style="width:fit-content" :list.sync="tree_list" @change="treeUpd" />
-                        </div>-->
                         <AuthorityTree
-                            style="width:500px;"
                             :menutree="tree_list"
                             :disabled="form.id===1"
                             v-model="form.tagList"
@@ -107,7 +85,10 @@
                     </div>
                 </div>
                 <!-- 查看check之下面内容 -->
-                <div v-if="right_show==='check'" class="mt20">
+                <div class="vertical-line"></div>
+            </div>
+            <div class="cont-right">
+                <div v-if="right_show!=='add'" class="mt20">
                     <!-- table 内容 -->
                     <div class="table">
                         <AdminTable ref="adminTable" :group_id="admin_id" @search="search" />
@@ -135,10 +116,11 @@ export default {
             filter: {
                 searchStr: ''
             },
+            /** 搜索 成员结果 */
             searchGroup: [],
-            group_list: [], // 展示列表
+            group_list: [], // 左侧群组列表
             form: {
-                id:'',
+                id: '',
                 group_name: '',
                 tagList: []
             },
@@ -147,7 +129,7 @@ export default {
             tree_show: false,
 
             // table
-            admin_id: '', // 展示成员table所需要的id
+            admin_id: '', // 展示成员table所需要的id ,自动查询结果
 
             // 启用 禁用modal
             mod_show: false,
@@ -162,18 +144,14 @@ export default {
     },
     computed: {},
     methods: {
-        // 初始化tree 使其无选中项
-        initTree(tree) {
-            let arr = tree.map(item => {
-                item.checked = false
-                if (item.child) {
-                    item.child = this.initTree(item.child)
-                }
-                return item
-            })
-            return arr
+        initForm() {
+            this.form = {
+                id: '',
+                group_name: '',
+                tagList: []
+            }
+            this.searchGroup = []
         },
-
         // 初始化mod 内容
         initMod() {
             this.mod_show = false
@@ -224,7 +202,6 @@ export default {
         treeSelectShow(group) {
             // 当前权限数组
             let authority_arr = group.detail.map(item => item.menu_id)
-            // console.log('authority_arr: ', authority_arr);
 
             // id 是否在选择项数组中
             let isSelect = function(id) {
@@ -241,32 +218,27 @@ export default {
             }
 
             this.tree_list = listSetCheked(this.tree_list)
-            // this.getAuthorityList()
-            // this.isChildSelAll()
         },
 
         // 创建按钮
         addsort() {
             this.right_show = 'add'
-            this.form.group_name = ''
-            this.form.id = ''
-            this.form.tagList = []
-            // this.initTree(this.tree_list)
-            // this.getAuthorityList()
+            this.initForm()
         },
 
         // 查看其中一组
         check(group) {
             // console.log('group: ', group);
+            if (!group) return
             this.searchGroup = []
             this.right_show = 'check'
             this.curr_group = Object.assign({}, group)
 
             this.form.group_name = group.group_name
             this.form.id = group.id
-            this.admin_id = group.id
-
             this.form.tagList = group.detail.map(item => item.menu_id)
+
+            this.admin_id = group.id
         },
 
         // 删除分组列表 按钮
@@ -277,11 +249,19 @@ export default {
             this.mod_title = '删除'
             this.mod_cont = '是否确认删除该分组！'
         },
+        // 查看 和编辑都是一样的
         edit(group) {
             this.right_show = 'edit'
-            this.curr_group = group // 存储当前点击的组
+
+            this.searchGroup = []
+            this.curr_group = Object.assign({}, group)
+
             this.form.group_name = group.group_name
-            this.treeSelectShow(group)
+            this.form.id = group.id
+            this.form.tagList = group.detail.map(item => item.menu_id)
+
+            this.admin_id = group.id
+            // this.check(group)
         },
 
         // 后台res 转化为 tree 数组
@@ -303,11 +283,6 @@ export default {
 
         // 获取后台所有权限树
         getTreeList() {
-            // this.tree_list = JSON.parse(JSON.stringify(window.all.menu_list))
-            // console.log('想要的tree_list: ', this.tree_list);
-            // this.tree_list.forEach((item, index) => {
-            //     item.id = index
-            // })
             let self = this
             let { url, method } = this.$api.current_admin_menu
             this.$http({
@@ -323,14 +298,19 @@ export default {
         },
 
         cancel() {
-            let group = Object.assign({}, this.curr_group)
-            this.form.group_name = group.group_name
-            this.admin_id = group.id
-            this.treeSelectShow(group)
+            // let group = Object.assign({}, this.curr_group)
+            // this.form.group_name = group.group_name
+            // this.admin_id = group.id
+            // this.treeSelectShow(group)
+            // this.form.tagList = group.
+            if (this.right_show === 'add') {
+                this.initForm()
+            } else {
+                this.check(this.curr_group)
+            }
         },
         // 创建分组 ——确认
         groupAddCfm() {
-            console.log(1111)
             if (this.form.group_name === '') {
                 return this.$toast.error('组名称不可以为空！')
             }
@@ -345,7 +325,8 @@ export default {
             this.$http({ method, url, data }).then(res => {
                 if (res && res.code === '200') {
                     this.$toast.success(res.message)
-                    // this.getGroupList() // 刷新分组列表
+                    this.getGroupList() // 刷新分组列表
+                    this.initForm()
                 }
             })
         },
@@ -410,10 +391,10 @@ export default {
             // let params = window.all.tool.rmEmpty(para);
             let { url, method } = this.$api.admin_group_list
 
-            this.$http({ method, url,}).then(res => {
+            this.$http({ method, url }).then(res => {
                 // console.log('res: ', res)
                 if (res && res.code === '200') {
-                    this.group_list = res.data
+                    this.group_list = res.data.data || []
                 }
             })
         },
@@ -425,13 +406,11 @@ export default {
                 // console.log('res: ', res)
                 if (res && res.code === '200') {
                     this.group_list = res.data.data
-                    this.group_list &&
+                    if (this.group_list) {
                         this.$nextTick(() => {
-                            let self = this
-                            // setTimeout(()=>{
-                            self.check(self.group_list[0])
-                            // },1000)
+                            this.check(this.group_list[0])
                         })
+                    }
                 }
             })
         }
@@ -447,6 +426,7 @@ export default {
 <style scoped>
 .cont {
     display: flex;
+    flex-wrap: wrap;
     margin-top: 20px;
 }
 .cont-left {
@@ -493,8 +473,13 @@ export default {
     margin-right: 50px;
     background: #ededed;
 }
+.cont-center {
+    display: flex;
+    /* padding-right: 20px; */
+    /* border-right: ; */
+}
 .edit-form {
-    width: 550px;
+    width: 500px;
 }
 .err-tips {
     font-size: 12px;

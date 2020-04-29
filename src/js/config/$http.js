@@ -65,11 +65,11 @@ http.interceptors.request.use(req => {
     if (req.data) {
         let upload = '/merchant-api/upload'
         // 上传图片不加密
-        if(req.url===upload){
-            console.log('req',[req.data]);
-            
+        if (req.url === upload) {
+            console.log('req', [req.data]);
+
         }
-        if (req.url !== upload||true) {
+        if (req.url !== upload || true) {
             let data = JSON.parse(JSON.stringify(req.data))
             if (JSON.stringify(data) !== "{}") {
                 var encrypt_data = AES_encrypt(data);
@@ -86,16 +86,15 @@ http.interceptors.request.use(req => {
 
 // 后台返回数据 全局预设 ---
 http.interceptors.response.use(res => {
-    // console.log('res: ', res);
 
     // loading 样式设置
     if (loadingEle && loadingEle.style) {
         loadingEle.style.display = 'none'
     }
-    let message = res.message || res.data.message || ''
+
     if (res && res.data) {
         res.data = AES_decrypt(res.data)
-
+        let message = res.message || res.data.message || ''
 
         if (res.status === 200) {
 
@@ -117,7 +116,7 @@ http.interceptors.response.use(res => {
             }
         }
         return res.data
-        
+
     } else {
         window.__vm__.$toast.error('没有data数据，出现服务问题或被禁止!')
         // console.log('res: ', res);

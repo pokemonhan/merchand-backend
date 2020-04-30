@@ -140,7 +140,7 @@
 
 <script>
 export default {
-    name: 'Header',
+    name: "Header",
     // components: { tabNav, langSelect },
     data() {
         return {
@@ -150,13 +150,14 @@ export default {
             logout_conf_show: false,
             dia_show: false,
             form: {
-                old_pwd: '',
-                new_pwd: '',
-                conf_pwd: '',
-                verificCode: ''
+                old_pwd: "",
+                new_pwd: "",
+                conf_pwd: "",
+                verificCode: ""
             },
-            err_tips: ['', '', '', '']
-        }
+            err_tips: ["", "", "", ""],
+            list:[]
+        };
     },
     methods: {
         // fullScreen() {
@@ -201,115 +202,125 @@ export default {
             // audio.play();
 
             //方式2
-            var audio = new Audio(require('../assets/audio/wan.wav'))
-            audio.play()
+            var audio = new Audio(require("../assets/audio/wan.wav"));
+            audio.play();
         },
         accoutEnter() {
-            let ele = document.querySelector('.account-inner')
-            ele.style.display = 'block'
-            ele.style.maxHeight = '100px'
+            let ele = document.querySelector(".account-inner");
+            ele.style.display = "block";
+            ele.style.maxHeight = "100px";
             // ele.style.overflow = 'visible'
-            this.account_ishow = true
+            this.account_ishow = true;
         },
         accountLeave() {
-            this.account_ishow = false
-            let ele = document.querySelector('.account-inner')
+            this.account_ishow = false;
+            let ele = document.querySelector(".account-inner");
             // todo
-            ele.style.maxHeight = '0'
-            ele.style.overflow = 'hidden'
+            ele.style.maxHeight = "0";
+            ele.style.overflow = "hidden";
 
-            let self = this
+            let self = this;
             setTimeout(() => {
                 if (self.account_ishow === false) {
                     //todo
-                    ele.style.display = 'none'
+                    ele.style.display = "none";
                 }
-            }, 300)
+            }, 300);
         },
         logout() {
             // window.all.tool.removeSession('token')
             // this.$router.push('/login')
-            this.logout_conf_show = true
+            this.logout_conf_show = true;
         },
         logoutConf() {
-            let self = this
+            let self = this;
             this.$http({
                 method: this.$api.logout.method,
                 url: this.$api.logout.url
                 // data: params
             }).then(res => {
-                if (res && res.code === '200') {
-                    self.$toast('登出成功')
+                if (res && res.code === "200") {
+                    self.$toast("登出成功");
                 }
-            })
-            window.all.tool.removeSession('token')
-            this.$router.push('/login')
-            this.logout_conf_show = false
+            });
+            window.all.tool.removeSession("token");
+            this.$router.push("/login");
+            this.logout_conf_show = false;
         },
         cancel() {
-            this.logout_conf_show = false
+            this.logout_conf_show = false;
         },
         checkPwd() {
-            let { old_pwd, new_pwd, conf_pwd, verificCode } = this.form
-            let regExp = /^[0-9A-Za-z]{8,16}$/
+            let { old_pwd, new_pwd, conf_pwd, verificCode } = this.form;
+            let regExp = /^[0-9A-Za-z]{8,16}$/;
 
             // 原密码
             if (!regExp.test(old_pwd)) {
-                this.$set(this.err_tips, '0', '请输入8~16位英文字母+数字密码!')
-                return false
+                this.$set(this.err_tips, "0", "请输入8~16位英文字母+数字密码!");
+                return false;
 
                 // 新密码 验证
             } else if (!regExp.test(new_pwd)) {
-                this.$set(this.err_tips, '1', '请输入8~16位英文字母+数字密码!')
-                return false
+                this.$set(this.err_tips, "1", "请输入8~16位英文字母+数字密码!");
+                return false;
 
                 // 确认密码
             } else if (!regExp.test(conf_pwd)) {
-                this.$set(this.err_tips, '2', '请输入8~16位英文字母+数字密码!')
-                return false
+                this.$set(this.err_tips, "2", "请输入8~16位英文字母+数字密码!");
+                return false;
 
                 // 确认密码是否与原密码相同
             } else if (new_pwd !== conf_pwd) {
-                this.$set(this.err_tips, '2', '两次密码不同!')
-                return false
+                this.$set(this.err_tips, "2", "两次密码不同!");
+                return false;
 
                 // 验证码
             } else if (!verificCode) {
-                this.$set(this.err_tips, '3', '验证码不可为空!')
-                return false
+                this.$set(this.err_tips, "3", "验证码不可为空!");
+                return false;
             } else {
-                return true
+                return true;
             }
         },
         passwordConf() {
-            this.err_tips = ['', '', '', '']
+            this.err_tips = ["", "", "", ""];
             if (this.checkPwd()) {
-                console.log('执行内容')
+                console.log("执行内容");
             }
         },
         socket() {
-            let channel_pre = 'jianghuhuyu_database_merchant_notice_'
-            let platform_sign = 'JHHY'
-            let channel_name = channel_pre + platform_sign
+            let channel_pre = "jianghuhuyu_database_merchant_notice_";
+            let platform_sign = "JHHY";
+            let channel_name = channel_pre + platform_sign;
             // channel_name = 'jianghuhuyu_ethan_database_merchant_notice_JHHY'
             // 事件名
-            let event_name = 'PlatformNoticeEvent'
+            let event_name = "PlatformNoticeEvent";
             window.Echo.channel(channel_name).listen(event_name, res => {
                 if (res) {
                     // console.log('🍉 res: ', res);
                     this.$notice({
-                        title: '通知',
-                        message: res.message || 'message is null',
-                        jump: res.message_type,
-                    })
+                        title: "通知",
+                        message: res.message || "message is null",
+                        jump: res.message_type
+                    });
                 }
-            })
+            });
+        },
+        getList() {
+            let { method, url } = this.$api.header_notification_statistics;
+            this.$http({ method, url }).then(res => {
+                console.log("顶部数据", res);
+                if (res && res.code == "200") {
+                    this.list=res.data
+                }
+            });
         }
     },
     mounted() {
-        this.socket()
+        this.socket();
+        this.getList();
     }
-}
+};
 </script>
 
 <style scoped>

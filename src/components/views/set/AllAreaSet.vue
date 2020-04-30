@@ -32,7 +32,7 @@
                                 v-model="item.value"
                                 v-if="item.editable_type.indexOf('1')!=-1"
                             />
-                            <div v-if="item.editable_type.indexOf('1')!=-1">
+                            <div style="width:50px;" v-if="item.editable_type.indexOf('1')!=-1">
                                 <i
                                     v-if="input_show[item.sign]"
                                     class="orange iconfont iconjinggao1- ml5"
@@ -55,7 +55,7 @@
                                 class="switchchoose"
                                 @update="changeSwitchDate(item)"
                             />
-                            <div v-if="item.editable_type.indexOf('2')!=-1">
+                            <div style="width:50px;" v-if="item.editable_type.indexOf('2')!=-1">
                                 <i
                                     v-if="switch_show[item.sign]"
                                     class="orange iconfont iconjinggao1- ml5"
@@ -77,7 +77,7 @@
                                 :options="type_opt"
                                 v-if="item.editable_type.indexOf('3')!=-1"
                             />
-                            <div v-if="item.editable_type.indexOf('3')!=-1">
+                            <div style="width:50px;" v-if="item.editable_type.indexOf('3')!=-1">
                                 <i
                                     v-if="select_show[item.sign]"
                                     class="orange iconfont iconjinggao1- ml5"
@@ -154,11 +154,14 @@ export default {
         //重置功能
         reset(res_set) {
             this.getTitleList();
+            this.input_show = {};
+            this.switch_show = {};
+            this.select_show = {};
         },
         //点击设置选项按钮  item为最大所有列表
         setChange(item) {
             if (!item) return;
-            if (item.id === this.curr_row.id) return;
+            // if (item.id === this.curr_row.id) return;
             // console.log("item", item);
             this.curr_row = item;
             this.childs = item.childs || [];
@@ -186,16 +189,19 @@ export default {
                         this.isFirst = false;
                     } else {
                         // let  curr_item=res.data.find(item=>this.curr_row.id===item.id)
-                        let curr_item = {};
+                        // let curr_item = {};
                         for (var i = 0; i < res.data.length; i++) {
                             // curr_item=res.data[i].id
                             let item = res.data[i];
                             if (this.curr_row.id === item.id) {
-                                curr_item = item;
+                                this.setChange(item);
+                                // console.log("item", item);
+                                this.input_show={}
+                                this.switch_show={}
+                                this.select_show={}
                             }
                         }
                         // console.log('发音',curr_item)
-                        this.setChange(curr_item);
                     }
                 }
             });
@@ -215,6 +221,7 @@ export default {
                     this.getTitleList();
                     //显示已保存图标
                     this.iconSaved[item.sign] = true;
+                    this.input_show[item.sign] = false;
                 }
             });
         },
@@ -240,15 +247,14 @@ export default {
                     this.$toast.success(res.message);
                     this.getTitleList();
                     this.switchSaved[item.sign] = true;
+                    this.switch_show[item.sign]=false
                 }
             });
         },
         changeSwitchDate(item) {
             // console.log("item", item.status);
             // console.log("initial_data", this.switch_initial_data[item.sign]);
-            if (
-                item.status != this.switch_initial_data[item.sign]
-            ) {
+            if (item.status != this.switch_initial_data[item.sign]) {
                 this.switch_show[item.sign] = true;
             } else {
                 this.switch_show[item.sign] = false;
@@ -270,6 +276,7 @@ export default {
                     this.$toast.success(res.message);
                     this.getTitleList();
                     this.selectSaved[item.sign] = true;
+                    this.select_show[item.sign]=false
                 }
             });
         },

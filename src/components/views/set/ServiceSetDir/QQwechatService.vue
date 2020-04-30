@@ -298,8 +298,8 @@ export default {
 }
 .err-tips {
     position: absolute;
-    top: 1.7em;
-    left: 7em;
+    top: 2.2em;
+    left: 6em;
     color: red;
 }
 </style>

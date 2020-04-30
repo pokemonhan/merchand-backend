@@ -317,7 +317,7 @@
                         <li>
                             <span>账号类型:</span>
                             <Select
-                                style="width:185px;"
+                                style="width:191px;"
                                 v-model="form.type"
                                 :options="[{label:'测试账号',value:0},{label:'正式账号',value:1}]"
                             ></Select>
@@ -580,9 +580,11 @@ export default {
                 id: this.curr_row.id,
                 remark: this.blackRemark
             };
+            console.log('请求数据',datas)
             let data = window.all.tool.rmEmpty(datas);
             let { method, url } = this.$api.user_list_add_blackList;
             this.$http({ method, url, data }).then(res => {
+                console.log('返回数据',res)
                 if (res && res.code == "200") {
                     this.$toast.success(res.message);
                     this.show_add_black_list = false;
@@ -935,7 +937,7 @@ table {
     margin-top: 10px;
 }
 .blacklist-inner .textarea {
-    margin-top: 10px;
+    margin-top: 5px;
     padding: 10px;
     border: 1px solid #ddd;
     border-radius: 5px;

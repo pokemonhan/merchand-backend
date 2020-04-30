@@ -803,5 +803,12 @@ export default {
     bank_sel_list:{
         url:'/merchant-api/bank-cards/bank-list',
         method:'get'
-    }
+    },
+
+    //---------顶部通知
+    //顶部通知统计
+    header_notification_statistics:{
+        url:'/merchant-api/notification/statistic',
+        method:'get'
+    },
 };

@@ -18,7 +18,7 @@
                         <Date v-model="filter.dates[1]" />-->
                     </li>
                     <li>
-                        <button class="btn-blue" @click="getList">查询</button>
+                        <button class="btn-blue" @click="firstLoad">查询</button>
                         <button class="btn-blue" @click="clearAll">清空</button>
                     </li>
                 </ul>
@@ -144,13 +144,13 @@ export default {
                 data_ip: this.filter.dataIP,
                 admin_name: this.filter.vendor,
                 created_at: createdAt,
-                page: this.pageNo,
                 pageSize: this.pageSize
             };
+            console.log('列表请求数据',datas)
             let data = window.all.tool.rmEmpty(datas);
             let { method, url } = this.$api.operation_record_list;
             this.$http({ method, url , data}).then(res => {
-                // console.log("返回数据", res);
+                console.log("返回数据", res);
                 if (res && res.code == "200") {
                     resolve(res)
                 }else{

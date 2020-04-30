@@ -138,6 +138,10 @@ export default {
             if (val === 'all') {
                 let list = []
                 this.updateTab_nav_list(list)
+                // this.refresh()
+                let path = this.$route.path
+                this.$router.push('/home/home')
+
             }
             if (val === 'current') {
                 let list = this.tab_nav_list.filter(
@@ -146,7 +150,7 @@ export default {
                 this.updateTab_nav_list(list)
 
                 // 如果关闭当前,跳转到最后一个tab
-                if (this.tab_nav_list.length > 1) {
+                if (this.tab_nav_list.length > 0) {
                     if (this.$route.path === this.curr_tab.path) {
                         let last_index = this.tab_nav_list.length - 1
                         this.$router.push(this.tab_nav_list[last_index].path)

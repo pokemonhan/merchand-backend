@@ -155,9 +155,9 @@ export default {
                 conf_pwd: "",
                 verificCode: ""
             },
-            err_tips: ["", "", "", ""],
-            list:[]
-        };
+            err_tips: ['', '', '', ''],
+            isSocketOpen: false
+        }
     },
     methods: {
         // fullScreen() {
@@ -285,35 +285,35 @@ export default {
         passwordConf() {
             this.err_tips = ["", "", "", ""];
             if (this.checkPwd()) {
-                console.log("执行内容");
+                // console.log('执行内容')
             }
         },
         socket() {
-            let channel_pre = "jianghuhuyu_database_merchant_notice_";
-            let platform_sign = "JHHY";
-            let channel_name = channel_pre + platform_sign;
+            let channel_pre = 'jianghuhuyu_database_merchant_notice_'
+            let platform_sign = window.all.tool.getLocal('platform_sign')
+            if (!platform_sign || this.isSocketOpen === true) return
+            let channel_name = channel_pre + platform_sign
             // channel_name = 'jianghuhuyu_ethan_database_merchant_notice_JHHY'
             // 事件名
-            let event_name = "PlatformNoticeEvent";
+            let event_name = 'PlatformNoticeEvent'
+            this.isSocketOpen = true
             window.Echo.channel(channel_name).listen(event_name, res => {
                 if (res) {
                     // console.log('🍉 res: ', res);
                     this.$notice({
-                        title: "通知",
-                        message: res.message || "message is null",
+                        title: '通知',
+                        message: res.message || 'message is null',
                         jump: res.message_type
-                    });
+                    })
                 }
             });
-        },
-        getList() {
-            let { method, url } = this.$api.header_notification_statistics;
-            this.$http({ method, url }).then(res => {
-                console.log("顶部数据", res);
-                if (res && res.code == "200") {
-                    this.list=res.data
-                }
-            });
+        }
+    },
+    watch: {
+        $route(from, to) {
+            if (from.path === '/login') {
+                this.socket()
+            }
         }
     },
     mounted() {

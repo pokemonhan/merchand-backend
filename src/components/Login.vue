@@ -99,10 +99,9 @@ export default {
                 password: this.password
             }
             // let {url, method} = this.$api.login
-            // TODO:
+            // TODO: 取消这个 true
             if (this.checkUname() && this.checkPwd() && this.checkVerify()||true) {
-            // if (this.checkUname() && this.checkPwd() && this.checkVerify()) {
-                // this.$http.post('/headquarters-api/login',params).then(res=>{
+
                 this.$http({
                     method: this.$api.login.method,
                     url: this.$api.login.url,
@@ -115,6 +114,7 @@ export default {
                         window.all.tool.setLocal('Authorization', Authorization)
                         window.all.tool.setLocal('name', res.data.name)
                         window.all.tool.setLocal('email', res.data.email)
+                        window.all.tool.setLocal('platform_sign', res.data.platform_sign)
                         this.$toast.success('登陆成功')
                         this.$router.push('/home/home')
                     }

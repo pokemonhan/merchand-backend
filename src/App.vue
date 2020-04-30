@@ -256,6 +256,7 @@ export default {
     padding: 20px 8px 20px 8px;
     border: 1px solid #4c8bfd;
     background: #fff;
+    overflow: auto;
 }
 /* 背景遮罩层 */
 .modal-mask {

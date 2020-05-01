@@ -14,7 +14,7 @@
                 </li>
                 <li>
                     <button class="btn-blue" @click="getList">查询</button>
-                    <button class="btn-blue" @click="sortCfm" >确定</button>
+                    <button class="btn-blue" @click="sortCfm">确定</button>
                 </li>
             </ul>
         </div>
@@ -28,12 +28,21 @@
                         <button class="btns-blue" @click="move(row,idx,'moveUp')">上移</button>
                         <button class="btns-blue" @click="move(row,idx,'moveDown')">下移</button>
                     </td>
-                    <td>
-                        <Switchbox
-                            class="switch-select"
-                            :value="row.hot_new"
-                            @update="switchUpd($event,row)"
-                        />
+                    <td >
+                        <div class="gametypes">
+                            <div>
+                                <Switchbox class="switch-select" />
+                                <span>正常</span>
+                            </div>
+                            <div>
+                                <Switchbox class="switch-select" />
+                                <span>热门游戏</span>
+                            </div>
+                            <div>
+                                <Switchbox class="switch-select" />
+                                <span>新游戏</span>
+                            </div>
+                        </div>
                     </td>
                 </template>
             </Table>
@@ -61,7 +70,7 @@ export default {
                 vendor_id: "",
                 name: ""
             },
-            headers: ["编号", "游戏平台", "游戏名称", "排序", "是否热门"],
+            headers: ["编号", "游戏平台", "游戏名称", "排序", "游戏类型"],
             list: [],
             total: 0,
             pageNo: 1,
@@ -73,7 +82,7 @@ export default {
         getSelectOpt() {
             let { url, method } = this.$api.game_search_condition_list;
             this.$http({ url, method }).then(res => {
-                console.log('下拉数据',res)
+                console.log("下拉数据", res);
                 if (res && res.code == "200") {
                     this.select = res.data;
                     this.plant_opt = this.backToSelOpt(
@@ -100,7 +109,7 @@ export default {
         switchUpd(val, row) {
             let data = {
                 id: row.id,
-                hot_new: val ? 1 : 0
+                hot_new: val == 1 ? 1 : 0
             };
 
             let { url, method } = this.$api.game_hot_set;
@@ -108,7 +117,7 @@ export default {
                 // console.log('返回数据',res)
                 if (res && res.code === "200") {
                     this.$toast.success(res && res.message);
-                    this.list=[]
+                    this.list = [];
                     this.getList();
                 }
             });
@@ -133,43 +142,43 @@ export default {
             }
             this.list = this.list.slice();
         },
-        sortCfm(){
-            let length=this.list && this.list.length;
-            if(!length) return;
-            let param=this.list.map((item,index)=>{
+        sortCfm() {
+            let length = this.list && this.list.length;
+            if (!length) return;
+            let param = this.list.map((item, index) => {
                 return {
-                    id:item.id,
-                    sort:length-index
+                    id: item.id,
+                    sort: length - index
                 };
             });
-            param=JSON.stringify(param);
-            let data={
-                sorts:param
+            param = JSON.stringify(param);
+            let data = {
+                sorts: param
             };
             this.$http({
-                method:this.$api.game_order.method,
-                url:this.$api.game_order.url,
-                data:data
-            }).then(res=>{
-                if(res && res.code=='200'){
-                    this.$toast.success(res && res.message)
+                method: this.$api.game_order.method,
+                url: this.$api.game_order.url,
+                data: data
+            }).then(res => {
+                if (res && res.code == "200") {
+                    this.$toast.success(res && res.message);
                     this.getList();
                 }
-            })
+            });
         },
         getList() {
             let datas = {
                 hot_new: 1,
                 vendor_id: this.filter.vendor_id,
                 name: this.filter.name,
-                device:2,
-                page:this.pageNo,
-                pageSize:this.pageSize
+                device: 2,
+                page: this.pageNo,
+                pageSize: this.pageSize
             };
             // console.log('请求数据',para)
             let data = window.all.tool.rmEmpty(datas);
-            let {url,method}=this.$api.game_h5_list;
-            this.$http({method, url, data}).then(res => {
+            let { url, method } = this.$api.game_h5_list;
+            this.$http({ method, url, data }).then(res => {
                 console.log("列表返回数据", res);
                 if (res && res.code == "200") {
                     this.list = res.data.data || [];
@@ -181,9 +190,9 @@ export default {
             this.getList();
         },
         updateSize(val) {
-            this.pageNo=1;
+            this.pageNo = 1;
             this.getList();
-        },
+        }
     },
     // watch: {
     //     'type_id'(to, from){
@@ -205,5 +214,22 @@ export default {
 /* .p10 全局样式 */
 .switch-select {
     transform: scale(0.8);
+}
+.gametypes {
+    width: 70%;
+    display: flex;
+    margin: 0 auto;
+    text-align: center;
+    justify-content: space-between;
+}
+.gametypes div {
+    height: 100%;
+    display: flex;
+}
+.gametypes div span{
+    height: 100%;
+    margin: auto;
+    margin-left: 5px;
+    font-size: 12px;
 }
 </style>

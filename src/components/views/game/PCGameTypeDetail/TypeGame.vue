@@ -46,11 +46,20 @@
                         />
                     </td>
                     <td>
-                        <Switchbox
-                            class="switch-select"
-                            :value="row.is_hot"
-                            @update="switchHot($event,row)"
-                        />
+                        <div class="gametypes">
+                            <div>
+                                <Switchbox class="switch-select" />
+                                <span>正常</span>
+                            </div>
+                            <div>
+                                <Switchbox class="switch-select" />
+                                <span>热门游戏</span>
+                            </div>
+                            <div>
+                                <Switchbox class="switch-select" />
+                                <span>新游戏</span>
+                            </div>
+                        </div>
                     </td>
                     <td>
                         <Switchbox
@@ -107,7 +116,7 @@ export default {
                 "游戏ICON",
                 "排序",
                 "是否启用",
-                "是否热门",
+                "游戏类型",
                 "是否推荐",
                 "操作"
             ],
@@ -324,5 +333,23 @@ export default {
 /* .p10 全局样式 */
 .switch-select {
     transform: scale(0.8);
+}
+.gametypes {
+    width: 70%;
+    display: flex;
+    margin: 0 auto;
+    text-align: center;
+    justify-content: space-between;
+}
+.gametypes div {
+    height: 100%;
+    display: flex;
+}
+.gametypes div span{
+    height: 100%;
+    /* vertical-align:middle; */
+    margin: auto;
+    margin-left: 5px;
+    font-size: 12px;
 }
 </style>

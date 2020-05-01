@@ -20,7 +20,7 @@ function randomString (len) {
  * AES加密数组 传入参数为需要传递的数组JSON
  */
 function AES_encrypt (data) {
-    console.log('aes 里面的data: ', data);
+    // console.log('aes 里面的data: ', data);
 
     // //偏移量 由前端每次请求随机生成 16位
     let IV = randomString(16);

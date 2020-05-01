@@ -66,7 +66,7 @@ http.interceptors.request.use(req => {
         let upload = '/merchant-api/upload'
         // 上传图片不加密
         if (req.url === upload) {
-            console.log('req', [req.data]);
+            // console.log('req', [req.data]);
 
         }
         if (req.url !== upload || true) {

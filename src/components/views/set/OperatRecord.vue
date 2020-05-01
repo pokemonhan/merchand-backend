@@ -82,7 +82,7 @@
                         </div>
                         <div>
                             <span>浏览器:</span>
-                            <span>{{curr_row.user_agent}}</span>
+                            <span>{{getBrowerPic(curr_row.user_agent)}}</span>
                         </div>
                     </li>
                 </ul>
@@ -130,6 +130,13 @@ export default {
                     this.total = res.data.toal
                 }
             })
+        },
+        getBrowerPic(user_agent){
+            console.log('user_agent',user_agent)
+            if(user_agent.indexOf("MSIE")>=0){
+                return 'ie'
+            }
+
         },
         getList() {
             return new Promise((resolve,reject)=>{

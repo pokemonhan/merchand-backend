@@ -32,33 +32,33 @@
                 </div>
                 <ul class="right">
                     <li>
-                        <span>邮件通知</span>
+                        <span @click="goEmail()" >邮件通知</span>
                         <span class="badge">
-                            <span class="badge-inner">{{parseInt('855')>99?'99+':'8'}}</span>
+                            <span class="badge-inner">{{parseInt(email_count)>99?'99+': email_count}}</span>
                         </span>
                     </li>
                     <li>
-                        <span>线上入款</span>
+                        <span @click="goOnFounds()" >线上入款</span>
                         <span class="badge">
-                            <span class="badge-inner">{{parseInt('855')>99?'99+':'8'}}</span>
+                            <span class="badge-inner">{{parseInt(online_top_up_count)>99?'99+': online_top_up_count}}</span>
                         </span>
                     </li>
                     <li>
-                        <span>线下入款</span>
+                        <span @click="goOffFounds()" >线下入款</span>
                         <span class="badge">
-                            <span class="badge-inner">{{'8'}}</span>
+                            <span class="badge-inner">{{parseInt(offline_top_up_count)>99?'99+': offline_top_up_count}}</span>
                         </span>
                     </li>
                     <li>
-                        <span>出款订单</span>
+                        <span @click="goOrder()" >出款订单</span>
                         <span class="badge">
-                            <span class="badge-inner">{{'8'}}</span>
+                            <span class="badge-inner">{{parseInt(withdrawal_order_count)>99?'99+': withdrawal_order_count}}</span>
                         </span>
                     </li>
                     <li>
-                        <span>出款审核</span>
+                        <span @click="goReview()" >出款审核</span>
                         <span class="badge">
-                            <span class="badge-inner">{{'8'}}</span>
+                            <span class="badge-inner">{{parseInt(withdrawal_review_count)>99?'99+': withdrawal_review_count}}</span>
                         </span>
                     </li>
                     <!-- 喇叭 -->
@@ -156,7 +156,13 @@ export default {
                 verificCode: ""
             },
             err_tips: ['', '', '', ''],
-            isSocketOpen: false
+            isSocketOpen: false,
+            list:[],
+            email_count:'',
+            online_top_up_count:'',
+            offline_top_up_count:'',
+            withdrawal_order_count:'',
+            withdrawal_review_count:'',
         }
     },
     methods: {
@@ -307,7 +313,53 @@ export default {
                     })
                 }
             });
-        }
+        },
+        getList(){
+            let {method,url}=this.$api.header_notification_statistics
+            this.$http({method,url}).then(res=>{
+                // console.log('头部返回数据',res)
+                if(res && res.code=='200'){
+                    this.list=res.data
+                    for(var i=0;i<this.list.length;i++){
+                        if(this.list[i].message_type=="email"){
+                            this.email_count=this.list[i].count
+                        }
+                        if(this.list[i].message_type=="online_top_up"){
+                            this.online_top_up_count=this.list[i].count
+                        }
+                        if(this.list[i].message_type=="offline_top_up"){
+                            this.offline_top_up_count=this.list[i].count
+                        }
+                        if(this.list[i].message_type=="withdrawal_order"){
+                            this.withdrawal_order_count=this.list[i].count
+                        }
+                        if(this.list[i].message_type=="withdrawal_review"){
+                            this.withdrawal_review_count=this.list[i].count
+                        }
+                    }
+                    // console.log('email',this.email_count)
+                    // console.log('online_top_up',this.online_top_up_count)
+                    // console.log('offline_top_up',this.offline_top_up_count)
+                    // console.log('withdrawal_order',this.withdrawal_order_count)
+                    // console.log('withdrawal_review',this.withdrawal_review_count)
+                }
+            })
+        },
+        goEmail(){
+            this.$router.push('/email/receiveemail')
+        },
+        goOnFounds(){
+            this.$router.push('/funds/incomeorder')
+        },
+        goOffFounds(){
+            this.$router.push('/funds/incomeorder')
+        },
+        goOrder(){
+            this.$router.push('/funds/paymentorder')
+        },
+        goReview(){
+            this.$router.push('/funds/paymentreview')
+        },
     },
     watch: {
         $route(from, to) {

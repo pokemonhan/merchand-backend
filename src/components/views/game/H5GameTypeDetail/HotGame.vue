@@ -28,18 +28,30 @@
                         <button class="btns-blue" @click="move(row,idx,'moveUp')">上移</button>
                         <button class="btns-blue" @click="move(row,idx,'moveDown')">下移</button>
                     </td>
-                    <td >
+                    <td>
                         <div class="gametypes">
                             <div>
-                                <Switchbox class="switch-select" />
+                                <Switchbox
+                                    class="switch-select"
+                                    :value="row.hot_new==0 ? 1:0"
+                                    @update="switchNormal(row)"
+                                />
                                 <span>正常</span>
                             </div>
                             <div>
-                                <Switchbox class="switch-select" />
+                                <Switchbox
+                                    class="switch-select"
+                                    :value="row.hot_new==1 ? 1:0"
+                                    @update="switchHot(row)"
+                                />
                                 <span>热门游戏</span>
                             </div>
                             <div>
-                                <Switchbox class="switch-select" />
+                                <Switchbox
+                                    class="switch-select"
+                                    :value="row.hot_new==2 ? 1:0"
+                                    @update="switchNew(row)"
+                                />
                                 <span>新游戏</span>
                             </div>
                         </div>
@@ -106,18 +118,44 @@ export default {
         selectBtn(item) {
             this.curr_btn = item.value;
         },
-        switchUpd(val, row) {
+        switchNormal(row) {
             let data = {
                 id: row.id,
-                hot_new: val == 1 ? 1 : 0
+                hot_new: "0"
             };
-
             let { url, method } = this.$api.game_hot_set;
             this.$http({ method, url, data }).then(res => {
-                // console.log('返回数据',res)
-                if (res && res.code === "200") {
+                if (res && res.code == "200") {
                     this.$toast.success(res && res.message);
-                    this.list = [];
+                    this.getList();
+                }
+            });
+        },
+        switchHot(row) {
+            let data = {
+                id: row.id,
+                hot_new: "1"
+            };
+            
+            let { url, method } = this.$api.game_hot_set;
+            this.$http({ method, url, data }).then(res => {
+                if (res && res.code == "200") {
+                    this.$toast.success(res && res.message);
+                    this.getList();
+                }
+            });
+        },
+        switchNew(row) {
+            let data = {
+                id: row.id,
+                hot_new: "2"
+            };
+            console.log("请求数据", data);
+            let { url, method } = this.$api.game_hot_set;
+            this.$http({ method, url, data }).then(res => {
+                console.log("新游戏", res);
+                if (res && res.code == "200") {
+                    this.$toast.success(res && res.message);
                     this.getList();
                 }
             });
@@ -226,7 +264,7 @@ export default {
     height: 100%;
     display: flex;
 }
-.gametypes div span{
+.gametypes div span {
     height: 100%;
     margin: auto;
     margin-left: 5px;

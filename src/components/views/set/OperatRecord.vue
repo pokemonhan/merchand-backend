@@ -1,5 +1,5 @@
 <template>
-    <div class="container" >
+    <div class="container">
         <div class="operalog" ref="operalog">
             <div class="filter p10">
                 <ul class="left">
@@ -55,7 +55,7 @@
                     @updateNo="updateNo"
                     @updateSize="updateSize"
                 />
-            </div> -->
+            </div>-->
         </div>
         <Dialog :show.sync="dia_show" title="操作详情">
             <div class="dia-inner">
@@ -82,7 +82,29 @@
                         </div>
                         <div>
                             <span>浏览器:</span>
-                            <span>{{getBrowerPic(curr_row.user_agent)}}</span>
+                            <span>
+                                <img
+                                    v-if="fireFoxShow"
+                                    src="../../../assets/image/browser/firefox.png"
+                                    alt
+                                />
+                                <img
+                                    v-if="ChromeShow"
+                                    src="../../../assets/image/browser/google.png"
+                                    alt
+                                />
+                                <img v-if="IEShow" src="../../../assets/image/browser/IE.png" alt />
+                                <img
+                                    v-if="operaShow"
+                                    src="../../../assets/image/browser/opera.png"
+                                    alt
+                                />
+                                <img
+                                    v-if="SafariShow"
+                                    src="../../../assets/image/browser/safari.png"
+                                    alt
+                                />
+                            </span>
                         </div>
                     </li>
                 </ul>
@@ -113,58 +135,82 @@ export default {
             pageNo: 1,
             pageSize: 25,
             curr_row: {},
-            isOver:false //是否都加载完了
+            isOver: false, //是否都加载完了
+            operaShow: false,
+            fireFoxShow: false,
+            ChromeShow: false,
+            SafariShow: false,
+            IEShow: false
         };
     },
     methods: {
         detail(item) {
             this.dia_show = true;
             this.curr_row = item;
+            this.getBrowerPic(item)
         },
         // 第一次加载
         firstLoad() {
-            this.pageNo = 1
+            this.pageNo = 1;
             this.getList().then(res => {
                 if (res.data) {
-                    this.list = res.data.data
-                    this.total = res.data.toal
+                    this.list = res.data.data;
+                    this.total = res.data.toal;
                 }
-            })
+            });
         },
-        getBrowerPic(user_agent){
-            console.log('user_agent',user_agent)
-            if(user_agent.indexOf("MSIE")>=0){
-                return 'ie'
+        getBrowerPic(item) {
+            let userAgent = item.user_agent;
+            console.log("userAgent", userAgent);
+            let isOprea = userAgent.indexOf("OPR") > -1;
+            if (isOprea) {
+                this.operaShow = true;
             }
-
+            if (userAgent.indexOf("Firefox") > -1) {
+                this.fireFoxShow = true;
+            }
+            if (
+                userAgent.indexOf("Edge") > -1 &&
+                userAgent.indexOf("MSIE") > -1 &&
+                !isOprea
+            ) {
+                this.IEShow = true;
+            }
+            if (userAgent.indexOf("Chrome") > -1) {
+                this.ChromeShow = true;
+            }
+            if (userAgent.indexOf("Mac") > -1 && userAgent.indexOf("Safari")>-1 ) {
+                this.SafariShow = true;
+            }
         },
         getList() {
-            return new Promise((resolve,reject)=>{
-            let createdAt = "";
-            if (this.filter.dates[0] && this.filter.dates[1]) {
-                createdAt = JSON.stringify([
-                    String(this.filter.dates[0]),
-                    String(this.filter.dates[1])
-                ]);
-            }
-            let datas = {
-                data_ip: this.filter.dataIP,
-                admin_name: this.filter.vendor,
-                created_at: createdAt,
-                pageSize: this.pageSize
-            };
-            console.log('列表请求数据',datas)
-            let data = window.all.tool.rmEmpty(datas);
-            let { method, url } = this.$api.operation_record_list;
-            this.$http({ method, url , data}).then(res => {
-                console.log("返回数据", res);
-                if (res && res.code == "200") {
-                    resolve(res)
-                }else{
-                    reject(res)
+            return new Promise((resolve, reject) => {
+                let createdAt = "";
+                if (this.filter.dates[0] && this.filter.dates[1]) {
+                    createdAt = JSON.stringify([
+                        String(this.filter.dates[0]),
+                        String(this.filter.dates[1])
+                    ]);
                 }
-            })
-            })
+                let datas = {
+                    data_ip: this.filter.dataIP,
+                    admin_name: this.filter.vendor,
+                    created_at: createdAt,
+                    pageSize: this.pageSize,
+                    page:this.pageNo
+                };
+                console.log("列表请求数据", datas);
+                let data = window.all.tool.rmEmpty(datas);
+                let { method, url } = this.$api.operation_record_list;
+                this.$http({ method, url, data }).then(res => {
+                    console.log("返回数据", res);
+                    if (res && res.code == "200") {
+                        resolve(res);
+                    } else {
+                        reject(res);
+                    }
+                });
+            });
         },
         clearAll() {
             this.filter = {
@@ -248,34 +294,35 @@ export default {
         },
         // 滚动加载
         scroll(person) {
-            let isLoading = false
-            let ele = this.$refs.operalog
+            let isLoading = false;
+            let ele = this.$refs.operalog;
             ele.onscroll = () => {
                 // 距离底部200px时加载一次
-                let scrollHeight = ele.scrollHeight
-                let scrollTop = ele.scrollTop
-                let offsetHeight = ele.offsetHeight
-                let bottomOfWindow = scrollHeight - scrollTop - offsetHeight
+                let scrollHeight = ele.scrollHeight;
+                let scrollTop = ele.scrollTop;
+                let offsetHeight = ele.offsetHeight;
+                let bottomOfWindow = scrollHeight - scrollTop - offsetHeight;
                 // console.log('🍹 isLoading: ', isLoading)
                 if (bottomOfWindow < 200 && isLoading == false) {
-                    let totalPage = Math.ceil(this.total / this.pageSize)
-                    // 如果是加载到最后一条 
-                    if (this.pageNo > totalPage) return
-                    isLoading = true
-                    this.pageNo++ // 请求下一页
+                    let totalPage = Math.ceil(this.total / this.pageSize);
+                    // 如果是加载到最后一条
+                    if (this.pageNo > totalPage) return;
+                    isLoading = true;
+                    this.pageNo++; // 请求下一页
+                    console.log('页数',this.pageNo)
                     this.getList().then(res => {
-                        isLoading = false
+                        isLoading = false;
                         if (res.data) {
-                            this.list = this.list.concat(res.data.data || [])
+                            this.list = this.list.concat(res.data.data || []);
                         }
-                    })
+                    });
                 }
-            }
+            };
         }
     },
     mounted() {
-        this.firstLoad()
-        this.scroll()
+        this.firstLoad();
+        this.scroll();
     }
 };
 </script>
@@ -352,6 +399,12 @@ export default {
     font-size: 1.1em;
     color: #444;
 }
+
+.detail img {
+    width: 20px;
+    height: 20px;
+}
+
 .mt8 {
     margin-top: 8px;
 }

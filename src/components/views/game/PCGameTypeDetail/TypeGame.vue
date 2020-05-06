@@ -18,7 +18,11 @@
                 </li>
                 <li>
                     <button class="btn-blue" @click="getList">查询</button>
-                    <button class="btn-blue" @click="sortCfm">确定</button>
+                </li>
+            </ul>
+            <ul class="right" >
+                <li>
+                    <button class="btn-blue" @click="sortCfm">保存</button>
                 </li>
             </ul>
         </div>
@@ -174,7 +178,7 @@ export default {
             }).then(res => {
                 if (res && res.code == "200") {
                     // console.log("我成功啦", res);
-                    alert("执行成功");
+                    this.$toast.success(res && res.message);
                     this.getList();
                 }
             });

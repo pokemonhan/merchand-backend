@@ -87,11 +87,12 @@ export default {
         },
         getList() {
             let datas = {
-                bank: this.filter.acc,
+                name: this.filter.acc,
                 status: this.filter.status,
                 page: this.pageNo,
                 pageSize: this.pageSize
             };
+            // console.log('请求数据',datas)
             let data = window.all.tool.rmEmpty(datas);
             let { method, url } = this.$api.payment_bank_list;
             this.$http({ method, url, data }).then(res => {

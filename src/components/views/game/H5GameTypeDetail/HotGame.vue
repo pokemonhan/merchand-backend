@@ -14,7 +14,11 @@
                 </li>
                 <li>
                     <button class="btn-blue" @click="getList">查询</button>
-                    <button class="btn-blue" @click="sortCfm">确定</button>
+                </li>
+            </ul>
+            <ul class="right" >
+                <li>
+                    <button class="btn-blue" @click="sortCfm">保存</button>
                 </li>
             </ul>
         </div>
@@ -136,7 +140,7 @@ export default {
                 id: row.id,
                 hot_new: "1"
             };
-            
+
             let { url, method } = this.$api.game_hot_set;
             this.$http({ method, url, data }).then(res => {
                 if (res && res.code == "200") {

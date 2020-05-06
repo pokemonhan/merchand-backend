@@ -26,7 +26,7 @@
             <!-- 控制栏 -->
             <div class="tab-control">
                 <div class="left">
-                    <button class="btn-plain" @click="del">删除?</button>
+                    <button class="btn-plain" @click="del">删除??</button>
                 </div>
                 <div class="right">
                     <span>{{pageNo}}/{{Math.ceil(total/pageSize)}}</span>

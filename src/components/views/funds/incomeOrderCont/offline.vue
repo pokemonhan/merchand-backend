@@ -54,8 +54,11 @@
                     <td>{{row.user && row.user.mobile}}</td>
                     <td>{{row.user && row.user.guid}}</td>
                     <td>
-                        <i v-if="row.is_tester==='1'" class="iconfont icongou green"></i>
-                        <i v-if="row.is_tester==='0'" class="iconfont iconcha red"></i>
+                        <i
+                            v-if="row.user && row.user.is_tester=='1'"
+                            class="iconfont icongou green"
+                        ></i>
+                        <i v-if="row.user && row.user.is_tester=='0'" class="iconfont iconcha red"></i>
                     </td>
                     <td>{{row.snap_finance_type}}</td>
                     <td>{{row.snap_account}}</td>
@@ -66,11 +69,11 @@
                     >{{(review_status_obj[row.status]||{}).text}}</td>
                     <td>{{row.created_at}}</td>
                     <td>
-                        <span class="a" @click="showDetail(row)">详情</span>
-                        <span class="a" @click="offConfShow">通过</span>
-                        <span class="a" @click="passConfShow">拒绝</span>
+                        <button class="btn-blue" @click="showDetail(row)">详情</button>
+                        <button v-if="pass_button_show" class="btn-blue" @click="passShow(row)">通过</button>
+                        <button v-if="reject_button_show" class="btn-blue" @click="rejectShow(row)">拒绝</button>
                     </td>
-                    <td>{{row.a11}}</td>
+                    <td>{{row.admin && row.admin.name}}</td>
                 </template>
             </Table>
             <div class="total-table">
@@ -82,11 +85,11 @@
                         </li>
                         <li>
                             <span>充值金额:</span>
-                            <span>{{''}}</span>
+                            <span>{{all_money}}</span>
                         </li>
                         <li>
                             <span>实际到账:</span>
-                            <span>{{''}}</span>
+                            <span>{{all_withDraw_money}}</span>
                         </li>
                     </ul>
                     <ul>
@@ -95,7 +98,7 @@
                             <span>{{''}}</span>
                         </li>
                         <li>
-                            <span>实际到账:</span>
+                            <span>充值到账:</span>
                             <span>{{''}}</span>
                         </li>
                         <li>
@@ -116,11 +119,15 @@
             @updateSize="updateSize"
         />
         <!-- offline 线下入款详情 modal------------------------------- -->
-
         <Dialog :show.sync="offline_dia_show" title="线下详情">
             <div class="dialog">
                 <div class="mask-detail">
-                    <canvas ref="offlineCanvas" width="520" height="280"></canvas>
+                    <canvas
+                        style="border:1px solid white"
+                        ref="offlineCanvas"
+                        width="520"
+                        height="280"
+                    ></canvas>
                 </div>
 
                 <div class="save-btn">
@@ -130,8 +137,8 @@
         </Dialog>
         <Modal
             :show.sync="offline_conf"
-            title="入款审核"
-            content="通过该入款订单"
+            :title="offline_title"
+            :content="offline_content"
             @cancel="offline_conf=false"
             @confirm="offlineIncomeConfirm"
         ></Modal>
@@ -190,7 +197,16 @@ export default {
             pageNo: 1,
             pageSize: 25,
             offline_dia_show: false,
-            offline_conf: false
+            offline_conf: false,
+            offline_title:'',
+            offline_content:'',
+            offline_status:'',
+            curr_row:{},
+            pass_button_show:true,
+            reject_button_show:true,
+            all_money:'',
+            all_withDraw_money:'',
+            total_money:'',
         };
     },
     methods: {
@@ -242,7 +258,8 @@ export default {
         },
         showDetail(row) {
             this.offline_dia_show = true;
-            this.$nextTick(() => {
+            setTimeout(()=> {
+                this.$nextTick(() => {
                 // 获取像素比
                 let getPixelRatio = function(context) {
                     let backingStore =
@@ -283,46 +300,173 @@ export default {
                 context.fillText("会员账号", ml, mt);
                 // context.font = "16px Arial";
                 // context.fillStyle = "#444";
-                context.fillText("65464646", ml + 100, mt);
+                context.fillText(row.user && row.user.mobile, ml + 100, mt);
 
                 context.fillText("会员ID", w, mt);
-                context.fillText("65464646", w + 100, mt);
+                context.fillText(row.user && row.user.guid, w + 100, mt);
 
                 // row2   -------------------
                 // 会员等级 ----
                 context.fillText("会员等级", ml, mt * 2);
-                context.fillText("VIP7", ml + 100, mt * 2);
+                context.fillText(row.snap_user_grade, ml + 100, mt * 2);
                 //  row3
                 context.fillText("转入银行", ml, mt * 3);
-                let bank_name = "招商银行";
+                let bank_name = "暂无返回数据";
                 context.fillText(bank_name, ml + 100, mt * 3);
                 context.fillText("转入账号", w, mt * 3);
-                let account = "234324";
-                context.fillText(account, w + 100, mt * 3);
+                context.fillText("暂无返回数据", w + 100, mt * 3);
                 // row4
                 context.fillText("充值金额", ml, mt * 4);
-                context.fillText("235353255", ml + 100, mt * 4);
+                context.fillText(row.money, ml + 100, mt * 4);
                 //  row5
                 context.fillText("收款银行", ml, mt * 5);
-                let receipt_bank = "招商银行";
+                let receipt_bank = "暂无返回数据";
                 context.fillText(receipt_bank, ml + 100, mt * 5);
                 context.fillText("收款账号", w, mt * 5);
-                let receipt_account = "324324";
+                let receipt_account = "暂无返回数据";
                 context.fillText(receipt_account, w + 100, mt * 5);
                 // row 6
-                let deal_time = window.all.tool.formatDate(new Date());
                 context.fillText("交易时间", ml, mt * 6);
-                context.fillText(deal_time, ml + 100, mt * 6);
+                context.fillText(row.created_at, ml + 100, mt * 6);
             });
+            }, 110);
+
+            
+            // this.$nextTick(() => {
+            //     // 获取像素比
+            //     let getPixelRatio = function(context) {
+            //         let backingStore =
+            //             context.backingStorePixelRatio ||
+            //             context.webkitBackingStorePixelRatio ||
+            //             context.mozBackingStorePixelRatio ||
+            //             context.msBackingStorePixelRatio ||
+            //             context.oBackingStorePixelRatio ||
+            //             context.backingStorePixelRatio ||
+            //             1;
+            //         return (window.devicePixelRatio || 1) / backingStore;
+            //     };
+            //     //画文字
+            //     console.log('15465',this.$refs)
+            //     let ele = this.$refs.offlineCanvas;
+            //     // if(!ele) return
+            //     console.log('ele',ele)
+            //     let context = ele.getContext("2d");
+            //     let ratio = getPixelRatio(context);
+
+            //     ele.style.width = ele.width + "px";
+            //     ele.style.height = ele.height + "px";
+
+            //     ele.width = ele.width * ratio;
+            //     ele.height = ele.height * ratio;
+
+            //     // 放大倍数
+            //     context.scale(ratio, ratio);
+
+            //     context.font = "16px Arial";
+            //     //背景色
+            //     context.fillStyle = "#fff";
+            //     context.fillRect(0, 0, 520, 300);
+            //     // 绘制 字体内容
+            //     context.fillStyle = "#444";
+            //     let ml = 50; // 左边框
+            //     let w = 280; // 左边文字所占宽度, 右边col起始位置
+            //     let mt = 40; //上下行间距
+            //     // row1
+
+            //     context.fillText("会员账号", ml, mt);
+            //     // context.font = "16px Arial";
+            //     // context.fillStyle = "#444";
+            //     context.fillText("65464646", ml + 100, mt);
+
+            //     context.fillText("会员ID", w, mt);
+            //     context.fillText("65464646", w + 100, mt);
+
+            //     // row2   -------------------
+            //     // 会员等级 ----
+            //     context.fillText("会员等级", ml, mt * 2);
+            //     context.fillText("VIP7", ml + 100, mt * 2);
+            //     //  row3
+            //     context.fillText("转入银行", ml, mt * 3);
+            //     let bank_name = "招商银行";
+            //     context.fillText(bank_name, ml + 100, mt * 3);
+            //     context.fillText("转入账号", w, mt * 3);
+            //     let account = "234324";
+            //     context.fillText(account, w + 100, mt * 3);
+            //     // row4
+            //     context.fillText("充值金额", ml, mt * 4);
+            //     context.fillText("235353255", ml + 100, mt * 4);
+            //     //  row5
+            //     context.fillText("收款银行", ml, mt * 5);
+            //     let receipt_bank = "招商银行";
+            //     context.fillText(receipt_bank, ml + 100, mt * 5);
+            //     context.fillText("收款账号", w, mt * 5);
+            //     let receipt_account = "324324";
+            //     context.fillText(receipt_account, w + 100, mt * 5);
+            //     // row 6
+            //     let deal_time = window.all.tool.formatDate(new Date());
+            //     context.fillText("交易时间", ml, mt * 6);
+            //     context.fillText(deal_time, ml + 100, mt * 6);
+            // });
         },
-        offConfShow(row) {
+        passShow(row) {
             this.offline_conf = true;
+            this.offline_title='通过';
+            this.offline_content='是否通过该订单？'
+            this.offline_status='pass'
+            this.curr_row=row
         },
-        passConfShow() {},
+        passCfm(){
+            console.log(1)
+            let datas={
+                id:this.curr_row.id
+            }
+            console.log('请求数据',datas)
+            let data=window.all.tool.rmEmpty(datas)
+            let {method,url}=this.$api.founds_incomeorder_examination_passed
+            this.$http({method,url,data}).then(res=>{
+                console.log('返回数据',res)
+                if(res && res.code=='200'){
+                    this.offline_conf=false;
+                    this.getList()
+                    this.pass_button_show=false
+                }
+            })
+        },
+        rejectShow(row) {
+            this.offline_conf = true;
+            this.offline_title='拒绝';
+            this.offline_content='是否拒绝该订单？'
+            this.offline_status='reject'
+            this.curr_row=row
+        },
+        rejectCfm(){
+            console.log(2)
+            let datas={
+                id:this.curr_row.id
+            }
+            console.log('请求数据',datas)
+            let data=window.all.tool.rmEmpty(datas)
+            let {method,url}=this.$api.founds_incomeorder_examination_rejected
+            this.$http({method,url,data}).then(res=>{
+                console.log('返回数据',res)
+                if(res && res.code=='200'){
+                    this.offline_conf=false;
+                    this.getList()
+                    this.reject_button_show=false
+                }
+            })
+        },
         offlineSavePicture(ref) {
             this.exportCanvasAsPNG(ref, "线下入款");
         },
-        offlineIncomeConfirm() {},
+        offlineIncomeConfirm() {
+            if(this.offline_status=='pass'){
+                this.passCfm()
+            }
+            if(this.offline_status=='reject'){
+                this.rejectCfm()
+            }
+        },
         updateNo(val) {
             this.getList();
         },
@@ -355,7 +499,7 @@ export default {
             document.body.removeChild(aLink);
         },
         getList() {
-            console.log(1)
+            console.log(1);
             let created_at = "";
             if (this.filter.dates[0] && this.filter.dates[1]) {
                 created_at = JSON.stringify([
@@ -380,13 +524,28 @@ export default {
             let { method, url } = this.$api.founds_incomeorder_list;
             this.$http({ method: method, url: url, params: params }).then(
                 res => {
-                    console.log('返回数据：',res)
+                    console.log("返回数据：", res);
                     if (res && res.code == "200") {
                         this.list = res.data.data;
                         this.total = res.data.total;
+                        this.countFunction(res.data && res.data.data)
                     }
                 }
             );
+        },
+        countFunction(count){
+            console.log('count',count)
+            let top_up_money=0
+            for(var i=0;i<count.length;i++){
+                top_up_money+=parseInt(count[i].money)
+            }
+            this.all_money=top_up_money
+            // console.log('钱',this.all_money)
+            let withDraw_money=0
+            for(var i=0;i<count.length;i++){
+                withDraw_money+=parseInt(count[i].arrive_money)
+            }
+            this.all_withDraw_money=withDraw_money
         },
         updateNo(val) {
             this.getList();
@@ -436,17 +595,17 @@ table {
     overflow-x: auto;
 }
 .table .v-table {
-    width: 2000px;
+    min-width: 2000px;
 }
 .total-table {
     text-align: center;
     margin-top: 10px;
-    width: 2000px;
+    min-width: 2000px;
 }
-.total-table >ul {
+.total-table > ul {
     justify-content: center;
 }
-.total-table ul li{
+.total-table ul li {
     /* margin-left: 100px; */
     width: 20%;
 }

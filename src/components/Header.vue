@@ -315,6 +315,9 @@ export default {
             });
         },
         getList(){
+            console.log(111)
+            if(!window.all.tool.getLocal('Authorization')) return
+            
             let {method,url}=this.$api.header_notification_statistics
             this.$http({method,url}).then(res=>{
                 // console.log('头部返回数据',res)
@@ -364,7 +367,10 @@ export default {
     watch: {
         $route(from, to) {
             if (from.path === '/login') {
+                console.log('222',from.path)
                 this.socket()
+                this.getList()
+                console.log('333',from.path)
             }
         }
     },

@@ -5,6 +5,7 @@ import Vuex from 'vuex';
 Vue.use(Vuex);
 
 const state = {
+    isLogin:false,
     isShowLoading: false,
     showMask: false,
     tab_nav_list: [],        // 顶部导航菜单

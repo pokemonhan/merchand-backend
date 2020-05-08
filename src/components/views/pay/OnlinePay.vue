@@ -34,7 +34,7 @@
                 </li>
                 <li>
                     <button class="btn-blue" @click="getList">查询</button>
-                    <button class="btn-blue" @click="add">新增线下入款</button>
+                    <button class="btn-blue" @click="add">新增线上入款</button>
                 </li>
             </ul>
         </div>
@@ -358,7 +358,7 @@ export default {
         },
         add() {
             this.dia_status = "add";
-            this.dia_title = "新增线下入款";
+            this.dia_title = "新增线上入款";
             this.dia_show = true;
             // this.addClearAll();
         },

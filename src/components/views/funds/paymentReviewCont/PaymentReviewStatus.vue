@@ -9,55 +9,55 @@
                  <table class="table">
                      <tr>
                          <td>会员账号:</td>
-                         <td>{{row.user && row.user.mobile}}</td>
+                         <td>{{row.user && row.user.mobile || '--'}}</td>
                          <td>会员ID</td>
-                         <td>{{row.user && row.user.guid}}</td>
+                         <td>{{row.user && row.user.guid || '--'}}</td>
                          <td>是否是正式账号</td>
                          <td>
-                             <i :class="icon_obj[row.user && row.user.is_tester]"></i>
+                             <i :class="icon_obj[row.user && row.user.is_tester || '--']"></i>
                          </td>
                      </tr>
                      <tr>
                          <td>上级账号:</td>
-                         <td>{{row.user && row.user.parent && row.user.parent.mobile}}</td>
+                         <td>{{row.user && row.user.parent && row.user.parent.mobile || '--'}}</td>
                          <td>出款金额</td>
-                         <td>{{row.amount}}</td>
+                         <td>{{row.amount || '--'}}</td>
                          <td>稽核扣款</td>
-                         <td>{{row.audit_fee}}</td>
+                         <td>{{row.audit_fee || '--'}}</td>
                      </tr>
                      <tr>
                          <td>实际出款:</td>
-                         <td class="blue">{{row.amount_received}}</td>
+                         <td class="blue">{{row.amount_received || '--'}}</td>
                          <td>手续费</td>
-                         <td>{{row.handing_fee}}</td>
+                         <td>{{row.handing_fee || '--'}}</td>
                          <td>扣款余额</td>
-                         <td>{{row.before_balance}}</td>
+                         <td>{{row.before_balance || '--'}}</td>
                      </tr>
                      <tr>
                          <td>存款总额:</td>
-                         <td>{{row.month_total}}</td>
+                         <td>{{row.month_total || '--'}}</td>
                          <td>今日存款次数</td>
-                         <td>{{row.num_top_up}}</td>
+                         <td>{{row.num_top_up || '--'}}</td>
                          <td>今日出款次数</td>
-                         <td>{{row.num_withdrawal}}</td>
+                         <td>{{row.num_withdrawal || '--'}}</td>
                      </tr>
                      <tr>
                          <td>状态:</td>
                          <td :class="status_obj[row.status].color">{{status_obj[row.status].text}}</td>
                          <td>申请时间</td>
-                         <td>{{row.created_at}}</td>
+                         <td>{{row.created_at || '--'}}</td>
                          <td>审核时间</td>
-                         <td>{{row.review_at}}</td>
+                         <td>{{row.review_at || '--'}}</td>
                      </tr>
                      <tr>
                          <td>审核人:</td>
-                         <td colspan="5">{{row.reviewer && row.reviewer.name}}</td>
+                         <td colspan="5">{{row.reviewer && row.reviewer.name || '--'}}</td>
                          
                      </tr>
                      <tr>
-                         <td>备注</td>
+                         <td>备注:</td>
                          <td colspan="5">
-                            <input type="text" class="remarkText" v-model="table.remark" >{{row.remark}}
+                            <input type="text" class="remarkText" v-model="table.remark" placeholder="请填写审核备注" >{{row.remark}}
                          </td>
                      </tr>
                  </table>
@@ -165,10 +165,11 @@ export default {
     text-align: center;
 }
 .remarkText{
-    width: 100%;
+    width: 95%;
     height: 100%;
     border: none;
     float: left;
+    margin-left:5px;
 }
 .cont{
     margin-left: 50px;

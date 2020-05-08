@@ -66,8 +66,8 @@
                     <td>{{row.order_no}}</td>
                     <td>{{row.platform_no}}</td>
                     <td>{{row.user && row.user.mobile}}</td>
-                    <td>{{row.user && row.user.id}}</td>
-                    <td>{{row.parent && row.parent.mobile}}</td>
+                    <td>{{row.user && row.user.guid}}</td>
+                    <td>{{row.user && row.user.parent && row.user.parent.mobile}}</td>
                     <td>
                         <i
                             v-if="row.user && row.user.is_tester==='1'"
@@ -86,37 +86,29 @@
                     <td>{{row.updated_at}}</td>
                     <td>
                         <button class="btn-blue" @click="showDetail(row)">详情</button>
-                        <button class="btn-blue" @click="manualDepositclick(row)">手动入款</button>
+                        <button v-if="handWithDraw" class="btn-blue" @click="manualDepositclick(row)">手动入款</button>
                     </td>
                 </template>
             </Table>
             <div class="total-table">
                 <ul>
                     <li>
-                        <span>合计:</span>
-                        <span>{{'1000'}}</span>
+                        <span>充值金额-合计:</span>
+                        <span>{{all_money}}</span>
                     </li>
                     <li>
-                        <span>充值金额:</span>
-                        <span>{{'1000'}}</span>
-                    </li>
-                    <li>
-                        <span>实际到账:</span>
-                        <span>{{'1000'}}</span>
+                        <span>实际到账-合计:</span>
+                        <span>{{all_withDraw_money}}</span>
                     </li>
                 </ul>
                 <ul>
                     <li>
-                        <span>总计:</span>
-                        <span>{{'1000'}}</span>
+                        <span>实际到账:</span>
+                        <span>{{''}}</span>
                     </li>
                     <li>
                         <span>实际到账:</span>
-                        <span>{{'1000'}}</span>
-                    </li>
-                    <li>
-                        <span>实际到账:</span>
-                        <span>{{'1000'}}</span>
+                        <span>{{''}}</span>
                     </li>
                 </ul>
             </div>
@@ -136,7 +128,7 @@
                 <span class="dia-head">是否确定手动到账？</span>
                 <div class="dia-content">
                     <span>备注:</span>
-                    <textarea class="textarea ml10" cols="30" rows="10"></textarea>
+                    <textarea class="textarea ml10" cols="30" rows="10" v-model="manu.remark"></textarea>
                 </div>
                 <div>
                     <button class="btn-plain" @click="dialog_show=false">取消</button>
@@ -233,7 +225,15 @@ export default {
 
             conf_mod_content: "",
             dialog_show: false,
-            is_show_online_detail: false
+            is_show_online_detail: false,
+            curr_row:{},
+            manu:{
+                remark:''
+            },
+            handWithDraw:true,
+            all_money:'',
+            all_withDraw_money:'',
+            total_money:'',
         };
     },
     methods: {
@@ -322,8 +322,25 @@ export default {
         },
         manualDepositclick(row, is_confirm) {
             this.dialog_show = true;
+            this.curr_row=row
         },
-        manualDepositCfm() {},
+        manualDepositCfm() {
+            let datas={
+                id:this.curr_row.id,
+                remark:this.manu.remark,
+            }
+            // console.log('请求数据',datas)
+            let data=window.all.tool.rmEmpty(datas)
+            let {method,url}=this.$api.founds_incomeorder_Manual_deposit
+            this.$http({method,url,data}).then(res=>{
+                // console.log('返回数据')
+                if(res && res.code == "200"){
+                   this.dialog_show=false
+                   this.getList()
+                   this.handWithDraw=false
+                }
+            })
+        },
         showDetail(row) {
             this.is_show_online_detail = true;
             this.$nextTick(() => {
@@ -340,8 +357,9 @@ export default {
                         1;
                     return (window.devicePixelRatio || 1) / backingStore;
                 };
-
+                // console.log('15465',this.$refs)
                 let ele = this.$refs.onlineCanvas;
+                // console.log('ele',ele)
                 let context = ele.getContext("2d");
                 let ratio = getPixelRatio(context);
 
@@ -368,32 +386,31 @@ export default {
                 // row1
 
                 context.fillText("会员账号:", ml, mt);
-                context.fillText("65464646", ml + 80, mt);
+                context.fillText(row.user && row.user.mobile, ml + 80, mt);
                 context.fillText("会员ID:", w, mt);
-                context.fillText("65464646", w + 80, mt);
+                context.fillText(row.user && row.user.guid, w + 80, mt);
 
                 // row2   -------------------
                 context.fillText("会员等级:", ml, mt * 2);
-                context.fillText("VIP7", ml + 80, mt * 2);
+                context.fillText(row.snap_user_grade, ml + 80, mt * 2);
                 //  row3
                 context.fillText("商户编号:", ml, mt * 3);
-                context.fillText("红牛平台", ml + 80, mt * 3);
+                context.fillText(row.snap_merchant_no, ml + 80, mt * 3);
                 context.fillText("支付方式:", w, mt * 3);
-                let pay_method = "微信支付";
-                context.fillText(pay_method, w + 80, mt * 3);
+                context.fillText(row.snap_finance_type, w + 80, mt * 3);
 
                 // row4
                 context.fillText("订单号:", ml, mt * 4);
-                context.fillText("235353255", ml + 80, mt * 4);
+                context.fillText(row.platform_no, ml + 80, mt * 4);
                 //  row5
                 context.fillText("充值金额:", ml, mt * 5);
-                context.fillText("6464", ml + 80, mt * 5);
+                context.fillText(row.money, ml + 80, mt * 5);
                 context.fillText("实际到账:", w, mt * 5);
-                context.fillText("6464", w + 80, mt * 5);
+                context.fillText(row.arrive_money, w + 80, mt * 5);
                 // row 6
                 context.fillText("交易时间:", ml, mt * 6);
                 context.fillText(
-                    window.all.tool.formatDate(new Date(), true),
+                    row.created_at,
                     ml + 80,
                     mt * 6
                 );
@@ -408,7 +425,7 @@ export default {
             let { url, method } = this.$api.founds_incomeorder_pay_method;
             this.$http({ method, url, data }).then(res => {
                 // console.log("返回数据", res);
-                if (res && res.code == "200") {
+                if (res && res.code=="200") {
                     this.pay_way_opt = this.backToSelOpt(res.data);
                 }
             });
@@ -458,9 +475,24 @@ export default {
                     if (res && res.code == "200") {
                         this.list = res.data.data;
                         this.total = res.data.total;
+                        this.countFunction(res.data && res.data.data)
                     }
                 }
             );
+        },
+        countFunction(count){
+            console.log('count',count)
+            let top_up_money=0
+            for(var i=0;i<count.length;i++){
+                top_up_money+=parseInt(count[i].money)
+            }
+            this.all_money=top_up_money
+            // console.log('钱',this.all_money)
+            let withDraw_money=0
+            for(var i=0;i<count.length;i++){
+                withDraw_money+=parseInt(count[i].arrive_money)
+            }
+            this.all_withDraw_money=withDraw_money
         },
         updateNo(val) {
             this.getList();
@@ -535,16 +567,16 @@ table {
     overflow-x: auto;
 }
 .table .v-table {
-    width: 2000px;
+    min-width: 2000px;
 }
 .total-table {
     margin-top: 10px;
-    width: 2000px;
+    min-width: 2000px;
 }
-.total-table >ul {
+.total-table > ul {
     justify-content: center;
 }
-.total-table ul li{
+.total-table ul li {
     /* margin-left: 100px; */
     width: 20%;
 }

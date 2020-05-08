@@ -350,7 +350,7 @@ table {
     overflow-x: auto;
 }
 .table .v-table {
-    width: 1500px;
+    min-width: 1500px;
 }
 
 /* .g-head 公共区 */

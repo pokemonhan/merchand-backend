@@ -40,7 +40,7 @@
                                     :value="row.hot_new==0 ? 1:0"
                                     @update="switchNormal(row)"
                                 />
-                                <span>正常</span>
+                                <span>普通游戏</span>
                             </div>
                             <div>
                                 <Switchbox

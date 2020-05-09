@@ -103,11 +103,11 @@
                 </ul>
                 <ul>
                     <li>
-                        <span>实际到账:</span>
+                        <span>实际到账-总计:</span>
                         <span>{{''}}</span>
                     </li>
                     <li>
-                        <span>实际到账:</span>
+                        <span>实际到账-总计:</span>
                         <span>{{''}}</span>
                     </li>
                 </ul>

@@ -14,7 +14,7 @@
                          <td>{{row.user && row.user.guid || '--'}}</td>
                          <td>是否是正式账号</td>
                          <td>
-                             <i :class="icon_obj[row.user && row.user.is_tester || '--']"></i>
+                             <i :class="icon_obj[row.user && row.user.is_tester]"></i>
                          </td>
                      </tr>
                      <tr>

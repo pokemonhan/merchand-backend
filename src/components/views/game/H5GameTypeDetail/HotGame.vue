@@ -40,7 +40,7 @@
                                     :value="row.hot_new==0 ? 1:0"
                                     @update="switchNormal(row)"
                                 />
-                                <span>正常</span>
+                                <span>普通游戏</span>
                             </div>
                             <div>
                                 <Switchbox
@@ -208,6 +208,11 @@ export default {
                 }
             });
         },
+        //TO DO
+        sortButtonShow(list){
+            let listLength=list.length
+            console.log('上下移动按钮显示bug',listLength)
+        },
         getList() {
             let datas = {
                 hot_new: 1,
@@ -225,6 +230,7 @@ export default {
                 if (res && res.code == "200") {
                     this.list = res.data.data || [];
                     this.total = this.list.length;
+                    this.sortButtonShow(res.data && res.data.data)
                 }
             });
         },

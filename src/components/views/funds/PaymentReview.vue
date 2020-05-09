@@ -73,6 +73,12 @@
                     <td :class="status_obj[row.status].color">{{status_obj[row.status].text}}</td>
                     <td>
                         <button
+                            v-if="row.status==1"
+                            :class="status_obj[row.status].button"
+                            @click="statusShow(row)"
+                        >详情</button>
+                        <button
+                            v-if="row.status!=1"
                             :class="status_obj[row.status].button"
                             @click="statusShow(row)"
                         >{{status_obj[row.status].text}}</button>
@@ -80,48 +86,40 @@
                     </td>
                 </template>
             </Table>
-
             <div class="total-table">
                 <ul>
                     <li>
-                        <span>合计:</span>
-                        <span></span>
+                        <span>出款金额-合计:</span>
+                        <span>{{all_withDraw_money}}</span>
                     </li>
                     <li>
-                        <span>出款金额:</span>
-                        <span></span>
+                        <span>稽核扣款-合计:</span>
+                        <span>{{all_audit_fee}}</span>
                     </li>
                     <li>
-                        <span>稽核扣款:</span>
-                        <span></span>
+                        <span>实际出款金额-合计:</span>
+                        <span>{{all_amount_received}}</span>
                     </li>
                     <li>
-                        <span>实际出款金额</span>
-                        <span></span>
-                    </li>
-                    <li>
-                        <span>手续费统计</span>
-                        <span></span>
+                        <span>手续费统计-合计:</span>
+                        <span>{{all_handing_fee}}</span>
                     </li>
                 </ul>
                 <ul>
                     <li>
-                        <span>总计:</span>
-                    </li>
-                    <li>
-                        <span>出款金额:</span>
+                        <span>出款金额-总计:</span>
                         <span></span>
                     </li>
                     <li>
-                        <span>稽核扣款:</span>
+                        <span>稽核扣款-总计:</span>
                         <span></span>
                     </li>
                     <li>
-                        <span>实际出款金额</span>
+                        <span>实际出款金额-总计:</span>
                         <span></span>
                     </li>
                     <li>
-                        <span>手续费统计</span>
+                        <span>手续费统计-总计:</span>
                         <span></span>
                     </li>
                 </ul>
@@ -235,7 +233,11 @@ export default {
             curr_row: {},
             dia_show: false,
             dia_status: "",
-            dia_title: ""
+            dia_title: "",
+            all_withDraw_money: "",
+            all_audit_fee: "",
+            all_amount_received: "",
+            all_handing_fee: ""
         };
     },
     methods: {
@@ -330,8 +332,36 @@ export default {
                 if (res && res.code == "200") {
                     this.list = res.data.data;
                     this.total = res.data.total;
+                    this.countFunction(res.data && res.data.data);
                 }
             });
+        },
+        countFunction(count) {
+            // console.log("count", count);
+            let withDraw_money = 0;
+            for (var i = 0; i < count.length; i++) {
+                withDraw_money += parseInt(count[i].amount);
+            }
+            this.all_withDraw_money = withDraw_money;
+
+            let audit_fee = 0;
+            for (var i = 0; i < count.length; i++) {
+                audit_fee += parseInt(count[i].audit_fee);
+            }
+            this.all_audit_fee = audit_fee;
+
+            let amount_received = 0;
+            for (var i = 0; i < count.length; i++) {
+                amount_received += parseInt(count[i].amount_received);
+            }
+            this.all_amount_received = amount_received;
+
+            let handing_fee = 0;
+            for (var i = 0; i < count.length; i++) {
+                handing_fee += parseInt(count[i].handing_fee);
+            }
+            this.all_handing_fee = handing_fee;
+            // console.log('钱',this.all_handing_fee)
         },
         exportExcel() {
             import("../../../js/config/Export2Excel").then(excel => {
@@ -345,15 +375,19 @@ export default {
                         item.amount_received,
                         item.handing_fee,
                         item.created_at,
-                        item.reviewer,
-                        item.reviewer_at,
-                        item.status
+                        item.reviewer && item.reviewer.name,
+                        item.review_at,
+                        item.status == 1
+                            ? "已通过"
+                            : item.status == -1
+                            ? "已拒绝"
+                            : "审核中"
                     ];
                 });
                 excel.export_json_to_excel({
                     header: tHeaders,
                     data,
-                    filename: "出款审核",
+                    filename: "江湖互娱后台-财务管理-出款审核",
                     autoWidth: true,
                     bookType: "xlsx"
                 });

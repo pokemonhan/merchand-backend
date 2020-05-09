@@ -3,7 +3,7 @@
         <div style="margin-top:5px;" class="filter">
             <ul class="left">
                 <li>
-                    <span>会员账号11</span>
+                    <span>会员账号</span>
                     <Input class="w100" v-model="filter.user_account" />
                 </li>
                 <li>
@@ -118,8 +118,8 @@ export default {
         getAuditList() {
             // console.log('all',this.all)
             let datas = {
-                guid: this.filter.user_account,
-                mobile: this.filter.userid,
+                mobile: this.filter.user_account,
+                guid: this.filter.userid,
                 status: this.filter.status,
                 page: this.pageNo,
                 pageSize: this.pageSize

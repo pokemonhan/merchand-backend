@@ -23,10 +23,10 @@
                 </li>
                 <li>
                     <span>账变类型</span>
-                    <Select v-model="filter.status" :options="acc_change_opt"></Select>
+                    <Select style="width:220px" v-model="filter.status" :options="acc_change_opt"></Select>
                 </li>
                 <li>
-                    <button class="btn-blue">查询</button>
+                    <button class="btn-blue" @click="getList()">查询</button>
                     <button class="btn-blue" @click="exportExcel">导出Excel</button>
                     <button class="btn-red" @click="clearFilter">清空</button>
                 </li>
@@ -35,16 +35,16 @@
         <div style="margin-top:20px;">
             <Table :headers="headers" :column="list">
                 <template v-slot:item="{row}">
-                    <td>{{row.a1}}</td>
-                    <td>{{row.a2}}</td>
-                    <td>{{row.a3}}</td>
-                    <td>{{row.a4}}</td>
-                    <td>{{row.a5}}</td>
-                    <td>{{row.a5}}</td>
-                    <td>{{row.a5}}</td>
-                    <td>{{row.a6}}</td>
-                    <td>{{row.a7}}</td>
-                    <td>{{row.a8}}</td>
+                    <td>{{row.serial_number}}</td>
+                    <td>{{row.type_name}}</td>
+                    <td>{{row.game_vendor_name}}</td>
+                    <td>{{row.mobile}}</td>
+                    <td>{{row.guid}}</td>
+                    <td>{{row.before_balance}}</td>
+                    <td>{{row.amount}}</td>
+                    <td>{{row.balance}}</td>
+                    <td>{{row.frozen_balance}}</td>
+                    <td>{{row.created_at}}</td>
                 </template>
             </Table>
             <Page
@@ -70,56 +70,23 @@ export default {
                 account: "",
                 userid: "",
                 date: [],
-                status: "0"
+                status: ""
             },
-            acc_change_opt: [
-                { label: "全部", value: "0" },
-                { label: "充值", value: "1" },
-                { label: "取款", value: "2" },
-                { label: "转出", value: "3" },
-                { label: "转入", value: "4" },
-                { label: "优惠", value: "4" },
-                { label: "签到", value: "5" },
-                { label: "抢红包", value: "6" },
-                { label: "首充送", value: "7" },
-                { label: "注册送", value: "8" },
-                { label: "幸运转盘", value: "9" },
-                { label: "有奖竞猜", value: "10" }
-            ],
+            acc_opt: [],
+            acc_change_opt: [],
             headers: [
-                { label: "流水编号" },
-                { label: "账变类型" },
-                { label: "资金流向" },
-                { label: "会员账户" },
-                { label: "会员ID" },
-                { label: "帐变前金额" },
-                { label: "账变金额" },
-                { label: "账变后金额" },
-                { label: "冻结金额" },
-                { label: "账变时间" }
+                "流水编号",
+                "账变类型",
+                "资金流向" ,
+                "会员账户",
+                "会员ID",
+                "帐变前金额",
+                "账变金额" ,
+                "账变后金额",
+                "冻结金额",
+                "账变时间" 
             ],
-            list: [
-                {
-                    a1: "13245678989",
-                    a2: "4561342",
-                    a3: "D45678944654",
-                    a4: "优惠存款",
-                    a5: "100",
-                    a6: "100",
-                    a7: "50",
-                    a8: "2019/09/25 18：17：30"
-                },
-                {
-                    a1: "13245678989",
-                    a2: "4561342",
-                    a3: "D45678944654",
-                    a4: "优惠存款",
-                    a5: "100",
-                    a6: "100",
-                    a7: "50",
-                    a8: "2019/09/25 18：17：30"
-                }
-            ],
+            list: [],
             total: 0,
             pageNo: 1,
             pageSize: 25
@@ -138,19 +105,81 @@ export default {
                 account: "",
                 userid: "",
                 date: [],
-                status: "0"
+                status: ""
             };
         },
-        updateNo(val) {},
-        updateSize(val) {},
+        getTypeOfAccount() {
+            let { method, url } = this.$api.type_of_fund_account_change_list;
+            this.$http({ method, url }).then(res => {
+                // console.log("账变类型", res);
+                if (res && res.code == "200") {
+                    this.acc_opt = res.data;
+                }
+                // console.log("asdf", this.acc_opt);
+                let account_type = [{label:"全部",sign:"",value:""}];
+                for (var i = 0; i < this.acc_opt.length; i++) {
+                    let item = this.acc_opt[i].account_type;
+                    if (item) {
+                        for (var j = 0; j < item.length; j++) {
+                            // console.log("item", item[j]);
+                            account_type.push({label:item[j].name,sign:item[j].id,value:item[j].sign});
+                        }
+                    }
+                }
+                this.acc_change_opt=account_type
+                // console.log("类型列表", this.acc_change_opt);
+            });
+        },
+        getList(){
+            let created_at="";
+            if(this.filter.date[0] && this.filter.date[1]){
+                created_at=JSON.stringify([this.filter.date[0],this.filter.date[1]])
+            }
+            let type_in=""
+            if(this.filter.status){
+                type_in=JSON.stringify([this.filter.status])
+            }
+            let datas={
+                mobile:this.filter.account,
+                guid:this.filter.userid,
+                created_at:created_at,
+                type_in:type_in
+            }
+            console.log('请求数据',datas)
+            let data=window.all.tool.rmEmpty(datas)
+            let {method,url}=this.$api.capital_account_change_list
+            this.$http({method,url,data}).then(res=>{
+                console.log('返回数据',res)
+                if(res && res.code=='200'){
+                    this.list=res.data.data
+                    this.total=res.data.total
+                }
+            })
+        },
+        updateNo(val) {
+            this.getList();
+        },
+        updateSize(val) {
+            this.pageNo = 1;
+            this.getList();
+        },
 
-        //等待接口 
+        //等待接口
         exportExcel() {
             import("../../../js/config/Export2Excel").then(excel => {
                 const tHeaders = this.headers;
                 const data = this.list.map(item => {
                     return [
-                        
+                        item.serial_number,
+                        item.type_name,
+                        item.game_vender_name,
+                        item.mobile,
+                        item.guid,
+                        item.before_balance,
+                        item.amount,
+                        item.balance,
+                        item.frozen_balance,
+                        item.created_at
                     ];
                 });
                 excel.export_json_to_excel({
@@ -163,7 +192,10 @@ export default {
             });
         }
     },
-    mounted() {}
+    mounted() {
+        this.getTypeOfAccount();
+        this.getList();
+    }
 };
 </script>
 

@@ -106,7 +106,7 @@
                                     <span>VIP{{detail_list.level}}</span>
                                 </td>
                                 <td style="height:42px;" v-if="EditUserTab" class="user-lab">
-                                    <span class="mr5">会员标签</span>
+                                    <span class="mr5">会员标签:</span>
                                     <Select v-model="user_tab" :options="user_tab_opt"></Select>
                                     <button class="btn-blue" @click="editUserTabCfm()">保存</button>
                                     <button class="btn-blue" @click="EditUserTab=false">取消</button>
@@ -565,7 +565,7 @@ export default {
             console.log("请求数据", data);
             let { method, url } = this.$api.user_list_detail;
             this.$http({ method, url, data }).then(res => {
-                console.log("返回详情数据", res);
+                console.log("详情返回详情数据", res);
                 if (res && res.code == "200") {
                     this.detail_list = res.data;
                 }

@@ -53,7 +53,7 @@
                         <div class="gametypes">
                             <div>
                                 <Switchbox class="switch-select" :value="row.hot_new==0? 1:0" @update="switchNormal(row)"/>
-                                <span>正常</span>
+                                <span>普通游戏</span>
                             </div>
                             <div>
                                 <Switchbox class="switch-select" :value="row.hot_new==1? 1:0" @update="switchHot(row)" />

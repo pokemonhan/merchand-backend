@@ -80,29 +80,21 @@
                 <table>
                     <ul>
                         <li>
-                            <span>合计:</span>
-                            <span>{{''}}</span>
-                        </li>
-                        <li>
-                            <span>充值金额:</span>
+                            <span>充值金额-合计:</span>
                             <span>{{all_money}}</span>
                         </li>
                         <li>
-                            <span>实际到账:</span>
+                            <span>实际到账-合计:</span>
                             <span>{{all_withDraw_money}}</span>
                         </li>
                     </ul>
                     <ul>
                         <li>
-                            <span>总计:</span>
+                            <span>充值到账-总计:</span>
                             <span>{{''}}</span>
                         </li>
                         <li>
-                            <span>充值到账:</span>
-                            <span>{{''}}</span>
-                        </li>
-                        <li>
-                            <span>实际到账:</span>
+                            <span>实际到账-总计:</span>
                             <span>{{''}}</span>
                         </li>
                     </ul>

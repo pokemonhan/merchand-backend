@@ -65,7 +65,9 @@
                         <span :class="color_obj[row.status].color">{{color_obj[row.status].text}}</span>
                     </td>
                     <td>
+                        <button v-if="row.status==2" :class="status_obj[row.status].button" @click="statusShow(row)" >详情</button>
                         <button
+                            v-if="row.status!=2"
                             :class="status_obj[row.status].button"
                             @click="statusShow(row)"
                         >{{status_obj[row.status].text}}</button>
@@ -75,27 +77,21 @@
             <div class="total-table">
                 <ul>
                     <li>
-                        <span>合计:</span>
+                        <span>出款金额-合计:</span>
+                        <span>{{all_amount}}</span>
                     </li>
                     <li>
-                        <span>充值金额:</span>
-                        <span></span>
-                    </li>
-                    <li>
-                        <span>实际到账</span>
-                        <span></span>
+                        <span>实际出款-合计:</span>
+                        <span>{{all_amount_received}}</span>
                     </li>
                 </ul>
                 <ul>
                     <li>
-                        <span>总计:</span>
-                    </li>
-                    <li>
-                        <span>充值金额:</span>
+                        <span>出款金额-总计:</span>
                         <span></span>
                     </li>
                     <li>
-                        <span>实际到账</span>
+                        <span>实际出款-总计:</span>
                         <span></span>
                     </li>
                 </ul>
@@ -216,7 +212,9 @@ export default {
                 "操作"
             ],
 
-            list: []
+            list: [],
+            all_amount:'',
+            all_amount_received:'',
         };
     },
 
@@ -309,8 +307,22 @@ export default {
                 if (res && res.code == "200") {
                     this.list = res.data.data;
                     this.total = res.data.total;
+                    this.countFunction(res.data && res.data.data)
                 }
             });
+        },
+        countFunction(count){
+            let amount=0;
+            for(var i=0;i<count.length;i++){
+                amount+=parseInt(count[i].amount)
+            }
+            this.all_amount=amount
+
+            let amount_received=0
+            for(var i=0;i<count.length;i++){
+                amount_received+=parseInt(count[i].amount_received)
+            }
+            this.all_amount_received=amount_received
         },
         closeDia() {
             this.dia_show = false;

@@ -273,7 +273,16 @@ export default {
         method:'post'
     },
     // 资金账变
-
+    // ---- 资金账变 - 列表
+    capital_account_change_list:{
+        url:'/merchant-api/user-account/index',
+        method:'post'
+    },
+    // ---- 资金账变 - 账变类型列表
+    type_of_fund_account_change_list:{
+        url:'/merchant-api/user-account/account-type',
+        method:'post'
+    },
     /*=========================== 公告管理 ===========================--*/
     // 跑马灯消息 - 添加
     announce_marquee_add:{

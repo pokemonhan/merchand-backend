@@ -20,7 +20,6 @@
                         <button class="btn-blue" @click="editLev(row)">编辑</button>
                         <button class="btn-red" @click="delLev(row)">删除</button>
                     </td>
-                    
                 </template>
             </Table>
             <Page
@@ -42,22 +41,22 @@
                     <ul class="form">
                         <li>
                             <span>等级名称</span>
-                            <Input class="w200" v-model="lev.name"  />
+                            <Input class="w200" v-model="lev.name" />
                         </li>
 
                         <li>
                             <span>晋级经验:</span>
-                            <Input class="w88" v-model="lev.experience_min" limit='number'/>
+                            <Input class="w88" v-model="lev.experience_min" limit="number" />
                             <span style="margin:0 7px;">~</span>
-                            <Input class="w88" v-model="lev.experience_max" limit='number' />
+                            <Input class="w88" v-model="lev.experience_max" limit="number" />
                         </li>
                         <li>
                             <span>晋级奖励:</span>
-                            <Input class="w200" v-model="lev.promotion_gift" limit='number'/>
+                            <Input class="w200" v-model="lev.promotion_gift" limit="number" />
                         </li>
                         <li>
                             <span>周奖励:</span>
-                            <Input class="w200" v-model="lev.weekly_gift" limit='number'/>
+                            <Input class="w200" v-model="lev.weekly_gift" limit="number" />
                         </li>
                         <li style="margin-top:30px;">
                             <button
@@ -83,12 +82,11 @@
                         <li class="flex">
                             <span>晋级方式:</span>
                             <span style="margin-left:10px;" class="flex">
-                                <Checkbox 
-                                    label="会员充值" 
-                                    v-model="rule.up_method[0]" 
-                                    @update="UpMethodHandle(0)" 
-                                    />
-
+                                <Checkbox
+                                    label="会员充值"
+                                    v-model="rule.up_method[0]"
+                                    @update="UpMethodHandle(0)"
+                                />
                             </span>
                             <span style="margin-left:10px;" class="flex">
                                 <Checkbox
@@ -105,7 +103,7 @@
                                 />
                             </span>
                         </li>
-                        <li v-if="this.rule.up_method[2]==true" >
+                        <li v-if="this.rule.up_method[2]==true">
                             <span>充值:</span>
                             <Input class="re-code" v-model="rule.recharge" />
                             <span class="ml-10">+</span>
@@ -114,13 +112,13 @@
                             <span class="ml-10">=</span>
                             <span>1经验</span>
                         </li>
-                        <li v-if="this.rule.up_method[0]==true" >
+                        <li v-if="this.rule.up_method[0]==true">
                             <span>充值金额:</span>
-                            <Input class="w200 ml-10" v-model="rule.recharge"/>
+                            <Input class="w200 ml-10" v-model="rule.recharge" />
                             <span class="ml-10">=</span>
                             <span>1经验</span>
                         </li>
-                        <li v-if="this.rule.up_method[1]==true" >
+                        <li v-if="this.rule.up_method[1]==true">
                             <span>会员打码:</span>
                             <Input class="w200 ml-10" v-model="rule.code" />
                             <span class="ml-10">=</span>
@@ -150,21 +148,20 @@ export default {
     name: "LevelSetting",
     data() {
         return {
-            game_plant: '2',
+            game_plant: "2",
             game_plant_option: [
-                { label: '全部', value: '2' },
-                { label: '甲', value: '3' }
+                { label: "全部", value: "2" },
+                { label: "甲", value: "3" }
             ],
-            user_id: '',
+            user_id: "",
             headers: [
-                { label: '编号' },
-                { label: '等级称号' },
-                { label: '晋级经验' },
-                { label: '晋级彩金' },
-                { label: '周奖励' },
-                { label: '修改时间' },
-                { label: '操作' },
-                
+                "编号",
+                "等级称号",
+                "晋级经验",
+                "晋级彩金",
+                "周奖励",
+                "修改时间",
+                "操作"
             ],
             list: [],
             total: 0,
@@ -172,236 +169,234 @@ export default {
             pageSize: 25,
             //晋级方式
 
-            up_method: '',
+            up_method: "",
             up_method_opt: [
-                { label: '充值', value: 1 },
-                { label: '打码量', value: 2 }
+                { label: "充值", value: 1 },
+                { label: "打码量", value: 2 }
             ],
             show_lev_modal: false, // 添加编辑等级 _模态框
-            lev_modal_name: '', // 添加编辑等级 _模态框
+            lev_modal_name: "", // 添加编辑等级 _模态框
             show_lev_rule: false, // 晋级规则_模态框
             /* ----------  form ------------ */
             lev: {
-                name: '', // 等级名称
-                experience_min: '',
-                experience_max: '',
-                promotion_gift: '', // 晋升奖励
-                weekly_gift: '', // 周奖励
+                name: "", // 等级名称
+                experience_min: "",
+                experience_max: "",
+                promotion_gift: "", // 晋升奖励
+                weekly_gift: "" // 周奖励
             },
             rule: {
                 up_method: [],
-                recharge: '',
-                code: ''
+                recharge: "",
+                code: ""
             },
             /* 删除 */
             show_del_modal: false,
-            curr_row:{},
-            rise_type:'',
-        }
+            curr_row: {},
+            rise_type: ""
+        };
     },
     methods: {
         updateNo(val) {
             this.getList();
         },
         updateSize(val) {
-            this.pageNo=1;
+            this.pageNo = 1;
             this.getList();
         },
-        diaCfm(){
-            if(this.dia_status==="addLev"){
-                this.addCfm()
+        diaCfm() {
+            if (this.dia_status === "addLev") {
+                this.addCfm();
             }
-            if(this.dia_status==="editLev"){
-                this.editCfm()
+            if (this.dia_status === "editLev") {
+                this.editCfm();
             }
         },
-        initLev(){
-            console.log('initial');
+        initLev() {
+            console.log("initial");
             this.lev = {
-                name: '', // 等级名称
-                experience_min: '',
-                experience_max: '',
-                promotion_gift: '', // 晋升奖励
-                weekly_gift: '', // 周奖励
+                name: "", // 等级名称
+                experience_min: "",
+                experience_max: "",
+                promotion_gift: "", // 晋升奖励
+                weekly_gift: "" // 周奖励
             };
         },
-        checkLev(){
-            if(this.lev.name===''){
+        checkLev() {
+            if (this.lev.name === "") {
                 this.$toast.warning("等级名称不可为空");
                 return false;
             }
-            if(this.lev.experience_min===''){
+            if (this.lev.experience_min === "") {
                 this.$toast.warning("最小晋级经验不能为空");
                 return false;
             }
-            if(this.lev.experience_max===''){
+            if (this.lev.experience_max === "") {
                 this.$toast.warning("最大晋级经验不能为空");
                 return false;
             }
-            return true
+            return true;
         },
         addLev() {
-           this.initLev();
-           this.lev_modal_name="添加等级";
-           this.dia_status="addLev";
-           this.show_lev_modal=true;
+            this.initLev();
+            this.lev_modal_name = "添加等级";
+            this.dia_status = "addLev";
+            this.show_lev_modal = true;
         },
-        addCfm(){
-            if(!this.checkLev()) return;
-            console.log("lev",this.lev)
-            let data={
-                name:this.lev.name,
-                experience_min:this.lev.experience_min,
-                experience_max:this.lev.experience_max,
-                promotion_gift:this.lev.promotion_gift,
-                weekly_gift:this.lev.weekly_gift,
+        addCfm() {
+            if (!this.checkLev()) return;
+            console.log("lev", this.lev);
+            let data = {
+                name: this.lev.name,
+                experience_min: this.lev.experience_min,
+                experience_max: this.lev.experience_max,
+                promotion_gift: this.lev.promotion_gift,
+                weekly_gift: this.lev.weekly_gift
             };
-            let{url,method}=this.$api.grade_add;
-            this.$http({method,url,data}).then(res=>{
-                if(res && res.code){
+            let { url, method } = this.$api.grade_add;
+            this.$http({ method, url, data }).then(res => {
+                if (res && res.code) {
                     this.$toast.success(res && res.message);
                     this.show_lev_modal = false;
                     this.getList();
-                }else{
-                    if(res && res.message !== ""){
-
+                } else {
+                    if (res && res.message !== "") {
                     }
                 }
-            })
+            });
         },
-        editLev(row){
-            this.lev_modal_name="编辑详情";
-            this.dia_status="editLev";
-            this.show_lev_modal=true;
-            this.lev={
-                id:row.id,
-                name:row.name,
-                experience_min:String(row.experience_min),
-                experience_max:String(row.experience_max),
-                promotion_gift:row.promotion_gift,
-                weekly_gift:row.weekly_gift
-            }
-        },
-        editCfm(){
-            
-            let data={
-                id:this.lev.id,
-                name: this.lev.name,
-                experience_min:this.lev.experience_min,
-                experience_max:this.lev.experience_max,
-                promotion_gift:this.lev.promotion_gift,
-                weekly_gift:this.lev.weekly_gift,
+        editLev(row) {
+            this.lev_modal_name = "编辑详情";
+            this.dia_status = "editLev";
+            this.show_lev_modal = true;
+            this.lev = {
+                id: row.id,
+                name: row.name,
+                experience_min: String(row.experience_min),
+                experience_max: String(row.experience_max),
+                promotion_gift: row.promotion_gift,
+                weekly_gift: row.weekly_gift
             };
-            let{url,method}=this.$api.grade_set;
-            this.$http({method,url,data}).then(res=>{
-                if(res && res.code==='200'){
+        },
+        editCfm() {
+            let data = {
+                id: this.lev.id,
+                name: this.lev.name,
+                experience_min: this.lev.experience_min,
+                experience_max: this.lev.experience_max,
+                promotion_gift: this.lev.promotion_gift,
+                weekly_gift: this.lev.weekly_gift
+            };
+            let { url, method } = this.$api.grade_set;
+            this.$http({ method, url, data }).then(res => {
+                if (res && res.code === "200") {
                     this.$toast.success(res && res.message);
-                    this.show_lev_modal=false;
+                    this.show_lev_modal = false;
                     this.getList();
-                }else{
-                    if(res && res.message !==""){
+                } else {
+                    if (res && res.message !== "") {
                         this.$toast.error(res.message);
                     }
                 }
-            })
+            });
         },
         UpMethodHandle(val) {
-            // 0.充值会员, 1.会员打码 2.充值+打码 
+            // 0.充值会员, 1.会员打码 2.充值+打码
             switch (val) {
                 case 0:
-                    this.rule.up_method[2] = false
-                    break
+                    this.rule.up_method[2] = false;
+                    break;
                 case 1:
-                    this.rule.up_method[2] = false
-                    break
+                    this.rule.up_method[2] = false;
+                    break;
                 case 2:
-                    this.rule.up_method[0] = false
-                    this.rule.up_method[1] = false
+                    this.rule.up_method[0] = false;
+                    this.rule.up_method[1] = false;
                 default:
                     // console.log('val: ', val)
-                    break
+                    break;
             }
-            this.rule.up_method = this.rule.up_method
-            this.rule = Object.assign({}, this.rule)
+            this.rule.up_method = this.rule.up_method;
+            this.rule = Object.assign({}, this.rule);
         },
         delLev(row) {
             // console.log(row);
             this.show_del_modal = true;
-            this.curr_row=row;
+            this.curr_row = row;
         },
         delConfirm() {
-            let data={
-                id:this.curr_row.id
-            }
-            console.log(data)
-            let{url,method}=this.$api.grade_del;
-            this.$http({method,url,data}).then(res=>{
-                if(res && res.code==='200'){
+            let data = {
+                id: this.curr_row.id
+            };
+            console.log(data);
+            let { url, method } = this.$api.grade_del;
+            this.$http({ method, url, data }).then(res => {
+                if (res && res.code === "200") {
                     this.$toast.success(res && res.message);
-                    this.show_del_modal=false;
+                    this.show_del_modal = false;
                     this.getList();
                 }
-            })
+            });
         },
-        levRule(){
-            this.show_lev_rule=true;
+        levRule() {
+            this.show_lev_rule = true;
             this.clearRule();
         },
         // 1.充值  2.打码  3.充值或打码任一满足  4.充值和打码同时满足
-        clearRule(){
-            this.rule={
-                up_method:[],
-                recharge:'',
-                code:''
-            }
+        clearRule() {
+            this.rule = {
+                up_method: [],
+                recharge: "",
+                code: ""
+            };
         },
-        levRuleCfm(){
-            if(this.rule.up_method[0] && this.rule.up_method[1]){
-                this.rise_type=3
-            }else if(this.rule.up_method[0]){
-                this.rise_type=1
-            }else if(this.rule.up_method[1]){
-                this.rise_type=2
-            }else if(this.rule.up_method[2]){
-                this.rise_type=4
-            }else{
-                this.rise_type=0
+        levRuleCfm() {
+            if (this.rule.up_method[0] && this.rule.up_method[1]) {
+                this.rise_type = 3;
+            } else if (this.rule.up_method[0]) {
+                this.rise_type = 1;
+            } else if (this.rule.up_method[1]) {
+                this.rise_type = 2;
+            } else if (this.rule.up_method[2]) {
+                this.rise_type = 4;
+            } else {
+                this.rise_type = 0;
             }
-            let datas={
-                recharge:this.rule.recharge,
-                bet:this.rule.code,
-                type:this.rise_type,
-            }
-            let data=window.all.tool.rmEmpty(datas)
-            let {method,url}=this.$api.grade_config_list;
-            this.$http({method,url,data}).then(res=>{
-                if(res && res.code=='200'){
-                    this.$toast.success(res && res.message)
-                    this.show_lev_rule=false;
-                    this.getList()
-                }
-            })
-        },
-        getList(){
             let datas = {
-                page:this.pageNo,
-                pageSize:this.pageSize
+                recharge: this.rule.recharge,
+                bet: this.rule.code,
+                type: this.rise_type
             };
             let data = window.all.tool.rmEmpty(datas);
-            let{method,url}=this.$api.grade_list;
-            this.$http({method,url,data}).then(res=>{
-                console.log('返回数据',res)
-                if(res && res.code=='200'){
-                    this.list=res.data.data;
-                    this.total=res.data.total;
+            let { method, url } = this.$api.grade_config_list;
+            this.$http({ method, url, data }).then(res => {
+                if (res && res.code == "200") {
+                    this.$toast.success(res && res.message);
+                    this.show_lev_rule = false;
+                    this.getList();
                 }
-            })
+            });
         },
+        getList() {
+            let datas = {
+                page: this.pageNo,
+                pageSize: this.pageSize
+            };
+            let data = window.all.tool.rmEmpty(datas);
+            let { method, url } = this.$api.grade_list;
+            this.$http({ method, url, data }).then(res => {
+                console.log("返回数据", res);
+                if (res && res.code == "200") {
+                    this.list = res.data.data;
+                    this.total = res.data.total;
+                }
+            });
+        }
     },
     mounted() {
-        this.getList()
+        this.getList();
     }
-}
+};
 </script>
 
 <style scoped>

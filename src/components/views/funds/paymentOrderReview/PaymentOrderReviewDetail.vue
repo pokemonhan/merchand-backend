@@ -68,13 +68,13 @@
                      <tr>
                          <td>备注</td>
                          <td colspan="5">
-                             <input type="text" class="remarkText" v-model="table.remark" placeholder="请填写审核备注">{{row.remark}}
+                             <input type="text" class="remarkText" v-model="row.remark" placeholder="请填写审核备注">
                          </td>
                      </tr>
                  </table>
                  <div class="all-btn" v-if="row.status==1" >
-                     <button class="btn-plain-large mr50" @click="reject" >拒绝</button>
-                     <button class="btn-blue-large" @click="pass" >通过</button>
+                     <button class="btn-plain-large mr50" @click="reject(row)" >拒绝</button>
+                     <button class="btn-blue-large" @click="pass(row)">通过</button>
                  </div>
              </div>
          </div>
@@ -122,10 +122,10 @@ export default {
         }
     },
     methods: {
-        reject(){
+        reject(row){
             let datas={
                 id:this.row.id,
-                remark:String(this.table.remark),
+                remark:String(row.remark),
             }
             console.log('订单审核请求数据',data)
             let data=window.all.tool.rmEmpty(datas)
@@ -137,10 +137,10 @@ export default {
                 }
             })
         },
-        pass(){
+        pass(row){
             let datas={
                 id:this.row.id,
-                remark:String(this.table.remark),
+                remark:String(row.remark),
             } 
             let data=window.all.tool.rmEmpty(datas)
             let {method,url}=this.$api.founds_paymentorder_examination_passed;
@@ -183,7 +183,7 @@ export default {
     text-align: center;
 }
 .remarkText{
-    width: 90%;
+    width: 99%;
     height: 100%;
     border: none;
     float: left;

@@ -26,6 +26,7 @@
             <Table :headers="headers" :column="list">
                 <template v-slot:item="{row,idx}">
                     <td>{{(pageNo-1)*pageSize+idx+1}}</td>
+                    <td></td>
                     <td>{{row.vendor&&row.vendor.name}}</td>
                     <td>{{row.games&&row.games.name}}</td>
                     <td>
@@ -60,6 +61,11 @@
                             </div>
                         </div>
                     </td>
+                    <td>
+                        <button class="btns-blue">上传图片</button>
+                        <button class="btns-blue">使用默认图片</button>
+                        <button class="btns-blue">下载图片</button>
+                    </td>
                 </template>
             </Table>
 
@@ -86,7 +92,7 @@ export default {
                 vendor_id: "",
                 name: ""
             },
-            headers: ["编号", "游戏平台", "游戏名称", "排序", "游戏类型"],
+            headers: ["编号","ICON", "游戏平台", "游戏名称", "排序", "游戏类型","ICON管理"],
             list: [],
             total: 0,
             pageNo: 1,
@@ -279,5 +285,20 @@ export default {
     margin: auto;
     margin-left: 5px;
     font-size: 12px;
+}
+.table {
+    margin-top: 15px;
+}
+。table {
+    border-collapse: collapse;
+    width: 100%;
+}
+.table {
+    margin-top: 10px;
+    width: 100%;
+    overflow-x: auto;
+}
+.table .v-table {
+    min-width: 1500px;
 }
 </style>

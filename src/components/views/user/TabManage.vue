@@ -107,22 +107,15 @@ export default {
     data() {
         return {
             user_acc: "",
-            funds_type: "",
-            funds_type_option: [
-                { label: "ds", value: "2" },
-                { label: "one", value: "3" },
-                { label: "sdfdsf", value: "4" }
-            ],
-            game_id: "",
             table_header: [
-                { label: "编号" },
-                { label: "标签名称" },
-                { label: "禁止取款" },
-                { label: "禁止登录" },
-                { label: "禁止游戏" },
-                { label: "禁止推广" },
-                { label: "添加时间" },
-                { label: "操作" }
+                "编号",
+                "标签名称",
+                "取款",
+                "登录",
+                "游戏",
+                "推广",
+                "添加时间",
+                "操作"
             ],
             list: [],
             total: 0,

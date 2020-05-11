@@ -26,6 +26,9 @@
             <Table :headers="headers" :column="list">
                 <template v-slot:item="{row,idx}">
                     <td>{{(pageNo-1)*pageSize+idx+1}}</td>
+                    <td>
+                        <img width="40" :src="head_path+row.pic" alt="图片加载中..." />
+                    </td>
                     <td>{{row.vendor&&row.vendor.name}}</td>
                     <td>{{row.games&&row.games.name}}</td>
                     <td>
@@ -60,6 +63,18 @@
                             </div>
                         </div>
                     </td>
+                    <td>
+                        <div class="flex" style="justify-content:center" >
+                            <Upload
+                                style="width:100px;"
+                                title="上传图片"
+                                @change="upPicChange($event, row)"
+                                type="file"
+                            />
+                            <button style="margin-left:6px" class="btns-blue">使用默认图片</button>
+                            <button class="btns-blue">下载图片</button>
+                        </div>
+                    </td>
                 </template>
             </Table>
 
@@ -86,11 +101,13 @@ export default {
                 vendor_id: "",
                 name: ""
             },
-            headers: ["编号", "游戏平台", "游戏名称", "排序", "游戏类型"],
+            headers: ["编号","ICON", "游戏平台", "游戏名称", "排序", "游戏类型","ICON管理"],
             list: [],
             total: 0,
             pageNo: 1,
-            pageSize: 25
+            pageSize: 25,
+            head_path: "",
+            protocol: window.location.protocol
         };
     },
 
@@ -207,6 +224,7 @@ export default {
                 }
             });
         },
+        upPicChange($event, row){},
         getList() {
             let datas = {
                 hot_new: 1,
@@ -248,6 +266,7 @@ export default {
     mounted() {
         this.getList();
         this.getSelectOpt();
+        this.head_path = this.protocol + "//pic.397017.com/";
     }
 };
 </script>
@@ -274,5 +293,20 @@ export default {
     margin: auto;
     margin-left: 5px;
     font-size: 12px;
+}
+.table {
+    margin-top: 15px;
+}
+.table {
+    border-collapse: collapse;
+    width: 100%;
+}
+.table {
+    margin-top: 10px;
+    width: 100%;
+    overflow-x: auto;
+}
+.table .v-table {
+    min-width: 1500px;
 }
 </style>

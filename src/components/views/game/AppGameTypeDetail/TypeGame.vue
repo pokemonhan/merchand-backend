@@ -81,12 +81,16 @@
                         />
                     </td>
                     <td>
-                        <Upload
-                            style="width:100px;margin:0 auto;"
-                            title="上传图片"
-                            @change="upPicChange($event, row)"
-                            type="file"
-                        />
+                        <div class="flex" style="justify-content:center" >
+                            <Upload
+                                style="width:100px;"
+                                title="上传图片"
+                                @change="upPicChange($event, row)"
+                                type="file"
+                            />
+                            <button style="margin-left:6px" class="btns-blue">使用默认图片</button>
+                            <button class="btns-blue">下载图片</button>
+                        </div>
                     </td>
                 </template>
             </Table>
@@ -392,5 +396,20 @@ export default {
     margin: auto;
     margin-left: 5px;
     font-size: 12px;
+}
+.table {
+    margin-top: 15px;
+}
+.table {
+    border-collapse: collapse;
+    width: 100%;
+}
+.table {
+    margin-top: 10px;
+    width: 100%;
+    overflow-x: auto;
+}
+.table .v-table {
+    min-width: 1500px;
 }
 </style>

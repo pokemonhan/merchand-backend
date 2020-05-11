@@ -20,7 +20,7 @@
                     <button class="btn-blue" @click="getList">查询</button>
                 </li>
             </ul>
-            <ul class="right" >
+            <ul class="right">
                 <li>
                     <button class="btn-blue" @click="sortCfm">保存</button>
                 </li>
@@ -32,11 +32,7 @@
                     <td>{{row.vendor && row.vendor.name}}</td>
                     <td>{{row.games && row.games.name}}</td>
                     <td>
-                        <img
-                            :src="head_path+row.icon"
-                            alt
-                            style="max-width:100px;max-height:100px"
-                        />
+                        <img :src="head_path+row.icon" alt style="max-width:100px;max-height:100px" />
                     </td>
                     <td>
                         <button class="btns-blue" @click="move(row,idx,'moveUp')">上移</button>
@@ -52,15 +48,27 @@
                     <td>
                         <div class="gametypes">
                             <div>
-                                <Switchbox class="switch-select" :value="row.hot_new==0? 1:0" @update="switchNormal(row)"/>
+                                <Switchbox
+                                    class="switch-select"
+                                    :value="row.hot_new==0? 1:0"
+                                    @update="switchNormal(row)"
+                                />
                                 <span>普通游戏</span>
                             </div>
                             <div>
-                                <Switchbox class="switch-select" :value="row.hot_new==1? 1:0" @update="switchHot(row)" />
+                                <Switchbox
+                                    class="switch-select"
+                                    :value="row.hot_new==1? 1:0"
+                                    @update="switchHot(row)"
+                                />
                                 <span>热门游戏</span>
                             </div>
                             <div>
-                                <Switchbox class="switch-select" :value="row.hot_new==2? 1:0" @update="switchNew(row)" />
+                                <Switchbox
+                                    class="switch-select"
+                                    :value="row.hot_new==2? 1:0"
+                                    @update="switchNew(row)"
+                                />
                                 <span>新游戏</span>
                             </div>
                         </div>
@@ -73,12 +81,16 @@
                         />
                     </td>
                     <td>
-                        <Upload
-                            style="width:100px;margin:0 auto;"
-                            title="上传图片"
-                            @change="upPicChange($event, row)"
-                            type="file"
-                        />
+                        <div class="flex" style="justify-content:center">
+                            <Upload
+                                style="width:100px;"
+                                title="上传图片"
+                                @change="upPicChange($event, row)"
+                                type="file"
+                            />
+                            <button style="margin-left:6px" class="btns-blue">使用默认图片</button>
+                            <button class="btns-blue">下载图片</button>
+                        </div>
                     </td>
                 </template>
             </Table>
@@ -101,7 +113,7 @@ export default {
     data() {
         return {
             protocol: window.location.protocol,
-            head_path:'',
+            head_path: "",
             select: {},
             plant_opt: [],
             status_opt: [
@@ -122,13 +134,13 @@ export default {
                 "是否启用",
                 "游戏类型",
                 "是否推荐",
-                "操作",
+                "ICON管理"
             ],
             list: [],
             total: 0,
             pageNo: 1,
             pageSize: 25,
-            basket: [],
+            basket: []
         };
     },
 
@@ -182,7 +194,7 @@ export default {
             }).then(res => {
                 if (res && res.code == "200") {
                     // console.log("我成功啦", res);
-                    this.$toast.success(res && res.message)
+                    this.$toast.success(res && res.message);
                     this.getList();
                 }
             });
@@ -200,46 +212,46 @@ export default {
                 }
             });
         },
-        switchNormal(row){
-            let data={
-                id:row.id,
-                hot_new:'0'
-            }
-            let {url,method}=this.$api.game_hot_set;
-            this.$http({method,url,data}).then(res=>{
-                if(res && res.code=='200'){
-                    this.$toast.success(res && res.message)
+        switchNormal(row) {
+            let data = {
+                id: row.id,
+                hot_new: "0"
+            };
+            let { url, method } = this.$api.game_hot_set;
+            this.$http({ method, url, data }).then(res => {
+                if (res && res.code == "200") {
+                    this.$toast.success(res && res.message);
                     this.getList();
                 }
-            })
+            });
         },
-        switchHot(row){
-            let data={
-                id:row.id,
-                hot_new:'1'
-            }
-            let {url,method}=this.$api.game_hot_set;
-            this.$http({method,url,data}).then(res=>{
-                if(res && res.code=='200'){
-                    this.$toast.success(res && res.message)
+        switchHot(row) {
+            let data = {
+                id: row.id,
+                hot_new: "1"
+            };
+            let { url, method } = this.$api.game_hot_set;
+            this.$http({ method, url, data }).then(res => {
+                if (res && res.code == "200") {
+                    this.$toast.success(res && res.message);
                     this.getList();
                 }
-            })
+            });
         },
-        switchNew(row){
-            let data={
-                id:row.id,
-                hot_new:'2'
-            }
-            console.log('请求数据',data)
-            let {url,method}=this.$api.game_hot_set;
-            this.$http({method,url,data}).then(res=>{
-                console.log('新游戏',res)
-                if(res && res.code=='200'){
-                    this.$toast.success(res && res.message)
+        switchNew(row) {
+            let data = {
+                id: row.id,
+                hot_new: "2"
+            };
+            console.log("请求数据", data);
+            let { url, method } = this.$api.game_hot_set;
+            this.$http({ method, url, data }).then(res => {
+                console.log("新游戏", res);
+                if (res && res.code == "200") {
+                    this.$toast.success(res && res.message);
                     this.getList();
                 }
-            })
+            });
         },
         switchRecommend(val, row) {
             let data = {
@@ -262,8 +274,8 @@ export default {
                 vendor_id: this.filter.vendor_id, // 游戏平台(厂商id)
                 name: this.filter.name, // 游戏名称
                 status: this.filter.status, // 启用状态
-                page:this.pageNo,
-                pageSize:this.pageSize
+                page: this.pageNo,
+                pageSize: this.pageSize
             };
             // console.log(para);
             let data = window.all.tool.rmEmpty(datas);
@@ -316,7 +328,7 @@ export default {
             this.getList();
         },
         updateSize(val) {
-            this.pageNo=1;
+            this.pageNo = 1;
             this.getList();
         },
         /**
@@ -348,7 +360,7 @@ export default {
         }
     },
     mounted() {
-        this.head_path=this.protocol+'//pic.397017.com/'
+        this.head_path = this.protocol + "//pic.397017.com/";
         if (this.type_id) {
             this.getList();
         }
@@ -374,11 +386,26 @@ export default {
     height: 100%;
     display: flex;
 }
-.gametypes div span{
+.gametypes div span {
     height: 100%;
     /* vertical-align:middle; */
     margin: auto;
     margin-left: 5px;
     font-size: 12px;
+}
+.table {
+    margin-top: 15px;
+}
+.table {
+    border-collapse: collapse;
+    width: 100%;
+}
+.table {
+    margin-top: 10px;
+    width: 100%;
+    overflow-x: auto;
+}
+.table .v-table {
+    min-width: 1500px;
 }
 </style>

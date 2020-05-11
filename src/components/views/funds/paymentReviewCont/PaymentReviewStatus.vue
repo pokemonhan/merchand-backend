@@ -108,7 +108,7 @@ export default {
                 id:this.row.id,
                 remark: String(row.remark),
             }
-            console.log('审核拒绝请求数据',data)
+            console.log('审核拒绝请求数据',datas)
             let data=window.all.tool.rmEmpty(datas)
             let{method,url}=this.$api.founds_interface_examination_rejected;
             this.$http({method,url,data}).then(res=>{

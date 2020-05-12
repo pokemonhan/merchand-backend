@@ -266,6 +266,7 @@ export default {
                 hot_new: 1,
                 vendor_id: this.filter.vendor_id,
                 name: this.filter.name,
+                device:3,
                 page: this.pageNo,
                 pageSize: this.pageSize
             };

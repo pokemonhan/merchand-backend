@@ -69,7 +69,7 @@ http.interceptors.request.use(req => {
             // console.log('req', [req.data]);
 
         }
-        if (req.url !== upload || true) {
+        if (req.url !== upload) {
             let data = JSON.parse(JSON.stringify(req.data))
             if (JSON.stringify(data) !== "{}") {
                 var encrypt_data = AES_encrypt(data);
@@ -86,14 +86,20 @@ http.interceptors.request.use(req => {
 
 // 后台返回数据 全局预设 ---
 http.interceptors.response.use(res => {
-
+    // console.log('加密返回', res)
     // loading 样式设置
     if (loadingEle && loadingEle.style) {
         loadingEle.style.display = 'none'
     }
 
     if (res && res.data) {
-        res.data = AES_decrypt(res.data)
+        let resUrl = res.config && res.config.url
+        // console.log('url', resUrl)
+        if (resUrl.indexOf('merchant-api/upload') > -1) {
+
+        } else {
+            res.data = AES_decrypt(res.data)
+        }
         let message = res.message || res.data.message || ''
 
         if (res.status === 200) {

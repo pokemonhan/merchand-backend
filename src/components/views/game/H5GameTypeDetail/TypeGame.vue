@@ -29,10 +29,10 @@
         <div class="table mt20">
             <Table :headers="headers" :column="list">
                 <template v-slot:item="{row,idx}">
-                    <td>{{row.vendor && row.vendor.name}}</td>
-                    <td>{{row.games && row.games.name}}</td>
+                    <td>{{row.vendor}}</td>
+                    <td>{{row.name}}</td>
                     <td>
-                        <img :src="head_path+row.icon" alt style="max-width:100px;max-height:100px" />
+                        <img :src="row.icon" alt="图片加载中..." style="max-width:50px;max-height:50px" />
                     </td>
                     <td>
                         <button class="btns-blue" @click="move(row,idx,'moveUp')">上移</button>
@@ -107,7 +107,6 @@
 </template> <script>
 export default {
     props: {
-        // isHot: Boolean,
         type_id: [String, Number]
     },
     data() {
@@ -277,12 +276,12 @@ export default {
                 page: this.pageNo,
                 pageSize: this.pageSize
             };
-            // console.log(para);
+            console.log(datas);
             let data = window.all.tool.rmEmpty(datas);
 
             let { url, method } = this.$api.game_h5_list;
             this.$http({ method, url, data }).then(res => {
-                // console.log("列表👌👌👌👌: ", res);
+                console.log("列表👌👌👌👌: ", res);
                 if (res && res.code === "200") {
                     this.total = res.data.total;
                     this.list = res.data.data;
@@ -302,26 +301,23 @@ export default {
             let headers = { "Content-Type": "multipart/form-data" };
             this.$http({ method, url, data, headers }).then(res => {
                 if (res && res.code == "200") {
-                    // console.log("返回数据",res)
+                    console.log("返回数据",res)
                     // returnData=res.data
-                    this.updatePicture(res.data, row.id);
+                    let data={
+                        id:row.id,
+                        icon_id:res.data.id
+                    }
+                    console.log('data',data)
+                    let {method,url}=this.$api.picture_update
+                    this.$http({method,url,data}).then(res=>{
+                        // console.log('上传返回',res)
+                        if(res && res.code=='200'){
+                            this.$toast.success(res && res.message)
+                            this.getList()
+                        }
+                    })
+
                 }
-            });
-        },
-        updatePicture(data, id) {
-            // console.log("id: ", id);
-            if (!data) return;
-            // console.log(data);
-            let para = {
-                id: id,
-                icon: data.path
-            };
-            console.log(para);
-            let { url, method } = this.$api.picture_update;
-            this.$http({ method, url, data: para }).then(res => {
-                console.log("res", res);
-                // TODO
-                this.getList();
             });
         },
         updateNo(val) {
@@ -360,7 +356,6 @@ export default {
         }
     },
     mounted() {
-        this.head_path = this.protocol + "//pic.397017.com/";
         if (this.type_id) {
             this.getList();
         }

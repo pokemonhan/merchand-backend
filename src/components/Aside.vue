@@ -76,8 +76,8 @@ export default {
             return false
         },
         expandMenu(item, index) {
-            // console.log("该元素item", item);
-            // console.log("这个index", index);
+            console.log("该元素item", item);
+            console.log("这个index", index);
             if (!item.children) {
                 this.$router.push(item.path)
                 let curr_path = item.path

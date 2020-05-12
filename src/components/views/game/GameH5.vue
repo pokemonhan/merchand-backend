@@ -44,6 +44,7 @@ export default {
         selectBtn(item) {
             this.isHot = false
             this.curr_type_id = item.id
+            
         },
 
         getSelect() {

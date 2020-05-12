@@ -20,7 +20,7 @@
                     <button class="btn-blue" @click="getList">查询</button>
                 </li>
             </ul>
-            <ul class="right" >
+            <ul class="right">
                 <li>
                     <button class="btn-blue" @click="sortCfm">保存</button>
                 </li>
@@ -29,10 +29,10 @@
         <div class="table mt20">
             <Table :headers="headers" :column="list">
                 <template v-slot:item="{row,idx}">
-                    <td>{{row.vendor && row.vendor.name}}</td>
-                    <td>{{row.games && row.games.name}}</td>
+                    <td>{{row.vendor}}</td>
+                    <td>{{row.name}}</td>
                     <td>
-                        <img :src="head_path+row.icon" alt style="max-width:100px;max-height:100px" />
+                        <img :src="row.icon" alt="图片加载中..." style="max-width:50px;max-height:50px" />
                     </td>
                     <td>
                         <button class="btns-blue" @click="move(row,idx,'moveUp')">上移</button>
@@ -81,7 +81,7 @@
                         />
                     </td>
                     <td>
-                        <div class="flex" style="justify-content:center" >
+                        <div class="flex" style="justify-content:center">
                             <Upload
                                 style="width:100px;"
                                 title="上传图片"
@@ -279,7 +279,19 @@ export default {
             this.$http({ method, url, data, headers }).then(res => {
                 if (res && res.code == "200") {
                     // returnData=res.data
-                    this.updatePicture(res.data, row.id);
+                    let data = {
+                        id: row.id,
+                        icon_id: res.data.id
+                    };
+                    console.log("data", data);
+                    let { method, url } = this.$api.picture_update;
+                    this.$http({ method, url, data }).then(res => {
+                        // console.log('上传返回',res)
+                        if (res && res.code == "200") {
+                            this.$toast.success(res && res.message);
+                            this.getList();
+                        }
+                    });
                 }
             });
         },

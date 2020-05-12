@@ -420,10 +420,14 @@
 </template>
 
 <script>
+import{mapState,mapMutations,mapGetters} from 'vuex'
+import Slide from '../../../js/config/slide'
+import menuList from '../../../js/menuList'
 export default {
     name: "UserList",
     data() {
         return {
+            menu_list:[],
             filter: {
                 account: "",
                 userid: "",
@@ -503,7 +507,57 @@ export default {
             }
         };
     },
+    computed:{
+        ...mapState(['tab_nav_list'])
+    },
     methods: {
+        ...mapMutations(['updateTab_nav_list']),
+        objToArr(obj, pre_idx = '') {
+            // let list = []
+            return Object.keys(obj).map((key, index) => {
+                let item = obj[key]
+                // console.log('item: ', item);
+
+                let template = {
+                    id: item.id,
+                    label: item.label,
+                    icon: item.icon,
+                    en_name: item.en_name,
+                    path: item.route,
+                    display: item.display,
+                    pre_idx: pre_idx + index,
+                    // type: '',
+                    level: item.level
+                }
+
+                if (item.child) {
+                    template.children = this.objToArr(
+                        item.child,
+                        pre_idx + index + '-'
+                    )
+                }
+                return template
+            })
+            // }
+            // return list
+        },
+        //获取列表
+        getMenuList(){
+            if(!window.all.tool.getLocal('Authorization')) return
+            if(window.all.tool.getLocal('menu')){
+                this.menu_list=window.all.tool.getLocal('menu')
+            }else{
+                let {method,url}=this.$api.current_admin_menu
+                this.$http({method,url}).then(res=>{
+                    if(res && res.code=='200'){
+                        if(!res.data) return
+                        let menu=this.objToArr(res.data)
+                        this.menu_list=menu
+                        window.all.tool.setLocal('menu',menu)
+                    }
+                })
+            }
+        },
         getSelectOpt() {
             let { url, method } = this.$api.tag_list;
             this.$http({ url, method }).then(res => {
@@ -789,6 +843,32 @@ export default {
         viewBank() {
             this.$router.push("/set/bankcenter");
             this.show_detail = false;
+            console.log('菜单',this.menu_list)
+            let children=[]
+            for(var i=0;i<this.menu_list.length;i++){
+                if(this.menu_list[i].id==47){
+                    children=this.menu_list[i].children
+                }
+            }
+            // console.log('child',children)
+            let bank={}
+            for (var j=0;j<children.length;j++){
+                if(children[j].id==54){
+                    bank=children[j]
+                }
+            }
+            console.log('children222',bank)
+            let curr_item={}
+            let list=this.tab_nav_list
+            let isHadTab=list.find(tab=>tab.path===bank.path)
+            if(!isHadTab){
+                list.push({
+                    label:curr_item.label,
+                    name:curr_item.name,
+                    path:curr_item.path
+                })
+                this.updateTab_nav_list(list)
+            }
         },
         clearAli() {
             this.Ali_show = true;
@@ -831,7 +911,15 @@ export default {
             this.getList();
         }
     },
+    watch:{
+        $route:function(to,from){
+            if(from.path==='/user/userlist'){
+                this.getMenuList()
+            }
+        }
+    },
     mounted() {
+        this.getMenuList()
         this.getList();
         this.getSelectOpt();
     }

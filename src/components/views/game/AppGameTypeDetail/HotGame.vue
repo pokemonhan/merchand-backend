@@ -16,7 +16,7 @@
                     <button class="btn-blue" @click="getList">查询</button>
                 </li>
             </ul>
-            <ul class="right" >
+            <ul class="right">
                 <li>
                     <button class="btn-blue" @click="sortCfm">保存</button>
                 </li>
@@ -27,10 +27,10 @@
                 <template v-slot:item="{row,idx}">
                     <td>{{(pageNo-1)*pageSize+idx+1}}</td>
                     <td>
-                        <img width="40" :src="head_path+row.pic" alt="图片加载中..." />
+                        <img style="max-width:50px;max-height:50px" :src="row.icon" alt="图片加载中..." />
                     </td>
-                    <td>{{row.vendor&&row.vendor.name}}</td>
-                    <td>{{row.games&&row.games.name}}</td>
+                    <td>{{row.vendor}}</td>
+                    <td>{{row.name}}</td>
                     <td>
                         <button class="btns-blue" @click="move(row,idx,'moveUp')">上移</button>
                         <button class="btns-blue" @click="move(row,idx,'moveDown')">下移</button>
@@ -64,7 +64,7 @@
                         </div>
                     </td>
                     <td>
-                        <div class="flex" style="justify-content:center" >
+                        <div class="flex" style="justify-content:center">
                             <Upload
                                 style="width:100px;"
                                 title="上传图片"
@@ -101,7 +101,15 @@ export default {
                 vendor_id: "",
                 name: ""
             },
-            headers: ["编号","ICON", "游戏平台", "游戏名称", "排序", "游戏类型","ICON管理"],
+            headers: [
+                "编号",
+                "ICON",
+                "游戏平台",
+                "游戏名称",
+                "排序",
+                "游戏类型",
+                "ICON管理"
+            ],
             list: [],
             total: 0,
             pageNo: 1,
@@ -220,9 +228,36 @@ export default {
                 data: data
             }).then(res => {
                 if (res && res.code == "200") {
-                    this.$toast.success(res.message)
+                    this.$toast.success(res.message);
                     this.getList();
-
+                }
+            });
+        },
+        upPicChange(e, row) {
+            let pic = e.target.files[0];
+            let basket = "GameManagement/APPGamePicture";
+            let formList = new FormData();
+            formList.append("file", pic, pic.name);
+            formList.append("basket", basket);
+            let data = formList;
+            let { url, method } = this.$api.update_picture_database;
+            let headers = { "Content-Type": "multipart/form-data" };
+            this.$http({ method, url, data, headers }).then(res => {
+                // console.log('上传图片返回数据',res)
+                if (res && res.code == "200") {
+                    let data = {
+                        id: row.id,
+                        icon_id: res.data.id
+                    };
+                    console.log("data", data);
+                    let { method, url } = this.$api.picture_update;
+                    this.$http({ method, url, data }).then(res => {
+                        // console.log('上传返回',res)
+                        if (res && res.code == "200") {
+                            this.$toast.success(res && res.message);
+                            this.getList();
+                        }
+                    });
                 }
             });
         },

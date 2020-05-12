@@ -27,10 +27,10 @@
                 <template v-slot:item="{row,idx}">
                     <td>{{(pageNo-1)*pageSize+idx+1}}</td>
                     <td>
-                        <img width="40" :src="head_path+row.pic" alt="图片加载中..." />
+                        <img style="max-width:50px;max-height:50px" :src="row.icon" alt="图片加载中..." />
                     </td>
-                    <td>{{row.vendor&&row.vendor.name}}</td>
-                    <td>{{row.games&&row.games.name}}</td>
+                    <td>{{row.vendor}}</td>
+                    <td>{{row.name}}</td>
                     <td>
                         <button class="btns-blue" @click="move(row,idx,'moveUp')">上移</button>
                         <button class="btns-blue" @click="move(row,idx,'moveDown')">下移</button>
@@ -115,7 +115,8 @@ export default {
             pageNo: 1,
             pageSize: 25,
             head_path: "",
-            protocol: window.location.protocol
+            protocol: window.location.protocol,
+            pic_path:''
         };
     },
 
@@ -179,10 +180,10 @@ export default {
                 id: row.id,
                 hot_new: "2"
             };
-            console.log("请求数据", data);
+            // console.log("请求数据", data);
             let { url, method } = this.$api.game_hot_set;
             this.$http({ method, url, data }).then(res => {
-                console.log("新游戏", res);
+                // console.log("新游戏", res);
                 if (res && res.code == "200") {
                     this.$toast.success(res && res.message);
                     this.getList();
@@ -236,9 +237,36 @@ export default {
         //TO DO
         sortButtonShow(list) {
             let listLength = list.length;
-            console.log("上下移动按钮显示bug", listLength);
+            // console.log("上下移动按钮显示bug", listLength);
         },
-        upPicChange($event, row) {},
+        upPicChange(e, row) {
+            let pic=e.target.files[0];
+            let basket="GameManagement/H5GamePicture";
+            let formList=new FormData();
+            formList.append("file",pic,pic.name);
+            formList.append("basket",basket);
+            let data=formList;
+            let{url,method}=this.$api.update_picture_database;
+            let headers={"Content-Type":"multipart/form-data"};
+            this.$http({method,url,data,headers}).then(res=>{
+                // console.log('上传图片返回数据',res)
+                if(res && res.code=='200'){
+                    let data={
+                        id:row.id,
+                        icon_id:res.data.id
+                    }
+                    console.log('data',data)
+                    let {method,url}=this.$api.picture_update
+                    this.$http({method,url,data}).then(res=>{
+                        // console.log('上传返回',res)
+                        if(res && res.code=='200'){
+                            this.$toast.success(res && res.message)
+                            this.getList()
+                        }
+                    })
+                }
+            })
+        },
         getList() {
             let datas = {
                 hot_new: 1,
@@ -252,7 +280,7 @@ export default {
             let data = window.all.tool.rmEmpty(datas);
             let { url, method } = this.$api.game_h5_list;
             this.$http({ method, url, data }).then(res => {
-                console.log("列表返回数据", res);
+                // console.log("列表返回数据", res);
                 if (res && res.code == "200") {
                     this.list = res.data.data || [];
                     this.total = this.list.length;

@@ -470,7 +470,7 @@ export default {
     },
     // 游戏列表 - 公用接口 - 图片上传
     picture_update: {
-        url:'/merchant-api/game/upload',
+        url:'/merchant-api/game/icon',
         method: 'post',
     },
 

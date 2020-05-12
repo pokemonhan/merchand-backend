@@ -27,7 +27,22 @@
                 <template v-slot:item="{row,idx}">
                     <td>{{(pageNo-1)*pageSize+idx+1}}</td>
                     <td>
-                        <img style="max-width:50px;max-height:50px" :src="row.icon" alt="图片加载中..." />
+                        <Tooltip position="right">
+                            <img style="max-width:50px;max-height:50px"
+                                class="td-icon"
+                                :src="row.icon"
+                                alt="图片加载中"
+                            />
+                            <template v-slot:content>
+                                <div>
+                                    <img
+                                        class="tooltip-img"
+                                        :src="row.icon"
+                                        alt="图片加载中"
+                                    />
+                                </div>
+                            </template>
+                        </Tooltip>
                     </td>
                     <td>{{row.vendor}}</td>
                     <td>{{row.name}}</td>

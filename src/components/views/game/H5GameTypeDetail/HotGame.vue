@@ -27,7 +27,22 @@
                 <template v-slot:item="{row,idx}">
                     <td>{{(pageNo-1)*pageSize+idx+1}}</td>
                     <td>
-                        <img style="max-width:50px;max-height:50px" :src="row.icon" alt="图片加载中..." />
+                        <Tooltip position="right">
+                            <img style="max-width:50px;max-height:50px"
+                                class="td-icon"
+                                :src="row.icon"
+                                alt="图片加载中"
+                            />
+                            <template v-slot:content>
+                                <div>
+                                    <img
+                                        class="tooltip-img"
+                                        :src="row.icon"
+                                        alt="图片加载中"
+                                    />
+                                </div>
+                            </template>
+                        </Tooltip>
                     </td>
                     <td>{{row.vendor}}</td>
                     <td>{{row.name}}</td>
@@ -64,7 +79,7 @@
                         </div>
                     </td>
                     <td>
-                        <div class="flex" style="justify-content:center" >
+                        <div class="flex" style="justify-content:center">
                             <Upload
                                 style="width:100px;"
                                 title="上传图片"
@@ -72,7 +87,7 @@
                                 type="file"
                             />
                             <button style="margin-left:6px" class="btns-blue">使用默认图片</button>
-                            <button class="btns-blue">下载图片</button>
+                            <button class="btns-blue" @click="downLoad(row)">下载图片</button>
                         </div>
                     </td>
                 </template>
@@ -116,11 +131,26 @@ export default {
             pageSize: 25,
             head_path: "",
             protocol: window.location.protocol,
-            pic_path:''
+            pic_path: ""
         };
     },
 
     methods: {
+        downLoad(row) {
+            if(typeof row.icon == 'object' && row.icon instanceof Blob){
+                row.icon = URL.createObjectURL(row.icon)
+            }
+            var aLink = document.createElement('a')
+            aLink.href=row.icon;
+            aLink.download = row.name;
+            var event;
+            if(window.MouseEvent) event = new MouseEvent('click');
+            else {
+                event = document.createEvent('MouseEvent');
+                event.initMouseEvent('click',true,false,window,0,0,0,0,0,false,false,false,false,0,null)
+            }
+            aLink.dispatchEvent(event)
+        },
         getSelectOpt() {
             let { url, method } = this.$api.game_search_condition_list;
             this.$http({ url, method }).then(res => {
@@ -240,32 +270,32 @@ export default {
             // console.log("上下移动按钮显示bug", listLength);
         },
         upPicChange(e, row) {
-            let pic=e.target.files[0];
-            let basket="GameManagement/H5GamePicture";
-            let formList=new FormData();
-            formList.append("file",pic,pic.name);
-            formList.append("basket",basket);
-            let data=formList;
-            let{url,method}=this.$api.update_picture_database;
-            let headers={"Content-Type":"multipart/form-data"};
-            this.$http({method,url,data,headers}).then(res=>{
+            let pic = e.target.files[0];
+            let basket = "GameManagement/H5GamePicture";
+            let formList = new FormData();
+            formList.append("file", pic, pic.name);
+            formList.append("basket", basket);
+            let data = formList;
+            let { url, method } = this.$api.update_picture_database;
+            let headers = { "Content-Type": "multipart/form-data" };
+            this.$http({ method, url, data, headers }).then(res => {
                 // console.log('上传图片返回数据',res)
-                if(res && res.code=='200'){
-                    let data={
-                        id:row.id,
-                        icon_id:res.data.id
-                    }
-                    console.log('data',data)
-                    let {method,url}=this.$api.picture_update
-                    this.$http({method,url,data}).then(res=>{
+                if (res && res.code == "200") {
+                    let data = {
+                        id: row.id,
+                        icon_id: res.data.id
+                    };
+                    console.log("data", data);
+                    let { method, url } = this.$api.picture_update;
+                    this.$http({ method, url, data }).then(res => {
                         // console.log('上传返回',res)
-                        if(res && res.code=='200'){
-                            this.$toast.success(res && res.message)
-                            this.getList()
+                        if (res && res.code == "200") {
+                            this.$toast.success(res && res.message);
+                            this.getList();
                         }
-                    })
+                    });
                 }
-            })
+            });
         },
         getList() {
             let datas = {
@@ -350,5 +380,4 @@ export default {
 .table .v-table {
     min-width: 1500px;
 }
-
 </style>

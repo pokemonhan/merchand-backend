@@ -104,7 +104,6 @@ export default {
                     })
                     this.updateTab_nav_list(list)
                 }
-
                 // 没有 children 就是父级菜单,就下滑打开该菜单
             } else {
                 let ele = this.$refs[index]&&this.$refs[index][0]

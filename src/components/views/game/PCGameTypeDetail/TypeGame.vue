@@ -32,7 +32,22 @@
                     <td>{{row.vendor}}</td>
                     <td>{{row.name}}</td>
                     <td>
-                        <img :src="row.icon" alt style="max-width:50px;max-height:50px" />
+                        <Tooltip position="right">
+                            <img style="max-width:50px;max-height:50px"
+                                class="td-icon"
+                                :src="row.icon"
+                                alt="图片加载中"
+                            />
+                            <template v-slot:content>
+                                <div>
+                                    <img
+                                        class="tooltip-img"
+                                        :src="row.icon"
+                                        alt="图片加载中"
+                                    />
+                                </div>
+                            </template>
+                        </Tooltip>
                     </td>
                     <td>
                         <button class="btns-blue" @click="move(row,idx,'moveUp')">上移</button>

@@ -1,10 +1,12 @@
 <template>
-    <div class="v-tooltip" @mouseenter="onmouseover" @mouseleave="onmouseleave">
-        <slot></slot>
+    <div class="v-tooltip">
+        <div @mouseenter="onmouseover($event)" @mouseleave="onmouseleave">
+            <slot></slot>
+        </div>
         <transition name="fade-transform">
             <span
-                v-show="isShow"
-                :class="[position, maxWidth ? 'word-wrap' : '']"
+                v-if="isShow"
+                :class="['tip',position, maxWidth ? 'word-wrap' : '']"
                 :style="{width: maxWidth+'px'}"
             >
                 <slot name="content"></slot>
@@ -16,13 +18,14 @@
 
 <script>
 export default {
-    name: 'Tooltip',
+    name: "Tooltip",
     props: {
         content: String,
         icon: String,
+        // 图标位置,其实就是class
         position: {
             type: String,
-            default: 'top'
+            default: "top"
         },
         maxWidth: {
             type: [Number, String]
@@ -31,34 +34,33 @@ export default {
     data() {
         return {
             isShow: false
-        }
+        };
     },
     methods: {
-        onmouseover() {
-            this.isShow = true
+        onmouseover(e) {
+            // console.log('鼠标悬浮')
+            this.isShow = true;
         },
         onmouseleave() {
-            this.isShow = false
+            this.isShow = false;
         }
     }
-}
+};
 </script>
 
 <style scoped>
 /* fade-transform */
 .fade-transform-leave-active,
 .fade-transform-enter-active {
-    transition: all 0.2s;
+    transition: all 0.1s;
 }
 
-.fade-transform-enter,
-.fade-transform-leave-to {
+.fade-transform-enter {
     opacity: 0;
     transform: scale(0.1);
 }
 
-.fade-transform-leave,
-.fade-transform-enter-to {
+.fade-transform-leave-to {
     opacity: 1;
     transform: scale(1);
 }
@@ -88,7 +90,23 @@ export default {
     font-size: 12px;
 
     white-space: nowrap;
-    z-index: 10;
+    z-index: 100;
+    /* border-color: hsla(0, 0%, 85%, 0.5); */
+    box-shadow: 1px 1px 4px rgb(150, 150, 150);
+}
+.v-tooltip > .right {
+    position: absolute;
+    top: -100px;
+    left: 150%;
+    margin-top: 100%;
+    /* transform: translateX(-50%); */
+    line-height: 1.5;
+
+    /* padding: 2px 8px; */
+    border-radius: 3px;
+    background-color: #fff;
+
+    z-index: 100;
     /* border-color: hsla(0, 0%, 85%, 0.5); */
     box-shadow: 1px 1px 4px rgb(150, 150, 150);
 }
@@ -98,7 +116,7 @@ export default {
 
 /* 三角形 */
 .v-tooltip .bottom:after {
-    content: '';
+    content: "";
 
     display: inline-block;
     position: absolute;
@@ -116,7 +134,7 @@ export default {
 /* 提示在顶部 */
 .v-tooltip .top {
     position: absolute;
-    top: -220%;
+    top: -2.3em;
     left: 50%;
     z-index: 10;
     line-height: 1.5;
@@ -131,7 +149,7 @@ export default {
 }
 /* 三角形 */
 .v-tooltip .top::after {
-    content: '';
+    content: "";
     position: absolute;
     top: 100%;
     left: 50%;
@@ -139,5 +157,8 @@ export default {
     border-width: 5px;
     border-style: solid;
     border-color: #fff transparent transparent transparent;
+}
+.tip {
+    color: #444;
 }
 </style>

@@ -32,7 +32,7 @@
                     <td>
                         <img
                             v-if="row.icon"
-                            :src="head_path+row.icon"
+                            :src="row.icon"
                             style="max-width:100px;min-height:100px"
                         />
                     </td>
@@ -77,7 +77,7 @@
     </div>
 </template> <script>
 export default {
-    name: 'PlatForm',
+    name: "PlatForm",
     data() {
         return {
             buttons: [
@@ -110,7 +110,7 @@ export default {
             pageSize: 25,
             select: {},
             protocol: window.location.protocol,
-            head_path:'',
+            head_path: ""
         };
     },
     methods: {
@@ -147,7 +147,7 @@ export default {
             this.getList();
         },
         updateSize(val) {
-            this.pageNo=1;
+            this.pageNo = 1;
             this.getList();
         },
 
@@ -226,7 +226,21 @@ export default {
             let headers = { "Content-Type": "multipart/form-data" };
             this.$http({ method, url, data, headers }).then(res => {
                 if (res && res.code == "200") {
-                    this.updatePicture(res.data, row.id);
+                    if (res && res.code == "200") {
+                        let data = {
+                            id: row.id,
+                            icon_id: res.data.id
+                        };
+                        console.log("data", data);
+                        let { method, url } = this.$api.picture_update;
+                        this.$http({ method, url, data }).then(res => {
+                            // console.log('上传返回',res)
+                            if (res && res.code == "200") {
+                                this.$toast.success(res && res.message);
+                                this.getList();
+                            }
+                        });
+                    }
                 }
             });
         },
@@ -252,8 +266,8 @@ export default {
                 device: this.curr_btn,
                 name: this.filter.plant,
                 status: this.filter.status,
-                page:this.pageNo,
-                pageSize:this.pageSize
+                page: this.pageNo,
+                pageSize: this.pageSize
             };
             // console.log('查询数据',para)
             let params = window.all.tool.rmEmpty(para);
@@ -268,7 +282,7 @@ export default {
         }
     },
     mounted() {
-        this.head_path=this.protocol+'//pic.397017.com/'
+        this.head_path = this.protocol + "//pic.397017.com/";
         this.getSelect();
         this.getList();
     }

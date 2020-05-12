@@ -546,16 +546,6 @@ export default {
             if(!window.all.tool.getLocal('Authorization')) return
             if(window.all.tool.getLocal('menu')){
                 this.menu_list=window.all.tool.getLocal('menu')
-            }else{
-                let {method,url}=this.$api.current_admin_menu
-                this.$http({method,url}).then(res=>{
-                    if(res && res.code=='200'){
-                        if(!res.data) return
-                        let menu=this.objToArr(res.data)
-                        this.menu_list=menu
-                        window.all.tool.setLocal('menu',menu)
-                    }
-                })
             }
         },
         getSelectOpt() {
@@ -841,34 +831,36 @@ export default {
         },
         //查看银行 跳转至银行卡反差中心
         viewBank() {
-            this.$router.push("/set/bankcenter");
             this.show_detail = false;
-            console.log('菜单',this.menu_list)
-            let children=[]
+            // console.log('菜单',this.menu_list)
+            let bank=[]
             for(var i=0;i<this.menu_list.length;i++){
-                if(this.menu_list[i].id==47){
-                    children=this.menu_list[i].children
+                let item =this.menu_list[i].children
+                if(item){
+                    for(var j=0;j<item.length;j++){
+                        bank.push(item[j])
+                    }
                 }
             }
-            // console.log('child',children)
-            let bank={}
-            for (var j=0;j<children.length;j++){
-                if(children[j].id==54){
-                    bank=children[j]
+            // console.log('bank',bank)
+            let bankItem={}
+            for(var k=0;k<bank.length;k++){
+                if(bank[k].path=='/set/bankcenter'){
+                    bankItem=bank[k]
                 }
             }
-            console.log('children222',bank)
-            let curr_item={}
+            // console.log('bankItem',bankItem)
             let list=this.tab_nav_list
-            let isHadTab=list.find(tab=>tab.path===bank.path)
+            let isHadTab=list.find(tab=>tab.path===bankItem.path)
             if(!isHadTab){
                 list.push({
-                    label:curr_item.label,
-                    name:curr_item.name,
-                    path:curr_item.path
+                    label:bankItem.label,
+                    name:bankItem.name,
+                    path:bankItem.path
                 })
                 this.updateTab_nav_list(list)
             }
+            this.$router.push(bankItem.path)
         },
         clearAli() {
             this.Ali_show = true;

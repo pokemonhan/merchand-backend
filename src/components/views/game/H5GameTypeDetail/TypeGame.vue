@@ -273,6 +273,7 @@ export default {
                 vendor_id: this.filter.vendor_id, // 游戏平台(厂商id)
                 name: this.filter.name, // 游戏名称
                 status: this.filter.status, // 启用状态
+                device:2,
                 page: this.pageNo,
                 pageSize: this.pageSize
             };

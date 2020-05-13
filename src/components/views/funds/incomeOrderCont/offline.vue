@@ -587,6 +587,7 @@ table {
     overflow-x: auto;
 }
 .table .v-table {
+    min-height: 0;
     min-width: 2000px;
 }
 .total-table {

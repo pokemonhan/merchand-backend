@@ -32,7 +32,7 @@
                     </th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody class="select-text">
                 <!-- 有数据时 -->
                 <template v-if="column&&column.length">
                     <tr v-for="(col_row, idx) in column" :key="idx">
@@ -175,6 +175,10 @@ export default {
 </script>
 
 <style scoped>
+.v-table {
+    min-height: calc(100vh - 290px);
+    /* border: 1px solid #4c8bfd; */
+}
 .table-container table {
     border-collapse: collapse;
     width: 100%;
@@ -245,5 +249,8 @@ th .asc-active {
 .th-sort {
     cursor: pointer;
     /* border: 1px solid #000; */
+}
+.select-text {
+    user-select: text;
 }
 </style>

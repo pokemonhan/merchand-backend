@@ -433,4 +433,7 @@ export default {
     /* margin-left: 100px; */
     width: 20%;
 }
+.table .v-table {
+    min-height: 0;
+}
 </style>

@@ -53,15 +53,15 @@
                     </td>
                 </template>
             </Table>
-            <Page
-                class="table-page"
-                :total="total"
-                :pageNo.sync="pageNo"
-                :pageSize.sync="pageSize"
-                @updateNo="updateNo"
-                @updateSize="updateSize"
-            />
         </div>
+        <Page
+            class="table-page"
+            :total="total"
+            :pageNo.sync="pageNo"
+            :pageSize.sync="pageSize"
+            @updateNo="updateNo"
+            @updateSize="updateSize"
+        />
         <Modal
             :show="show_black_list_conf"
             title="黑名单管理"
@@ -70,8 +70,8 @@
             @close="show_black_list_conf=false"
             @confirm="blackListConfirm"
         ></Modal>
-        <Dialog :show.sync="blackList_show" title="黑名单详情"  >
-            <div class="dia-inner" style="width:1200px" >
+        <Dialog :show.sync="blackList_show" title="黑名单详情">
+            <div class="dia-inner" style="width:1200px">
                 <div class="cont">
                     <QuickQuery :date="quick_query" @update="quickDateUpdate" />
                     <div class="filter p10">
@@ -90,8 +90,8 @@
                                 <Select v-model="black.status" :options="status_opt"></Select>
                             </li>
                             <li style="margin-bottom:0;">
-                                <button class="btn-blue" @click="getBlackListDetail" >查询</button>
-                                <button class="btn-blue"  @click="clearBlack" >清空</button>
+                                <button class="btn-blue" @click="getBlackListDetail">查询</button>
+                                <button class="btn-blue" @click="clearBlack">清空</button>
                             </li>
                         </ul>
                     </div>
@@ -108,15 +108,15 @@
                             <td>{{row.remark}}</td>
                         </template>
                     </Table>
-                    <Page
-                        class="table-page"
-                        :total="blackTotal"
-                        :pageNo.sync="blackPageNo"
-                        :pageSize.sync="blackPageSize"
-                        @updateNo="blackUpdateNo"
-                        @updateSize="blackUpdateSize"
-                    />
                 </div>
+                <Page
+                    class="table-page"
+                    :total="blackTotal"
+                    :pageNo.sync="blackPageNo"
+                    :pageSize.sync="blackPageSize"
+                    @updateNo="blackUpdateNo"
+                    @updateSize="blackUpdateSize"
+                />
             </div>
         </Dialog>
     </div>
@@ -153,37 +153,37 @@ export default {
             pageSize: 25,
             pageNo: 1,
 
-            blackTotal:0,
-            blackPageNo:1,
-            blackPageSize:25,
+            blackTotal: 0,
+            blackPageNo: 1,
+            blackPageSize: 25,
             // modal
             modal_cont: "是否启用该账户",
             show_black_list_conf: false,
             show_detail: false,
             is_detail_show: "",
             curr_row: {},
-            blackList_show:false,
-            black:{
-                dates:[],
-                status:''
+            blackList_show: false,
+            black: {
+                dates: [],
+                status: ""
             },
-            blackHeaders:[
-                '会员账号',
-                '会员ID',
-                '账户余额',
-                '注册时间',
-                '最后登录时间',
-                '进入黑名单时间',
-                '解冻时间',
-                '最后登录IP',
-                '备注',
+            blackHeaders: [
+                "会员账号",
+                "会员ID",
+                "账户余额",
+                "注册时间",
+                "最后登录时间",
+                "进入黑名单时间",
+                "解冻时间",
+                "最后登录IP",
+                "备注"
             ],
-            blackList:[],
+            blackList: [],
             status_opt: [
-                { label: '全部', value: ""},
-                { label: '已解冻', value: "1" },
-                { label: '冻结', value: "0"}
-            ],
+                { label: "全部", value: "" },
+                { label: "已解冻", value: "1" },
+                { label: "冻结", value: "0" }
+            ]
         };
     },
     methods: {
@@ -202,7 +202,7 @@ export default {
         },
         blackTimeUpdate() {
             // 同步快捷查询时间
-            this.quick_query = this.black.dates
+            this.quick_query = this.black.dates;
         },
         getList() {
             let createAt = "";
@@ -222,15 +222,13 @@ export default {
             console.log("请求数据", para);
             let data = window.all.tool.rmEmpty(para);
             let { method, url } = this.$api.black_list_list;
-            this.$http({ method: method, url: url, data: data }).then(
-                res => {
-                    console.log("返回数据", res);
-                    if (res && res.code == "200") {
-                        this.list = res.data.data;
-                        this.total = res.data.total;
-                    }
+            this.$http({ method: method, url: url, data: data }).then(res => {
+                console.log("返回数据", res);
+                if (res && res.code == "200") {
+                    this.list = res.data.data;
+                    this.total = res.data.total;
                 }
-            );
+            });
         },
         clearAll() {
             this.filter = {
@@ -278,7 +276,7 @@ export default {
             this.curr_row = row;
             this.getBlackListDetail();
         },
-        getBlackListDetail(){
+        getBlackListDetail() {
             let createAt = "";
             if (this.black.dates[0] && this.black.dates[1]) {
                 createAt = JSON.stringify([
@@ -286,30 +284,32 @@ export default {
                     this.black.dates[1]
                 ]);
             }
-            let para={
-                guid:this.curr_row.guid,
-                status:this.black.status,
-                createAt:createAt,
+            let para = {
+                guid: this.curr_row.guid,
+                status: this.black.status,
+                createAt: createAt,
                 page: this.blackPageNo,
                 pageSize: this.blackPageSize
-            }
+            };
             // console.log('黑名单详情请求数据',para)
-            let params = window.all.tool.rmEmpty(para)
-            let {method,url} =this.$api.black_list_detail_list;
-            this.$http({method:method,url:url,params:params}).then(res=>{
-                console.log(res)
-                if(res && res.code=='200'){
-                    this.blackList=res.data.data;
-                    this.blackTotal=res.data.total;
-                    // console.log('获取到的数据',this.blackList)
+            let params = window.all.tool.rmEmpty(para);
+            let { method, url } = this.$api.black_list_detail_list;
+            this.$http({ method: method, url: url, params: params }).then(
+                res => {
+                    console.log(res);
+                    if (res && res.code == "200") {
+                        this.blackList = res.data.data;
+                        this.blackTotal = res.data.total;
+                        // console.log('获取到的数据',this.blackList)
+                    }
                 }
-            })
+            );
         },
-        clearBlack(){
-            this.black={
-                dates:[],
-                status:'',
-            }
+        clearBlack() {
+            this.black = {
+                dates: [],
+                status: ""
+            };
         }
     },
     mounted() {
@@ -350,6 +350,7 @@ table {
     overflow-x: auto;
 }
 .table .v-table {
+    min-height: 0;
     min-width: 1500px;
 }
 

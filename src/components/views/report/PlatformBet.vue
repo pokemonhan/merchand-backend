@@ -300,6 +300,7 @@ export default {
     overflow-x: auto;
 }
 .container .table .v-table {
+    min-height: 0;
     width: 1900px;
     margin-top: 20px;
 }

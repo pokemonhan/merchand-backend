@@ -519,6 +519,7 @@ table {
     overflow-x: auto;
 }
 .table .v-table {
+    min-height: 0;
     width: 2000px;
 }
 /* .modal-mask ---在 App.vue公共区 */

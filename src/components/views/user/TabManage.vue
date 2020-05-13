@@ -58,19 +58,19 @@
                             <Input size="small" v-model="form.title" />
                         </li>
                         <li>
-                            <span>出款权限:</span>
+                            <span>禁止出款:</span>
                             <Switchbox v-model="form.no_withdraw" />
                         </li>
                         <li>
-                            <span>登录权限:</span>
+                            <span>禁止登录:</span>
                             <Switchbox v-model="form.no_login" />
                         </li>
                         <li>
-                            <span>游戏权限:</span>
+                            <span>禁止游戏:</span>
                             <Switchbox v-model="form.no_play" />
                         </li>
                         <li>
-                            <span>推广权限:</span>
+                            <span>禁止推广:</span>
                             <Switchbox v-model="form.no_promote" />
                         </li>
                         <li>

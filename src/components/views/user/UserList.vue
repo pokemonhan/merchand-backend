@@ -1180,4 +1180,7 @@ table {
 .ali-btns {
     margin-top: 8%;
 }
+.table .v-table {
+    min-height: 0;
+}
 </style>

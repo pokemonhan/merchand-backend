@@ -557,7 +557,7 @@ export default {
 }
 
 /* ---------------------- 详情 ---------------*/
-table {
+.table {
     border-collapse: collapse;
     width: 100%;
 }
@@ -567,6 +567,7 @@ table {
     overflow-x: auto;
 }
 .table .v-table {
+    min-height: 0;
     min-width: 2000px;
 }
 .total-table {

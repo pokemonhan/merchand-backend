@@ -28,7 +28,8 @@
                     <td>{{(pageNo-1)*pageSize+idx+1}}</td>
                     <td>
                         <PicShow>
-                            <img style="max-width:50px;max-height:50px"
+                            <img
+                                style="max-width:50px;max-height:50px"
                                 class="td-icon"
                                 :src="row.icon"
                                 alt="图片加载中"
@@ -88,21 +89,20 @@
                                 type="file"
                             />
                             <button style="margin-left:6px" class="btns-blue">使用默认图片</button>
-                            <button class="btns-blue" @click="downLoad(row)" >下载图片</button>
+                            <button class="btns-blue" @click="downLoad(row)">下载图片</button>
                         </div>
                     </td>
                 </template>
             </Table>
-
-            <Page
-                class="table-page"
-                :total="total"
-                :pageNo.sync="pageNo"
-                :pageSize.sync="pageSize"
-                @updateNo="updateNo"
-                @updateSize="updateSize"
-            />
         </div>
+        <Page
+            class="table-page"
+            :total="total"
+            :pageNo.sync="pageNo"
+            :pageSize.sync="pageSize"
+            @updateNo="updateNo"
+            @updateSize="updateSize"
+        />
     </div>
 </template> <script>
 export default {
@@ -137,33 +137,33 @@ export default {
 
     methods: {
         downLoad(row) {
-            console.log('row',row)
-            var image = new Image()
+            console.log("row", row);
+            var image = new Image();
             // 解决跨域 Canvas 污染问题
-            image.setAttribute('crossOrigin', 'anonymous')
+            image.setAttribute("crossOrigin", "anonymous");
             image.onload = function() {
-                var canvas = document.createElement('canvas')
-                canvas.width = image.width
-                canvas.height = image.height
+                var canvas = document.createElement("canvas");
+                canvas.width = image.width;
+                canvas.height = image.height;
 
-                var context = canvas.getContext('2d')
-                context.drawImage(image, 0, 0, image.width, image.height)
-                var url = canvas.toDataURL('image/png')
+                var context = canvas.getContext("2d");
+                context.drawImage(image, 0, 0, image.width, image.height);
+                var url = canvas.toDataURL("image/png");
 
                 // 生成一个a元素
-                var a = document.createElement('a')
+                var a = document.createElement("a");
                 // 创建一个单击事件
-                var event = new MouseEvent('click')
+                var event = new MouseEvent("click");
 
                 // 将a的download属性设置为我们想要下载的图片名称，若name不存在则使用‘下载图片名称’作为默认名称
-                a.download = name || row.vendor+'-'+row.name
+                a.download = name || row.vendor + "-" + row.name;
                 // 将生成的URL设置为a.href属性
-                a.href = url
+                a.href = url;
                 // 触发a的单击事件
-                a.dispatchEvent(event)
-            }
+                a.dispatchEvent(event);
+            };
 
-            image.src = row.icon
+            image.src = row.icon;
         },
         getSelectOpt() {
             let { url, method } = this.$api.game_search_condition_list;
@@ -311,7 +311,7 @@ export default {
                 hot_new: 1,
                 vendor_id: this.filter.vendor_id,
                 name: this.filter.name,
-                device:3,
+                device: 3,
                 page: this.pageNo,
                 pageSize: this.pageSize
             };

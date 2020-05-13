@@ -41,7 +41,11 @@
                     <td>{{row.mobile}}</td>
                     <td>{{row.guid}}</td>
                     <td>{{row.before_balance}}</td>
-                    <td>{{row.amount}}</td>
+                    <td :class="row.in_out==1? 'green': 'red'" >
+                        <span v-if="row.in_out==1" >+</span>
+                        <span v-if="row.in_out==2" >-</span>
+                        {{row.amount}}
+                    </td>
                     <td>{{row.balance}}</td>
                     <td>{{row.frozen_balance}}</td>
                     <td>{{row.created_at}}</td>

@@ -30,13 +30,25 @@
             <Table :headers="headers" :column="list">
                 <template v-slot:item="{row,idx}">
                     <td>
-                        <img
-                            v-if="row.icon"
-                            :src="row.icon"
-                            style="max-width:100px;min-height:100px"
-                        />
+                        <PicShow>
+                            <img style="max-width:50px;max-height:50px"
+                                class="td-icon"
+                                :src="row.icon"
+                                alt="图片加载中"
+                            />
+                            <template v-slot:content>
+                                <div>
+                                    <img
+                                        style="max-width:300px;max-height:300px;"
+                                        class="tooltip-img"
+                                        :src="row.icon"
+                                        alt="图片加载中"
+                                    />
+                                </div>
+                            </template>
+                        </PicShow>
                     </td>
-                    <td>{{row.game_vendor && row.game_vendor.name}}</td>
+                    <td>{{row.name}}</td>
                     <td>
                         <button class="btns-blue" @click="move(row,idx,'moveUp')">上移</button>
                         <button class="btns-blue" @click="move(row,idx,'moveDown')">下移</button>

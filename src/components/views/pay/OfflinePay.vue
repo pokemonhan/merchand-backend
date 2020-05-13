@@ -117,15 +117,15 @@
                         </li>
                         <li>
                             <span>最低入款:</span>
-                            <Input class="w250" v-model="form.minimum_deposit" />
+                            <Input limit="number" class="w250" v-model="form.minimum_deposit" />
                         </li>
                         <li>
                             <span>最高入款:</span>
-                            <Input class="w250" v-model="form.maxmum_deposit" />
+                            <Input limit="number" class="w250" v-model="form.maxmum_deposit" />
                         </li>
                         <li>
                             <span>入款手续费:</span>
-                            <Input class="w250" v-model="form.deposit_fee" />
+                            <Input limit="number" class="w250" v-model="form.deposit_fee" />
                         </li>
                     </ul>
                     <ul class="form">

@@ -185,13 +185,13 @@
                     </li>
                     <li>
                         <span>支付限额:</span>
-                        <Input style="width:114px;" v-model="form.pay_limit[0]" />
+                        <Input limit="number" style="width:114px;" v-model="form.pay_limit[0]" />
                         <span class="mv5">~</span>
-                        <Input style="width:114px;" v-model="form.pay_limit[1]" />
+                        <Input limit="number" style="width:114px;" v-model="form.pay_limit[1]" />
                     </li>
                     <li>
                         <span>入款手续费:</span>
-                        <Input class="w250" v-model="form.income_charge" />
+                        <Input limit="number" class="w250" v-model="form.income_charge" />
                     </li>
                     <li>
                         <span>充值说明:</span>

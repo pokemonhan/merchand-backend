@@ -32,7 +32,7 @@
                     <td>{{row.vendor}}</td>
                     <td>{{row.name}}</td>
                     <td>
-                        <Tooltip position="right">
+                        <PicShow>
                             <img style="max-width:50px;max-height:50px"
                                 class="td-icon"
                                 :src="row.icon"
@@ -41,13 +41,14 @@
                             <template v-slot:content>
                                 <div>
                                     <img
+                                        style="max-width:300px;max-height:300px;"
                                         class="tooltip-img"
                                         :src="row.icon"
                                         alt="图片加载中"
                                     />
                                 </div>
                             </template>
-                        </Tooltip>
+                        </PicShow>
                     </td>
                     <td>
                         <button class="btns-blue" @click="move(row,idx,'moveUp')">上移</button>
@@ -104,7 +105,7 @@
                                 type="file"
                             />
                             <button style="margin-left:6px" class="btns-blue">使用默认图片</button>
-                            <button class="btns-blue">下载图片</button>
+                            <button class="btns-blue" @click="downLoad(row)" >下载图片</button>
                         </div>
                     </td>
                 </template>
@@ -159,6 +160,35 @@ export default {
     },
 
     methods: {
+        downLoad(row) {
+            console.log('row',row)
+            var image = new Image()
+            // 解决跨域 Canvas 污染问题
+            image.setAttribute('crossOrigin', 'anonymous')
+            image.onload = function() {
+                var canvas = document.createElement('canvas')
+                canvas.width = image.width
+                canvas.height = image.height
+
+                var context = canvas.getContext('2d')
+                context.drawImage(image, 0, 0, image.width, image.height)
+                var url = canvas.toDataURL('image/png')
+
+                // 生成一个a元素
+                var a = document.createElement('a')
+                // 创建一个单击事件
+                var event = new MouseEvent('click')
+
+                // 将a的download属性设置为我们想要下载的图片名称，若name不存在则使用‘下载图片名称’作为默认名称
+                a.download = name || row.vendor+'-'+row.name
+                // 将生成的URL设置为a.href属性
+                a.href = url
+                // 触发a的单击事件
+                a.dispatchEvent(event)
+            }
+
+            image.src = row.icon
+        },
         selectBtn(item) {
             this.curr_btn = item.value;
         },

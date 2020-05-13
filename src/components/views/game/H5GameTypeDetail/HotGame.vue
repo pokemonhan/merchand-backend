@@ -27,8 +27,9 @@
                 <template v-slot:item="{row,idx}">
                     <td>{{(pageNo-1)*pageSize+idx+1}}</td>
                     <td>
-                        <Tooltip position="right">
-                            <img style="max-width:50px;max-height:50px"
+                        <PicShow>
+                            <img
+                                style="max-width:50px;max-height:50px"
                                 class="td-icon"
                                 :src="row.icon"
                                 alt="图片加载中"
@@ -36,13 +37,14 @@
                             <template v-slot:content>
                                 <div>
                                     <img
+                                        style="max-width:300px;max-height:300px;"
                                         class="tooltip-img"
                                         :src="row.icon"
                                         alt="图片加载中"
                                     />
                                 </div>
                             </template>
-                        </Tooltip>
+                        </PicShow>
                     </td>
                     <td>{{row.vendor}}</td>
                     <td>{{row.name}}</td>
@@ -137,19 +139,33 @@ export default {
 
     methods: {
         downLoad(row) {
-            if(typeof row.icon == 'object' && row.icon instanceof Blob){
-                row.icon = URL.createObjectURL(row.icon)
+            console.log('row',row)
+            var image = new Image()
+            // 解决跨域 Canvas 污染问题
+            image.setAttribute('crossOrigin', 'anonymous')
+            image.onload = function() {
+                var canvas = document.createElement('canvas')
+                canvas.width = image.width
+                canvas.height = image.height
+
+                var context = canvas.getContext('2d')
+                context.drawImage(image, 0, 0, image.width, image.height)
+                var url = canvas.toDataURL('image/png')
+
+                // 生成一个a元素
+                var a = document.createElement('a')
+                // 创建一个单击事件
+                var event = new MouseEvent('click')
+
+                // 将a的download属性设置为我们想要下载的图片名称，若name不存在则使用‘下载图片名称’作为默认名称
+                a.download = name || row.vendor+'-'+row.name
+                // 将生成的URL设置为a.href属性
+                a.href = url
+                // 触发a的单击事件
+                a.dispatchEvent(event)
             }
-            var aLink = document.createElement('a')
-            aLink.href=row.icon;
-            aLink.download = row.name;
-            var event;
-            if(window.MouseEvent) event = new MouseEvent('click');
-            else {
-                event = document.createEvent('MouseEvent');
-                event.initMouseEvent('click',true,false,window,0,0,0,0,0,false,false,false,false,0,null)
-            }
-            aLink.dispatchEvent(event)
+
+            image.src = row.icon
         },
         getSelectOpt() {
             let { url, method } = this.$api.game_search_condition_list;

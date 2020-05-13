@@ -112,10 +112,13 @@
                                     <button class="btn-blue" @click="EditUserTab=false">取消</button>
                                 </td>
                                 <td style="height:42px;" v-if="!EditUserTab" class="user-lab">
-                                    <span class="mr5">会员标签</span>
-                                    <span class="bg-red">
+                                    <span class="mr5">会员标签:</span>
+                                    <span v-if="detail_list.label && detail_list.label.id==2" class="bg-red">
                                         <i class="iconfont iconjinggao1-"></i>
-                                        <span>{{detail_list.label}}</span>
+                                        <span>{{detail_list.label && detail_list.label.title}}</span>
+                                    </span>
+                                    <span v-if="detail_list.label && detail_list.label.id!=2">
+                                        <span>{{detail_list.label && detail_list.label.title}}</span>
                                     </span>
                                     <button class="btn-blue" @click="EditUserTab=true">修改</button>
                                 </td>

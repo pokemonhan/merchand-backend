@@ -105,6 +105,7 @@
                                     alt
                                 />
                             </span>
+                            <span>{{curr_row.user_agent}}</span>
                         </div>
                     </li>
                 </ul>

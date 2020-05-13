@@ -11,16 +11,16 @@
                     <td>{{idx+1}}</td>
                     <td>{{row.title}}</td>
                     <td>
-                        <i :class="['iconfont',row.no_withdraw===1 ?'icongou green':'iconcha red']"></i>
+                        <i :class="['iconfont',row.no_withdraw===0 ?'icongou green':'iconcha red']"></i>
                     </td>
                     <td>
-                        <i :class="['iconfont',row.no_login===1 ?'icongou green':'iconcha red']"></i>
+                        <i :class="['iconfont',row.no_login===0 ?'icongou green':'iconcha red']"></i>
                     </td>
                     <td>
-                        <i :class="['iconfont',row.no_play===1 ?'icongou green':'iconcha red']"></i>
+                        <i :class="['iconfont',row.no_play===0 ?'icongou green':'iconcha red']"></i>
                     </td>
                     <td>
-                        <i :class="['iconfont',row.no_promote===1 ?'icongou green':'iconcha red']"></i>
+                        <i :class="['iconfont',row.no_promote===0 ?'icongou green':'iconcha red']"></i>
                     </td>
                     <td>{{row.created_at}}</td>
                     <td>

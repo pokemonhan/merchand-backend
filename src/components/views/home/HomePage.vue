@@ -101,7 +101,7 @@
                     <div>
                         <div class="title">平台排名</div>
                     </div>
-                    <div>
+                    <div class="smallTable" >
                         <Table
                             class="table"
                             :headers="game_plant_headers"
@@ -578,6 +578,7 @@ export default {
 .container {
     width: 1040px;
 }
+
 .table >>> table thead th {
     background: #e6e6e6;
     color: #666666;
@@ -585,6 +586,15 @@ export default {
 }
 .table >>> table td {
     border: 1px solid #e6e6e6;
+}
+.game-data .v-table {
+    min-height: 0;
+}
+.smallTable .v-table  {
+    min-height: 0;
+}
+.row3-tab .v-table{
+    min-height: 0;
 }
 .row1 {
     width: 100%;

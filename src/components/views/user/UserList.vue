@@ -52,7 +52,6 @@
         </div>
         <div class="table">
             <!-- 在线状态, 游戏账号, 游戏ID, 会员标签, 团队人数, 上级账号, 玩家金额, 注册IP->登录iP,注册日期->登录日期 -->
-
             <Table :headers="headers" :column="list">
                 <template v-slot:item="{row}">
                     <td :class="[row.is_online==1?'green':'red']">{{row.is_online==1?'在线':'离线'}}</td>

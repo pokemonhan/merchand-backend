@@ -696,14 +696,30 @@ export default {
             });
         },
         exportExcel() {
+            console.log('列表',this.menu_list)
+            let firstList={}
+            let childList={}
+            let fatherList={}
+            for(var i=0;i<this.menu_list.length;i++){
+                firstList=this.menu_list[i].children
+                let fatherTemplate=this.menu_list[i]
+                for(var j=0;j<firstList.length;j++){
+                    if(firstList[j].path=='/user/userlist'){
+                        fatherList=fatherTemplate
+                        childList=firstList[j]
+                    }
+                }
+            }
+            console.log('最小',childList)
+            console.log('父亲',fatherList)
             import("../../../js/config/Export2Excel").then(excel => {
                 const tHeaders = this.headers;
                 const data = this.list.map(item => {
                     return [
-                        item.is_online,
+                        item.is_online==0?'离线':'在线',
                         item.mobile,
                         item.guid,
-                        item.is_tester,
+                        item.is_tester==0?'否':'是',
                         item.user_tag,
                         item.total_members,
                         item.parent_mobile,
@@ -717,7 +733,7 @@ export default {
                 excel.export_json_to_excel({
                     header: tHeaders,
                     data,
-                    filename: "会员列表",
+                    filename: fatherList.label+'-'+"会员列表",
                     autoWidth: true,
                     bookType: "xlsx"
                 });

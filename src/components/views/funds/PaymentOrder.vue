@@ -219,28 +219,48 @@ export default {
     },
 
     methods: {
+        getMenuList(){
+            if(!window.all.tool.getLocal('Authorization')) return
+            if(window.all.tool.getLocal('menu')){
+                this.menu_list=window.all.tool.getLocal('menu')
+            }
+        },
         exportExcel() {
+            console.log('列表',this.menu_list)
+            let firstList={}
+            let childList={}
+            let fatherList={}
+            for(var i=0;i<this.menu_list.length;i++){
+                firstList=this.menu_list[i].children
+                let fatherTemplate=this.menu_list[i]
+                for(var j=0;j<firstList.length;j++){
+                    if(firstList[j].path=='/funds/paymentorder'){
+                        fatherList=fatherTemplate
+                        childList=firstList[j]
+                    }
+                }
+            }
             import("../../../js/config/Export2Excel").then(excel => {
                 const tHeaders = this.headers;
                 const data = this.list.map(item => {
                     return [
                         item.order_no,
-                        item.user.mobile,
-                        item.user.guid,
-                        item.account_type,
+                        item.user && item.user.mobile,
+                        item.user && item.user.guid,
+                        item.account_type==1?'银行': item.account_type==2?'支付宝':item.account_type==3?'微信':'',
                         item.amount,
                         item.audit_fee,
                         item.amount_received,
                         item.handing_fee,
                         item.created_at,
-                        item.reviewer.name,
-                        item.status
+                        item.reviewer && item.reviewer.name,
+                        item.status==-2?'已拒绝':item.status==2?'已通过':item.status==1?'待审核':''
                     ];
                 });
                 excel.export_json_to_excel({
                     header: tHeaders,
                     data,
-                    filename: "出款订单",
+                    filename:fatherList.label+'-'+ "出款订单",
                     autoWidth: true,
                     bookType: "xlsx"
                 });
@@ -330,6 +350,7 @@ export default {
     },
     mounted() {
         this.getList();
+        this.getMenuList();
     }
 };
 </script>

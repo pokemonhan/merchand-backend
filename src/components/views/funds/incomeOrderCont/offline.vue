@@ -166,9 +166,12 @@ export default {
                 { label: "否", value: "2" }
             ],
             review_status_obj: {
-                "0": { text: "拒绝", color: "red" },
-                "1": { text: "通过", color: "green" },
-                "2": { text: "审核中", color: "purple" }
+                "0": { text: "审核中", color: "yellow" },
+                "1": { text: "审核通过", color: "green" },
+                "-1": { text: "审核拒绝", color: "red" },
+                "-2":{ text:"订单过期",color:"purple"},
+                "3":{ text:"客户确认收款",color:"orange"},
+                "-3":{ text:"客户撤销订单",color:"blue"}
             },
             headers: [
                 "订单号",
@@ -182,7 +185,6 @@ export default {
                 "审核状态",
                 "充值时间",
                 "操作",
-                "操作人"
             ],
             list: [],
             total: 0,
@@ -199,6 +201,7 @@ export default {
             all_money:'',
             all_withDraw_money:'',
             total_money:'',
+            menu_list:[],
         };
     },
     methods: {
@@ -211,27 +214,48 @@ export default {
             // 同步快捷查询时间
             this.quick_query = this.filter.dates;
         },
+        getMenuList(){
+            if(!window.all.tool.getLocal('Authorization')) return
+            if(window.all.tool.getLocal('menu')){
+                this.menu_list=window.all.tool.getLocal('menu')
+            }
+        },
         exportExcel() {
+            console.log('列表',this.menu_list)
+            let firstList={}
+            let childList={}
+            let fatherList={}
+            for(var i=0;i<this.menu_list.length;i++){
+                firstList=this.menu_list[i].children
+                let fatherTemplate=this.menu_list[i]
+                for(var j=0;j<firstList.length;j++){
+                    if(firstList[j].path=='/funds/incomeorder'){
+                        fatherList=fatherTemplate
+                        childList=firstList[j]
+                    }
+                }
+            }
             import("../../../../js/config/Export2Excel").then(excel => {
                 const tHeaders = this.headers;
                 const data = this.list.map(item => {
                     return [
                         item.order_no,
-                        item.user.mobile,
-                        item.user.guid,
-                        item.is_tester,
+                        item.user && item.user.mobile,
+                        item.user && item.user.guid,
+                        item.is_tester==0?'否':'是',
                         item.snap_finance_type,
                         item.snap_account,
                         item.money,
                         item.arrive_money,
-                        item.status,
+                        item.status==0?'审核中': item.status==1?'审核通过': item.status==-1?'审核拒绝': item.status==-2?'订单过期': item.status==3?'客户确认收款': item.status==-3?'客户撤销订单':'',
+                        item.created_at,
                         item.curr_list
                     ];
                 });
                 excel.export_json_to_excel({
                     header: tHeaders,
                     data,
-                    filename: "线下-入款订单",
+                    filename:fatherList.label+'-'+ "线下-入款订单",
                     autoWidth: true,
                     bookType: "xlsx"
                 });
@@ -549,6 +573,7 @@ export default {
     },
     mounted() {
         this.getList();
+        this.getMenuList();
     }
 };
 </script>

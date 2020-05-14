@@ -114,6 +114,7 @@
                                     <td>{{lv2.newer}}</td>
                                     <td>{{lv2.updated_at}}</td>
                                     <td>
+                                        <button class="btn-edit"  @click="downLoad(lv2,lv1)" >下载图片</button>
                                         <button class="btn-edit" @click="editSon(lv2)">编辑</button>
                                         <button class="btn-del" @click="delSon(lv2)">删除</button>
                                     </td>
@@ -207,6 +208,36 @@ export default {
         };
     },
     methods: {
+        downLoad(row,row_father){
+            // console.log('row',row)
+            // console.log('father',row_father)
+            var image = new Image();
+            // 解决跨域 Canvas 污染问题
+            image.setAttribute("crossOrigin", "anonymous");
+            image.onload = function() {
+                var canvas = document.createElement("canvas");
+                canvas.width = image.width;
+                canvas.height = image.height;
+
+                var context = canvas.getContext("2d");
+                context.drawImage(image, 0, 0, image.width, image.height);
+                var url = canvas.toDataURL("image/png");
+
+                // 生成一个a元素
+                var a = document.createElement("a");
+                // 创建一个单击事件
+                var event = new MouseEvent("click");
+
+                // 将a的download属性设置为我们想要下载的图片名称，若name不存在则使用‘下载图片名称’作为默认名称
+                a.download = name || row_father.title+'-'+row.title;
+                // 将生成的URL设置为a.href属性
+                a.href = url;
+                // 触发a的单击事件
+                a.dispatchEvent(event);
+            };
+
+            image.src =this.head_path+row.pic;
+        },
         switchStatus(val, lv1) {
             let data = {
                 id: lv1.id,
@@ -565,4 +596,5 @@ export default {
     width: fit-content;
     margin: 0 auto;
 }
+
 </style>

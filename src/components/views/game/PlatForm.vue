@@ -50,8 +50,8 @@
                     </td>
                     <td>{{row.name}}</td>
                     <td>
-                        <button class="btns-blue" @click="move(row,idx,'moveUp')">上移</button>
-                        <button class="btns-blue" @click="move(row,idx,'moveDown')">下移</button>
+                        <button v-if="idx!=0" class="btns-blue" @click="move(row,idx,'moveUp')">上移</button>
+                        <button v-if="idx != list.length - 1" class="btns-blue" @click="move(row,idx,'moveDown')">下移</button>
                     </td>
                     <td>
                         <Switchbox

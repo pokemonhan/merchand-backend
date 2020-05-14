@@ -70,10 +70,10 @@
                     <td>{{row.user && row.user.parent && row.user.parent.mobile}}</td>
                     <td>
                         <i
-                            v-if="row.user && row.user.is_tester==='1'"
+                            v-if="row.user && row.user.is_tester=='1'"
                             class="iconfont icongou green"
                         ></i>
-                        <i v-if="row.user && row.user.is_tester==='0'" class="iconfont iconcha red"></i>
+                        <i v-if="row.user && row.user.is_tester=='0'" class="iconfont iconcha red"></i>
                     </td>
                     <td>{{row.snap_merchant_no}}</td>
                     <td>{{row.snap_merchant_code}}</td>
@@ -234,6 +234,7 @@ export default {
             all_money:'',
             all_withDraw_money:'',
             total_money:'',
+            menu_list:[],
         };
     },
     methods: {
@@ -242,25 +243,44 @@ export default {
             let arr = [dates[0] + " 00:00:00", dates[1] + " 00:00:00"];
             this.$set(this.filter, "dates", arr);
         },
+        getMenuList(){
+            if(!window.all.tool.getLocal('Authorization')) return
+            if(window.all.tool.getLocal('menu')){
+                this.menu_list=window.all.tool.getLocal('menu')
+            }
+        },
         exportExcel() {
+            console.log('列表',this.menu_list)
+            let firstList={}
+            let childList={}
+            let fatherList={}
+            for(var i=0;i<this.menu_list.length;i++){
+                firstList=this.menu_list[i].children
+                let fatherTemplate=this.menu_list[i]
+                for(var j=0;j<firstList.length;j++){
+                    if(firstList[j].path=='/funds/incomeorder'){
+                        fatherList=fatherTemplate
+                        childList=firstList[j]
+                    }
+                }
+            }
             import("../../../../js/config/Export2Excel").then(excel => {
                 const tHeaders = this.headers;
                 const data = this.list.map(item => {
                     return [
                         item.order_no,
-                        item,
-                        platform_no,
-                        item.user.mobile,
-                        item.user.id,
-                        item.parent.mobile,
-                        item.user.is_tester,
+                        item.platform_no,
+                        item.user && item.user.mobile,
+                        item.user && item.user.guid,
+                        item.parent && item.parent.mobile,
+                        item.user && item.user.is_tester==0?'否':'是',
                         item.snap_merchant_no,
                         item.snap_merchant_code,
                         item.snap_merchant,
                         item.snap_finance_type,
                         item.money,
                         item.arrive_money,
-                        item.status,
+                        item.status==0?'未支付':'已支付',
                         item.created_at,
                         item.updated_at
                     ];
@@ -268,7 +288,7 @@ export default {
                 excel.export_json_to_excel({
                     header: tHeaders,
                     data,
-                    filename: "线上-入款订单",
+                    filename:fatherList.label+'-'+"线上-入款订单",
                     autoWidth: true,
                     bookType: "xlsx"
                 });
@@ -505,6 +525,7 @@ export default {
     mounted() {
         this.getPayMethodSel();
         this.getList();
+        this.getMenuList();
     }
 };
 </script>

@@ -167,9 +167,27 @@ export default {
             this.pageNo = 1;
             this.getList();
         },
-
-        //等待接口
+        getMenuList(){
+            if(!window.all.tool.getLocal('Authorization')) return
+            if(window.all.tool.getLocal('menu')){
+                this.menu_list=window.all.tool.getLocal('menu')
+            }
+        },
         exportExcel() {
+            console.log('列表',this.menu_list)
+            let firstList={}
+            let childList={}
+            let fatherList={}
+            for(var i=0;i<this.menu_list.length;i++){
+                firstList=this.menu_list[i].children
+                let fatherTemplate=this.menu_list[i]
+                for(var j=0;j<firstList.length;j++){
+                    if(firstList[j].path=='/funds/fundchange'){
+                        fatherList=fatherTemplate
+                        childList=firstList[j]
+                    }
+                }
+            }
             import("../../../js/config/Export2Excel").then(excel => {
                 const tHeaders = this.headers;
                 const data = this.list.map(item => {
@@ -180,7 +198,7 @@ export default {
                         item.mobile,
                         item.guid,
                         item.before_balance,
-                        item.amount,
+                        item.in_out==1?'+'+item.amount:'-'+item.amount,
                         item.balance,
                         item.frozen_balance,
                         item.created_at
@@ -189,7 +207,7 @@ export default {
                 excel.export_json_to_excel({
                     header: tHeaders,
                     data,
-                    filename: "资金账变",
+                    filename:fatherList.label+'-'+ "资金账变",
                     autoWidth: true,
                     bookType: "xlsx"
                 });
@@ -199,6 +217,7 @@ export default {
     mounted() {
         this.getTypeOfAccount();
         this.getList();
+        this.getMenuList();
     }
 };
 </script>

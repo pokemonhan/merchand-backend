@@ -153,7 +153,8 @@ export default {
             deposit_type_opt: [
                 // 目前就一个
                 { label: "优惠存款", value: "1"}
-            ]
+            ],
+            menu_list:[],
         };
     },
     methods: {
@@ -213,27 +214,47 @@ export default {
                 }
             );
         },
+        getMenuList(){
+            if(!window.all.tool.getLocal('Authorization')) return
+            if(window.all.tool.getLocal('menu')){
+                this.menu_list=window.all.tool.getLocal('menu')
+            }
+        },
         exportExcel() {
+            console.log('列表',this.menu_list)
+            let firstList={}
+            let childList={}
+            let fatherList={}
+            for(var i=0;i<this.menu_list.length;i++){
+                firstList=this.menu_list[i].children
+                let fatherTemplate=this.menu_list[i]
+                for(var j=0;j<firstList.length;j++){
+                    if(firstList[j].path=='/funds/manualaccess'){
+                        fatherList=fatherTemplate
+                        childList=firstList[j]
+                    }
+                }
+            }
             import("../../../../js/config/Export2Excel").then(excel => {
                 const tHeaders = this.headers;
                 const data = this.list.map(item => {
                     return [
                         item.order_no,
-                        item.user.mobile,
-                        item.user.guid,
-                        item.type,
-                        item.user.is_tester,
+                        item.user && item.user.mobile,
+                        item.user && item.user.guid,
+                        item.type==1?'优惠赠送':'洗码赠送',
+                        item.user && item.user.is_tester==0?'否':'是',
                         item.money,
                         item.balance,
                         item.created_at,
-                        item.admin.name,
+                        item.admin && item.admin.name,
                         item.remark,
                     ];
                 });
                 excel.export_json_to_excel({
                     header: tHeaders,
                     data,
-                    filename: "人工存款记录",
+                    filename:fatherList.label+'-'+ "人工存款记录",
                     autoWidth: true,
                     bookType: "xlsx"
                 });
@@ -271,6 +292,7 @@ export default {
     },
     mounted() {
         this.getList();
+        this.getMenuList();
     }
 };
 </script>

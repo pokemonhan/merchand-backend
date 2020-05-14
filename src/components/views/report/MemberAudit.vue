@@ -116,7 +116,27 @@ export default {
         timeUpdate() {
             this.quick_query = this.filter.dates
         },
+        getMenuList(){
+            if(!window.all.tool.getLocal('Authorization')) return
+            if(window.all.tool.getLocal('menu')){
+                this.menu_list=window.all.tool.getLocal('menu')
+            }
+        },
         exportExcel() {
+            console.log('列表',this.menu_list)
+            let firstList={}
+            let childList={}
+            let fatherList={}
+            for(var i=0;i<this.menu_list.length;i++){
+                firstList=this.menu_list[i].children
+                let fatherTemplate=this.menu_list[i]
+                for(var j=0;j<firstList.length;j++){
+                    if(firstList[j].path=='/report/memberaudit'){
+                        fatherList=fatherTemplate
+                        childList=firstList[j]
+                    }
+                }
+            }
             import('../../../js/config/Export2Excel').then(excel => {
                 const tHeader = this.headers
                 const data = this.list.map(item => {
@@ -136,7 +156,7 @@ export default {
                 excel.export_json_to_excel({
                     header: tHeader,
                     data,
-                    filename: '会员稽核列表',
+                    filename:fatherList.label+'-'+ '会员稽核列表',
                     autoWidth: true,
                     bookType: 'xlsx'
                 })
@@ -184,7 +204,8 @@ export default {
         }
     },
     mounted() {
-        this.getList()
+        this.getList();
+        this.getMenuList();
     }
 }
 </script>

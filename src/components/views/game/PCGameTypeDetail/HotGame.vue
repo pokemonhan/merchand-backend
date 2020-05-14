@@ -49,8 +49,12 @@
                     <td>{{row.vendor}}</td>
                     <td>{{row.name}}</td>
                     <td>
-                        <button class="btns-blue" @click="move(row,idx,'moveUp')">上移</button>
-                        <button class="btns-blue" @click="move(row,idx,'moveDown')">下移</button>
+                        <button v-if="idx!=0" class="btns-blue" @click="move(row,idx,'moveUp')">上移</button>
+                        <button
+                            v-if="idx != list.length - 1"
+                            class="btns-blue"
+                            @click="move(row,idx,'moveDown')"
+                        >下移</button>
                     </td>
                     <td>
                         <div class="gametypes">
@@ -88,7 +92,11 @@
                                 @change="upPicChange($event, row)"
                                 type="file"
                             />
-                            <button style="margin-left:6px" class="btns-blue">使用默认图片</button>
+                            <button
+                                style="margin-left:6px"
+                                class="btns-blue"
+                                @click="changeDefaultIcon(row)"
+                            >使用默认图片</button>
                             <button class="btns-blue" @click="downLoad(row)">下载图片</button>
                         </div>
                     </td>
@@ -136,6 +144,21 @@ export default {
     },
 
     methods: {
+        changeDefaultIcon(row) {
+            let data = {
+                id: row.id,
+                icon_id: row.default_icon_id
+            };
+            console.log("data", data);
+            let { method, url } = this.$api.picture_update;
+            this.$http({ method, url, data }).then(res => {
+                console.log("上传返回", res);
+                if (res && res.code == "200") {
+                    this.$toast.success(res && res.message);
+                    this.getList();
+                }
+            });
+        },
         downLoad(row) {
             console.log("row", row);
             var image = new Image();

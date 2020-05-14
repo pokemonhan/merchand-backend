@@ -48,7 +48,7 @@
                     <td>{{row.black_num}}</td>
                     <td>{{row.remark}}</td>
                     <td>
-                        <button class="btn-green" @click="turnOnUser(row)">启用</button>
+                        <button class="btn-green" @click="turnOnUser(row)">移出黑名单</button>
                         <button class="btn-blue" @click="dtlShow(row)">详情</button>
                     </td>
                 </template>

@@ -80,7 +80,8 @@ export default {
             list: [],
             total: 0,
             pageNo: 1,
-            pageSize: 25
+            pageSize: 25,
+            menu_list:[],
         };
     },
     methods: {
@@ -119,7 +120,28 @@ export default {
                 }
             );
         },
+        //获取列表
+        getMenuList(){
+            if(!window.all.tool.getLocal('Authorization')) return
+            if(window.all.tool.getLocal('menu')){
+                this.menu_list=window.all.tool.getLocal('menu')
+            }
+        },
         exportExcel() {
+            console.log('列表',this.menu_list)
+            let firstList={}
+            let childList={}
+            let fatherList={}
+            for(var i=0;i<this.menu_list.length;i++){
+                firstList=this.menu_list[i].children
+                let fatherTemplate=this.menu_list[i]
+                for(var j=0;j<firstList.length;j++){
+                    if(firstList[j].path=='/user/loginlog'){
+                        fatherList=fatherTemplate
+                        childList=firstList[j]
+                    }
+                }
+            }
             import("../../../js/config/Export2Excel").then(excel => {
                 const tHeader = this.headers;
                 const data = this.list.map(item => {
@@ -135,7 +157,7 @@ export default {
                 excel.export_json_to_excel({
                     header: tHeader,
                     data,
-                    filename: "登录记录",
+                    filename:fatherList.label+'-'+"登录记录",
                     autoWidth: true,
                     bookType: "xlsx"
                 });
@@ -144,6 +166,7 @@ export default {
     },
     mounted() {
         this.getList();
+        this.getMenuList()
     }
 };
 </script>

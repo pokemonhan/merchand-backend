@@ -43,7 +43,13 @@
             </div>
             <!-- table -->
             <div style="margin-top:5px;"></div>
-            <Table :headers="headers" :column="list" @checkboxChange="checkboxChange" hadCheckbox>
+            <Table
+                ref="table"
+                :headers="headers"
+                :column="list"
+                @checkboxChange="checkboxChange"
+                hadCheckbox
+            >
                 <template v-slot:item="{row,idx}">
                     <td
                         class="pointer"
@@ -103,13 +109,16 @@ export default {
             },
             headers: ['标题', '内容', '发件人', '收件日期'],
             list: [],
+            /** 是否全选 */
+
             total: 0,
             pageNo: 1,
-            pageSize: 3,
+            pageSize: 25,
 
             curr_row: {},
             dia_show: false,
-            mod_show: false
+            mod_show: false,
+            mod_status: '',
         }
     },
     methods: {
@@ -168,25 +177,27 @@ export default {
         },
         delConfirm() {
             // this.list
-            console.log('this.list: ', this.list)
-            let delIdArray = (this.list||[]).filter(item => {
+            let delIdArray = (this.list || []).filter(item => {
                 return item.checked
             })
             delIdArray = delIdArray.map(item => item.email_id)
-            if(delIdArray.length===0) {
+            if (delIdArray.length === 0) {
                 this.$toast.info('未选中任何邮件')
                 return
             }
             console.log('delIdArray: ', delIdArray)
             let data = {
-                email_id: JSON.stringify(delIdArray),
+                email_id: JSON.stringify(delIdArray)
             }
+            console.log('🍰 删除的内容: ', data)
             let { url, method } = this.$api.email_received_del
             this.$http({ method, url, data }).then(res => {
                 if (res && res.code === '200') {
                     this.$toast.success(res.message)
                     this.mod_show = false
                     this.getList()
+                    let tableEle = this.$refs.table || {}
+                    tableEle.initAllChecked()
                 }
             })
         },

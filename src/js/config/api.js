@@ -428,6 +428,11 @@ export default {
         url: '/merchant-api/email/send-index',
         method: 'post'
     },
+    // 删除邮件 已发邮件
+    email_sent_del: {
+        url: '/merchant-api/email/destroy-sent-email',
+        method: 'post'
+    },
     // 短信推送
 
     /*=========================== 报表管理 ===========================--*/

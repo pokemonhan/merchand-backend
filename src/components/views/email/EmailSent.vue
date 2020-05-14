@@ -30,7 +30,7 @@
             <!-- 控制栏 -->
             <div class="tab-control">
                 <div class="left">
-                    <button class="btn-plain" @click="mod_show=true">删除?</button>
+                    <button class="btn-plain" @click="del">删除?</button>
                 </div>
                 <div class="right">
                     <span>{{pageNo}}/{{Math.ceil(total/pageSize)}}</span>
@@ -119,7 +119,9 @@ export default {
 
             curr_row: {},
             dia_show: false,
-            mod_show: false
+
+            mod_show: false,
+            mod_status: '',
         }
     },
     methods: {
@@ -164,8 +166,42 @@ export default {
             // console.log(row);
             this.dia_show = true
         },
+        del() {
+            this.mod_status = 'del'
+            this.mod_show = true
+        },
         modConf() {
             // console.log('确认删除')
+            if(this.mod_status==='del') {
+                this.delConf()
+            }
+        },
+        delConf() {
+            let delIdArray = (this.list || []).filter(item => {
+                return item.checked
+            })
+            delIdArray = delIdArray.map(item => {
+                return item.id
+            })
+            if (delIdArray.length === 0) {
+                this.$toast.info('未选中任何邮件')
+                return
+            }
+            console.log('delIdArray: ', delIdArray)
+            let data = {
+                email_id: JSON.stringify(delIdArray)
+            }
+                       
+            let { url, method } = this.$api.email_sent_del
+            this.$http({ method, url, data }).then(res => {
+                // console.log('列表👌👌👌👌: ', res)
+                if (res && res.code === '200') {
+                    this.$toast.success(res.message)
+                    this.mod_show = false
+                    //this.dia_show = false
+                    this.getList()
+                }
+            })
         },
         getText(content) {
             let divLink = document.createElement('div')
@@ -183,11 +219,11 @@ export default {
                 pageSize: this.pageSize,
                 page: this.pageNo
             }
-            let params = window.all.tool.rmEmpty(para)
+            let data = window.all.tool.rmEmpty(para)
 
             let { url, method } = this.$api.email_sent
-            this.$http({ method, url, params }).then(res => {
-                // console.log('列表👌👌👌👌: ', res)
+            this.$http({ method, url, data }).then(res => {
+                console.log('已发邮👌: ', res)
                 if (res && res.code === '200') {
                     this.total = res.data.total
                     this.list = res.data.data

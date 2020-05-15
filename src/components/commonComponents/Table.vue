@@ -15,7 +15,10 @@
                         <!-- 使用label 时 -->
                         <!-- 格式：[ {"label":"中文名","key":"email","sortable":true,"isFrontSort":"String"},{}] -->
                         <template v-if="col.label">
-                            <div :class="['th-sort',sortKey===col.key?'orange':'']" @click="sortBy(col,index)">
+                            <div
+                                :class="['th-sort',sortKey===col.key?'orange':'']"
+                                @click="sortBy(col,index)"
+                            >
                                 <div>{{col.label}}</div>
                                 <div v-if="sortKey===col.key" class="sort">
                                     <!-- <span class="desc"></span> -->
@@ -73,6 +76,10 @@ export default {
         hadCheckbox: {
             type: Boolean,
             default: () => false
+        },
+        allCheck: {
+            type: Boolean,
+            default: () => false
         }
     },
     data() {
@@ -123,6 +130,9 @@ export default {
         }
     },
     methods: {
+        initAllChecked(val) {
+            this.all_checked = false
+        },
         onChange(index, checked) {
             // 全选或全不选
             if (index === 999999) {
@@ -130,6 +140,7 @@ export default {
                 this.column.forEach(item => {
                     item.checked = this.all_checked
                 })
+            // 其他按钮判断 是否选中全选
             } else {
                 this.all_checked = this.column.every(item => item.checked)
             }
@@ -161,10 +172,20 @@ export default {
         }
     },
     watch: {
-        column(val) {}
+        allCheck(val) {
+            console.log('🍤 val: ', val);
+            setTimeout(()=>{
+                this.all_checked = val
+            },50)
+        },
+        column(val) {
+            // 更新时 全选为空
+            // this.initChecked()
+        }
     },
     mounted() {
         // 初始化 column 使checked都为false
+        this.all_checked = this.all_checked
         this.column.forEach(item => {
             if (!item.checked) {
                 item.checked = false
@@ -232,7 +253,7 @@ th > div {
     border-right: 6px solid transparent;
     border-top: 6px solid #ffffff;
 }
-th .desc-active{
+th .desc-active {
     border-top: 6px solid #f36608;
 }
 .asc {

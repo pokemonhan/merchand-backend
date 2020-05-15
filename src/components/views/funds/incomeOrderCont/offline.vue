@@ -71,7 +71,11 @@
                     <td>
                         <button class="btn-blue" @click="showDetail(row)">详情</button>
                         <button v-if="pass_button_show" class="btn-blue" @click="passShow(row)">通过</button>
-                        <button v-if="reject_button_show" class="btn-blue" @click="rejectShow(row)">拒绝</button>
+                        <button
+                            v-if="reject_button_show"
+                            class="btn-blue"
+                            @click="rejectShow(row)"
+                        >拒绝</button>
                     </td>
                     <td>{{row.admin && row.admin.name}}</td>
                 </template>
@@ -169,9 +173,9 @@ export default {
                 "0": { text: "审核中", color: "yellow" },
                 "1": { text: "审核通过", color: "green" },
                 "-1": { text: "审核拒绝", color: "red" },
-                "-2":{ text:"订单过期",color:"purple"},
-                "3":{ text:"客户确认收款",color:"orange"},
-                "-3":{ text:"客户撤销订单",color:"blue"}
+                "-2": { text: "订单过期", color: "purple" },
+                "3": { text: "客户确认收款", color: "orange" },
+                "-3": { text: "客户撤销订单", color: "blue" }
             },
             headers: [
                 "订单号",
@@ -184,7 +188,7 @@ export default {
                 "实际到账",
                 "审核状态",
                 "充值时间",
-                "操作",
+                "操作"
             ],
             list: [],
             total: 0,
@@ -192,16 +196,16 @@ export default {
             pageSize: 25,
             offline_dia_show: false,
             offline_conf: false,
-            offline_title:'',
-            offline_content:'',
-            offline_status:'',
-            curr_row:{},
-            pass_button_show:true,
-            reject_button_show:true,
-            all_money:'',
-            all_withDraw_money:'',
-            total_money:'',
-            menu_list:[],
+            offline_title: "",
+            offline_content: "",
+            offline_status: "",
+            curr_row: {},
+            pass_button_show: true,
+            reject_button_show: true,
+            all_money: "",
+            all_withDraw_money: "",
+            total_money: "",
+            menu_list: []
         };
     },
     methods: {
@@ -214,24 +218,24 @@ export default {
             // 同步快捷查询时间
             this.quick_query = this.filter.dates;
         },
-        getMenuList(){
-            if(!window.all.tool.getLocal('Authorization')) return
-            if(window.all.tool.getLocal('menu')){
-                this.menu_list=window.all.tool.getLocal('menu')
+        getMenuList() {
+            if (!window.all.tool.getLocal("Authorization")) return;
+            if (window.all.tool.getLocal("menu")) {
+                this.menu_list = window.all.tool.getLocal("menu");
             }
         },
         exportExcel() {
-            console.log('列表',this.menu_list)
-            let firstList={}
-            let childList={}
-            let fatherList={}
-            for(var i=0;i<this.menu_list.length;i++){
-                firstList=this.menu_list[i].children
-                let fatherTemplate=this.menu_list[i]
-                for(var j=0;j<firstList.length;j++){
-                    if(firstList[j].path=='/funds/incomeorder'){
-                        fatherList=fatherTemplate
-                        childList=firstList[j]
+            console.log("列表", this.menu_list);
+            let firstList = {};
+            let childList = {};
+            let fatherList = {};
+            for (var i = 0; i < this.menu_list.length; i++) {
+                firstList = this.menu_list[i].children;
+                let fatherTemplate = this.menu_list[i];
+                for (var j = 0; j < firstList.length; j++) {
+                    if (firstList[j].path == "/funds/incomeorder") {
+                        fatherList = fatherTemplate;
+                        childList = firstList[j];
                     }
                 }
             }
@@ -242,12 +246,24 @@ export default {
                         item.order_no,
                         item.user && item.user.mobile,
                         item.user && item.user.guid,
-                        item.is_tester==0?'否':'是',
+                        item.is_tester == 0 ? "否" : "是",
                         item.snap_finance_type,
                         item.snap_account,
                         item.money,
                         item.arrive_money,
-                        item.status==0?'审核中': item.status==1?'审核通过': item.status==-1?'审核拒绝': item.status==-2?'订单过期': item.status==3?'客户确认收款': item.status==-3?'客户撤销订单':'',
+                        item.status == 0
+                            ? "审核中"
+                            : item.status == 1
+                            ? "审核通过"
+                            : item.status == -1
+                            ? "审核拒绝"
+                            : item.status == -2
+                            ? "订单过期"
+                            : item.status == 3
+                            ? "客户确认收款"
+                            : item.status == -3
+                            ? "客户撤销订单"
+                            : "",
                         item.created_at,
                         item.curr_list
                     ];
@@ -255,7 +271,7 @@ export default {
                 excel.export_json_to_excel({
                     header: tHeaders,
                     data,
-                    filename:fatherList.label+'-'+ "线下-入款订单",
+                    filename: fatherList.label + "-" + "线下-入款订单",
                     autoWidth: true,
                     bookType: "xlsx"
                 });
@@ -274,80 +290,79 @@ export default {
         },
         showDetail(row) {
             this.offline_dia_show = true;
-            setTimeout(()=> {
+            setTimeout(() => {
                 this.$nextTick(() => {
-                // 获取像素比
-                let getPixelRatio = function(context) {
-                    let backingStore =
-                        context.backingStorePixelRatio ||
-                        context.webkitBackingStorePixelRatio ||
-                        context.mozBackingStorePixelRatio ||
-                        context.msBackingStorePixelRatio ||
-                        context.oBackingStorePixelRatio ||
-                        context.backingStorePixelRatio ||
-                        1;
-                    return (window.devicePixelRatio || 1) / backingStore;
-                };
-                //画文字
-                let ele = this.$refs.offlineCanvas;
-                let context = ele.getContext("2d");
-                let ratio = getPixelRatio(context);
+                    // 获取像素比
+                    let getPixelRatio = function(context) {
+                        let backingStore =
+                            context.backingStorePixelRatio ||
+                            context.webkitBackingStorePixelRatio ||
+                            context.mozBackingStorePixelRatio ||
+                            context.msBackingStorePixelRatio ||
+                            context.oBackingStorePixelRatio ||
+                            context.backingStorePixelRatio ||
+                            1;
+                        return (window.devicePixelRatio || 1) / backingStore;
+                    };
+                    //画文字
+                    let ele = this.$refs.offlineCanvas;
+                    let context = ele.getContext("2d");
+                    let ratio = getPixelRatio(context);
 
-                ele.style.width = ele.width + "px";
-                ele.style.height = ele.height + "px";
+                    ele.style.width = ele.width + "px";
+                    ele.style.height = ele.height + "px";
 
-                ele.width = ele.width * ratio;
-                ele.height = ele.height * ratio;
+                    ele.width = ele.width * ratio;
+                    ele.height = ele.height * ratio;
 
-                // 放大倍数
-                context.scale(ratio, ratio);
+                    // 放大倍数
+                    context.scale(ratio, ratio);
 
-                context.font = "16px Arial";
-                //背景色
-                context.fillStyle = "#fff";
-                context.fillRect(0, 0, 520, 300);
-                // 绘制 字体内容
-                context.fillStyle = "#444";
-                let ml = 50; // 左边框
-                let w = 280; // 左边文字所占宽度, 右边col起始位置
-                let mt = 40; //上下行间距
-                // row1
+                    context.font = "16px Arial";
+                    //背景色
+                    context.fillStyle = "#fff";
+                    context.fillRect(0, 0, 520, 300);
+                    // 绘制 字体内容
+                    context.fillStyle = "#444";
+                    let ml = 50; // 左边框
+                    let w = 280; // 左边文字所占宽度, 右边col起始位置
+                    let mt = 40; //上下行间距
+                    // row1
 
-                context.fillText("会员账号", ml, mt);
-                // context.font = "16px Arial";
-                // context.fillStyle = "#444";
-                context.fillText(row.user && row.user.mobile, ml + 100, mt);
+                    context.fillText("会员账号", ml, mt);
+                    // context.font = "16px Arial";
+                    // context.fillStyle = "#444";
+                    context.fillText(row.user && row.user.mobile, ml + 100, mt);
 
-                context.fillText("会员ID", w, mt);
-                context.fillText(row.user && row.user.guid, w + 100, mt);
+                    context.fillText("会员ID", w, mt);
+                    context.fillText(row.user && row.user.guid, w + 100, mt);
 
-                // row2   -------------------
-                // 会员等级 ----
-                context.fillText("会员等级", ml, mt * 2);
-                context.fillText(row.snap_user_grade, ml + 100, mt * 2);
-                //  row3
-                context.fillText("转入银行", ml, mt * 3);
-                let bank_name = "暂无返回数据";
-                context.fillText(bank_name, ml + 100, mt * 3);
-                context.fillText("转入账号", w, mt * 3);
-                context.fillText("暂无返回数据", w + 100, mt * 3);
-                // row4
-                context.fillText("充值金额", ml, mt * 4);
-                context.fillText(row.money, ml + 100, mt * 4);
-                //  row5
-                context.fillText("收款银行", ml, mt * 5);
-                let receipt_bank = "暂无返回数据";
-                context.fillText(receipt_bank, ml + 100, mt * 5);
-                context.fillText("收款账号", w, mt * 5);
-                let receipt_account = "暂无返回数据";
-                context.fillText(receipt_account, w + 100, mt * 5);
-                // row 6
-                context.fillText("交易时间", ml, mt * 6);
-                context.fillText(row.created_at, ml + 100, mt * 6);
-            });
+                    // row2   -------------------
+                    // 会员等级 ----
+                    context.fillText("会员等级", ml, mt * 2);
+                    context.fillText(row.snap_user_grade, ml + 100, mt * 2);
+                    //  row3
+                    context.fillText("转入银行", ml, mt * 3);
+                    let bank_name = "暂无返回数据";
+                    context.fillText(bank_name, ml + 100, mt * 3);
+                    context.fillText("转入账号", w, mt * 3);
+                    context.fillText("暂无返回数据", w + 100, mt * 3);
+                    // row4
+                    context.fillText("充值金额", ml, mt * 4);
+                    context.fillText(row.money, ml + 100, mt * 4);
+                    //  row5
+                    context.fillText("收款银行", ml, mt * 5);
+                    let receipt_bank = "暂无返回数据";
+                    context.fillText(receipt_bank, ml + 100, mt * 5);
+                    context.fillText("收款账号", w, mt * 5);
+                    let receipt_account = "暂无返回数据";
+                    context.fillText(receipt_account, w + 100, mt * 5);
+                    // row 6
+                    context.fillText("交易时间", ml, mt * 6);
+                    context.fillText(row.created_at, ml + 100, mt * 6);
+                });
             }, 110);
 
-            
             // this.$nextTick(() => {
             //     // 获取像素比
             //     let getPixelRatio = function(context) {
@@ -426,61 +441,67 @@ export default {
         },
         passShow(row) {
             this.offline_conf = true;
-            this.offline_title='通过';
-            this.offline_content='是否通过该订单？'
-            this.offline_status='pass'
-            this.curr_row=row
+            this.offline_title = "通过";
+            this.offline_content = "是否通过该订单？";
+            this.offline_status = "pass";
+            this.curr_row = row;
         },
-        passCfm(){
-            console.log(1)
-            let datas={
-                id:this.curr_row.id
-            }
-            console.log('请求数据',datas)
-            let data=window.all.tool.rmEmpty(datas)
-            let {method,url}=this.$api.founds_incomeorder_examination_passed
-            this.$http({method,url,data}).then(res=>{
-                console.log('返回数据',res)
-                if(res && res.code=='200'){
-                    this.offline_conf=false;
-                    this.getList()
-                    this.pass_button_show=false
+        passCfm() {
+            console.log(1);
+            let datas = {
+                id: this.curr_row.id
+            };
+            console.log("请求数据", datas);
+            let data = window.all.tool.rmEmpty(datas);
+            let {
+                method,
+                url
+            } = this.$api.founds_incomeorder_examination_passed;
+            this.$http({ method, url, data }).then(res => {
+                console.log("返回数据", res);
+                if (res && res.code == "200") {
+                    this.offline_conf = false;
+                    this.getList();
+                    this.pass_button_show = false;
                 }
-            })
+            });
         },
         rejectShow(row) {
             this.offline_conf = true;
-            this.offline_title='拒绝';
-            this.offline_content='是否拒绝该订单？'
-            this.offline_status='reject'
-            this.curr_row=row
+            this.offline_title = "拒绝";
+            this.offline_content = "是否拒绝该订单？";
+            this.offline_status = "reject";
+            this.curr_row = row;
         },
-        rejectCfm(){
-            console.log(2)
-            let datas={
-                id:this.curr_row.id
-            }
-            console.log('请求数据',datas)
-            let data=window.all.tool.rmEmpty(datas)
-            let {method,url}=this.$api.founds_incomeorder_examination_rejected
-            this.$http({method,url,data}).then(res=>{
-                console.log('返回数据',res)
-                if(res && res.code=='200'){
-                    this.offline_conf=false;
-                    this.getList()
-                    this.reject_button_show=false
+        rejectCfm() {
+            console.log(2);
+            let datas = {
+                id: this.curr_row.id
+            };
+            console.log("请求数据", datas);
+            let data = window.all.tool.rmEmpty(datas);
+            let {
+                method,
+                url
+            } = this.$api.founds_incomeorder_examination_rejected;
+            this.$http({ method, url, data }).then(res => {
+                console.log("返回数据", res);
+                if (res && res.code == "200") {
+                    this.offline_conf = false;
+                    this.getList();
+                    this.reject_button_show = false;
                 }
-            })
+            });
         },
         offlineSavePicture(ref) {
             this.exportCanvasAsPNG(ref, "线下入款");
         },
         offlineIncomeConfirm() {
-            if(this.offline_status=='pass'){
-                this.passCfm()
+            if (this.offline_status == "pass") {
+                this.passCfm();
             }
-            if(this.offline_status=='reject'){
-                this.rejectCfm()
+            if (this.offline_status == "reject") {
+                this.rejectCfm();
             }
         },
         updateNo(val) {
@@ -544,24 +565,32 @@ export default {
                     if (res && res.code == "200") {
                         this.list = res.data.data;
                         this.total = res.data.total;
-                        this.countFunction(res.data && res.data.data)
+                        this.countFunction(res.data && res.data.data);
                     }
                 }
             );
         },
-        countFunction(count){
-            console.log('count',count)
-            let top_up_money=0
-            for(var i=0;i<count.length;i++){
-                top_up_money+=parseInt(count[i].money)
+        countFunction(count) {
+            console.log("count", count);
+            let top_up_money = 0;
+            for (var i = 0; i < count.length; i++) {
+                if (!count[i].money) {
+                    top_up_money = 0;
+                } else {
+                    top_up_money += parseInt(count[i].money);
+                }
             }
-            this.all_money=top_up_money
+            this.all_money = top_up_money;
             // console.log('钱',this.all_money)
-            let withDraw_money=0
-            for(var i=0;i<count.length;i++){
-                withDraw_money+=parseInt(count[i].arrive_money)
+            let withDraw_money = 0;
+            for (var i = 0; i < count.length; i++) {
+                if (!count[i].arrive_money) {
+                    withDraw_money = 0;
+                } else {
+                    withDraw_money += parseInt(count[i].arrive_money);
+                }
             }
-            this.all_withDraw_money=withDraw_money
+            this.all_withDraw_money = withDraw_money;
         },
         updateNo(val) {
             this.getList();

@@ -530,8 +530,8 @@ export default {
             this.$http({ method, url, data }).then(res => {
                 console.log("返回数据", res);
                 if (res && res.code == "200") {
-                    this.list = res.data;
-                    this.total = res.data.length;
+                    this.list = res.data.data;
+                    this.total = res.data.total;
                 }
             });
         }

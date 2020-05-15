@@ -86,7 +86,11 @@
                     <td>{{row.updated_at}}</td>
                     <td>
                         <button class="btn-blue" @click="showDetail(row)">详情</button>
-                        <button v-if="handWithDraw" class="btn-blue" @click="manualDepositclick(row)">手动入款</button>
+                        <button
+                            v-if="handWithDraw"
+                            class="btn-blue"
+                            @click="manualDepositclick(row)"
+                        >手动入款</button>
                     </td>
                 </template>
             </Table>
@@ -226,15 +230,15 @@ export default {
             conf_mod_content: "",
             dialog_show: false,
             is_show_online_detail: false,
-            curr_row:{},
-            manu:{
-                remark:''
+            curr_row: {},
+            manu: {
+                remark: ""
             },
-            handWithDraw:true,
-            all_money:'',
-            all_withDraw_money:'',
-            total_money:'',
-            menu_list:[],
+            handWithDraw: true,
+            all_money: "",
+            all_withDraw_money: "",
+            total_money: "",
+            menu_list: []
         };
     },
     methods: {
@@ -243,24 +247,24 @@ export default {
             let arr = [dates[0] + " 00:00:00", dates[1] + " 00:00:00"];
             this.$set(this.filter, "dates", arr);
         },
-        getMenuList(){
-            if(!window.all.tool.getLocal('Authorization')) return
-            if(window.all.tool.getLocal('menu')){
-                this.menu_list=window.all.tool.getLocal('menu')
+        getMenuList() {
+            if (!window.all.tool.getLocal("Authorization")) return;
+            if (window.all.tool.getLocal("menu")) {
+                this.menu_list = window.all.tool.getLocal("menu");
             }
         },
         exportExcel() {
-            console.log('列表',this.menu_list)
-            let firstList={}
-            let childList={}
-            let fatherList={}
-            for(var i=0;i<this.menu_list.length;i++){
-                firstList=this.menu_list[i].children
-                let fatherTemplate=this.menu_list[i]
-                for(var j=0;j<firstList.length;j++){
-                    if(firstList[j].path=='/funds/incomeorder'){
-                        fatherList=fatherTemplate
-                        childList=firstList[j]
+            console.log("列表", this.menu_list);
+            let firstList = {};
+            let childList = {};
+            let fatherList = {};
+            for (var i = 0; i < this.menu_list.length; i++) {
+                firstList = this.menu_list[i].children;
+                let fatherTemplate = this.menu_list[i];
+                for (var j = 0; j < firstList.length; j++) {
+                    if (firstList[j].path == "/funds/incomeorder") {
+                        fatherList = fatherTemplate;
+                        childList = firstList[j];
                     }
                 }
             }
@@ -273,14 +277,14 @@ export default {
                         item.user && item.user.mobile,
                         item.user && item.user.guid,
                         item.parent && item.parent.mobile,
-                        item.user && item.user.is_tester==0?'否':'是',
+                        item.user && item.user.is_tester == 0 ? "否" : "是",
                         item.snap_merchant_no,
                         item.snap_merchant_code,
                         item.snap_merchant,
                         item.snap_finance_type,
                         item.money,
                         item.arrive_money,
-                        item.status==0?'未支付':'已支付',
+                        item.status == 0 ? "未支付" : "已支付",
                         item.created_at,
                         item.updated_at
                     ];
@@ -288,7 +292,7 @@ export default {
                 excel.export_json_to_excel({
                     header: tHeaders,
                     data,
-                    filename:fatherList.label+'-'+"线上-入款订单",
+                    filename: fatherList.label + "-" + "线上-入款订单",
                     autoWidth: true,
                     bookType: "xlsx"
                 });
@@ -342,24 +346,24 @@ export default {
         },
         manualDepositclick(row, is_confirm) {
             this.dialog_show = true;
-            this.curr_row=row
+            this.curr_row = row;
         },
         manualDepositCfm() {
-            let datas={
-                id:this.curr_row.id,
-                remark:this.manu.remark,
-            }
+            let datas = {
+                id: this.curr_row.id,
+                remark: this.manu.remark
+            };
             // console.log('请求数据',datas)
-            let data=window.all.tool.rmEmpty(datas)
-            let {method,url}=this.$api.founds_incomeorder_Manual_deposit
-            this.$http({method,url,data}).then(res=>{
+            let data = window.all.tool.rmEmpty(datas);
+            let { method, url } = this.$api.founds_incomeorder_Manual_deposit;
+            this.$http({ method, url, data }).then(res => {
                 // console.log('返回数据')
-                if(res && res.code == "200"){
-                   this.dialog_show=false
-                   this.getList()
-                   this.handWithDraw=false
+                if (res && res.code == "200") {
+                    this.dialog_show = false;
+                    this.getList();
+                    this.handWithDraw = false;
                 }
-            })
+            });
         },
         showDetail(row) {
             this.is_show_online_detail = true;
@@ -429,11 +433,7 @@ export default {
                 context.fillText(row.arrive_money, w + 80, mt * 5);
                 // row 6
                 context.fillText("交易时间:", ml, mt * 6);
-                context.fillText(
-                    row.created_at,
-                    ml + 80,
-                    mt * 6
-                );
+                context.fillText(row.created_at, ml + 80, mt * 6);
             });
         },
         getPayMethodSel() {
@@ -445,7 +445,7 @@ export default {
             let { url, method } = this.$api.founds_incomeorder_pay_method;
             this.$http({ method, url, data }).then(res => {
                 // console.log("返回数据", res);
-                if (res && res.code=="200") {
+                if (res && res.code == "200") {
                     this.pay_way_opt = this.backToSelOpt(res.data);
                 }
             });
@@ -489,30 +489,36 @@ export default {
             // console.log("para: ", para);
             let data = window.all.tool.rmEmpty(datas);
             let { method, url } = this.$api.founds_incomeorder_list;
-            this.$http({ method: method, url: url, data:data }).then(
-                res => {
-                    console.log("列表返回数据",res)
-                    if (res && res.code == "200") {
-                        this.list = res.data.data;
-                        this.total = res.data.total;
-                        this.countFunction(res.data && res.data.data)
-                    }
+            this.$http({ method: method, url: url, data: data }).then(res => {
+                console.log("列表返回数据", res);
+                if (res && res.code == "200") {
+                    this.list = res.data.data;
+                    this.total = res.data.total;
+                    this.countFunction(res.data && res.data.data);
                 }
-            );
+            });
         },
-        countFunction(count){
-            console.log('count',count)
-            let top_up_money=0
-            for(var i=0;i<count.length;i++){
-                top_up_money+=parseInt(count[i].money)
+        countFunction(count) {
+            console.log("count", count);
+            let top_up_money = 0;
+            for (var i = 0; i < count.length; i++) {
+                if (!count[i].money) {
+                    top_up_money = 0;
+                } else {
+                    top_up_money += parseInt(count[i].money);
+                }
             }
-            this.all_money=top_up_money
+            this.all_money = top_up_money;
             // console.log('钱',this.all_money)
-            let withDraw_money=0
-            for(var i=0;i<count.length;i++){
-                withDraw_money+=parseInt(count[i].arrive_money)
+            let withDraw_money = 0;
+            for (var i = 0; i < count.length; i++) {
+                if (!count[i].arrive_money) {
+                    withDraw_money = 0;
+                } else {
+                    withDraw_money += parseInt(count[i].arrive_money);
+                }
             }
-            this.all_withDraw_money=withDraw_money
+            this.all_withDraw_money = withDraw_money;
         },
         updateNo(val) {
             this.getList();
@@ -520,7 +526,7 @@ export default {
         updateSize(val) {
             this.pageNo = 1;
             this.getList();
-        },
+        }
     },
     mounted() {
         this.getPayMethodSel();

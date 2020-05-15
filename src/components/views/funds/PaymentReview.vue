@@ -340,47 +340,63 @@ export default {
             // console.log("count", count);
             let withDraw_money = 0;
             for (var i = 0; i < count.length; i++) {
-                withDraw_money += parseInt(count[i].amount);
+                if (!count[i].amount) {
+                    withDraw_money = 0;
+                } else {
+                    withDraw_money += parseInt(count[i].amount);
+                }
             }
             this.all_withDraw_money = withDraw_money;
 
             let audit_fee = 0;
             for (var i = 0; i < count.length; i++) {
-                audit_fee += parseInt(count[i].audit_fee);
+                if (!count[i].audit_fee) {
+                    audit_fee = 0;
+                } else {
+                    audit_fee += parseInt(count[i].audit_fee);
+                }
             }
             this.all_audit_fee = audit_fee;
 
             let amount_received = 0;
             for (var i = 0; i < count.length; i++) {
-                amount_received += parseInt(count[i].amount_received);
+                if (!count[i].amount_received) {
+                    amount_received = 0;
+                } else {
+                    amount_received += parseInt(count[i].amount_received);
+                }
             }
             this.all_amount_received = amount_received;
 
             let handing_fee = 0;
             for (var i = 0; i < count.length; i++) {
-                handing_fee += parseInt(count[i].handing_fee);
+                if (!count[i].handing_fee) {
+                    handing_fee = 0;
+                } else {
+                    handing_fee += parseInt(count[i].handing_fee);
+                }
             }
             this.all_handing_fee = handing_fee;
             // console.log('钱',this.all_handing_fee)
         },
-        getMenuList(){
-            if(!window.all.tool.getLocal('Authorization')) return
-            if(window.all.tool.getLocal('menu')){
-                this.menu_list=window.all.tool.getLocal('menu')
+        getMenuList() {
+            if (!window.all.tool.getLocal("Authorization")) return;
+            if (window.all.tool.getLocal("menu")) {
+                this.menu_list = window.all.tool.getLocal("menu");
             }
         },
         exportExcel() {
-            console.log('列表',this.menu_list)
-            let firstList={}
-            let childList={}
-            let fatherList={}
-            for(var i=0;i<this.menu_list.length;i++){
-                firstList=this.menu_list[i].children
-                let fatherTemplate=this.menu_list[i]
-                for(var j=0;j<firstList.length;j++){
-                    if(firstList[j].path=='/funds/paymentreview'){
-                        fatherList=fatherTemplate
-                        childList=firstList[j]
+            console.log("列表", this.menu_list);
+            let firstList = {};
+            let childList = {};
+            let fatherList = {};
+            for (var i = 0; i < this.menu_list.length; i++) {
+                firstList = this.menu_list[i].children;
+                let fatherTemplate = this.menu_list[i];
+                for (var j = 0; j < firstList.length; j++) {
+                    if (firstList[j].path == "/funds/paymentreview") {
+                        fatherList = fatherTemplate;
+                        childList = firstList[j];
                     }
                 }
             }
@@ -407,7 +423,7 @@ export default {
                 excel.export_json_to_excel({
                     header: tHeaders,
                     data,
-                    filename:fatherList.label+'-'+ "出款审核",
+                    filename: fatherList.label + "-" + "出款审核",
                     autoWidth: true,
                     bookType: "xlsx"
                 });

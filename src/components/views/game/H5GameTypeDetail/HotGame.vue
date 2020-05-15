@@ -146,6 +146,7 @@ export default {
 
     methods: {
         changeDefaultIcon(row) {
+            console.log('row',row)
             let data = {
                 id: row.id,
                 icon_id: row.default_icon_id

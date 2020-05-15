@@ -35,9 +35,7 @@
                             <span>客服类型:</span>
                             <Radio class="radio" label="微信客服" :val="2" v-model="form.version" />
                             <Radio class="ml20" label="QQ客服" :val="1" v-model="form.version" />
-                            
                         </li>
-                       
                         <li>
                             <span>{{form.version=='2'?'微信号码:':'QQ号码:'}}</span>
                             <Input class="w210" limit="number" v-model="form.number" />

@@ -149,6 +149,9 @@
                         <Input class="w250" v-model="form.url" />
                     </li>
                     <li>
+                        <span v-show="urlShow" class="err-tips">请求地址格式错误!</span>
+                    </li>
+                    <li>
                         <span>第三方域名:</span>
                         <Input class="w250" v-model="form.third_href" />
                     </li>
@@ -180,7 +183,7 @@
                                 v-model="form.formtag[item.value]"
                                 @change="tagChange(item)"
                             />
-                            <span >{{item.label}}</span>
+                            <span>{{item.label}}</span>
                         </p>
                     </li>
                     <li>
@@ -283,10 +286,24 @@ export default {
             all_tag: [],
             tag_show: false,
             showTag: [],
-            curr_row: {}
+            curr_row: {},
+            // urlCheck: /^(http|ftp|https):\/\/[\w\-_]+(\.[\w\-_]+)+([\w\-\.,@?^=%&:/~\+#]*[\w\-\@?^=%&/~\+#])?$/,
+            urlShow: false
         };
     },
     methods: {
+        checkForm() {
+            // console.log('url',this.form.url)
+            let urlCheck = /^(http|ftp|https):\/\/[\w\-_]+(\.[\w\-_]+)+([\w\-\.,@?^=%&:/~\+#]*[\w\-\@?^=%&/~\+#])?$/;
+            let re = new RegExp(urlCheck);
+            if (re.test(this.form.url)) {
+                this.urlShow = false;
+                return true;
+            } else {
+                this.urlShow = true;
+                return false;
+            }
+        },
         getSelectOpt() {
             let { url, method } = this.$api.online_finance_channel_list;
             this.$http({ url, method }).then(res => {
@@ -363,6 +380,7 @@ export default {
             // this.addClearAll();
         },
         addCfm() {
+            if (!this.checkForm()) return;
             let datas = {
                 channel_id: this.form.pay_method,
                 frontend_name: this.form.front_name,
@@ -416,7 +434,7 @@ export default {
             //标签选择栏显示原始标签
             this.tagChange();
             this.form = {
-                id:row.id,
+                id: row.id,
                 pay_method: row.channel && row.channel.id,
                 front_name: row.frontend_name,
                 merchant_num: row.merchant_code,
@@ -437,42 +455,42 @@ export default {
             };
         },
         editCfm() {
-            let datas={
-                id:this.form.id,
-                channel_id:this.form.pay_method,
-                frontend_name:this.form.front_name,
-                merchant_code:this.form.merchant_num,
-                merchant_no:this.form.merchant_code,
-                encrypt_mode:this.form.secret_method,
-                merchant_secret:this.form.merchant_key,
-                public_key:this.form.merchant_public,
-                private_key:this.form.merchant_private,
-                certificate:this.form.certificate_path,
-                request_url:this.form.url,
-                vendor_url:this.form.third_href,
-                app_id:this.form.terminal,
-                tags:JSON.stringify(
+            let datas = {
+                id: this.form.id,
+                channel_id: this.form.pay_method,
+                frontend_name: this.form.front_name,
+                merchant_code: this.form.merchant_num,
+                merchant_no: this.form.merchant_code,
+                encrypt_mode: this.form.secret_method,
+                merchant_secret: this.form.merchant_key,
+                public_key: this.form.merchant_public,
+                private_key: this.form.merchant_private,
+                certificate: this.form.certificate_path,
+                request_url: this.form.url,
+                vendor_url: this.form.third_href,
+                app_id: this.form.terminal,
+                tags: JSON.stringify(
                     this.showTag.map(item => {
                         return String(item.value);
                     })
                 ),
-                min_amount:this.form.pay_limit[0],
-                max_amount:this.form.pay_limit[1],
-                handle_fee:this.form.income_charge,
-                desc:this.form.specifcation,
-                backend_remark:this.form.mark
-            }
-            let data=window.all.tool.rmEmpty(datas)
-            console.log('编辑请求数据',data)
-            let {method,url}=this.$api.online_finance_edit;
-            this.$http({methhod,url,data}).then(res=>{
-                console.log('编辑返回数据',res)
-                if(res && res.code=='200'){
-                    this.dia_show=false
-                    this.$toast.success(res.message)
-                    this.getList()
+                min_amount: this.form.pay_limit[0],
+                max_amount: this.form.pay_limit[1],
+                handle_fee: this.form.income_charge,
+                desc: this.form.specifcation,
+                backend_remark: this.form.mark
+            };
+            let data = window.all.tool.rmEmpty(datas);
+            console.log("编辑请求数据", data);
+            let { method, url } = this.$api.online_finance_edit;
+            this.$http({ methhod, url, data }).then(res => {
+                console.log("编辑返回数据", res);
+                if (res && res.code == "200") {
+                    this.dia_show = false;
+                    this.$toast.success(res.message);
+                    this.getList();
                 }
-            })
+            });
         },
         del(row) {
             this.mod_show = true;
@@ -587,13 +605,13 @@ export default {
                 pageSize: this.pageSize
             };
             let data = window.all.tool.rmEmpty(datas);
-            console.log('请求数据',data)
+            console.log("请求数据", data);
             let { method, url } = this.$api.online_finance_list;
             this.$http({ method: method, url: url, data: data }).then(res => {
                 console.log("列表数据", res);
                 if (res && res.code == "200") {
-                    this.list = res.data;
-                    this.total = res.data.length;
+                    this.list = res.data.data;
+                    this.total = res.data.total;
                 }
             });
         }
@@ -675,9 +693,15 @@ export default {
     width: 125px;
 }
 .allTag-list {
-    display: inline-block; 
+    display: inline-block;
 }
 .choosebox {
     vertical-align: middle;
+}
+.err-tips {
+    margin-left: 25%;
+    margin-top: -50%;
+    margin-bottom: -50%;
+    color: red;
 }
 </style>

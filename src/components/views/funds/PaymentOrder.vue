@@ -65,7 +65,11 @@
                         <span :class="color_obj[row.status].color">{{color_obj[row.status].text}}</span>
                     </td>
                     <td>
-                        <button v-if="row.status==2" :class="status_obj[row.status].button" @click="statusShow(row)" >详情</button>
+                        <button
+                            v-if="row.status==2"
+                            :class="status_obj[row.status].button"
+                            @click="statusShow(row)"
+                        >详情</button>
                         <button
                             v-if="row.status!=2"
                             :class="status_obj[row.status].button"
@@ -213,30 +217,30 @@ export default {
             ],
 
             list: [],
-            all_amount:'',
-            all_amount_received:'',
+            all_amount: "",
+            all_amount_received: ""
         };
     },
 
     methods: {
-        getMenuList(){
-            if(!window.all.tool.getLocal('Authorization')) return
-            if(window.all.tool.getLocal('menu')){
-                this.menu_list=window.all.tool.getLocal('menu')
+        getMenuList() {
+            if (!window.all.tool.getLocal("Authorization")) return;
+            if (window.all.tool.getLocal("menu")) {
+                this.menu_list = window.all.tool.getLocal("menu");
             }
         },
         exportExcel() {
-            console.log('列表',this.menu_list)
-            let firstList={}
-            let childList={}
-            let fatherList={}
-            for(var i=0;i<this.menu_list.length;i++){
-                firstList=this.menu_list[i].children
-                let fatherTemplate=this.menu_list[i]
-                for(var j=0;j<firstList.length;j++){
-                    if(firstList[j].path=='/funds/paymentorder'){
-                        fatherList=fatherTemplate
-                        childList=firstList[j]
+            console.log("列表", this.menu_list);
+            let firstList = {};
+            let childList = {};
+            let fatherList = {};
+            for (var i = 0; i < this.menu_list.length; i++) {
+                firstList = this.menu_list[i].children;
+                let fatherTemplate = this.menu_list[i];
+                for (var j = 0; j < firstList.length; j++) {
+                    if (firstList[j].path == "/funds/paymentorder") {
+                        fatherList = fatherTemplate;
+                        childList = firstList[j];
                     }
                 }
             }
@@ -247,20 +251,32 @@ export default {
                         item.order_no,
                         item.user && item.user.mobile,
                         item.user && item.user.guid,
-                        item.account_type==1?'银行': item.account_type==2?'支付宝':item.account_type==3?'微信':'',
+                        item.account_type == 1
+                            ? "银行"
+                            : item.account_type == 2
+                            ? "支付宝"
+                            : item.account_type == 3
+                            ? "微信"
+                            : "",
                         item.amount,
                         item.audit_fee,
                         item.amount_received,
                         item.handing_fee,
                         item.created_at,
                         item.reviewer && item.reviewer.name,
-                        item.status==-2?'已拒绝':item.status==2?'已通过':item.status==1?'待审核':''
+                        item.status == -2
+                            ? "已拒绝"
+                            : item.status == 2
+                            ? "已通过"
+                            : item.status == 1
+                            ? "待审核"
+                            : ""
                     ];
                 });
                 excel.export_json_to_excel({
                     header: tHeaders,
                     data,
-                    filename:fatherList.label+'-'+ "出款订单",
+                    filename: fatherList.label + "-" + "出款订单",
                     autoWidth: true,
                     bookType: "xlsx"
                 });
@@ -327,22 +343,30 @@ export default {
                 if (res && res.code == "200") {
                     this.list = res.data.data;
                     this.total = res.data.total;
-                    this.countFunction(res.data && res.data.data)
+                    this.countFunction(res.data && res.data.data);
                 }
             });
         },
-        countFunction(count){
-            let amount=0;
-            for(var i=0;i<count.length;i++){
-                amount+=parseInt(count[i].amount)
+        countFunction(count) {
+            let amount = 0;
+            for (var i = 0; i < count.length; i++) {
+                if (!count[i].amount) {
+                    amount = 0;
+                } else {
+                    amount += parseInt(count[i].amount);
+                }
             }
-            this.all_amount=amount
+            this.all_amount = amount;
 
-            let amount_received=0
-            for(var i=0;i<count.length;i++){
-                amount_received+=parseInt(count[i].amount_received)
+            let amount_received = 0;
+            for (var i = 0; i < count.length; i++) {
+                if (!count[i].amount_received) {
+                    amount_received = 0;
+                } else {
+                    amount_received += parseInt(count[i].amount_received);
+                }
             }
-            this.all_amount_received=amount_received
+            this.all_amount_received = amount_received;
         },
         closeDia() {
             this.dia_show = false;

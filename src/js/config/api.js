@@ -13,6 +13,11 @@ export default {
         url: '/merchant-api/upload',
         method:'post'
     },
+    //获取静态json资源
+    get_json_static_resources:{
+        url:'http://pic.397017.com/common/linter.json',
+        method:'get'
+    },
 
     /*=========================== 登录登出 ===========================--*/
 

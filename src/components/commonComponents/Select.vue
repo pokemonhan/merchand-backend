@@ -8,27 +8,37 @@
         >
             <input v-model="selectedValue" type="hidden" />
             <input
+                v-if="isShow"
+                ref="input"
                 class="show-input"
                 v-model="showInputLabel"
                 :type="input?'text':'hidden'"
                 :title="showInputLabel"
                 @input="handleInput"
                 @change="inputChange"
+                @focus="inputFocus"
                 :placeholder="placeholder"
             />
-            <span v-show="!input">{{selectedLabel}}</span>
+            <span
+                class="show-select-label"
+                v-show="!input||!isShow"
+            >{{selectedLabel?selectedLabel:placeholder}}</span>
             <i v-if="clearable && isClear" @click.stop="clear" class="iconfont icon-icon-test"></i>
             <span v-else :class="['drop-down', '', isShow ? 'icon-rotate' : '']"></span>
         </div>
         <ul :class="['sections', sectionsDir]" ref="sections">
             <li
-                v-for="(item, index) in options"
-                :key="index"
+                v-for="item in opt"
+                :key="item.value"
                 :class="[selectedValue===item.value ? 'active' : '','option']"
-                @click="select(item)"
+                @click.stop="select(item)"
                 :title="input?item.label:''"
             >{{item.label}}</li>
         </ul>
+        <span v-show="showerr||(required&&!value)" class="error-message">
+            <i class="iconfont iconjinggao1-"></i>
+            {{errmsg}}
+        </span>
     </div>
 </template>
 
@@ -39,12 +49,13 @@
 
         可绑定 v-model
      */
-import Slide from '../../js/config/slide'
+// import Slide from '../../js/config/slide'
 export default {
     name: 'Select',
     props: {
         css: Object, // 自定义css
         input: Boolean, // 是否像 input 可以输入
+        noFilter: Boolean, // 默认根据input内容筛选。
         options: {
             // 选项内容
             type: Array,
@@ -52,7 +63,20 @@ export default {
         },
         value: [Number, String], // 默认值
         clearable: Boolean, // 是否可清空
-        placeholder: String
+        placeholder: String,
+        // 当required为true时, 值为空,就会提示
+        required: {
+            type: Boolean,
+            default: false
+        },
+        showerr: {
+            type: Boolean,
+            default: false
+        },
+        errmsg: {
+            type: String,
+            default: ''
+        }
     },
     model: {
         prop: 'value',
@@ -60,14 +84,33 @@ export default {
     },
     data() {
         return {
-            showInputLabel: '',
+            showInputLabel: '', // input 里面的内容
             selectedValue: '',
             selectedLabel: '',
-            index: 0,
-            isShow: false,
+            // index: 0,
+            isShow: false, // 本义展示下拉框
+            // opt: [], // 下拉框内容
             isClear: false,
             sectionsDir: 'bottom-upfold',
             sectionsHeight: '0px'
+        }
+    },
+    computed: {
+        opt() {
+            // 输入框内容为空则 返回全部， 不筛选也返回全部 
+            if (!this.input || !this.showInputLabel||this.noFilter) {
+                return this.options
+            } else {
+                let opt_temp = (this.options || []).filter(item => {
+                    // let LowerCase
+                    if(item.label){
+                        return item.label.indexOf(this.showInputLabel) !== -1
+                    }else {
+                        return false
+                    }
+                })
+                return opt_temp
+            }
         }
     },
     methods: {
@@ -94,12 +137,19 @@ export default {
         showOptions(e) {
             if (this.input) {
                 this.isShow = true
+                // setTimeout(() => {
+                // })
+                this.$nextTick(() => {
+                    this.$refs.input.focus()
+                })
             } else {
                 this.isShow = !this.isShow
             }
             let ele = this.$refs.sections
             if (this.isShow) {
+                /** 滚动条到顶部的距离 */
                 let scrollTop = document.documentElement.scrollTop
+                
                 let scrollHeight = document.body.scrollHeight
                 let toBottom = e.target.getBoundingClientRect().bottom
                 let y = scrollHeight - scrollTop - toBottom
@@ -126,7 +176,7 @@ export default {
             this.selectedValue = item.value
             this.selectedLabel = item.label
 
-            this.showInputLabel = item.label // input 展示的内容
+            // this.showInputLabel = item.label // input 展示的内容
             this.$emit('update', item.value, item)
         },
         clear() {
@@ -149,11 +199,17 @@ export default {
         },
         inputChange() {
             this.$emit('update', this.showInputLabel)
+        },
+        inputFocus() {
+            this.showInputLabel = ''
+            this.$emit('input', this.showInputLabel)
         }
     },
     watch: {
         value(val) {
+            // console.log('🍧 val: ', val);
             this.selectedValue = this.val
+            this.selectedLabe = ''
             this.options.forEach(item => {
                 if (item.value === this.value) {
                     this.selectedLabel = item.label
@@ -161,6 +217,7 @@ export default {
             })
         },
         options() {
+            this.selectedLabel = ''
             if (!this.options) return
             this.options.forEach(item => {
                 if (item.value === this.value) {
@@ -212,13 +269,20 @@ export default {
     border-color: #57a3f3;
 }
 .val-box .show-input {
-    height: 95%;
+    /* height: 95%; */
     width: 98%;
     margin-left: 1px;
     padding-left: 6px;
     padding-right: 23px;
     border: none;
     background: rgb(253, 254, 255);
+}
+.show-select-label {
+    /* width: 100%; */
+    padding-right: 15px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
 }
 .val-box .icon-icon-test {
     display: none;
@@ -263,7 +327,7 @@ export default {
     background-color: #fff;
     overflow-y: scroll;
     display: none;
-    z-index: 2;
+    z-index: 2; 
     transition: max-height 0.2s;
 }
 .bottom-upfold {
@@ -298,6 +362,19 @@ export default {
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
+}
+.error-message {
+    position: absolute;
+    top: 30px;
+    left: 1em;
+    font-size: 12px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: #ef583d;
+}
+.error-message .iconjinggao1- {
+    font-size: 13px;
 }
 </style>
 

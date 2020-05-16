@@ -146,10 +146,7 @@
                     </li>
                     <li>
                         <span>请求地址:</span>
-                        <Input class="w250" v-model="form.url" />
-                    </li>
-                    <li>
-                        <span v-show="urlShow" class="err-tips">请求地址格式错误!</span>
+                        <Input class="w250" v-model="form.url" required :showerr="errUrlShow(form.url)" errmsg="url格式错误!" />
                     </li>
                     <li>
                         <span>第三方域名:</span>
@@ -292,15 +289,20 @@ export default {
         };
     },
     methods: {
+        errUrlShow(val) {
+            if (!val) return true
+            // ip 正则
+            let reg = /^(http|ftp|https):\/\/[\w\-_]+(\.[\w\-_]+)+([\w\-\.,@?^=%&:/~\+#]*[\w\-\@?^=%&/~\+#])?$/
+            return !reg.test(val)
+
+        },
         checkForm() {
             // console.log('url',this.form.url)
             let urlCheck = /^(http|ftp|https):\/\/[\w\-_]+(\.[\w\-_]+)+([\w\-\.,@?^=%&:/~\+#]*[\w\-\@?^=%&/~\+#])?$/;
             let re = new RegExp(urlCheck);
             if (re.test(this.form.url)) {
-                this.urlShow = false;
                 return true;
             } else {
-                this.urlShow = true;
                 return false;
             }
         },

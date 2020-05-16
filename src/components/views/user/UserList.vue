@@ -27,11 +27,11 @@
                 </li>
                 <li>
                     <span>登录IP</span>
-                    <Input v-model="filter.loginIP" />
+                    <Input errmsg="格式错误" :showerr="errIpShow(filter.loginIP)" v-model="filter.loginIP" />
                 </li>
                 <li>
                     <span>注册IP</span>
-                    <Input limit="number" v-model="filter.registIP" />
+                    <Input errmsg="格式错误" :showerr="errIpShow(filter.registIP)" v-model="filter.registIP" />
                 </li>
                 <li>
                     <span>正式账号</span>
@@ -543,6 +543,25 @@ export default {
             // }
             // return list
         },
+        //校验ip地址
+        errIpShow(val){
+            if(!val) return false
+            let reg=/((2(5[0-5]|[0-4]\d))|[0-1]?\d{1,2})(\.((2(5[0-5]|[0-4]\d))|[0-1]?\d{1,2})){3}/g
+
+            return !reg.test(val)
+        },
+        //校验查询条件
+        checkFilter(){
+            let reg=/^(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])$/
+            // let re=new RegExp(IpCheck)
+            if(!reg.test(this.filter.loginIP) && this.filter.loginIP!='' ){
+                return false
+            }
+            if(!reg.test(this.filter.registIP) && this.filter.registIP!=''){
+                return false
+            }
+            return true
+        },
         //获取列表
         getMenuList(){
             if(!window.all.tool.getLocal('Authorization')) return
@@ -665,6 +684,8 @@ export default {
             this.inner_mask_show = false;
         },
         getList() {
+            // console.log(this.checkFilter())
+            if(!this.checkFilter()) return
             let createdAt = "";
             if (this.filter.dates[0] && this.filter.dates[1]) {
                 createdAt = JSON.stringify([

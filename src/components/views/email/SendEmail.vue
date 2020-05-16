@@ -26,7 +26,7 @@
 
                         <span class="ml50">
                             <Checkbox
-                                label="总控邮件"
+                                label="邮件发至总控"
                                 v-model="is_head"
                                 @update="isHeadChange"
                             />
@@ -39,7 +39,7 @@
                     </li>
                     <li>
                         <span>发件人：</span>
-                        <span class="blue">{{'app-id'}}</span>
+                        <span class="blue">{{senderInformation}}</span>
                     </li>
                     <li>
                         <button class="btn-plain" @click="sendNow">立即发送</button>
@@ -158,7 +158,8 @@ export default {
             hour_opt: [],
             minute_opt: [],
             editor: {},
-            editorContent: ''
+            editorContent: '',
+            senderInformation:{},
         }
     },
     computed: {
@@ -194,6 +195,10 @@ export default {
         }
     },
     methods: {
+        getSenddetail(){
+            this.senderInformation=window.all.tool.getLocal('email')
+            // console.log('邮箱',this.senderInformation)
+        },
         initTime() {
             let date = window.all.tool.formatDate(
                 new Date().valueOf() + 1 * 60 * 1000,
@@ -434,6 +439,7 @@ export default {
         this.initOpts()
     },
     mounted() {
+        this.getSenddetail();
         this.receivers = this.$route.query && this.$route.query.platform_sign
 
         this.editor = new E(this.$refs.editor)

@@ -155,12 +155,12 @@ export default {
                 let delay = now - lastTime
                 // 同一接口时间大于1500毫秒 就请求
                 function excludeRequest() {
-                    let excludeArr = ['/merchant-api/game/get-search-condition-data', '/merchant-api/recharge-order/index', '/merchant-api/game/h5-index', '/merchant-api/game/pc-index', '/merchant-api/game/app-index', '/merchant-api/costomer-service/index','/merchant-api/game/index','']
+                    let excludeArr = ['/merchant-api/game/get-search-condition-data', '/merchant-api/recharge-order/index', '/merchant-api/game/h5-index', '/merchant-api/game/pc-index', '/merchant-api/game/app-index', '/merchant-api/costomer-service/index','/merchant-api/game/index','/merchant-api/help-center/index']
                     // console.log('请求地址', url)
                     return excludeArr.indexOf(url) !== -1
                 }
                 // 同一请求大于300ms 获取在除外数组中，就会请求
-                if (delay > 300 || excludeRequest()) {
+                if (delay > 200 || excludeRequest()) {
                     requestObj[url] = now
                     return $http(opt)
                 } else {

@@ -148,7 +148,7 @@ export default {
         detail(item) {
             this.dia_show = true;
             this.curr_row = item;
-            this.getBrowerPic(item)
+            this.getBrowerPic(item);
         },
         // 第一次加载
         firstLoad() {
@@ -156,7 +156,7 @@ export default {
             this.getList().then(res => {
                 if (res.data) {
                     this.list = res.data.data;
-                    this.total = res.data.toal;
+                    this.total = res.data.total;
                 }
             });
         },
@@ -180,7 +180,10 @@ export default {
             if (userAgent.indexOf("Chrome") > -1) {
                 this.ChromeShow = true;
             }
-            if (userAgent.indexOf("Mac") > -1 && userAgent.indexOf("Safari")>-1 ) {
+            if (
+                userAgent.indexOf("Mac") > -1 &&
+                userAgent.indexOf("Safari") > -1
+            ) {
                 this.SafariShow = true;
             }
         },
@@ -198,7 +201,7 @@ export default {
                     admin_name: this.filter.vendor,
                     created_at: createdAt,
                     pageSize: this.pageSize,
-                    page:this.pageNo
+                    page: this.pageNo
                 };
                 console.log("列表请求数据", datas);
                 let data = window.all.tool.rmEmpty(datas);
@@ -299,26 +302,37 @@ export default {
             let ele = this.$refs.operalog;
             ele.onscroll = () => {
                 // 距离底部200px时加载一次
-                let scrollHeight = ele.scrollHeight;
-                let scrollTop = ele.scrollTop;
-                let offsetHeight = ele.offsetHeight;
-                let bottomOfWindow = scrollHeight - scrollTop - offsetHeight;
+                let scrollHeight = ele.scrollHeight
+                let scrollTop = ele.scrollTop
+                // console.log('🍭 scrollTop: ', scrollTop)
+                let offsetHeight = ele.offsetHeight
+                let bottomOfWindow = scrollHeight - scrollTop - offsetHeight
                 // console.log('🍹 isLoading: ', isLoading)
-                if (bottomOfWindow < 200 && isLoading == false) {
-                    let totalPage = Math.ceil(this.total / this.pageSize);
-                    // 如果是加载到最后一条
-                    if (this.pageNo > totalPage) return;
-                    isLoading = true;
-                    this.pageNo++; // 请求下一页
-                    console.log('页数',this.pageNo)
-                    this.getList().then(res => {
-                        isLoading = false;
-                        if (res.data) {
-                            this.list = this.list.concat(res.data.data || []);
-                        }
-                    });
+                if (scrollTop > max_scroll_top) {
+                    max_scroll_top = scrollTop
                 }
-            };
+
+                if (bottomOfWindow < 200 && isLoading == false) {
+                    let totalPage = Math.ceil(this.total / this.pageSize)
+                    // 如果是加载到最后一条,不执行()
+
+                    if (this.pageNo === totalPage) {
+                        if (scrollTop >= max_scroll_top) {
+                            this.$toast.warning('已是最后一条')
+                        }
+                        return
+                    }
+
+                    isLoading = true
+                    this.pageNo++ // 请求下一页
+                    this.getList().then(res => {
+                        isLoading = false
+                        if (res.data) {
+                            this.list = this.list.concat(res.data.data || [])
+                        }
+                    })
+                }
+            }
         }
     },
     mounted() {

@@ -94,7 +94,7 @@
                                             <template v-slot:content>
                                                 <div>
                                                     <img
-                                                        style="max-width:800px;max-height:800px;"
+                                                        style="max-width:1300px;max-height:1300px;"
                                                         class="tooltip-img"
                                                         :src="head_path+lv2.pic"
                                                         alt="图片加载中"
@@ -125,6 +125,14 @@
                 </li>
             </ul>
         </div>
+        <Page
+            class="table-page"
+            :total="total"
+            :pageNo.sync="pageNo"
+            :pageSize.sync="pageSize"
+            @updateNo="updateNo"
+            @updateSize="updateSize"
+        />
         <Dialog :show.sync="dia_show" :title="dia_title">
             <div class="dia-inner">
                 <div class="flex-center">
@@ -204,7 +212,10 @@ export default {
             mod_show: false,
             curr_list: {},
             curr_son_list: {},
-            del_status: ""
+            del_status: "",
+            total: 0,
+            pageNo: 1,
+            pageSize: 25,
         };
     },
     methods: {
@@ -468,9 +479,16 @@ export default {
                 console.log("返回数据", res);
                 if (res && res.code == "200") {
                     this.list = res.data.data || [];
-                    console.log("赋值", this.list);
+                    this.total=res.data.total
                 }
             });
+        },
+        updateNo(val) {
+            this.getList();
+        },
+        updateSize(val) {
+            this.pageNo = 1;
+            this.getList();
         },
         plantSelect(item) {
             this.curr_btn = item.value;

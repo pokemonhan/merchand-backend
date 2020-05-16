@@ -13,7 +13,7 @@
                 </li>
                 <li>
                     <span>银行名称</span>
-                    <Select style="width:120px;" v-model="filter.bank" :options="bank_opt"></Select>
+                    <Select input style="width:200px;" v-model="filter.bank" :options="bank_opt"></Select>
                 </li>
                 <li>
                     <span>银行卡号</span>
@@ -62,6 +62,7 @@
     </div>
 </template>
  <script>
+import axios from 'axios' 
 export default {
     name: 'BankCenter',
     data() {
@@ -91,17 +92,33 @@ export default {
             //mod
             mod_show: false,
             curr_row:{},
+            jsonList:{},
+            bankListData:[]
         }
     },
     methods: {
-        getSelectOpt(){
-            let { url, method } = this.$api.bank_sel_list;
-            this.$http({ url, method }).then(res => {
-                console.log('银行卡数据',res)
-                if (res && res.code == "200") {
-                    this.bank_opt = this.backToSelOpt(res.data);
+        //获取json资源
+        getJsonData(){
+            axios.get('http://pic.397017.com/common/linter.json').then(res=>{
+                console.log('json',res)
+                if(res && res.status=='200'){
+                    this.jsonList=res.data
+                    if(this.jsonList){
+                        let bankList=this.jsonList.system_banks_available
+                        if(bankList){
+                            let bankListPath=bankList.path
+                            // console.log('银行地址',bankListPath)
+                            axios.get(bankListPath).then(res=>{
+                                if(res && res.status=='200'){
+                                    this.bankListData=res.data
+                                    // console.log('银行列表',this.bankListData)
+                                    this.bank_opt=this.backToSelOpt(res.data)
+                                }
+                            })
+                        }
+                    }
                 }
-            });
+            })
         },
         backToSelOpt(list=[]){
             let all=[
@@ -111,7 +128,7 @@ export default {
                 }
             ];
             let back_list=list.map(item=>{
-                return {label:item.name,value:item.id};
+                return {label:item.name+'('+item.code+')',value:item.id};
             })
             return all.concat(back_list)
         },
@@ -169,7 +186,7 @@ export default {
     },
     mounted() {
         this.getList();
-        this.getSelectOpt();
+        this.getJsonData();
     }
 }
 </script>

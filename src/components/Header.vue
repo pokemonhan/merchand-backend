@@ -367,10 +367,10 @@ export default {
     watch: {
         $route(from, to) {
             if (from.path === '/login') {
-                console.log('222',from.path)
+                // console.log('222',from.path)
                 this.socket()
                 this.getList()
-                console.log('333',from.path)
+                // console.log('333',from.path)
             }
         }
     },

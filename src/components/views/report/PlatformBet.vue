@@ -87,9 +87,9 @@
                     <td>
                         <span :class="status_opt[row.status].color">{{status_opt[row.status].text}}</span>
                     </td>
-                    <td>{{row.their_create_time}}</td>
-                    <td>{{row.delivery_time}}</td>
-                    <td>{{row.created_at}}</td>
+                    <td>{{row.their_create_time || '--'}}</td>
+                    <td>{{row.delivery_time || '--'}}</td>
+                    <td>{{row.created_at || '--'}}</td>
                     <td>
                         <button class="btns-blue" @click="detailShow(row)" >详情</button>
                     </td>
@@ -366,6 +366,6 @@ export default {
     margin-left: 50px;
 }
 .detail-show{
-    
+
 }
 </style>

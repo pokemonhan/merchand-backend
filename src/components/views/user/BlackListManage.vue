@@ -23,7 +23,7 @@
                 </li>
                 <li>
                     <span>进入黑名单次数</span>
-                    <Input  style="width:100px" limit="number" v-model="filter.black_num" />
+                    <Input  style="width:100px" limit="p-integer" v-model="filter.black_num" />
                 </li>
                 <li>
                     <span>

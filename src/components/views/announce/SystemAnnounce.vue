@@ -4,10 +4,10 @@
         <div class="filter p10">
             <ul class="left">
                 <li>
-                    <button class="btn-blue" @click="add">添加公告</button>
+                    <button class="btn-blue" @click="add">添加系统公告</button>
                 </li>
                 <li>
-                    <span>公告标题</span>
+                    <span>系统公告标题</span>
                     <Input style="width:150px;" v-model="filter.header" />
                 </li>
                 <li>
@@ -193,7 +193,7 @@ export default {
                 header: ""
             },
             headers: [
-                "公告标题",
+                "系统公告标题",
                 "图片",
                 "设备",
                 "发布时间",

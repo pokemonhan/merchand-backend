@@ -23,7 +23,7 @@
                 class="show-select-label"
                 v-show="!input||!isShow"
             >{{selectedLabel?selectedLabel:placeholder}}</span>
-            <i v-if="clearable && isClear" @click.stop="clear" class="iconfont icon-icon-test"></i>
+            <i v-if="clearable && isClear" @click.stop="clear" class="iconfont iconcuowuguanbi-"></i>
             <span v-else :class="['drop-down', '', isShow ? 'icon-rotate' : '']"></span>
         </div>
         <ul :class="['sections', sectionsDir]" ref="sections">
@@ -62,7 +62,10 @@ export default {
             default: () => []
         },
         value: [Number, String], // 默认值
-        clearable: Boolean, // 是否可清空
+        clearable: {
+            type: Boolean,
+            default: true
+        }, // 是否可清空
         placeholder: String,
         // 当required为true时, 值为空,就会提示
         required: {
@@ -297,7 +300,8 @@ export default {
 .val-box i {
     display: inline-block;
     position: absolute;
-    right: 10px;
+    right: 3px;
+    font-size: 1.5em;
     transition: all 0.2s ease;
 }
 .val-box span {
@@ -375,6 +379,9 @@ export default {
 }
 .error-message .iconjinggao1- {
     font-size: 13px;
+}
+.iconcuowuguanbi-:hover {
+    color: rgb(255, 60, 0);
 }
 </style>
 

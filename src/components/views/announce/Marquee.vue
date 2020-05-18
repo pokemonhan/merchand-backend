@@ -4,10 +4,10 @@
         <div class="filter p10">
             <ul class="left">
                 <li>
-                    <button class="btn-blue" @click="addMarquee">添加公告</button>
+                    <button class="btn-blue" @click="addMarquee">添加跑马灯消息</button>
                 </li>
                 <li>
-                    <span>公告标题</span>
+                    <span>消息标题</span>
                     <Input v-model="filter.header" />
                 </li>
                 <li>
@@ -115,7 +115,7 @@ export default {
                 header: ""
             },
             headers: [
-                "公告标题",
+                "跑马灯消息标题",
                 "内容",
                 "设备",
                 "添加时间",

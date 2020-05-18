@@ -11,10 +11,10 @@
         <div class="filter search">
             <ul class="left">
                 <li>
-                    <button class="btn-blue" @click="add">添加公告</button>
+                    <button class="btn-blue" @click="add">添加登录弹窗公告</button>
                 </li>
                 <li>
-                    <span>公告标题</span>
+                    <span>登录弹窗公告标题</span>
                     <Input style="width:150px;" v-model="filter.title" />
                 </li>
                 <li>
@@ -146,7 +146,7 @@ export default {
                 title: ""
             },
             headers: [
-                "公告标题",
+                "登录弹窗公告标题",
                 "图片",
                 "发布时间",
                 "结束时间",

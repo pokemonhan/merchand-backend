@@ -315,7 +315,7 @@ export default {
             });
         },
         getList(){
-            console.log(111)
+            // console.log(111)
             if(!window.all.tool.getLocal('Authorization')) return
             
             let {method,url}=this.$api.header_notification_statistics

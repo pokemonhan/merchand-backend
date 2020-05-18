@@ -1121,6 +1121,7 @@ export default {
 <style scoped>
 .v-date-picker {
     /* width: 100%; */
+    font-size: 13px;
     height: 30px;
     line-height: 30px;
     position: relative;
@@ -1138,11 +1139,11 @@ export default {
     width: 160px;
 }
 .daterange {
-    min-width: 180px;
+    min-width: 200px;
     width: 14em;
 }
 .datetimerange {
-    width: 280px;
+    width: 300px;
 }
 /* .v-date-picker .date-str {
     font-size: 12px;
@@ -1192,13 +1193,21 @@ export default {
 }
 .date-box {
     position: absolute;
-    left: -30%;
+    left: 0;
+    margin-left: -20%;
     box-shadow: 0 1px 6px rgba(0, 0, 0, 0.2);
     border-radius: 4px;
     background: #fff;
     z-index: 10;
     overflow: hidden;
 }
+.date .date-box {
+    margin-left: -50%;
+}
+.daterange .date-box {
+    margin-left: -70%;
+}
+
 .date .date-box,
 .datetime .date-box {
     left: 0;

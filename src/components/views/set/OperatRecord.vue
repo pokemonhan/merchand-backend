@@ -297,15 +297,17 @@ export default {
             return result;
         },
         // 滚动加载
-        scroll(person) {
-            let isLoading = false;
-            let ele = this.$refs.operalog;
+        scroll() {
+            let isLoading = false
+            let ele = this.$refs.operalog
+            let max_scroll_top = 0
             ele.onscroll = () => {
                 // 距离底部200px时加载一次
                 let scrollHeight = ele.scrollHeight
                 let scrollTop = ele.scrollTop
                 // console.log('🍭 scrollTop: ', scrollTop)
                 let offsetHeight = ele.offsetHeight
+                /** 窗口底部距离 */
                 let bottomOfWindow = scrollHeight - scrollTop - offsetHeight
                 // console.log('🍹 isLoading: ', isLoading)
                 if (scrollTop > max_scroll_top) {
@@ -315,7 +317,6 @@ export default {
                 if (bottomOfWindow < 200 && isLoading == false) {
                     let totalPage = Math.ceil(this.total / this.pageSize)
                     // 如果是加载到最后一条,不执行()
-
                     if (this.pageNo === totalPage) {
                         if (scrollTop >= max_scroll_top) {
                             this.$toast.warning('已是最后一条')

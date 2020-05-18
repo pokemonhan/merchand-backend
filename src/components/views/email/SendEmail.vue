@@ -328,7 +328,7 @@ export default {
                     let imgHtml = `<img src="${this.picPrefix}${this.pic_data}" alt="图片加载失败">`
                     this.editor.txt.append(imgHtml)
                 }
-            })
+            }) 
             // let reader = new FileReader()
             // reader.readAsDataURL(file)
             // reader.onerror = function() {

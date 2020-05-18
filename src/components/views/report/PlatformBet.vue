@@ -71,22 +71,28 @@
         <div class="table">
             <Table :headers="headers" :column="list">
                 <template v-slot:item="{row}">
-                    <td>{{row.a1}}</td>
-                    <td>{{row.a2}}</td>
-                    <td>{{row.a3}}</td>
-                    <td>{{row.a4}}</td>
-                    <td>{{row.a5}}</td>
-                    <td>{{row.a6}}</td>
-                    <td>{{row.a7}}</td>
-                    <td>{{row.a8}}</td>
-                    <td>{{row.a9}}</td>
-                    <td>{{row.a10}}</td>
-                    <td>
-                        <span :class="status_opt[row.a11].color">{{status_opt[row.a11].text}}</span>
+                    <td>{{row.serial_number || '--'}}</td>
+                    <td>{{row.mobile || '--'}}</td>
+                    <td>{{row.guid || '--'}}</td>
+                    <td>{{row.level_name || '--'}}</td>
+                    <td>{{row.game_vendor || '--'}}</td>
+                    <td>{{row.game_name || '--'}}</td>
+                    <td>{{row.bet_money || '--'}}</td>
+                    <td>{{row.effective_bet || '--'}}</td>
+                    <td>{{row.charged_fees || '--'}}</td>
+                    <td :class="row.win_money-row.bet_money>0?'green':'red' ">
+                        <span v-if="row.win_money-row.bet_money>0">+</span>
+                        {{row.win_money-row.bet_money || '--'}}
                     </td>
-                    <td>{{row.a12}}</td>
-                    <td>{{row.a13}}</td>
-                    <td>{{row.a14}}</td>
+                    <td>
+                        <span :class="status_opt[row.status].color">{{status_opt[row.status].text}}</span>
+                    </td>
+                    <td>{{row.their_create_time}}</td>
+                    <td>{{row.delivery_time}}</td>
+                    <td>{{row.created_at}}</td>
+                    <td>
+                        <button class="btns-blue" @click="detailShow(row)" >详情</button>
+                    </td>
                 </template>
             </Table>
         </div>
@@ -130,6 +136,15 @@
                 </div>
             </div>
         </Dialog>
+        <Dialog :show.sync="detail_show" title="详情">
+            <div class="detail-show">
+                <ul>
+                    <li>三方通知单号号：{{detailList.their_notifyId}}</li>
+                    <li>用户名：{{detailList.username}}</li>
+                    <li>IP：{{detailList.ip}}</li>
+                </ul>
+            </div>
+        </Dialog>
     </div>
 </template>
 
@@ -139,6 +154,13 @@ export default {
     name: 'PlatFormbet',
     data() {
         return {
+            dHeaders:[
+                '三方通知单号',
+                '用户名',
+                'ip',
+            ],
+            detailList:[],
+            detail_show:false,
             quick_query: [],
             filter: {
                 account: '',
@@ -147,8 +169,11 @@ export default {
                 payOut_status: '',
                 user_payOut_status: [
                     { label: '全部', value: '' },
-                    { label: '已派彩', value: '1' },
-                    { label: '未派彩', value: '2' }
+                    { label: '已投注', value:'0'},
+                    { label: '已撤销', value: '1' },
+                    { label: '未中奖', value: '2' },
+                    { label: '已中奖', value: '3'},
+                    { label: '已派奖', value: '4'}
                 ],
                 gaming: '',
                 order_num: '',
@@ -156,7 +181,7 @@ export default {
                 warehouse_dates: []
             },
             headers: [
-                '主单号',
+                '注单号',
                 '会员账号',
                 '会员ID',
                 'VIP等级',
@@ -169,45 +194,16 @@ export default {
                 '派彩状态',
                 '注单时间',
                 '派彩时间',
-                '入库时间'
+                '入库时间',
+                '详情'
             ],
-            list: [
-                {
-                    a1: 'D45678944654',
-                    a2: '13245678942',
-                    a3: '4563287',
-                    a4: 'VIP1',
-                    a5: '开元棋盘',
-                    a6: '抢注牛牛',
-                    a7: '100',
-                    a8: '100',
-                    a9: '0',
-                    a10: '-450',
-                    a11: '0',
-                    a12: '2019/09/25 18：17：30',
-                    a13: '2019/09/25 18：17：30',
-                    a14: '2019/09/25 18：17：30'
-                },
-                {
-                    a1: 'D45678944654',
-                    a2: '13245678942',
-                    a3: '4563287',
-                    a4: 'VIP1',
-                    a5: '开元棋盘',
-                    a6: '抢注牛牛',
-                    a7: '100',
-                    a8: '100',
-                    a9: '0',
-                    a10: '-450',
-                    a11: '1',
-                    a12: '2019/09/25 18：17：30',
-                    a13: '2019/09/25 18：17：30',
-                    a14: '2019/09/25 18：17：30'
-                }
-            ],
+            list: [],
             status_opt: {
-                '1': { text: '已派彩', color: 'green' },
-                '0': { text: '未派彩', color: 'red' }
+                '0': { text: '已投注', color: 'yellow' },
+                '1': { text: '已撤销', color: 'orange' },
+                '2': { text: '未中奖', color: 'red'},
+                '3': { text: '已中奖', color: 'blue'},
+                '4': { text: '已派奖', color: 'green'},
             },
             total: 100,
             pageNo: 1,
@@ -221,6 +217,10 @@ export default {
         }
     },
     methods: {
+        detailShow(row){
+            this.detail_show=true
+            this.detailList=row
+        },
         qqUpd(dates) {
             let arr = [dates[0] + ' 00:00:00', dates[1] + ' 00:00:00']
             this.$set(this.filter, 'dates', arr)
@@ -272,9 +272,45 @@ export default {
             }
         },
         updateNo(val) {},
-        updateSize(val) {}
+        updateSize(val) {},
+        getList(){
+            let delivery_time="";
+            if(this.filter.dates[0] && this.filter.dates[1]){
+                delivery_time=JSON.stringify([this.filter.dates[0],this.filter.dates[1]])
+            }
+            let their_create_time="";
+            if(this.filter.bet_slip_dates[0] && this.filter.bet_slip_dates[1]){
+                their_create_time=JSON.stringify([this.filter.bet_slip_dates[0],this.filter.bet_slip_dates[1]])
+            }
+            let created_at="";
+            if(this.filter.warehouse_dates[0] && this.filter.warehouse_dates[1]){
+                created_at=JSON.stringify([this.filter.warehouse_dates[0],this.filter.warehouse_dates[1]])
+            }
+            let datas={
+                mobile:this.filter.account,
+                guid:this.filter.userid,
+                delivery_time:delivery_time,
+                status:this.filter.payOut_status,
+                game_vendor_sign:this.filter.gaming,
+                serial_number:this.filter.order_num,
+                their_create_time:their_create_time,
+                created_at:created_at,
+            }
+            console.log('请求数据',datas)
+            let data=window.all.tool.rmEmpty(datas)
+            let {method,url}=this.$api.platform_note_list
+            this.$http({method,url,data}).then(res=>{
+                console.log('请求返回数据',res)
+                if(res && res.code=='200'){
+                    this.list=res.data.data
+                    this.total=res.data.total
+                }
+            })
+        },
     },
-    mounted() {}
+    mounted() {
+        this.getList();
+    }
 }
 </script>
 
@@ -328,5 +364,8 @@ export default {
 }
 .ml50 {
     margin-left: 50px;
+}
+.detail-show{
+    
 }
 </style>

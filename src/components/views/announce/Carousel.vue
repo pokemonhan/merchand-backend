@@ -19,7 +19,7 @@
                     <li>
                         <span>活动图片：</span>
                         <div
-                            style="width:300px;height:140px;border:1px solid #ddd;text-align:center"
+                            style="width:300px;height:140px;border:1px solid #ddd;display:inline;text-align:center"
                         >
                             <img v-if="pic_data" style="max-width:290px;max-height:140px;" :src="pic_data" />
                         </div>

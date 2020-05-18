@@ -94,7 +94,7 @@
                                             <template v-slot:content>
                                                 <div>
                                                     <img
-                                                        style="max-width:1300px;max-height:1300px;"
+                                                        style="max-width:1100px;max-height:1000px;"
                                                         class="tooltip-img"
                                                         :src="head_path+lv2.pic"
                                                         alt="图片加载中"

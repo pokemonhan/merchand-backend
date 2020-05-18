@@ -11,12 +11,12 @@ export default {
     // 公共分类 - 上传图片-保存至书库，获取图片存储路径
     update_picture_database: {
         url: '/merchant-api/upload',
-        method:'post'
+        method: 'post'
     },
     //获取静态json资源
-    get_json_static_resources:{
-        url:'http://pic.397017.com/common/linter.json',
-        method:'get'
+    get_json_static_resources: {
+        url: 'http://pic.397017.com/common/linter.json',
+        method: 'get'
     },
 
     /*=========================== 登录登出 ===========================--*/
@@ -51,44 +51,44 @@ export default {
         method: 'post'
     },
     //会员列表 - 添加账号
-    user_list_add:{
-        url:'/merchant-api/frontend-user/store',
-        method:'post'
+    user_list_add: {
+        url: '/merchant-api/frontend-user/store',
+        method: 'post'
     },
     //会员列表 - 详情
-    user_list_detail:{
-        url:'/merchant-api/frontend-user/detail',
-        method:'post'
+    user_list_detail: {
+        url: '/merchant-api/frontend-user/detail',
+        method: 'post'
     },
     //会员列表 - 重置登录密码
-    user_list_reset_login_password:{
-        url:'/merchant-api/frontend-user/password/reset',
-        method:'post'
+    user_list_reset_login_password: {
+        url: '/merchant-api/frontend-user/password/reset',
+        method: 'post'
     },
     //会员列表 - 重置取款密码
-    user_list_reset_without_password:{
-        url:'/merchant-api/frontend-user/withdrawals-password/reset',
-        method:'post'
+    user_list_reset_without_password: {
+        url: '/merchant-api/frontend-user/withdrawals-password/reset',
+        method: 'post'
     },
     //会员列表 - 清空支付宝
-    user_list_clear_alipay:{
-        url:'/merchant-api/frontend-user/login-log',
-        method:'post'
+    user_list_clear_alipay: {
+        url: '/merchant-api/frontend-user/login-log',
+        method: 'post'
     },
     //会员列表 - 解锁
-    user_list_unlock:{
-        url:'/merchant-api/frontend-user/unlock',
-        method:'post'
+    user_list_unlock: {
+        url: '/merchant-api/frontend-user/unlock',
+        method: 'post'
     },
     //会员列表 - 修改会员标签
-    user_list_tag_edit:{
-        url:'/merchant-api/frontend-user/label',
-        method:'post'
+    user_list_tag_edit: {
+        url: '/merchant-api/frontend-user/label',
+        method: 'post'
     },
     //会员列表 - 加入黑名单
-    user_list_add_blackList:{
-        url:'/merchant-api/frontend-user/black',
-        method:'post'
+    user_list_add_blackList: {
+        url: '/merchant-api/frontend-user/black',
+        method: 'post'
     },
     // 会员列表 - 登记记录
     user_login_log_list: {
@@ -185,230 +185,230 @@ export default {
 
     /*=========================== 财务管理 ===========================--*/
     // ----入款订单 - 列表
-    founds_incomeorder_list:{
-        url:'/merchant-api/recharge-order/index',
-        method:'post'
+    founds_incomeorder_list: {
+        url: '/merchant-api/recharge-order/index',
+        method: 'post'
     },
 
     // ----入款订单 - 获取支付方式
-    founds_incomeorder_pay_method:{
-        url:'/merchant-api/recharge-order/get-finance-types',
-        method:'post'
+    founds_incomeorder_pay_method: {
+        url: '/merchant-api/recharge-order/get-finance-types',
+        method: 'post'
     },
 
     // ---- 入款订单 - 手动入款
-    founds_incomeorder_Manual_deposit:{
-        url:'/merchant-api/recharge-order/handle-success',
-        method:'post'
+    founds_incomeorder_Manual_deposit: {
+        url: '/merchant-api/recharge-order/handle-success',
+        method: 'post'
     },
-    
+
     // ---- 入款订单 - 审核通过
-    founds_incomeorder_examination_passed:{
-        url:'/merchant-api/recharge-order/check-pass',
-        method:'post'
+    founds_incomeorder_examination_passed: {
+        url: '/merchant-api/recharge-order/check-pass',
+        method: 'post'
     },
 
     // ----入款订单 - 审核拒绝
-    founds_incomeorder_examination_rejected:{
-        url:'/merchant-api/recharge-order/check-refuse',
-        method:'post'
+    founds_incomeorder_examination_rejected: {
+        url: '/merchant-api/recharge-order/check-refuse',
+        method: 'post'
     },
 
     // ----人工存取 - 人工充值
-    founds_manualaccess_artificial_recharge:{
-        url:'/merchant-api/handle-save-buckle/handle-save',
-        method:'post'
+    founds_manualaccess_artificial_recharge: {
+        url: '/merchant-api/handle-save-buckle/handle-save',
+        method: 'post'
     },
 
     // ---- 人工存取 - 人工存款记录
-    founds_manualaccess_artificial_recharge_recording:{
-        url:'/merchant-api/handle-save-buckle/save-index',
-        method:'post'
+    founds_manualaccess_artificial_recharge_recording: {
+        url: '/merchant-api/handle-save-buckle/save-index',
+        method: 'post'
     },
 
     // ---- 人工存取 - 人工扣款
-    founds_manualaccess_artificial_charge:{
-        url:'/merchant-api/handle-save-buckle/handle-buckle',
-        method:'post'
+    founds_manualaccess_artificial_charge: {
+        url: '/merchant-api/handle-save-buckle/handle-buckle',
+        method: 'post'
     },
 
     // ---- 人工存取 - 人工扣款记录
-    founds_manualaccess_artificial_charge_recording:{
-        url:'/merchant-api/handle-save-buckle/buckle-index',
-        method:'get'
+    founds_manualaccess_artificial_charge_recording: {
+        url: '/merchant-api/handle-save-buckle/buckle-index',
+        method: 'get'
     },
 
     // ---- 出款审核 - 列表
-    founds_interface_list:{
-        url:'/merchant-api/withdraw-order/check-index',
-        method:'post'
+    founds_interface_list: {
+        url: '/merchant-api/withdraw-order/check-index',
+        method: 'post'
     },
 
     // ---- 出款审核 - 审核通过
-    founds_interface_examination_passed:{
-        url:'/merchant-api/withdraw-order/check-pass',
-        method:'post'
+    founds_interface_examination_passed: {
+        url: '/merchant-api/withdraw-order/check-pass',
+        method: 'post'
     },
 
     // ---- 出款审核 - 审核拒绝
-    founds_interface_examination_rejected:{
-        url:'/merchant-api/withdraw-order/check-refuse',
-        method:'post'
+    founds_interface_examination_rejected: {
+        url: '/merchant-api/withdraw-order/check-refuse',
+        method: 'post'
     },
     // ---- 出款审核 - 查看稽核
-    founds_interface_examination_view_audit:{
-        url:'/merchant-api/withdraw-order/audit',
-        method:'post'
+    founds_interface_examination_view_audit: {
+        url: '/merchant-api/withdraw-order/audit',
+        method: 'post'
     },
     // ---- 出款订单 - 列表
-    founds_paymentorder_list:{
-        url:'/merchant-api/withdraw-order/out-index',
-        method:'post'
+    founds_paymentorder_list: {
+        url: '/merchant-api/withdraw-order/out-index',
+        method: 'post'
     },
 
     // ---- 出款订单 - 出款通过
-    founds_paymentorder_examination_passed:{
-        url:'/merchant-api/withdraw-order/out-success',
-        method:'post'
+    founds_paymentorder_examination_passed: {
+        url: '/merchant-api/withdraw-order/out-success',
+        method: 'post'
     },
 
     // ---- 出款订单 - 出款拒绝
-    founds_paymentorder_examination_rejected:{
-        url:'/merchant-api/withdraw-order/out-refuse',
-        method:'post'
+    founds_paymentorder_examination_rejected: {
+        url: '/merchant-api/withdraw-order/out-refuse',
+        method: 'post'
     },
     // 资金账变
     // ---- 资金账变 - 列表
-    capital_account_change_list:{
-        url:'/merchant-api/user-account/index',
-        method:'post'
+    capital_account_change_list: {
+        url: '/merchant-api/user-account/index',
+        method: 'post'
     },
     // ---- 资金账变 - 账变类型列表
-    type_of_fund_account_change_list:{
-        url:'/merchant-api/user-account/account-type',
-        method:'post'
+    type_of_fund_account_change_list: {
+        url: '/merchant-api/user-account/account-type',
+        method: 'post'
     },
     /*=========================== 公告管理 ===========================--*/
     // 跑马灯消息 - 添加
-    announce_marquee_add:{
-        url:'/merchant-api/marquee-notice/add-do',
-        method:'post'
+    announce_marquee_add: {
+        url: '/merchant-api/marquee-notice/add-do',
+        method: 'post'
     },
 
     //跑马灯消息 - 列表
-    announce_marquee_list:{
-        url:'/merchant-api/marquee-notice/index',
-        method:'post'
+    announce_marquee_list: {
+        url: '/merchant-api/marquee-notice/index',
+        method: 'post'
     },
 
     //跑马灯消息 - 编辑
-    announce_marquee_edit:{
-        url:'/merchant-api/marquee-notice/edit',
-        method:'post'
+    announce_marquee_edit: {
+        url: '/merchant-api/marquee-notice/edit',
+        method: 'post'
     },
 
     //跑马灯消息 - 删除
-    announce_marquee_del:{
-        url:'/merchant-api/marquee-notice/del-do',
-        method:'post'
+    announce_marquee_del: {
+        url: '/merchant-api/marquee-notice/del-do',
+        method: 'post'
     },
 
     //跑马灯消息 - 改变状态
-    announce_marquee_change_status:{
-        url:'/merchant-api/marquee-notice/status',
-        method:'post'
+    announce_marquee_change_status: {
+        url: '/merchant-api/marquee-notice/status',
+        method: 'post'
     },
 
     // 系统公告 - 添加
-    announce_systemannounce_add:{
-        url:'/merchant-api/system-notice/add-do',
-        method:'post'
+    announce_systemannounce_add: {
+        url: '/merchant-api/system-notice/add-do',
+        method: 'post'
     },
 
     // 系统公告 - 列表
-    announce_systemannounce_list:{
-        url:'/merchant-api/system-notice/index',
-        method:'post'
+    announce_systemannounce_list: {
+        url: '/merchant-api/system-notice/index',
+        method: 'post'
     },
 
     // 系统公告 - 编辑
-    announce_systemannounce_edit:{
-        url:'/merchant-api/system-notice/edit',
-        method:'post'
+    announce_systemannounce_edit: {
+        url: '/merchant-api/system-notice/edit',
+        method: 'post'
     },
 
     // 系统公告 - 改变状态
-    announce_systemannounce_change_status:{
-        url:'/merchant-api/system-notice/status',
-        method:'post'
+    announce_systemannounce_change_status: {
+        url: '/merchant-api/system-notice/status',
+        method: 'post'
     },
 
     //系统公告 - 删除
-    announce_systemannounce_del:{
-        url:'/merchant-api/system-notice/del-do',
-        method:'post'
+    announce_systemannounce_del: {
+        url: '/merchant-api/system-notice/del-do',
+        method: 'post'
     },
 
 
     // 登录弹窗公告 - 添加
-    announce_loginpopup_add:{
-        url:'/merchant-api/login-notice/add-do',
-        method:'post'
+    announce_loginpopup_add: {
+        url: '/merchant-api/login-notice/add-do',
+        method: 'post'
     },
 
     // 登录弹窗公告 - 列表
-    announce_loginpopup_list:{
-        url:'/merchant-api/login-notice/index',
-        method:'post'
+    announce_loginpopup_list: {
+        url: '/merchant-api/login-notice/index',
+        method: 'post'
     },
 
     //登录弹窗公告 - 编辑
-    announce_loginpopup_edit:{
-        url:'/merchant-api/login-notice/edit',
-        method:'post'
+    announce_loginpopup_edit: {
+        url: '/merchant-api/login-notice/edit',
+        method: 'post'
     },
 
     // 登录弹窗公告 - 改变状态
-    announce_loginpopup_change_status:{
-        url:'/merchant-api/login-notice/status',
-        method:'post'
+    announce_loginpopup_change_status: {
+        url: '/merchant-api/login-notice/status',
+        method: 'post'
     },
 
     //登录弹窗公告 - 删除
-    announce_loginpopup_del:{
-        url:'/merchant-api/login-notice/del-do',
-        method:'post'
+    announce_loginpopup_del: {
+        url: '/merchant-api/login-notice/del-do',
+        method: 'post'
     },
 
-    
+
     // 轮播公告 - 添加
-    announce_carousel_add:{
-        url:'/merchant-api/carousel-notice/add-do',
-        method:'post'
+    announce_carousel_add: {
+        url: '/merchant-api/carousel-notice/add-do',
+        method: 'post'
     },
 
     //轮播公告 - 列表
-    announce_carousel_list:{
-        url:'/merchant-api/carousel-notice/index',
-        method:'post'
+    announce_carousel_list: {
+        url: '/merchant-api/carousel-notice/index',
+        method: 'post'
     },
 
     //轮播公告 - 编辑
-    announce_carousel_edit:{
-        url:'/merchant-api/carousel-notice/edit',
-        method:'post'
+    announce_carousel_edit: {
+        url: '/merchant-api/carousel-notice/edit',
+        method: 'post'
     },
 
     //轮播公告 - 改变状态
-    announce_carousel_change_status:{
-        url:'/merchant-api/carousel-notice/status',
-        method:'post'
+    announce_carousel_change_status: {
+        url: '/merchant-api/carousel-notice/status',
+        method: 'post'
     },
 
     //轮播公告 - 删除
-    announce_carousel_del:{
-        url:'/merchant-api/carousel-notice/del-do',
-        method:'post'
+    announce_carousel_del: {
+        url: '/merchant-api/carousel-notice/del-do',
+        method: 'post'
     },
 
 
@@ -442,9 +442,14 @@ export default {
 
     /*=========================== 报表管理 ===========================--*/
     //会员稽核 - 列表
-    member_audit_list:{
-        url:'/merchant-api/report/user-audit',
-        method:'post'
+    member_audit_list: {
+        url: '/merchant-api/report/user-audit',
+        method: 'post'
+    },
+    //平台注单 - 列表
+    platform_note_list: {
+        url: '/merchant-api/report/game-project',
+        method: 'post'
     },
     /*=========================== 游戏管理 ===========================--*/
 
@@ -474,13 +479,13 @@ export default {
         method: 'post',
     },
     //游戏列表-公用接口-排序
-    game_order:{
-        url:'/merchant-api/game/sort',
-        method:'post'
+    game_order: {
+        url: '/merchant-api/game/sort',
+        method: 'post'
     },
     // 游戏列表 - 公用接口 - 图片上传
     picture_update: {
-        url:'/merchant-api/game/icon',
+        url: '/merchant-api/game/icon',
         method: 'post',
     },
 
@@ -537,46 +542,46 @@ export default {
     },
 
     /*=========================== 活动管理 ===========================--*/
-   
+
     //静态活动 - 添加
-    static_active_add:{
-        url:'/merchant-api/activity-static/add-do',
-        method:'post'
+    static_active_add: {
+        url: '/merchant-api/activity-static/add-do',
+        method: 'post'
     },
     //静态活动 - 列表
-    static_active_list:{
-        url:'/merchant-api/activity-static/index',
-        method:'post'
+    static_active_list: {
+        url: '/merchant-api/activity-static/index',
+        method: 'post'
     },
     //静态活动 - 编辑
-    static_active_edit:{
-        url:'/merchant-api/activity-static/edit',
-        method:'post'
+    static_active_edit: {
+        url: '/merchant-api/activity-static/edit',
+        method: 'post'
     },
     //静态活动 - 改变状态
-    static_active_change_status:{
-        url:'/merchant-api/activity-static/status',
-        method:'post'
+    static_active_change_status: {
+        url: '/merchant-api/activity-static/status',
+        method: 'post'
     },
     //静态活动 - 删除
-    static_active_delte:{
-        url:'/merchant-api/activity-static/del-do',
-        method:'post'
+    static_active_delte: {
+        url: '/merchant-api/activity-static/del-do',
+        method: 'post'
     },
     //动态活动 - 列表
-    dynamic_active_list:{
-        url:'/merchant-api/activity-dyn/index',
-        method:'post'
+    dynamic_active_list: {
+        url: '/merchant-api/activity-dyn/index',
+        method: 'post'
     },
     //动态活动 - 改变状态
-    dynamic_active_change_status:{
-        url:'/merchant-api/activity-dyn/status',
-        method:'post'
+    dynamic_active_change_status: {
+        url: '/merchant-api/activity-dyn/status',
+        method: 'post'
     },
     //动态活动 - 上传图片
-    dynamic_active_upload_pic:{
-        url:'/merchant-api/activity-dyn/save-pic',
-        method:'post'
+    dynamic_active_upload_pic: {
+        url: '/merchant-api/activity-dyn/save-pic',
+        method: 'post'
     },
 
     /*=========================== 金流管理 ===========================--*/
@@ -660,14 +665,14 @@ export default {
         method: 'post',
     },
     //出款银行管理 - 列表
-    payment_bank_list:{
-        url:'/merchant-api/online-finance/bank/index',
-        method:'post'
+    payment_bank_list: {
+        url: '/merchant-api/online-finance/bank/index',
+        method: 'post'
     },
     //出款银行管理 - 改变状态
-    payment_bank_status:{
-        url:'/merchant-api/online-finance/bank/status',
-        method:'post'
+    payment_bank_status: {
+        url: '/merchant-api/online-finance/bank/status',
+        method: 'post'
     },
 
 
@@ -719,49 +724,49 @@ export default {
         method: 'post'
     },
     //管理员 - 修改状态
-    admin_user_status_set:{
-        url:'/merchant-api/merchant-admin-user/switch-admin',
-        method:'post'
+    admin_user_status_set: {
+        url: '/merchant-api/merchant-admin-user/switch-admin',
+        method: 'post'
     },
     // 管理员 - 修改密码
-    admin_user_other_pwd_set:{
-        url:'/merchant-api/merchant-admin-user/update-password',
-        method:'post'
+    admin_user_other_pwd_set: {
+        url: '/merchant-api/merchant-admin-user/update-password',
+        method: 'post'
     },
     // 全域设置 - 列表
-    allarea_set_list:{
-        url:'/merchant-api/config/index',
-        method:'get'
+    allarea_set_list: {
+        url: '/merchant-api/config/index',
+        method: 'get'
     },
     //  全域设置 - 保存设置
-    allarea_set_save:{
-        url:'/merchant-api/config/edit',
-        method:'post'
+    allarea_set_save: {
+        url: '/merchant-api/config/edit',
+        method: 'post'
     },
     //推广图片配置 - 列表
-    promotion_configuration_list:{
-        url:'/merchant-api/promotion-pic/index',
-        method:'post'
+    promotion_configuration_list: {
+        url: '/merchant-api/promotion-pic/index',
+        method: 'post'
     },
     //推广图片配置 - 添加
-    promotion_configuration_add:{
-        url:'/merchant-api/promotion-pic/do-add',
-        method:'post'
+    promotion_configuration_add: {
+        url: '/merchant-api/promotion-pic/do-add',
+        method: 'post'
     },
     //推广图片配置 - 编辑
-    promotion_configuration_edit:{
-        url:'/merchant-api/promotion-pic/edit',
-        method:'post'
+    promotion_configuration_edit: {
+        url: '/merchant-api/promotion-pic/edit',
+        method: 'post'
     },
     //推广图片配置 - 删除
-    promotion_configuration_del:{
-        url:'/merchant-api/promotion-pic/delete',
-        method:'post'
+    promotion_configuration_del: {
+        url: '/merchant-api/promotion-pic/delete',
+        method: 'post'
     },
     //操作记录 - 列表
-    operation_record_list:{
-        url:'/merchant-api/operation-log/index',
-        method:'post'
+    operation_record_list: {
+        url: '/merchant-api/operation-log/index',
+        method: 'post'
     },
     // ------- 客服设置 ----------------
     // 客服设置-列表
@@ -814,20 +819,20 @@ export default {
         method: 'post',
     },
     //银行卡反查中心-列表
-    bank_cards_list:{
-        url:'/merchant-api/bank-cards/index',
-        method:'post',
+    bank_cards_list: {
+        url: '/merchant-api/bank-cards/index',
+        method: 'post',
     },
     //银行卡反查中心 - 银行列表
-    bank_sel_list:{
-        url:'/merchant-api/bank-cards/bank-list',
-        method:'get'
+    bank_sel_list: {
+        url: '/merchant-api/bank-cards/bank-list',
+        method: 'get'
     },
 
     //---------顶部通知
     //顶部通知统计
-    header_notification_statistics:{
-        url:'/merchant-api/notification/statistic',
-        method:'get'
+    header_notification_statistics: {
+        url: '/merchant-api/notification/statistic',
+        method: 'get'
     },
 };

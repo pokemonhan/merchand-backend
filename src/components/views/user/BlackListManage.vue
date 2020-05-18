@@ -23,11 +23,16 @@
                 </li>
                 <li>
                     <span>进入黑名单次数</span>
-                    <Input  style="width:100px" limit="p-integer" v-model="filter.black_num" />
+                    <Input
+                        style="width:100px"
+                        errmsg="格式错误"
+                        :showerr="errNumShow(filter.black_num)"
+                        v-model="filter.black_num"
+                    />
                 </li>
                 <li>
                     <span>
-                        <button class="btn-blue" @click="getList">查询</button>
+                        <button class="btn-blue" @click="getList()">查询</button>
                     </span>
                     <span>
                         <button class="btn-blue" @click="clearAll">清空</button>
@@ -187,6 +192,21 @@ export default {
         };
     },
     methods: {
+        //校验黑名单次数
+        errNumShow(val) {
+            if (!val) return false;
+            let reg = /^(0|[1-9][0-9]*)$/;
+
+            return !reg.test(val);
+        },
+        //校验查询条件
+        checkFilter() {
+            let reg = /^(0|[1-9][0-9]*)$/;
+            if (!reg.test(this.filter.black_num) && this.filter.black_num != "") {
+                return false;
+            }
+            return true;
+        },
         timeUpdate() {
             // 同步快捷查询时间
             this.quick_query = this.filter.dates;
@@ -205,6 +225,7 @@ export default {
             this.quick_query = this.black.dates;
         },
         getList() {
+            if (!this.checkFilter()) return;
             let createAt = "";
             if (this.filter.dates[0] && this.filter.dates[1]) {
                 createAt = JSON.stringify([
@@ -216,6 +237,7 @@ export default {
                 mobile: this.filter.mobile,
                 guid: this.filter.guid,
                 created_at: createAt,
+                black_count: this.filter.black_num,
                 page: this.pageNo,
                 pageSize: this.pageSize
             };

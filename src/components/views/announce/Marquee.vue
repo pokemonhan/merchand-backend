@@ -19,7 +19,7 @@
             <Table :headers="headers" :column="list">
                 <template v-slot:item="{row}">
                     <td>{{row.title}}</td>
-                    <td>{{row.content}}</td>
+                    <td style="max-width:300px;">{{row.content}}</td>
                     <td>{{getDevice(row.device)}}</td>
                     <td>{{row.created_at}}</td>
                     <td>{{row.start_time}}</td>
@@ -82,7 +82,7 @@
                     </li>
                     <li>
                         <span>时间范围:</span>
-                        <Date type="datetimerange" style="width:280px;" v-model="form.dates" />
+                        <Date type="datetimerange" style="width:320px;" v-model="form.dates" />
                     </li>
                     <li class="status">
                         <span>状态选择:</span>
@@ -356,12 +356,12 @@ table {
     height: 500px;
 }
 .form {
-    width: 370px;
+    width: 390px;
     margin: 0 auto;
     /* border: 1px solid #000; */
 }
 .w250 {
-    width: 280px;
+    width: 320px;
 }
 .form > li {
     display: flex;
@@ -369,12 +369,13 @@ table {
     margin-top: 20px;
 }
 .form > li > span:first-child {
-    margin-right: 30px;
+    min-width:5em;
+    margin-right: 5px;
 }
 
 .announce-content {
     padding: 10px;
-    width: 280px;
+    width: 320px;
     min-height: 130px;
     border-radius: 4px;
     border: 1px solid #ddd;

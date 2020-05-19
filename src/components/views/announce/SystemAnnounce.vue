@@ -73,56 +73,64 @@
                                 maxlength="5"
                             />
                         </li>
-
                         <li>
                             <span>公告内容</span>
+                            <div class="pic-data">
+                                <img v-if="app_pic_data" :src="app_pic_data" />
+                            </div>
+                        </li>
+                        <li>
+                            <Upload
+                                style="width:110px;margin:0 auto"
+                                title="App图片上传"
+                                @change="upAppPicChange($event)"
+                                type="file"
+                            />
+                        </li>
+                        <li>
+                            <span style="width:60px;"></span>
+                            <div class="pic-data">
+                                <img v-if="pc_pic_data" :src="pc_pic_data" />
+                            </div>
+                        </li>
+                        <li>
+                            <Upload
+                                style="width:110px;margin:0 auto"
+                                title="PC图片上传"
+                                @change="upPcPicChange($event)"
+                                type="file"
+                            />
+                        </li>
+                        <li>
+                            <span style="width:60px;"></span>
+                            <div class="pic-data">
+                                <img v-if="h5_pic_data" :src="h5_pic_data" />
+                            </div>
+                        </li>
+                        <li>
+                            <Upload
+                                style="width:110px;margin:0 auto"
+                                title="H5图片上传"
+                                @change="upH5PicChange($event)"
+                                type="file"
+                            />
+                        </li>
+                        <!-- <li>
+                            <span style="width:60px;"></span>
                             <div class="upload-btn">
                                 <div>
                                     <Input style="width:124px;" v-model="form.app_pic_path" />
-                                    <Upload
-                                        style="width:110px"
-                                        title="App图片上传"
-                                        @change="upAppPicChange($event)"
-                                        type="file"
-                                    />
-                                    <button
-                                        style="width:60px;margin-left:4px"
-                                        class="btn-blue"
-                                        @click="appPreview"
-                                    >预览</button>
                                 </div>
 
                                 <div>
                                     <Input style="width:124px;" v-model="form.pc_pic_path" />
-                                    <Upload
-                                        style="width:110px"
-                                        title="PC图片上传"
-                                        @change="upPcPicChange($event)"
-                                        type="file"
-                                    />
-                                    <button
-                                        style="width:60px;margin-left:4px"
-                                        class="btn-blue"
-                                        @click="pcPreview"
-                                    >预览</button>
                                 </div>
 
                                 <div>
                                     <Input style="width:124px;" v-model="form.h5_pic_path" />
-                                    <Upload
-                                        style="width:110px"
-                                        title="H5图片上传"
-                                        @change="upH5PicChange($event)"
-                                        type="file"
-                                    />
-                                    <button
-                                        style="width:60px;margin-left:4px"
-                                        class="btn-blue"
-                                        @click="h5Preview"
-                                    >预览</button>
                                 </div>
                             </div>
-                        </li>
+                        </li>-->
 
                         <li>
                             <span>时间范围</span>
@@ -153,26 +161,6 @@
                 </div>
             </div>
         </Dialog>
-        <Dialog :show.sync="pic_dia_show" title="预览图片">
-            <img
-                class="max-w800"
-                :src="head_path+form.app_pic_path"
-                alt
-                v-if="showApp"
-            />
-            <img
-                class="max-w800"
-                :src="head_path+form.pc_pic_path"
-                alt
-                v-if="showPc"
-            />
-            <img
-                class="max-w800"
-                :src="head_path+form.h5_pic_path"
-                alt
-                v-if="showH5"
-            />
-        </Dialog>
         <Modal
             :show.sync="mod_show"
             title="删除"
@@ -186,7 +174,7 @@
 
 <script>
 export default {
-    name: 'SystemAnnounce',
+    name: "SystemAnnounce",
     data() {
         return {
             filter: {
@@ -223,10 +211,7 @@ export default {
             curr_pic_idx: -1,
             // model
             mod_show: false,
-            head_path:'',
-            showApp: "",
-            showPc: "",
-            showH5: "",
+            head_path: "",
             dia_status: "",
             device_name: {
                 1: "PC",
@@ -234,7 +219,13 @@ export default {
                 3: "APP"
             },
             curr_row: {},
-            protocol: window.location.protocol
+            protocol: window.location.protocol,
+            app_pic_data: "",
+            pc_pic_data: "",
+            h5_pic_data: "",
+            AppPicFile: {},
+            PcPicFile: {},
+            H5PicFile: {}
         };
     },
     methods: {
@@ -256,70 +247,43 @@ export default {
             this.getList();
         },
         upAppPicChange(e) {
-            let pic = e.target.files[0];
-            let basket = "announce/systemannounce/uploads/app";
-            let formList = new FormData();
-            formList.append("file", pic, pic.name);
-            formList.append("basket", basket);
-            let { url, method } = this.$api.update_picture_database;
-            let data = formList;
-            let headers = { "Content-Type": "multipart/form-data" };
-            this.$http({ method, url, data, headers }).then(res => {
-                // console.log(res)
-                if (res && res.code == "200") {
-                    this.$set(this.form, "app_pic_path", res.data.path);
-                }
-            });
+            let file = e.target.files[0];
+            let self = this;
+            let reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onerror = function() {
+                return;
+            };
+            reader.onload = function(file) {
+                self.app_pic_data = file.target.result;
+            };
+            this.AppPicFile = e;
         },
         upPcPicChange(e) {
-            let pic = e.target.files[0];
-            let basket = "announce/systemannounce/uploads/pc";
-            let formList = new FormData();
-            formList.append("file", pic, pic.name);
-            formList.append("basket", basket);
-            let { url, method } = this.$api.update_picture_database;
-            let data = formList;
-            let headers = { "Content-Type": "multipart/form-data" };
-            this.$http({ method, url, data, headers }).then(res => {
-                console.log('检查',res)
-                if (res && res.code == "200") {
-                    this.$set(this.form, "pc_pic_path", res.data.path);
-                }
-            });
+            let file = e.target.files[0];
+            let self = this;
+            let reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onerror = function() {
+                return;
+            };
+            reader.onload = function(file) {
+                self.pc_pic_data = file.target.result;
+            };
+            this.PcPicFile = e;
         },
         upH5PicChange(e) {
-            let pic = e.target.files[0];
-            let basket = "announce/systemannounce/uploads/h5";
-            let formList = new FormData();
-            formList.append("file", pic, pic.name);
-            formList.append("basket", basket);
-            let { url, method } = this.$api.update_picture_database;
-            let data = formList;
-            let headers = { "Content-Type": "multipart/form-data" };
-            this.$http({ method, url, data, headers }).then(res => {
-                // console.log(res)
-                if (res && res.code == "200") {
-                    this.$set(this.form, "h5_pic_path", res.data.path);
-                }
-            });
-        },
-        appPreview() {
-            this.pic_dia_show = true;
-            this.showApp = true;
-            this.showPc = false;
-            this.showH5 = false;
-        },
-        pcPreview() {
-            this.pic_dia_show = true;
-            this.showPc = true;
-            this.showH5 = false;
-            this.showApp = false;
-        },
-        h5Preview() {
-            this.pic_dia_show = true;
-            this.showH5 = true;
-            this.showApp = false;
-            this.showPc = false;
+            let file = e.target.files[0];
+            let self = this;
+            let reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onerror = function() {
+                return;
+            };
+            reader.onload = function(file) {
+                self.h5_pic_data = file.target.result;
+            };
+            this.H5PicFile = e;
         },
         initForm() {
             this.form = {
@@ -335,7 +299,6 @@ export default {
             this.dia_show = true;
             this.initForm();
         },
-
         edit(row) {
             this.dia_title = "编辑";
             this.dia_status = "edit";
@@ -347,7 +310,7 @@ export default {
                 app_pic_path: row.app_pic,
                 pc_pic_path: row.pc_pic,
                 h5_pic_path: row.h5_pic,
-                dates: [row.start_time,row.end_time],
+                dates: [row.start_time, row.end_time],
                 status: String(row.status)
             };
         },
@@ -374,32 +337,100 @@ export default {
         },
         diaCfm() {
             if (this.dia_status === "add") {
-                this.addCfm();
+                this.addConfCfm();
             }
             if (this.dia_status === "edit") {
                 this.editCfm();
             }
         },
+        //上传图片
+        upLoadAppPic() {
+            return new Promise(resolve => {
+                let e = this.AppPicFile;
+                let pic = e.target.files[0];
+                let basket = "announce/systemannounce/uploads/app";
+                let formList = new FormData();
+                formList.append("file", pic, pic.name);
+                formList.append("basket", basket);
+                let { url, method } = this.$api.update_picture_database;
+                let data = formList;
+                let headers = { "Content-Type": "multipart/form-data" };
+                this.$http({ method, url, data, headers }).then(res => {
+                    // console.log(res)
+                    if (res && res.code == "200") {
+                        this.app_pic_data = res.data.path;
+                        resolve(res.data.path);
+                    }
+                });
+            });
+        },
+        uploadPcPic() {
+            return new Promise(resolve => {
+                let e = this.PcPicFile;
+                let pic = e.target.files[0];
+                let basket = "announce/systemannounce/uploads/pc";
+                let formList = new FormData();
+                formList.append("file", pic, pic.name);
+                formList.append("basket", basket);
+                let { url, method } = this.$api.update_picture_database;
+                let data = formList;
+                let headers = { "Content-Type": "multipart/form-data" };
+                this.$http({ method, url, data, headers }).then(res => {
+                    console.log("检查", res);
+                    if (res && res.code == "200") {
+                        this.pc_pic_data = res.data.path;
+                        resolve(res.data.path);
+                    }
+                });
+            });
+        },
+        uploadH5Pic() {
+            return new Promise(resolve => {
+                let e = this.H5PicFile;
+                let pic = e.target.files[0];
+                let basket = "announce/systemannounce/uploads/h5";
+                let formList = new FormData();
+                formList.append("file", pic, pic.name);
+                formList.append("basket", basket);
+                let { url, method } = this.$api.update_picture_database;
+                let data = formList;
+                let headers = { "Content-Type": "multipart/form-data" };
+                this.$http({ method, url, data, headers }).then(res => {
+                    // console.log(res)
+                    if (res && res.code == "200") {
+                        this.h5_pic_data = res.data.path;
+                        resolve(res.data.path)
+                    }
+                });
+            });
+        },
         addCfm() {
+
             let data = {
                 title: this.form.title,
-                h5_pic: this.form.h5_pic_path,
-                pc_pic: this.form.pc_pic_path,
-                app_pic: this.form.app_pic_path,
+                h5_pic: this.h5_pic_data,
+                pc_pic: this.pc_pic_data,
+                app_pic: this.app_pic_data,
                 start_time: this.form.dates[0],
                 end_time: this.form.dates[1],
                 status: this.form.status
             };
-            // console.log('请求数据',data)
+            console.log("请求数据", data);
             let { url, method } = this.$api.announce_systemannounce_add;
             this.$http({ method, url, data }).then(res => {
-                // console.log('返回数据',res)
+                console.log("返回数据", res);
                 if (res && res.code == "200") {
                     this.$toast.success(res && res.message);
                     this.dia_show = false;
                     this.getList();
                 }
             });
+        },
+        async addConfCfm() {
+            // await this.upLoadAppPic();
+            await this.upLoadPcPic();
+            // await this.upLoadH5Pic();
+            this.addCfm();
         },
         getList() {
             let datas = {
@@ -447,14 +478,12 @@ export default {
                     this.$toast.success(res && res.message);
                     this.mod_show = false;
                     this.getList();
-
-                    
                 }
             });
         }
     },
     mounted() {
-        this.head_path=this.protocol+'//pic.397017.com/'
+        this.head_path = this.protocol + "//pic.397017.com/";
         this.getList();
     }
 };
@@ -463,6 +492,17 @@ export default {
 <style scoped>
 /* .modal-mask ---在 App.vue公共区 */
 /* .filter ---在 App.vue公共区 */
+.pic-data {
+    display: inline-block;
+    width: 300px;
+    height: 140px;
+    border: 1px solid #ddd;
+    text-align: center;
+}
+.pic-data img {
+    max-width: 290px;
+    max-height: 135px;
+}
 .p10 {
     padding: 10px;
 }
@@ -529,9 +569,24 @@ table {
     display: flex;
     justify-content: center;
 } */
-.form > li {
+.form > li:nth-child(1) {
     display: flex;
-    align-items: baseline;
+    align-items: center;
+    margin-top: 20px;
+}
+.form > li:nth-child(8) {
+    display: flex;
+    align-items: center;
+    margin-top: 20px;
+}
+.form > li:nth-child(9) {
+    display: flex;
+    align-items: center;
+    margin-top: 20px;
+}
+.form li {
+    display: flex;
+    /* align-items: center; */
     margin-top: 20px;
 }
 .form > li:nth-child(2) {
@@ -542,6 +597,7 @@ table {
 } */
 .form > li > span:first-child {
     min-width: 5em;
+
     /* font-weight: bolder; */
     /* margin-right: 8px; */
 }
@@ -549,6 +605,7 @@ table {
     display: flex;
     margin-top: 10px;
 }
+
 .w250 {
     width: 300px;
 }

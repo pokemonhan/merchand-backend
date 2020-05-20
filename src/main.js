@@ -19,6 +19,9 @@ import Echo from 'laravel-echo'
 import io from 'socket.io-client'
 // import io from './js/config/socket2'
 // websocket
+import ElementUI from 'element-ui';
+import 'element-ui/lib/theme-chalk/index.css'
+
 window.io = io
 window.Echo = new Echo({
     broadcaster: 'socket.io',
@@ -26,6 +29,7 @@ window.Echo = new Echo({
 });
 
 Vue.use(plugins)
+Vue.use(ElementUI)
 window.$ = $
 window.all = {
     tool,

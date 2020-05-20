@@ -21,7 +21,11 @@
                         <div
                             style="width:300px;height:140px;border:1px solid #ddd;display:inline;text-align:center"
                         >
-                            <img v-if="pic_data" style="max-width:290px;max-height:140px;" :src="pic_data" />
+                            <img
+                                v-if="pic_data"
+                                style="max-width:290px;max-height:140px;"
+                                :src="pic_data"
+                            />
                         </div>
                     </li>
                     <li>
@@ -222,28 +226,31 @@ export default {
             // if(this.form.dates[1]){
             //     end_time=JSON.stringify([this.form.dates[1]])
             // }
-            let data = {
-                id: this.form.id,
-                device: this.curr_btn,
-                title: this.form.name,
-                pic_id: this.pic_id,
-                type: this.form.status,
-                link: this.form.link,
-                start_time: this.form.dates[0],
-                end_time: this.form.dates[1],
-                status: this.form.active
+            let editConf = () => {
+                let data = {
+                    id: this.form.id,
+                    device: this.curr_btn,
+                    title: this.form.name,
+                    pic_id: this.pic_id,
+                    type: this.form.status,
+                    link: this.form.link,
+                    start_time: this.form.dates[0],
+                    end_time: this.form.dates[1],
+                    status: this.form.active
+                };
+                console.log("请求数据", data);
+                let { url, method } = this.$api.announce_carousel_edit;
+                this.$http({ method, url, data }).then(res => {
+                    console.log("返回数据", res);
+                    if (res && res.code == "200") {
+                        this.$toast.success(res && res.message);
+                        this.is_edit = false;
+                        this.getList();
+                        this.initForm();
+                    }
+                });
             };
-            // console.log('请求数据',data)
-            let { url, method } = this.$api.announce_carousel_edit;
-            this.$http({ method, url, data }).then(res => {
-                // console.log('返回数据',res)
-                if (res && res.code == "200") {
-                    this.$toast.success(res && res.message);
-                    this.is_edit = false;
-                    this.getList();
-                    this.initForm();
-                }
-            });
+            this.upLoadPic(editConf)
         },
         del(item) {
             this.mod_show = true;
@@ -276,6 +283,7 @@ export default {
             this.is_edit = false;
             this.initForm();
         },
+        //展示图片
         upPicChange(e) {
             let file = e.target.files[0];
             let self = this;
@@ -288,6 +296,7 @@ export default {
                 self.pic_data = file.target.result;
             };
             this.picFile = e;
+            // console.log('图片数据',this.pic_data)
         },
         //上传图片
         upLoadPic(callback) {
@@ -304,6 +313,7 @@ export default {
                 console.log("图片返回数据", res);
                 if (res && res.code == "200") {
                     this.pic_data = res.data.id;
+                    this.pic_id = res.data.id;
                     callback();
                 }
             });

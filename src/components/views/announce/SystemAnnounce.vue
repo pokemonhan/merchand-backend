@@ -161,6 +161,53 @@
                 </div>
             </div>
         </Dialog>
+        <Dialog :show="steps_show" title="添加公告"  >
+            <div class="dia-inner">
+                <el-steps :active="active" align-center finish-status="success" >
+                    <el-step
+                        class="pointer"
+                        title="厂商"
+                        description="厂商类型"
+                        :status="stepStatus(0)"
+                        @click.native="active=0"
+                    ></el-step>
+                    <el-step
+                        class="pointer"
+                        title="正式站"
+                        description="密钥信息"
+                        :status="stepStatus(1)"
+                        @click.native="active=1"
+                    ></el-step>
+                    <el-step
+                        class="pointer"
+                        title="正式站"
+                        description="其他接口"
+                        :status="stepStatus(2)"
+                        @click.native="active=2"
+                    ></el-step>
+                    <el-step
+                        class="pointer"
+                        title="测试站"
+                        description="密钥信息"
+                        :status="stepStatus(3)"
+                        @click.native="active=3"
+                    ></el-step>
+                    <el-step
+                        class="pointer"
+                        title="测试站"
+                        description="其他接口"
+                        :status="stepStatus(4)"
+                        @click.native="active=4"
+                    ></el-step>
+                    <el-step
+                        class="pointer red"
+                        title="白名单"
+                        description="白名单信息"
+                        @click.native="active=5"
+                    ></el-step>
+                </el-steps>
+            </div>
+        </Dialog>
         <Modal
             :show.sync="mod_show"
             title="删除"
@@ -171,12 +218,15 @@
     </div>
 </template>
 
-
 <script>
+import { Steps,step } from 'element-ui'
+import axiox from 'axios'
 export default {
     name: "SystemAnnounce",
     data() {
         return {
+            steps_show:false,
+            active:0,
             filter: {
                 header: ""
             },
@@ -229,6 +279,46 @@ export default {
         };
     },
     methods: {
+        step0Check(){},
+        step1Check(){},
+        step2Check(){},
+        step4Check(){},
+        /** 展示 步骤条 状态 */
+        stepStatus(stepVal) {
+            // wait / process / finish / error / success
+            if (this.active === stepVal) {
+                return 'process'
+            } else if (this.active > stepVal) {
+                switch (stepVal) {
+                    case 0:
+                        return this.step0Check() ? 'success' : 'error'
+                        break
+                    case 1:
+                        return this.step1Check() ? 'success' : 'error'
+                        break
+                    case 2:
+                        return this.step2Check() ? 'success' : 'error'
+                    case 3:
+                        if (!this.form_need_test) {
+                            return 'wait'
+                        } else {
+                            return this.step3Check() ? 'success' : 'error'
+                        }
+                        break
+                    case 4:
+                        if (!this.form_need_test) {
+                            return 'wait'
+                        } else {
+                            return this.step4Check() ? 'success' : 'error'
+                        }
+                        break
+                    case 5:
+                        break
+                    default:
+                        break
+                }
+            }
+        },
         getDevice(device) {
             let device_all = "";
             // console.log("传值", device);
@@ -271,6 +361,7 @@ export default {
                 self.pc_pic_data = file.target.result;
             };
             this.PcPicFile = e;
+            console.log("e", e);
         },
         upH5PicChange(e) {
             let file = e.target.files[0];
@@ -366,23 +457,27 @@ export default {
         },
         uploadPcPic() {
             return new Promise(resolve => {
-                let e = this.PcPicFile;
-                let pic = e.target.files[0];
-                let basket = "announce/systemannounce/uploads/pc";
-                let formList = new FormData();
-                formList.append("file", pic, pic.name);
-                formList.append("basket", basket);
-                let { url, method } = this.$api.update_picture_database;
-                let data = formList;
-                let headers = { "Content-Type": "multipart/form-data" };
-                this.$http({ method, url, data, headers }).then(res => {
-                    console.log("检查", res);
-                    if (res && res.code == "200") {
-                        this.pc_pic_data = res.data.path;
-                        resolve(res.data.path);
-                    }
-                });
+                console.log(123);
+                resolve(1);
             });
+            // return new Promise(resolve => {
+            //     let e = this.PcPicFile;
+            //     let pic = e.target.files[0];
+            //     let basket = "announce/systemannounce/uploads/pc";
+            //     let formList = new FormData();
+            //     formList.append("file", pic, pic.name);
+            //     formList.append("basket", basket);
+            //     let { url, method } = this.$api.update_picture_database;
+            //     let data = formList;
+            //     let headers = { "Content-Type": "multipart/form-data" };
+            //     this.$http({ method, url, data, headers }).then(res => {
+            //         console.log("检查", res);
+            //         if (res && res.code == "200") {
+            //             this.pc_pic_data = res.data.path;
+            //             resolve(res.data.path);
+            //         }
+            //     });
+            // });
         },
         uploadH5Pic() {
             return new Promise(resolve => {
@@ -399,13 +494,12 @@ export default {
                     // console.log(res)
                     if (res && res.code == "200") {
                         this.h5_pic_data = res.data.path;
-                        resolve(res.data.path)
+                        resolve(res.data.path);
                     }
                 });
             });
         },
         addCfm() {
-
             let data = {
                 title: this.form.title,
                 h5_pic: this.h5_pic_data,
@@ -427,9 +521,9 @@ export default {
             });
         },
         async addConfCfm() {
-            // await this.upLoadAppPic();
-            await this.upLoadPcPic();
-            // await this.upLoadH5Pic();
+            await this.upLoadAppPic();
+            let a=await this.upLoadPcPic();
+            await this.upLoadH5Pic();
             this.addCfm();
         },
         getList() {

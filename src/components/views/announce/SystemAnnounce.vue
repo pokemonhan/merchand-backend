@@ -32,9 +32,13 @@
                 <template v-slot:item="{row}">
                     <td>{{row.title}}</td>
                     <td>
-                        <img width="40" :src="head_path+row.h5_pic" alt />
-                        <img width="40" :src="head_path+row.app_pic" alt />
-                        <img width="40" :src="head_path+row.pc_pic" alt />
+                        <img width="40" :src="row.h5_pic"  />
+                    </td>
+                    <td>
+                        <img width="40" :src="row.app_pic"  />
+                    </td>
+                    <td>
+                        <img width="40" :src="row.pc_pic"  />
                     </td>
                     <td>{{getDevice(row.device)}}</td>
                     <td>{{row.created_at}}</td>
@@ -161,51 +165,152 @@
                 </div>
             </div>
         </Dialog>
-        <Dialog :show="steps_show" title="添加公告"  >
+        <Dialog :show="steps_show" title="添加公告" @close="steps_show=false">
             <div class="dia-inner">
-                <el-steps :active="active" align-center finish-status="success" >
+                <el-steps :active="active" align-center finish-status="success">
                     <el-step
                         class="pointer"
-                        title="厂商"
-                        description="厂商类型"
+                        title="基础"
+                        description="标题、时间、状态"
                         :status="stepStatus(0)"
                         @click.native="active=0"
                     ></el-step>
                     <el-step
                         class="pointer"
-                        title="正式站"
-                        description="密钥信息"
+                        title="APP公告"
+                        description="公告内容"
                         :status="stepStatus(1)"
                         @click.native="active=1"
                     ></el-step>
                     <el-step
                         class="pointer"
-                        title="正式站"
-                        description="其他接口"
+                        title="PC公告"
+                        description="公告内容"
                         :status="stepStatus(2)"
                         @click.native="active=2"
                     ></el-step>
                     <el-step
                         class="pointer"
-                        title="测试站"
-                        description="密钥信息"
+                        title="H5公告"
+                        description="公告内容"
                         :status="stepStatus(3)"
                         @click.native="active=3"
                     ></el-step>
-                    <el-step
-                        class="pointer"
-                        title="测试站"
-                        description="其他接口"
-                        :status="stepStatus(4)"
-                        @click.native="active=4"
-                    ></el-step>
-                    <el-step
-                        class="pointer red"
-                        title="白名单"
-                        description="白名单信息"
-                        @click.native="active=5"
-                    ></el-step>
                 </el-steps>
+                <div class="edit-form">
+                    <!-- 基础内容 -->
+                    <ul v-if="active==0" class="form">
+                        <li>
+                            <div>
+                                <span>公告标题：</span>
+                                <Input
+                                    placeholder="最多5个字"
+                                    v-model="form.title"
+                                    style="width:320px"
+                                />
+                            </div>
+                        </li>
+                        <li class="errMsg" >
+                            <!-- <span class="red">公告标题不可为空！</span> -->
+                        </li>
+                        <li>
+                            <div style="display:flex;">
+                                <span>状态选择：</span>
+                                <Radio
+                                    class="radio-left"
+                                    label="开"
+                                    val="1"
+                                    :value="form.status"
+                                    v-model="form.status"
+                                />
+                                <Radio
+                                    class="radio-right"
+                                    label="关"
+                                    val="0"
+                                    :value="form.status"
+                                    v-model="form.status"
+                                />
+                            </div>
+                        </li>
+                        <li class="errMsg">
+                            <!-- <span class="red">状态未选择！</span> -->
+                        </li>
+                        <li>
+                            <div style="display:flex;align-items:center">
+                                <span>时间范围：</span>
+                                <span>&nbsp;</span>
+                                <Date
+                                    class="w250"
+                                    style="margin:0 auto;transform:scal(0.8)"
+                                    type="datetimerange"
+                                    v-model="form.dates"
+                                />
+                            </div>
+                        </li>
+                        <li class="errMsg">
+                            <!-- <span class="red">时间范围不可为空！</span> -->
+                        </li>
+                    </ul>
+                    <ul v-if="active==1" class="form" >
+                        <li>
+                            <div class="pic-data">
+                                <img v-if="app_pic_data" :src="app_pic_data" />
+                            </div>
+                        </li>
+                        <li class="pic-errMsg">
+                            <!-- <span class="red">未上传图片！</span> -->
+                        </li>
+                        <li>
+                            <Upload
+                                style="width:110px;margin:0 auto"
+                                title="App图片上传"
+                                @change="upAppPicChange($event)"
+                                type="file"
+                            />
+                        </li>
+                    </ul>
+                    <ul v-if="active==2" class="form">
+                        <li>
+                            <div class="pic-data">
+                                <img v-if="pc_pic_data" :src="pc_pic_data" />
+                            </div>
+                        </li>
+                        <li class="pic-errMsg">
+                            <!-- <span class="red">未上传图片！</span> -->
+                        </li>
+                        <li>
+                            <Upload
+                                style="width:110px;margin:0 auto"
+                                title="PC图片上传"
+                                @change="upPcPicChange($event)"
+                                type="file"
+                            />
+                        </li>
+                    </ul>
+                    <ul v-if="active==3" class="form">
+                        <li>
+                            <div class="pic-data">
+                                <img v-if="h5_pic_data" :src="h5_pic_data" />
+                            </div>
+                        </li>
+                        <li class="pic-errMsg">
+                            <!-- <span class="red">未上传图片！</span> -->
+                        </li>
+                        <li>
+                            <Upload
+                                style="width:110px;margin:0 auto"
+                                title="H5图片上传"
+                                @change="upH5PicChange($event)"
+                                type="file"
+                            />
+                        </li>
+                    </ul>
+                </div>
+                <div class="form-btns">
+                    <button v-show="active!==0" class="btn-blue-large" @click="prevStep">上一步</button>
+                    <button v-if="active!=3" class="btn-blue-large" @click="nextStep">下一步</button>
+                    <button v-else class="btn-blue-large" @click="diaCfm">确定</button>
+                </div>
             </div>
         </Dialog>
         <Modal
@@ -219,20 +324,27 @@
 </template>
 
 <script>
-import { Steps,step } from 'element-ui'
-import axiox from 'axios'
+import "element-ui/lib/theme-chalk/index.css";
+import { Steps, step, Step } from "element-ui";
+import axiox from "axios";
 export default {
     name: "SystemAnnounce",
+    components: {
+        [Steps.name]: Steps,
+        [Step.name]: Step
+    },
     data() {
         return {
-            steps_show:false,
-            active:0,
+            steps_show: true,
+            active: 0,
             filter: {
                 header: ""
             },
             headers: [
                 "系统公告标题",
-                "图片",
+                "H5图片",
+                "APP图片",
+                "PC图片",
                 "设备",
                 "发布时间",
                 "结束时间",
@@ -254,7 +366,8 @@ export default {
                 h5_pic_path: "",
                 app_pic_path: "",
                 dates: [],
-                status: ""
+                status: "",
+                dateRange: []
             },
             src: [],
             pic_dia_show: false,
@@ -279,43 +392,52 @@ export default {
         };
     },
     methods: {
-        step0Check(){},
-        step1Check(){},
-        step2Check(){},
-        step4Check(){},
+        nextStep(){
+            if(this.active<4){
+                this.active++
+            }
+        },
+        prevStep(){
+            this.active--
+        },
+        checkTitle(){},
+        step0Check() {},
+        step1Check() {},
+        step2Check() {},
+        step4Check() {},
         /** 展示 步骤条 状态 */
         stepStatus(stepVal) {
             // wait / process / finish / error / success
             if (this.active === stepVal) {
-                return 'process'
+                return "process";
             } else if (this.active > stepVal) {
                 switch (stepVal) {
                     case 0:
-                        return this.step0Check() ? 'success' : 'error'
-                        break
+                        return this.step0Check() ? "success" : "error";
+                        break;
                     case 1:
-                        return this.step1Check() ? 'success' : 'error'
-                        break
+                        return this.step1Check() ? "success" : "error";
+                        break;
                     case 2:
-                        return this.step2Check() ? 'success' : 'error'
+                        return this.step2Check() ? "success" : "error";
                     case 3:
                         if (!this.form_need_test) {
-                            return 'wait'
+                            return "wait";
                         } else {
-                            return this.step3Check() ? 'success' : 'error'
+                            return this.step3Check() ? "success" : "error";
                         }
-                        break
+                        break;
                     case 4:
                         if (!this.form_need_test) {
-                            return 'wait'
+                            return "wait";
                         } else {
-                            return this.step4Check() ? 'success' : 'error'
+                            return this.step4Check() ? "success" : "error";
                         }
-                        break
+                        break;
                     case 5:
-                        break
+                        break;
                     default:
-                        break
+                        break;
                 }
             }
         },
@@ -361,7 +483,6 @@ export default {
                 self.pc_pic_data = file.target.result;
             };
             this.PcPicFile = e;
-            console.log("e", e);
         },
         upH5PicChange(e) {
             let file = e.target.files[0];
@@ -447,39 +568,39 @@ export default {
                 let data = formList;
                 let headers = { "Content-Type": "multipart/form-data" };
                 this.$http({ method, url, data, headers }).then(res => {
-                    // console.log(res)
+                    console.log(res);
                     if (res && res.code == "200") {
-                        this.app_pic_data = res.data.path;
+                        this.app_pic_data = res.data.id;
                         resolve(res.data.path);
                     }
                 });
             });
         },
-        uploadPcPic() {
-            return new Promise(resolve => {
-                console.log(123);
-                resolve(1);
-            });
+        upLoadPcPic() {
             // return new Promise(resolve => {
-            //     let e = this.PcPicFile;
-            //     let pic = e.target.files[0];
-            //     let basket = "announce/systemannounce/uploads/pc";
-            //     let formList = new FormData();
-            //     formList.append("file", pic, pic.name);
-            //     formList.append("basket", basket);
-            //     let { url, method } = this.$api.update_picture_database;
-            //     let data = formList;
-            //     let headers = { "Content-Type": "multipart/form-data" };
-            //     this.$http({ method, url, data, headers }).then(res => {
-            //         console.log("检查", res);
-            //         if (res && res.code == "200") {
-            //             this.pc_pic_data = res.data.path;
-            //             resolve(res.data.path);
-            //         }
-            //     });
+            //     console.log(123);
+            //     resolve(1);
             // });
+            return new Promise(resolve => {
+                let e = this.PcPicFile;
+                let pic = e.target.files[0];
+                let basket = "announce/systemannounce/uploads/pc";
+                let formList = new FormData();
+                formList.append("file", pic, pic.name);
+                formList.append("basket", basket);
+                let { url, method } = this.$api.update_picture_database;
+                let data = formList;
+                let headers = { "Content-Type": "multipart/form-data" };
+                this.$http({ method, url, data, headers }).then(res => {
+                    console.log("检查", res);
+                    if (res && res.code == "200") {
+                        this.pc_pic_data = res.data.id;
+                        resolve(res.data.path);
+                    }
+                });
+            });
         },
-        uploadH5Pic() {
+        upLoadH5Pic() {
             return new Promise(resolve => {
                 let e = this.H5PicFile;
                 let pic = e.target.files[0];
@@ -491,9 +612,9 @@ export default {
                 let data = formList;
                 let headers = { "Content-Type": "multipart/form-data" };
                 this.$http({ method, url, data, headers }).then(res => {
-                    // console.log(res)
+                    console.log(res);
                     if (res && res.code == "200") {
-                        this.h5_pic_data = res.data.path;
+                        this.h5_pic_data = res.data.id;
                         resolve(res.data.path);
                     }
                 });
@@ -502,9 +623,9 @@ export default {
         addCfm() {
             let data = {
                 title: this.form.title,
-                h5_pic: this.h5_pic_data,
-                pc_pic: this.pc_pic_data,
-                app_pic: this.app_pic_data,
+                h5_pic_id: this.h5_pic_data,
+                pc_pic_id: this.pc_pic_data,
+                app_pic_id: this.app_pic_data,
                 start_time: this.form.dates[0],
                 end_time: this.form.dates[1],
                 status: this.form.status
@@ -522,7 +643,7 @@ export default {
         },
         async addConfCfm() {
             await this.upLoadAppPic();
-            let a=await this.upLoadPcPic();
+            await this.upLoadPcPic();
             await this.upLoadH5Pic();
             this.addCfm();
         },
@@ -586,6 +707,17 @@ export default {
 <style scoped>
 /* .modal-mask ---在 App.vue公共区 */
 /* .filter ---在 App.vue公共区 */
+.errMsg {
+    height:20px;
+    margin-left:66px;
+}
+.pic-errMsg{
+    justify-content: center;
+}
+.radio-left {
+    margin-left: 5px;
+}
+
 .pic-data {
     display: inline-block;
     width: 300px;
@@ -657,12 +789,16 @@ table {
     width: 2000px;
 }
 /* .modal-mask ---在 App.vue公共区 */
-/* .dia-inner {
-    width: 660px;
+.dia-inner {
+    min-width: 650px;
     min-height: 450px;
+}
+.dia-inner .edit-form {
+    height: 100%;
+    /* margin-top: 5%; */
     display: flex;
     justify-content: center;
-} */
+}
 .form > li:nth-child(1) {
     display: flex;
     align-items: center;
@@ -681,7 +817,14 @@ table {
 .form li {
     display: flex;
     /* align-items: center; */
-    margin-top: 20px;
+    margin-top: 10px;
+}
+.form li div {
+    margin-top: 25px;
+}
+.form-btns {
+    margin-top: 50px;
+    text-align: center;
 }
 .form > li:nth-child(2) {
     margin-top: 10px;
@@ -701,7 +844,7 @@ table {
 }
 
 .w250 {
-    width: 300px;
+    width: 320px;
 }
 .radio-right {
     margin-left: 100px;

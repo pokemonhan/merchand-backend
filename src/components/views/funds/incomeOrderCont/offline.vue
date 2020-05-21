@@ -656,8 +656,8 @@ table {
     /* margin-left: 100px; */
     width: 20%;
 }
-/* .modal-mask     样式在公共区... */
-.v-modal {
+/* .g-modal-mask     样式在公共区... */
+.g-v-modal {
     min-width: 660px;
     height: 430px;
     position: absolute;
@@ -674,21 +674,21 @@ table {
     width: 520px;
     text-align: center;
 }
-.modal-mask .iconcuowuguanbi- {
+.g-modal-mask .iconcuowuguanbi- {
     position: absolute;
     right: 12px;
     top: 12px;
     font-size: 35px;
     color: #4c8bfd;
 }
-.modal-mask .iconcuowuguanbi-:hover {
+.g-modal-mask .iconcuowuguanbi-:hover {
     color: #6999f1;
 }
-.v-modal .detail td {
+.g-v-modal .detail td {
     padding-top: 10px;
     padding-bottom: 10px;
 }
-.v-modal .detail tr td > :nth-child(2) {
+.g-v-modal .detail tr td > :nth-child(2) {
     padding-left: 10px;
     font-size: 14px;
     color: #555;

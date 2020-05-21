@@ -89,7 +89,7 @@
                 @updateSize="updateSize"
             />
         </div>
-        <Dialog class="modal-mask" :show.sync="show_detail" title="详情">
+        <Dialog class="g-modal-mask" :show.sync="show_detail" title="详情">
             <div class="dia-inner">
                 <div class="mod-body">
                     <!-- 个人资料信息-图片 -->
@@ -303,8 +303,8 @@
             </div>
         </Dialog>
         <!-- dia_show: true -->
-        <div v-if="inner_mask_show" class="modal-mask">
-            <div class="confirm v-modal">
+        <div v-if="inner_mask_show" class="g-modal-mask">
+            <div class="confirm g-v-modal">
                 <div class="mod-head">
                     <span>添加账号</span>
                     <i class="iconfont iconcuowuguanbi-" @click="closeConfirm()"></i>
@@ -1006,7 +1006,7 @@ table {
     width: 2000px;
 }
 
-/* .modal-mask   .v-modal  .mod-head确认窗口 已转移到公共css*/
+/* .g-modal-mask   .g-v-modal  .mod-head确认窗口 已转移到公共css*/
 
 .confirm .content {
     width: 600px;
@@ -1086,7 +1086,7 @@ table {
 }
 /*  */
 .confirm .iconcuowuguanbi-,
-.modal-mask .iconcuowuguanbi- {
+.g-modal-mask .iconcuowuguanbi- {
     position: absolute;
     right: 12px;
     font-size: 26px;
@@ -1094,10 +1094,10 @@ table {
     cursor: pointer;
 }
 /* .confirm .iconcuowuguanbi-:hover,
-.modal-mask .iconcuowuguanbi-:hover {
+.g-modal-mask .iconcuowuguanbi-:hover {
     cursor: pointer;
 } */
-.modal-mask .mod-body {
+.g-modal-mask .mod-body {
     min-width: 800px;
 }
 
@@ -1123,17 +1123,17 @@ table {
     display: flex;
     align-items: center;
 }
-/* .modal-mask .row1, */
-.modal-mask .row2,
-.modal-mask .row3,
-.modal-mask .row4,
-.modal-mask .row5 {
+/* .g-modal-mask .row1, */
+.g-modal-mask .row2,
+.g-modal-mask .row3,
+.g-modal-mask .row4,
+.g-modal-mask .row5 {
     padding: 20px 10px;
     margin-top: 10px;
     background: #f7f7f7;
     /* border-radius: 3px; */
 }
-.modal-mask .list ul {
+.g-modal-mask .list ul {
     display: flex;
 }
 .list {

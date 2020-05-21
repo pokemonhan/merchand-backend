@@ -332,7 +332,7 @@ export default {
 
 <style scoped>
 /* .container    在公共区 App.vue */
-/* .modal-mask ---在 App.vue公共区 */
+/* .g-modal-mask ---在 App.vue公共区 */
 /* .filter    ---在 App.vue公共区 */
 
 .p10 {

@@ -40,8 +40,8 @@
                 @updateSize="updateSize"
             />
         </div>
-        <!-- <div class="modal-mask" v-if="mod_show">
-            <div class="v-modal">
+        <!-- <div class="g-modal-mask" v-if="mod_show">
+            <div class="g-v-modal">
                 <div class="mod-head">
                     <span>{{mask_head}}</span>
                     <i class="iconfont iconcuowuguanbi-" @click="mod_show=false"></i>
@@ -49,7 +49,7 @@
                 
             </div>
         </div>-->
-        <Dialog class="modal-mask" :show.sync="mod_show" title="编辑">
+        <Dialog class="g-modal-mask" :show.sync="mod_show" title="编辑">
             <div class="dia-inner">
                 <div class="mod-body">
                     <ul class="form">
@@ -81,8 +81,8 @@
                 </div>
             </div>
         </Dialog>
-        <!-- <div class="modal-mask" v-if="mod_show">
-				<div class="v-modal">
+        <!-- <div class="g-modal-mask" v-if="mod_show">
+				<div class="g-v-modal">
 					<div @click="mod_show=false">
 						<i class="iconfont iconcuowuguanbi-"></i>
 					</div>
@@ -290,9 +290,9 @@ export default {
 .a:active {
     color: red;
 }
-/* .modal-mask   已转移到公共css*/
+/* .g-modal-mask   已转移到公共css*/
 
-/* .modal-mask .iconcuowuguanbi- {
+/* .g-modal-mask .iconcuowuguanbi- {
     公共区样式
 } */
 .mod-body {

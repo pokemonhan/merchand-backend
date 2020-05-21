@@ -16,7 +16,7 @@
             </div>
         </div>
         <div id="toast-box"></div>
-        <div class="modal-mask" v-if="showMask"></div>
+        <div class="g-modal-mask" v-if="showMask"></div>
         <div id="message-box"></div>
         <div id="notice-box"></div>
         <loading id="g-loading" show />
@@ -259,7 +259,7 @@ export default {
     overflow: auto;
 }
 /* 背景遮罩层 */
-.modal-mask {
+.g-modal-mask {
     position: fixed;
     top: 0;
     bottom: 0;
@@ -268,7 +268,7 @@ export default {
     z-index: 1000;
     background-color: rgba(0, 0, 0, 0.6);
 }
-.v-modal {
+.g-v-modal {
     /* min-width: 160px;
     min-height: 90px; */
     position: absolute;
@@ -279,7 +279,7 @@ export default {
     background-color: #fff;
     border-radius: 5px;
 }
-.modal-mask .mod-head {
+.g-modal-mask .mod-head {
     position: relative;
     height: 40px;
     line-height: 40px;
@@ -290,18 +290,18 @@ export default {
     color: #fff;
 }
 /* modal 关闭按钮 */
-.modal-mask .iconcuowuguanbi- {
+.g-modal-mask .iconcuowuguanbi- {
     position: absolute;
     right: 12px;
     font-size: 26px;
     color: #ffffff;
     cursor: pointer;
 }
-.modal-mask .iconcuowuguanbi-:hover {
+.g-modal-mask .iconcuowuguanbi-:hover {
     /* color: #1660ebb0; */
     transform: scale(1.1);
 }
-.modal-mask .mod-body {
+.g-modal-mask .mod-body {
     padding: 20px 25px;
 }
 table {

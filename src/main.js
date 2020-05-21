@@ -20,7 +20,7 @@ import io from 'socket.io-client'
 // import io from './js/config/socket2'
 // websocket
 // import ElementUI from 'element-ui';
-// import 'element-ui/lib/theme-chalk/index.css'
+import 'element-ui/lib/theme-chalk/index.css'
 
 window.io = io
 window.Echo = new Echo({

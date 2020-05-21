@@ -64,7 +64,7 @@
             @updateNo="updateNo"
             @updateSize="updateSize"
         />
-        <Dialog :show.sync="dia_show" :title="dia_title">
+        <Dialog :show.sync="adia_show" :title="dia_title">
             <div class="dia-inner">
                 <div>
                     <ul class="form">
@@ -165,7 +165,7 @@
                 </div>
             </div>
         </Dialog>
-        <Dialog :show="steps_show" title="添加公告" @close="steps_show=false">
+        <Dialog :show.sync="dia_show" title="添加公告">
             <div class="dia-inner">
                 <el-steps :active="active" align-center finish-status="success">
                     <el-step
@@ -324,7 +324,6 @@
 </template>
 
 <script>
-import "element-ui/lib/theme-chalk/index.css";
 import { Steps, step, Step } from "element-ui";
 import axiox from "axios";
 export default {
@@ -715,7 +714,7 @@ export default {
 </script>
 
 <style scoped>
-/* .modal-mask ---在 App.vue公共区 */
+/* .g-modal-mask ---在 App.vue公共区 */
 /* .filter ---在 App.vue公共区 */
 .errMsg {
     height:20px;
@@ -798,7 +797,7 @@ table {
     min-height: 0;
     width: 2000px;
 }
-/* .modal-mask ---在 App.vue公共区 */
+/* .g-modal-mask ---在 App.vue公共区 */
 .dia-inner {
     min-width: 650px;
     min-height: 450px;

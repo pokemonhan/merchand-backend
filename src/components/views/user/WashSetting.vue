@@ -40,8 +40,8 @@
                 @updateSize="updateSize"
             />
         </div>
-        <div class="modal-mask" v-if="show_modal">
-            <div class="v-modal edit-modal">
+        <div class="g-modal-mask" v-if="show_modal">
+            <div class="g-v-modal edit-modal">
                 <div class="mod-head">
                     <span v-if="add_title">添加洗码规则</span>
                     <span v-if="is_edit">编辑</span>
@@ -455,7 +455,7 @@ export default {
     display: flex;
     justify-content: center;
 }
-/* modal-mask  --在index.html区域中 */
+/* g-modal-mask  --在index.html区域中 */
 .edit-modal {
     width: 900px;
     background: #fff;

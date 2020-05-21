@@ -141,8 +141,8 @@
             </div>
         </Dialog>
         <!-- --------------------详情 -------------------------------->
-        <div class="modal-mask" v-if="is_show_online_detail">
-            <div class="v-modal">
+        <div class="g-modal-mask" v-if="is_show_online_detail">
+            <div class="g-v-modal">
                 <div class="mod-head">
                     <span>线上入款详情</span>
                     <i class="iconfont iconcuowuguanbi-" @click="is_show_online_detail=false"></i>
@@ -608,7 +608,7 @@ export default {
     /* margin-left: 100px; */
     width: 20%;
 }
-/*  .v-modal 公共区 App.vue */
+/*  .g-v-modal 公共区 App.vue */
 .mod-body {
     padding: 0 100px 50px 100px;
 }

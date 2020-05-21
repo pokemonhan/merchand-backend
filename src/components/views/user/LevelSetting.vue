@@ -31,12 +31,17 @@
                 @updateSize="updateSize"
             />
         </div>
-        <div class="modal-mask" v-if="show_lev_modal">
-            <div class="v-modal lev-mod">
+        <!-- <div class="g-modal-mask" v-if="show_lev_modal">
+            <div class="g-v-modal lev-mod">
                 <div class="mod-head">
                     <span>{{lev_modal_name}}</span>
                     <i class="iconfont iconcuowuguanbi-" @click="show_lev_modal=false"></i>
                 </div>
+                
+            </div>
+        </div> -->
+        <Dialog :show.sync="show_lev_modal" :title="lev_modal_name">
+            <div class="lev-mod">
                 <div class="mod-body center-box">
                     <ul class="form">
                         <li>
@@ -69,14 +74,9 @@
                     </ul>
                 </div>
             </div>
-        </div>
-        <!-- 晋级规则_模态框 -->
-        <div class="modal-mask" v-if="show_lev_rule">
-            <div class="v-modal rule-mod">
-                <div class="mod-head">
-                    <span>晋级规则</span>
-                    <i class="iconfont iconcuowuguanbi-" @click="show_lev_rule=false"></i>
-                </div>
+        </Dialog>
+        <Dialog :show.sync="show_lev_rule" title="晋级规则">
+            <div class="inner rule-mod">
                 <div class="mod-body center-box">
                     <ul class="rule">
                         <li class="flex">
@@ -131,7 +131,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </Dialog>
         <Modal
             :show="show_del_modal"
             title="删除等级"
@@ -416,7 +416,7 @@ export default {
     display: flex;
     justify-content: center;
 }
-/* 公共区 .v-modal 在App.vue 区域中 */
+/* 公共区 .g-v-modal 在App.vue 区域中 */
 
 .lev-mod {
     width: 700px;
@@ -426,7 +426,7 @@ export default {
     width: 700px;
     height: 380px;
 }
-/* .modal-mask .iconcuowuguanbi- {
+/* .g-modal-mask .iconcuowuguanbi- {
     position: absolute;
     right: 12px;
     top: 12px;
@@ -434,7 +434,7 @@ export default {
     color: #4c8bfd;
 }
 
-.modal-mask .iconcuowuguanbi-:hover {
+.g-modal-mask .iconcuowuguanbi-:hover {
     color: #749ff0;
     cursor: pointer;
 } */
@@ -478,6 +478,7 @@ export default {
 } */
 .rule {
     width: 360px;
+    height: 100px;
 }
 .rule > li {
     display: flex;

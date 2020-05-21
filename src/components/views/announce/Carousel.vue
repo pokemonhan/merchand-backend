@@ -30,7 +30,7 @@
                     </li>
                     <li>
                         <Upload
-                            style="width:100px;margin:0 auto"
+                            style="width:100px;margin:0 auto;"
                             title="选择图片"
                             @change="upPicChange($event)"
                             type="file"

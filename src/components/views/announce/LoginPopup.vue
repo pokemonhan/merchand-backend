@@ -27,11 +27,7 @@
                 <template v-slot:item="{row}">
                     <td>{{row.title}}</td>
                     <td>
-                        <img
-                            style="max-width:100px;max-height:80px;"
-                            :src="head_path+row.pic"
-                            alt
-                        />
+                        <img style="max-width:100px;max-height:80px;" :src="head_path+row.pic" alt />
                     </td>
                     <td>{{row.start_time}}</td>
                     <td>{{row.end_time}}</td>
@@ -74,19 +70,16 @@
                         <li>
                             <span>选择图片</span>
                             <div class="upload-pic">
-                                <Input style="width:105px;" v-model="form.pic_path" />
-                                <Upload
-                                    style="width:110px;"
-                                    title="图片上传"
-                                    @change="upPicChange($event)"
-                                    type="file"
-                                />
-                                <button
-                                    style="width:60px;margin-left:4px;"
-                                    class="btn-blue"
-                                    @click="preview"
-                                >预览</button>
+                                <img style="max-width:290px;max-height:140px;" :src="pic_data" alt />
                             </div>
+                        </li>
+                        <li>
+                            <Upload
+                                style="width:110px;margin:0 auto;"
+                                title="图片上传"
+                                @change="upPicChange($event)"
+                                type="file"
+                            />
                         </li>
                         <li>
                             <span>跳转链接</span>
@@ -121,10 +114,6 @@
                 </div>
             </div>
         </Dialog>
-        <!-- 图片预览 -->
-        <Dialog :show.sync="pic_dia_show" title="预览图片">
-            <img class="max-w800" :src="head_path+form.pic_path" alt />
-        </Dialog>
         <Modal :show.sync="show_del_modal" title="删除公告" content="是否删除该公告" @confirm="delConfirm"></Modal>
     </div>
 </template>
@@ -133,9 +122,12 @@
 <script>
 export default {
     // props: {},
-    name: 'LoginPopup',
+    name: "LoginPopup",
     data() {
         return {
+            pic_data: "",
+            picFile: {},
+            pic_id: "",
             buttons: [
                 { label: "PC网页", value: "1" },
                 { label: "H5手机", value: "2" },
@@ -170,10 +162,9 @@ export default {
             dia_show: false,
             dia_title: "",
             dia_status: "",
-            pic_dia_show: false,
             show_del_modal: false, // 删除公告
             protocol: window.location.protocol,
-            head_path:'',
+            head_path: "",
             curr_row: {}
         };
     },
@@ -194,11 +185,11 @@ export default {
         initForm() {
             this.form = {
                 name: "",
-                pic_path: "",
                 link: "",
                 dates: [],
                 status: ""
             };
+            this.pic_data = "";
         },
 
         diaCfm() {
@@ -216,59 +207,69 @@ export default {
             this.initForm();
         },
         addCfm() {
-            let data = {
-                device: this.head_act_btn,
-                title: this.form.name,
-                pic: this.form.pic_path,
-                link: this.form.link,
-                start_time: this.form.dates[0],
-                end_time: this.form.dates[1],
-                status: this.form.status
+            let addConfirm = () => {
+                let data = {
+                    device: this.head_act_btn,
+                    title: this.form.name,
+                    pic_id: this.pic_data,
+                    link: this.form.link,
+                    start_time: this.form.dates[0],
+                    end_time: this.form.dates[1],
+                    status: this.form.status
+                };
+                // console.log("请求数据", data);
+                let { url, method } = this.$api.announce_loginpopup_add;
+                this.$http({ method, url, data }).then(res => {
+                    // console.log('返回数据',res)
+                    if (res && res.code == "200") {
+                        this.$toast.success(res && res.message);
+                        this.dia_show = false;
+                        this.getList();
+                        this.initForm();
+                    }
+                });
             };
-            // console.log("请求数据", data);
-            let { url, method } = this.$api.announce_loginpopup_add;
-            this.$http({ method, url, data }).then(res => {
-                // console.log('返回数据',res)
-                if (res && res.code == "200") {
-                    this.$toast.success(res && res.message);
-                    this.dia_show = false;
-                    this.getList();
-                }
-            });
+            this.upLoadPic(addConfirm);
         },
         edit(row) {
+            this.initForm();
             this.dia_status = "edit";
             this.dia_title = "编辑";
             this.dia_show = true;
             this.form = {
                 id: row.id,
                 name: row.title,
-                pic_path: row.pic,
                 link: row.link,
-                dates: [row.start_time,row.end_time],
+                dates: [row.start_time, row.end_time],
                 status: String(row.status)
             };
+            this.pic_data = row.pic;
+            this.pic_id = row.pic_id;
         },
         editCfm() {
-            let data = {
-                id: this.form.id,
-                device: this.head_act_btn,
-                title: this.form.name,
-                pic: this.form.pic_path,
-                link: this.form.link,
-                start_time: this.form.dates[0],
-                end_time: this.form.dates[1],
-                status: this.form.status
+            let editConf = () => {
+                let data = {
+                    id: this.form.id,
+                    device: this.head_act_btn,
+                    title: this.form.name,
+                    pic_id: this.pic_id,
+                    link: this.form.link,
+                    start_time: this.form.dates[0],
+                    end_time: this.form.dates[1],
+                    status: this.form.status
+                };
+                let { url, method } = this.$api.announce_loginpopup_edit;
+                this.$http({ method, url, data }).then(res => {
+                    // console.log('返回数据',res)
+                    if (res && res.code == "200") {
+                        this.$toast.success(res && res.message);
+                        this.dia_show = false;
+                        this.getList();
+                        this.initForm();
+                    }
+                });
             };
-            let { url, method } = this.$api.announce_loginpopup_edit;
-            this.$http({ method, url, data }).then(res => {
-                // console.log('返回数据',res)
-                if (res && res.code == "200") {
-                    this.$toast.success(res && res.message);
-                    this.dia_show = false;
-                    this.getList();
-                }
-            });
+            this.upLoadPic(editConf);
         },
         del(row) {
             this.curr_row = row;
@@ -280,13 +281,28 @@ export default {
             };
             let { url, method } = this.$api.announce_loginpopup_del;
             this.$http({ method, url, data }).then(res => {
-                console.log('返回数据',res)
+                console.log("返回数据", res);
                 this.$toast.success(res && res.message);
                 this.show_del_modal = false;
                 this.getList();
             });
         },
         upPicChange(e) {
+            let file = e.target.files[0];
+            let self = this;
+            let reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onerror = function() {
+                return;
+            };
+            reader.onload = function(file) {
+                self.pic_data = file.target.result;
+            };
+            this.picFile = e;
+            // console.log('图片数据',this.pic_data)
+        },
+        upLoadPic(callback) {
+            let e = this.picFile;
             let pic = e.target.files[0];
             let basket = "announce/loginpopup/uploads";
             let formList = new FormData();
@@ -298,19 +314,18 @@ export default {
             this.$http({ method, url, data, headers }).then(res => {
                 // console.log(res)
                 if (res && res.code == "200") {
-                    this.$set(this.form, "pic_path", res.data.path);
+                    this.pic_data = res.data.id;
+                    this.pic_id = res.data.id;
+                    callback();
                 }
             });
-        },
-        preview(index) {
-            this.pic_dia_show = true;
         },
         getList() {
             let datas = {
                 device: this.head_act_btn,
                 title: this.filter.title,
-                page:this.pageNo,
-                pageSize:this.pageSize
+                page: this.pageNo,
+                pageSize: this.pageSize
             };
             // console.log('请求数据',para)
             let data = window.all.tool.rmEmpty(datas);
@@ -331,12 +346,12 @@ export default {
             this.getList();
         },
         updateSize(val) {
-            this.pageNo=1;
+            this.pageNo = 1;
             this.getList();
-        },
+        }
     },
     mounted() {
-        this.head_path=this.protocol+'//pic.397017.com/';
+        this.head_path = this.protocol + "//pic.397017.com/";
         this.getList();
     }
 };
@@ -379,8 +394,11 @@ export default {
     /* margin-right: 8px; */
 }
 .upload-pic {
-    display: flex;
-    /* border: 1px solid #000; */
+    display: inline-block;
+    width: 300px;
+    height: 140px;
+    text-align: center;
+    border: 1px solid #ddd;
 }
 .radio-right {
     margin-left: 100px;

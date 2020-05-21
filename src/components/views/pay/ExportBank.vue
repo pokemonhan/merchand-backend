@@ -6,7 +6,7 @@
             <ul class="left">
                 <li>
                     <span>银行名称</span>
-                    <Input v-model="filter.acc" />
+                    <Select input style="width:200px;" v-model="filter.bank" :options="bank_opt"></Select>
                 </li>
                 <li>
                     <span>状态</span>
@@ -46,14 +46,16 @@
     </div>
 </template>
 <script>
+import axios from 'axios' 
 export default {
     name: "ExportBank",
     data() {
         return {
             filter: {
-                acc: "",
+                bank: "",
                 status: ""
             },
+            bank_opt: [],
             status_opt: [
                 { label: "全部", value: "" },
                 { label: "启用", value: 1 },
@@ -78,6 +80,41 @@ export default {
         };
     },
     methods: {
+        //获取json资源
+        getJsonData(){
+            axios.get('http://pic.397017.com/common/linter.json').then(res=>{
+                console.log('json',res)
+                if(res && res.status=='200'){
+                    this.jsonList=res.data
+                    if(this.jsonList){
+                        let bankList=this.jsonList.system_banks_available
+                        if(bankList){
+                            let bankListPath=bankList.path
+                            // console.log('银行地址',bankListPath)
+                            axios.get(bankListPath).then(res=>{
+                                if(res && res.status=='200'){
+                                    this.bankListData=res.data
+                                    // console.log('银行列表',this.bankListData)
+                                    this.bank_opt=this.backToSelOpt(res.data)
+                                }
+                            })
+                        }
+                    }
+                }
+            })
+        },
+        backToSelOpt(list=[]){
+            let all=[
+                {
+                    label:"全部",
+                    value:""
+                }
+            ];
+            let back_list=list.map(item=>{
+                return {label:item.name+'('+item.code+')',value:item.id};
+            })
+            return all.concat(back_list)
+        },
         updateNo(val) {
             this.getList();
         },
@@ -120,6 +157,7 @@ export default {
     },
     mounted() {
         this.getList();
+        this.getJsonData();
     }
 };
 </script>

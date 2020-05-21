@@ -385,9 +385,9 @@ export default {
     methods: {
         formDateUpdate(){
             if(this.form.dates[0] && this.form.dates[1]){
-                this.errDatesShow=true
+                this.errDatesShow=false
             }else{
-                this,errDatesShow=false
+                this.errDatesShow=true
             }
         },
         nextStep() {

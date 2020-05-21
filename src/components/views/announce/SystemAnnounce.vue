@@ -400,11 +400,21 @@ export default {
         prevStep(){
             this.active--
         },
-        checkTitle(){},
-        step0Check() {},
-        step1Check() {},
-        step2Check() {},
-        step4Check() {},
+        checkTitle() {
+
+        },
+        step0Check() {
+
+        },
+        step1Check() {
+
+        },
+        step2Check() {
+
+        },
+        step4Check() {
+            let a=1
+        },
         /** 展示 步骤条 状态 */
         stepStatus(stepVal) {
             // wait / process / finish / error / success

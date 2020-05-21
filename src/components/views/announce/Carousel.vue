@@ -89,7 +89,7 @@
                                 </div>
                             </li>
                             <li class="row2">
-                                <img class="pic-pic" :src="head_path+item.pic" alt="图片加载失败。" />
+                                <img class="pic-pic" :src="item.pic" alt="图片加载失败。" />
                             </li>
                             <li class="row3">
                                 <Switchbox
@@ -155,11 +155,11 @@ export default {
     data() {
         return {
             buttons: [
-                { label: "PC网页", value: "1" },
                 { label: "手机H5", value: "2" },
+                { label: "PC网页", value: "1" },
                 { label: "手机APP", value: "3 " }
             ],
-            curr_btn: "1",
+            curr_btn: "2",
             // 是否是编辑模式
             is_edit: false,
             list: [],
@@ -214,7 +214,7 @@ export default {
                 active: String(item.status)
             };
             this.curr_btn = String(item.device);
-            this.pic_data = this.head_path + item.pic;
+            this.pic_data = item.pic;
             this.pic_id = item.pic_id;
         },
         editConf() {

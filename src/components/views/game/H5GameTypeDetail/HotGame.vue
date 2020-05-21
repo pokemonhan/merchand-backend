@@ -65,6 +65,13 @@
                                     @update="switchNormal(row)"
                                 />
                                 <span>普通游戏</span>
+                                <!-- <Radio
+                                    label="普通游戏"
+                                    :value="row.status"
+                                    val="1"
+                                    v-model="row.status"
+                                    @update="switchNormal()"
+                                /> -->
                             </div>
                             <div>
                                 <Switchbox
@@ -222,6 +229,7 @@ export default {
                 id: row.id,
                 hot_new: "0"
             };
+            console.log('请求数据',data)
             let { url, method } = this.$api.game_hot_set;
             this.$http({ method, url, data }).then(res => {
                 if (res && res.code == "200") {

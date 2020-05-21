@@ -1,5 +1,5 @@
 <template>
-    <div class="v-select" :style="css" v-clickoutside="closeSections" ref="v-select">
+    <div :class="['v-select',disabled?'disabled':'']" :style="css" v-clickoutside="closeSections" ref="v-select">
         <div
             :class="['val-box', isShow ? 'val-box-active' : '']"
             @click.stop="showOptions"
@@ -23,8 +23,11 @@
                 class="show-select-label"
                 v-show="!input||!isShow"
             >{{selectedLabel?selectedLabel:placeholder}}</span>
-            <i v-if="clearable && isClear" @click.stop="clear" class="iconfont iconcuowuguanbi-"></i>
-            <span v-else :class="['drop-down', '', isShow ? 'icon-rotate' : '']"></span>
+            <i v-show="clearable && isClear" @click.stop="clear" class="iconfont iconcuowuguanbi-"></i>
+            <span
+                v-show="!(clearable && isClear)"
+                :class="['drop-down', '', isShow ? 'icon-rotate' : '']"
+            ></span>
         </div>
         <ul :class="['sections', sectionsDir]" ref="sections">
             <li
@@ -32,7 +35,7 @@
                 :key="item.value"
                 :class="[selectedValue===item.value ? 'active' : '','option']"
                 @click.stop="select(item)"
-                :title="input?item.label:''"
+                :title="TitleShow(input,item)"
             >{{item.label}}</li>
         </ul>
         <span v-show="showerr||(required&&!value)" class="error-message">
@@ -64,9 +67,10 @@ export default {
         value: [Number, String], // 默认值
         clearable: {
             type: Boolean,
-            default: true
+            default: false
         }, // 是否可清空
         placeholder: String,
+        disabled: Boolean,
         // 当required为true时, 值为空,就会提示
         required: {
             type: Boolean,
@@ -100,15 +104,15 @@ export default {
     },
     computed: {
         opt() {
-            // 输入框内容为空则 返回全部， 不筛选也返回全部 
-            if (!this.input || !this.showInputLabel||this.noFilter) {
+            // 输入框内容为空则 返回全部， 不筛选也返回全部
+            if (!this.input || !this.showInputLabel || this.noFilter) {
                 return this.options
             } else {
                 let opt_temp = (this.options || []).filter(item => {
                     // let LowerCase
-                    if(item.label){
+                    if (item.label) {
                         return item.label.indexOf(this.showInputLabel) !== -1
-                    }else {
+                    } else {
                         return false
                     }
                 })
@@ -117,6 +121,13 @@ export default {
         }
     },
     methods: {
+        TitleShow(input, item) {
+            let title = ''
+            if (input) {
+                title = item.title ? item.title : item.label
+            }
+            return title
+        },
         slideDown(ele) {
             if (!ele) return
             if (!(ele instanceof Element)) {
@@ -138,6 +149,7 @@ export default {
             }, 20)
         },
         showOptions(e) {
+            if(this.disabled) return
             if (this.input) {
                 this.isShow = true
                 // setTimeout(() => {
@@ -152,7 +164,7 @@ export default {
             if (this.isShow) {
                 /** 滚动条到顶部的距离 */
                 let scrollTop = document.documentElement.scrollTop
-                
+
                 let scrollHeight = document.body.scrollHeight
                 let toBottom = e.target.getBoundingClientRect().bottom
                 let y = scrollHeight - scrollTop - toBottom
@@ -174,18 +186,19 @@ export default {
             let ele = this.$refs.sections
             // $(ele).slideUp(200)
             // Slide.slideUp(ele)
-            this.slideUp(ele)
             if (item.value === this.selectedValue) return
             this.selectedValue = item.value
             this.selectedLabel = item.label
+            this.slideUp(ele)
 
             // this.showInputLabel = item.label // input 展示的内容
             this.$emit('update', item.value, item)
         },
         clear() {
+            if(this.disabled) return
             this.selectedValue = ''
-            this.selectedLabel = ''
-            this.$emit('update', undefined, undefined)
+            // this.selectedLabel = ''
+            this.$emit('update', '', '')
         },
         closeSections() {
             this.isShow = false
@@ -195,6 +208,7 @@ export default {
             this.slideUp(ele)
         },
         updateClearState(bool) {
+            if(this.disabled) return
             this.isClear = bool
         },
         handleInput() {
@@ -210,16 +224,17 @@ export default {
     },
     watch: {
         value(val) {
-            // console.log('🍧 val: ', val);
+            console.log('🍏 val: ', val);
             this.selectedValue = this.val
-            this.selectedLabe = ''
+            this.selectedLabel = ''
             this.options.forEach(item => {
                 if (item.value === this.value) {
                     this.selectedLabel = item.label
                 }
             })
         },
-        options() {
+        options(opt) {
+            this.selectedValue = ''
             this.selectedLabel = ''
             if (!this.options) return
             this.options.forEach(item => {
@@ -252,7 +267,6 @@ export default {
     /* margin: 0 5px; */
     /* display: inline-block; */
     box-sizing: border-box;
-    cursor: pointer;
     /* box-sizing: border-box; */
     background: #fff;
 }
@@ -266,7 +280,11 @@ export default {
     border: 1px solid #e2dcdc;
     border-radius: 4px;
     position: relative;
+    cursor: pointer;
     /* overflow: hidden; */
+}
+.disabled .val-box {
+    cursor: not-allowed;
 }
 .v-select .val-box-active {
     border-color: #57a3f3;
@@ -331,7 +349,7 @@ export default {
     background-color: #fff;
     overflow-y: scroll;
     display: none;
-    z-index: 2; 
+    z-index: 2;
     transition: max-height 0.2s;
 }
 .bottom-upfold {
@@ -380,8 +398,12 @@ export default {
 .error-message .iconjinggao1- {
     font-size: 13px;
 }
+
 .iconcuowuguanbi-:hover {
     color: rgb(255, 60, 0);
+}
+.disabled .iconcuowuguanbi-:hover{
+    color: #ccc;
 }
 </style>
 

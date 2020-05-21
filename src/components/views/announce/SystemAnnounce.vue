@@ -32,13 +32,13 @@
                 <template v-slot:item="{row}">
                     <td>{{row.title}}</td>
                     <td>
-                        <img width="40" :src="row.h5_pic"  />
+                        <img width="40" :src="row.h5_pic" />
                     </td>
                     <td>
-                        <img width="40" :src="row.app_pic"  />
+                        <img width="40" :src="row.app_pic" />
                     </td>
                     <td>
-                        <img width="40" :src="row.pc_pic"  />
+                        <img width="40" :src="row.pc_pic" />
                     </td>
                     <td>{{getDevice(row.device)}}</td>
                     <td>{{row.created_at}}</td>
@@ -64,7 +64,7 @@
             @updateNo="updateNo"
             @updateSize="updateSize"
         />
-        <Dialog :show.sync="adia_show" :title="dia_title">
+        <!-- <Dialog :show.sync="dia_show" :title="dia_title">
             <div class="dia-inner">
                 <div>
                     <ul class="form">
@@ -119,23 +119,6 @@
                                 type="file"
                             />
                         </li>
-                        <!-- <li>
-                            <span style="width:60px;"></span>
-                            <div class="upload-btn">
-                                <div>
-                                    <Input style="width:124px;" v-model="form.app_pic_path" />
-                                </div>
-
-                                <div>
-                                    <Input style="width:124px;" v-model="form.pc_pic_path" />
-                                </div>
-
-                                <div>
-                                    <Input style="width:124px;" v-model="form.h5_pic_path" />
-                                </div>
-                            </div>
-                        </li>-->
-
                         <li>
                             <span>时间范围</span>
                             <Date type="datetimerange" style="width:300px;" v-model="form.dates" />
@@ -164,8 +147,8 @@
                     </div>
                 </div>
             </div>
-        </Dialog>
-        <Dialog :show.sync="dia_show" title="添加公告">
+        </Dialog>-->
+        <Dialog :show.sync="dia_show" :title="dia_title">
             <div class="dia-inner">
                 <el-steps :active="active" align-center finish-status="success">
                     <el-step
@@ -177,21 +160,21 @@
                     ></el-step>
                     <el-step
                         class="pointer"
-                        title="APP公告"
+                        title="H5公告"
                         description="公告内容"
                         :status="stepStatus(1)"
                         @click.native="active=1"
                     ></el-step>
                     <el-step
                         class="pointer"
-                        title="PC公告"
+                        title="APP公告"
                         description="公告内容"
                         :status="stepStatus(2)"
                         @click.native="active=2"
                     ></el-step>
                     <el-step
                         class="pointer"
-                        title="H5公告"
+                        title="PC公告"
                         description="公告内容"
                         :status="stepStatus(3)"
                         @click.native="active=3"
@@ -210,8 +193,8 @@
                                 />
                             </div>
                         </li>
-                        <li class="errMsg" >
-                            <!-- <span class="red">公告标题不可为空！</span> -->
+                        <li class="errMsg">
+                            <span v-show="!form.title" class="red">公告标题不可为空！</span>
                         </li>
                         <li>
                             <div style="display:flex;">
@@ -233,7 +216,7 @@
                             </div>
                         </li>
                         <li class="errMsg">
-                            <!-- <span class="red">状态未选择！</span> -->
+                            <span v-show="!form.status" class="red">状态未选择！</span>
                         </li>
                         <li>
                             <div style="display:flex;align-items:center">
@@ -244,21 +227,40 @@
                                     style="margin:0 auto;transform:scal(0.8)"
                                     type="datetimerange"
                                     v-model="form.dates"
+                                    @update="formDateUpdate"
                                 />
                             </div>
                         </li>
                         <li class="errMsg">
-                            <!-- <span class="red">时间范围不可为空！</span> -->
+                            <span v-if="errDatesShow" class="red">时间范围不可为空！</span>
                         </li>
                     </ul>
-                    <ul v-if="active==1" class="form" >
+                    <ul v-if="active==1" class="form">
+                        <li>
+                            <div class="pic-data">
+                                <img v-if="h5_pic_data" :src="h5_pic_data" />
+                            </div>
+                        </li>
+                        <li class="pic-errMsg">
+                            <span  v-show="!h5_pic_data" class="red">未上传图片！</span>
+                        </li>
+                        <li>
+                            <Upload
+                                style="width:110px;margin:0 auto"
+                                title="H5图片上传"
+                                @change="upH5PicChange($event)"
+                                type="file"
+                            />
+                        </li>
+                    </ul>
+                    <ul v-if="active==2" class="form">
                         <li>
                             <div class="pic-data">
                                 <img v-if="app_pic_data" :src="app_pic_data" />
                             </div>
                         </li>
                         <li class="pic-errMsg">
-                            <!-- <span class="red">未上传图片！</span> -->
+                            <span  v-show="!app_pic_data" class="red">未上传图片！</span>
                         </li>
                         <li>
                             <Upload
@@ -269,38 +271,20 @@
                             />
                         </li>
                     </ul>
-                    <ul v-if="active==2" class="form">
+                    <ul v-if="active==3" class="form">
                         <li>
                             <div class="pic-data">
                                 <img v-if="pc_pic_data" :src="pc_pic_data" />
                             </div>
                         </li>
                         <li class="pic-errMsg">
-                            <!-- <span class="red">未上传图片！</span> -->
+                            <span  v-show="!pc_pic_data" class="red">未上传图片！</span>
                         </li>
                         <li>
                             <Upload
                                 style="width:110px;margin:0 auto"
                                 title="PC图片上传"
                                 @change="upPcPicChange($event)"
-                                type="file"
-                            />
-                        </li>
-                    </ul>
-                    <ul v-if="active==3" class="form">
-                        <li>
-                            <div class="pic-data">
-                                <img v-if="h5_pic_data" :src="h5_pic_data" />
-                            </div>
-                        </li>
-                        <li class="pic-errMsg">
-                            <!-- <span class="red">未上传图片！</span> -->
-                        </li>
-                        <li>
-                            <Upload
-                                style="width:110px;margin:0 auto"
-                                title="H5图片上传"
-                                @change="upH5PicChange($event)"
                                 type="file"
                             />
                         </li>
@@ -387,32 +371,64 @@ export default {
             h5_pic_data: "",
             AppPicFile: {},
             PcPicFile: {},
-            H5PicFile: {}
+            H5PicFile: {},
+            app_pic_addr: "",
+            pc_pic_addr: "",
+            h5_pic_addr: "",
+            isUpH5:false,
+            isUpApp:false,
+            isUpPc:false,
+            nowData:{},
+            errDatesShow:true
         };
     },
     methods: {
-        nextStep(){
-            if(this.active<4){
-                this.active++
+        formDateUpdate(){
+            if(this.form.dates[0] && this.form.dates[1]){
+                this.errDatesShow=true
+            }else{
+                this,errDatesShow=false
             }
         },
-        prevStep(){
-            this.active--
+        nextStep() {
+            if (this.active < 4) {
+                this.active++;
+            }
         },
-        checkTitle() {
-
+        prevStep() {
+            this.active--;
         },
         step0Check() {
-
+            if (
+                this.form.title != "" &&
+                this.form.status != "" &&
+                this.form.dates != ""
+            ) {
+                return true;
+            } else {
+                return false;
+            }
         },
         step1Check() {
-
+            if (this.h5_pic_data != "") {
+                return true;
+            } else {
+                return false;
+            }
         },
         step2Check() {
-
+            if (this.app_pic_data != "") {
+                return true;
+            } else {
+                return false;
+            }
         },
-        step4Check() {
-            let a=1
+        step3Check() {
+            if (this.pc_pic_data != "") {
+                return true;
+            } else {
+                return false;
+            }
         },
         /** 展示 步骤条 状态 */
         stepStatus(stepVal) {
@@ -430,25 +446,33 @@ export default {
                     case 2:
                         return this.step2Check() ? "success" : "error";
                     case 3:
-                        if (!this.form_need_test) {
-                            return "wait";
-                        } else {
-                            return this.step3Check() ? "success" : "error";
-                        }
+                        return this.step3Check() ? "success" : "error";
                         break;
                     case 4:
-                        if (!this.form_need_test) {
-                            return "wait";
-                        } else {
-                            return this.step4Check() ? "success" : "error";
-                        }
-                        break;
-                    case 5:
                         break;
                     default:
                         break;
                 }
             }
+        },
+        checkForm(){
+            if(!this.step0Check()){
+                this.$toast.warning('步骤1 错误')
+                return false
+            }
+            if(!this.step1Check()){
+                this.$toast.warning('步骤2 错误')
+                return false
+            }
+            if(!this.step2Check()){
+                this.$toast.warning('步骤3 错误')
+                return false
+            }
+            if(!this.step3Check()){
+                this.$toast.warning('步骤4 错误')
+                return false
+            }
+            return true
         },
         getDevice(device) {
             let device_all = "";
@@ -468,6 +492,7 @@ export default {
             this.getList();
         },
         upAppPicChange(e) {
+            this.isUpApp=true
             let file = e.target.files[0];
             let self = this;
             let reader = new FileReader();
@@ -481,6 +506,7 @@ export default {
             this.AppPicFile = e;
         },
         upPcPicChange(e) {
+            this.isUpPc=true
             let file = e.target.files[0];
             let self = this;
             let reader = new FileReader();
@@ -494,6 +520,7 @@ export default {
             this.PcPicFile = e;
         },
         upH5PicChange(e) {
+            this.isUpH5=true
             let file = e.target.files[0];
             let self = this;
             let reader = new FileReader();
@@ -513,14 +540,21 @@ export default {
                 dates: [],
                 status: ""
             };
+            this.h5_pic_data='',
+            this.app_pic_data='',
+            this.pc_pic_data=''
         },
         add() {
             this.dia_title = "添加公告";
             this.dia_status = "add";
             this.dia_show = true;
+            this.active=0;
             this.initForm();
         },
         edit(row) {
+            console.log('row',row)
+            this.nowData=row
+            this.active=0;
             this.dia_title = "编辑";
             this.dia_status = "edit";
             this.dia_show = true;
@@ -528,24 +562,72 @@ export default {
             this.form = {
                 id: row.id,
                 title: row.title,
-                app_pic_path: row.app_pic,
-                pc_pic_path: row.pc_pic,
-                h5_pic_path: row.h5_pic,
                 dates: [row.start_time, row.end_time],
                 status: String(row.status)
             };
+            this.app_pic_data=row.app_pic;
+            this.pc_pic_data=row.pc_pic;
+            this.h5_pic_data=row.h5_pic;
+            this.isUpH5=false;
+            this.isUpApp=false;
+            this.isUpPc=false;
         },
         editCfm() {
+            console.log('this.nowDate',this.nowData)
+            let h5_pic_id=''
+            let app_pic_id=''
+            let pc_pic_id=''
+            if(this.isUpH5==false &&  this.isUpApp==false && this.isUpPc==false){
+                h5_pic_id=this.nowData.h5_pic_id
+                app_pic_id=this.nowData.app_pic_id
+                pc_pic_id=this.nowData.pc_pic_id
+            }
+            if(this.isUpH5==true &&  this.isUpApp==true && this.isUpPc==true){
+                h5_pic_id=this.h5_pic_data
+                app_pic_id=this.app_pic_data
+                pc_pic_id=this.pc_pic_data
+            }
+            if(this.isUpH5==false &&  this.isUpApp==true && this.isUpPc==true){
+                h5_pic_id=this.nowData.h5_pic_id
+                app_pic_id=this.app_pic_data
+                pc_pic_id=this.pc_pic_data
+            }
+            if(this.isUpH5==true &&  this.isUpApp==false && this.isUpPc==true){
+                h5_pic_id=this.h5_pic_data
+                app_pic_id=this.nowData.app_pic_id
+                pc_pic_id=this.pc_pic_data
+            }
+            if(this.isUpH5==true &&  this.isUpApp==true && this.isUpPc==false){
+                h5_pic_id=this.h5_pic_data
+                app_pic_id=this.app_pic_data
+                pc_pic_id=this.nowData.pc_pic_id
+            }
+            if(this.isUpH5==false &&  this.isUpApp==false && this.isUpPc==true){
+                h5_pic_id=this.nowData.h5_pic_id
+                app_pic_id=this.nowData.app_pic_id
+                pc_pic_id=this.pc_pic_data
+            }
+            if(this.isUpH5==false &&  this.isUpApp==true && this.isUpPc==false){
+                h5_pic_id=this.nowData.h5_pic_id
+                app_pic_id=this.app_pic_data
+                pc_pic_id=this.nowData.pc_pic_id
+            }
+            if(this.isUpH5==true &&  this.isUpApp==false && this.isUpPc==false){
+                h5_pic_id=this.h5_pic_data
+                app_pic_id=this.nowData.app_pic_id
+                pc_pic_id=this.nowData.pc_pic_id
+            }
             let data = {
                 id: this.form.id,
                 title: this.form.title,
-                h5_pic: this.form.h5_pic_path,
-                pc_pic: this.form.pc_pic_path,
-                app_pic: this.form.app_pic_path,
+                h5_pic_id: h5_pic_id,
+                pc_pic_id: pc_pic_id,
+                app_pic_id: app_pic_id,
                 start_time: this.form.dates[0],
                 end_time: this.form.dates[1],
                 status: this.form.status
             };
+            console.log('请求数据',data)
             let { url, method } = this.$api.announce_systemannounce_edit;
             this.$http({ method, url, data }).then(res => {
                 // console.log('返回数据',res )
@@ -556,12 +638,71 @@ export default {
                 }
             });
         },
+        async editConfCfm() {
+            await this.upLoadH5Pic();
+            await this.upLoadAppPic();
+            await this.upLoadPcPic();
+            this.editCfm();
+        },
+        async editConCfmH5(){
+           await this.upLoadH5Pic();
+           this.editCfm(); 
+        },
+        async editConfCfmApp(){
+            await this.upLoadAppPic()
+            this.editCfm()
+        },
+        async editConfCfmPC(){
+            await this.upLoadPcPic()
+            this.editCfm()
+        },
+        async editConfCfmH5App(){
+            await this.upLoadH5Pic()
+            await this.upLoadAppPic()
+            this.editCfm()
+        },
+        async editConfCfmH5Pc(){
+            await this.upLoadH5Pic()
+            await this.upLoadPcPic()
+            this.editCfm()
+        },
+        async editConfCfmAppPc(){
+            await this.upLoadAppPic()
+            await thiis.upLoadPcPic()
+            this.editCfm()
+        },
         diaCfm() {
+            if(!this.checkForm()) return
             if (this.dia_status === "add") {
                 this.addConfCfm();
             }
             if (this.dia_status === "edit") {
-                this.editCfm();
+                // this.editConfCfm();
+                //判断编辑时是否有上传新图片
+                if(this.isUpH5==true && this.isUpApp==true && this.isUpPc==true){
+                    this.editConfCfm()  
+                }
+                if(this.isUpH5==false && this.isUpApp==false && this.isUpPc==false){
+                    this.editCfm()
+                }
+                if(this.isUpH5==true && this.isUpApp==false && this.isUpPc==false){
+                    this.editConCfmH5();
+                }
+                if(this.isUpH5==false && this.isUpApp==true && this.isUpPc==false){
+                    this.editConfCfmApp()
+                }
+                if(this.isUpH5==false && this.isUpApp==false && this.isUpPc==true){
+                    this.editConfCfmPC()
+                }
+                if(this.isUpH5==true && this.isUpApp==true && this.isUpPc==false){
+                    this.editConfCfmH5App
+                }
+                if(this.isUpH5==true && this.isUpApp==false && this.isUpPc==true){
+                    this.editConfCfmH5Pc()
+                }
+                if(this.isUpH5==false && this.isUpApp==true && this.isUpPc==true){
+                    this.editConfCfmAppPc()
+                }
             }
         },
         //上传图片
@@ -586,10 +727,6 @@ export default {
             });
         },
         upLoadPcPic() {
-            // return new Promise(resolve => {
-            //     console.log(123);
-            //     resolve(1);
-            // });
             return new Promise(resolve => {
                 let e = this.PcPicFile;
                 let pic = e.target.files[0];
@@ -717,10 +854,11 @@ export default {
 /* .g-modal-mask ---在 App.vue公共区 */
 /* .filter ---在 App.vue公共区 */
 .errMsg {
-    height:20px;
-    margin-left:66px;
+    height: 20px;
+    margin-left: 66px;
 }
-.pic-errMsg{
+.pic-errMsg {
+    height: 15px;
     justify-content: center;
 }
 .radio-left {
@@ -803,7 +941,7 @@ table {
     min-height: 450px;
 }
 .dia-inner .edit-form {
-    height: 100%;
+    height: 250px;
     /* margin-top: 5%; */
     display: flex;
     justify-content: center;

@@ -109,7 +109,6 @@
                 </div>
             </div>
         </div>
-
         <Modal
             :show="show_del_modal"
             title="删除等级"

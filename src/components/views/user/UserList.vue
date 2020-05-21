@@ -302,14 +302,8 @@
                 </div>
             </div>
         </Dialog>
-        <!-- dia_show: true -->
-        <div v-if="inner_mask_show" class="g-modal-mask">
-            <div class="confirm g-v-modal">
-                <div class="mod-head">
-                    <span>添加账号</span>
-                    <i class="iconfont iconcuowuguanbi-" @click="closeConfirm()"></i>
-                </div>
-
+        <Dialog :show.sync="inner_mask_show" title="添加账号">
+            <div class="confirm ">
                 <div class="content">
                     <ul>
                         <li>
@@ -339,7 +333,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </Dialog>
         <Dialog :show.sync="show_add_black_list" title="加入黑名单">
             <div class="dia-inner">
                 <div class="blacklist-inner">
@@ -672,7 +666,7 @@ export default {
             // console.log('请求数据',data)
             let { method, url } = this.$api.user_list_add;
             this.$http({ method, url, data }).then(res => {
-                // console.log("返回数据", res);
+                console.log("返回数据", res);
                 if (res && res.code == "200") {
                     this.inner_mask_show = false;
                     this.$toast.success(res && res.message);

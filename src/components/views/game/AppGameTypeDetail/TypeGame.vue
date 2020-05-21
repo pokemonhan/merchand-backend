@@ -318,7 +318,7 @@ export default {
 
             let { url, method } = this.$api.game_app_list;
             this.$http({ method, url, data }).then(res => {
-                // console.log("列表👌👌👌👌: ", res);
+                console.log("列表👌👌👌👌11: ", res);
                 if (res && res.code === "200") {
                     this.total = res.data.total;
                     this.list = res.data.data;

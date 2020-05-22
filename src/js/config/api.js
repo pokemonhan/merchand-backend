@@ -441,6 +441,11 @@ export default {
     // 短信推送
 
     /*=========================== 报表管理 ===========================--*/
+    //个人列表 - 列表
+    personal_list:{
+        url:'/merchant-api/report/user',
+        method:'post'
+    },
     //会员稽核 - 列表
     member_audit_list: {
         url: '/merchant-api/report/user-audit',
@@ -450,6 +455,16 @@ export default {
     platform_note_list: {
         url: '/merchant-api/report/game-project',
         method: 'post'
+    },
+    // 游戏报表 - 列表
+    game_report_list:{
+        url:'/merchant-api/report/game',
+        method:'post'
+    },
+    // 游戏报表 - 详情
+    game_report_list_detail:{
+        url:'/merchant-api/report/game-detail',
+        method:'post'
     },
     /*=========================== 游戏管理 ===========================--*/
 

@@ -332,8 +332,13 @@ export default {
             };
            this.payOut_status=""
         },
-        updateNo(val) {},
-        updateSize(val) {},
+        updateNo(val) {
+            this.getList();
+        },
+        updateSize(val) {
+            this.pageNo = 1;
+            this.getList();
+        },
         getList() {
             let delivery_time = "";
             if (this.filter.dates[0] && this.filter.dates[1]) {

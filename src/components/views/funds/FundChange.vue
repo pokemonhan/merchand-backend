@@ -113,26 +113,7 @@ export default {
             };
         },
         getTypeOfAccount() {
-            let { method, url } = this.$api.type_of_fund_account_change_list;
-            this.$http({ method, url }).then(res => {
-                // console.log("账变类型", res);
-                if (res && res.code == "200") {
-                    this.acc_opt = res.data;
-                }
-                // console.log("asdf", this.acc_opt);
-                let account_type = [{label:"全部",sign:"",value:""}];
-                for (var i = 0; i < this.acc_opt.length; i++) {
-                    let item = this.acc_opt[i].account_type;
-                    if (item) {
-                        for (var j = 0; j < item.length; j++) {
-                            // console.log("item", item[j]);
-                            account_type.push({label:item[j].name,sign:item[j].id,value:item[j].sign});
-                        }
-                    }
-                }
-                this.acc_change_opt=account_type
-                // console.log("类型列表", this.acc_change_opt);
-            });
+            
         },
         getList(){
             let created_at="";

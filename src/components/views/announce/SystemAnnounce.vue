@@ -241,9 +241,6 @@
                                 <img v-if="h5_pic_data" :src="h5_pic_data" />
                             </div>
                         </li>
-                        <li class="pic-errMsg">
-                            <span  v-show="!h5_pic_data" class="red">未上传图片！</span>
-                        </li>
                         <li>
                             <Upload
                                 style="width:110px;margin:0 auto"
@@ -259,9 +256,6 @@
                                 <img v-if="app_pic_data" :src="app_pic_data" />
                             </div>
                         </li>
-                        <li class="pic-errMsg">
-                            <span  v-show="!app_pic_data" class="red">未上传图片！</span>
-                        </li>
                         <li>
                             <Upload
                                 style="width:110px;margin:0 auto"
@@ -276,9 +270,6 @@
                             <div class="pic-data">
                                 <img v-if="pc_pic_data" :src="pc_pic_data" />
                             </div>
-                        </li>
-                        <li class="pic-errMsg">
-                            <span  v-show="!pc_pic_data" class="red">未上传图片！</span>
                         </li>
                         <li>
                             <Upload
@@ -375,19 +366,19 @@ export default {
             app_pic_addr: "",
             pc_pic_addr: "",
             h5_pic_addr: "",
-            isUpH5:false,
-            isUpApp:false,
-            isUpPc:false,
-            nowData:{},
-            errDatesShow:true
+            isUpH5: false,
+            isUpApp: false,
+            isUpPc: false,
+            nowData: {},
+            errDatesShow: true
         };
     },
     methods: {
-        formDateUpdate(){
-            if(this.form.dates[0] && this.form.dates[1]){
-                this.errDatesShow=false
-            }else{
-                this.errDatesShow=true
+        formDateUpdate() {
+            if (this.form.dates[0] && this.form.dates[1]) {
+                this.errDatesShow = false;
+            } else {
+                this.errDatesShow = true;
             }
         },
         nextStep() {
@@ -410,21 +401,17 @@ export default {
             }
         },
         step1Check() {
-            if (this.h5_pic_data != "") {
-                return true;
-            } else {
-                return false;
-            }
+            return true;
         },
         step2Check() {
-            if (this.app_pic_data != "") {
-                return true;
-            } else {
-                return false;
-            }
+            return true;
         },
         step3Check() {
-            if (this.pc_pic_data != "") {
+            if (
+                this.pc_pic_data != "" ||
+                this.app_pic_data != "" ||
+                this.h5_pic_data != ""
+            ) {
                 return true;
             } else {
                 return false;
@@ -455,24 +442,12 @@ export default {
                 }
             }
         },
-        checkForm(){
-            if(!this.step0Check()){
-                this.$toast.warning('步骤1 错误')
-                return false
+        checkForm() {
+            if (!this.step3Check()) {
+                this.$toast.warning("必须上传一张图片");
+                return false;
             }
-            if(!this.step1Check()){
-                this.$toast.warning('步骤2 错误')
-                return false
-            }
-            if(!this.step2Check()){
-                this.$toast.warning('步骤3 错误')
-                return false
-            }
-            if(!this.step3Check()){
-                this.$toast.warning('步骤4 错误')
-                return false
-            }
-            return true
+            return true;
         },
         getDevice(device) {
             let device_all = "";
@@ -492,7 +467,7 @@ export default {
             this.getList();
         },
         upAppPicChange(e) {
-            this.isUpApp=true
+            this.isUpApp = true;
             let file = e.target.files[0];
             let self = this;
             let reader = new FileReader();
@@ -506,7 +481,7 @@ export default {
             this.AppPicFile = e;
         },
         upPcPicChange(e) {
-            this.isUpPc=true
+            this.isUpPc = true;
             let file = e.target.files[0];
             let self = this;
             let reader = new FileReader();
@@ -520,7 +495,7 @@ export default {
             this.PcPicFile = e;
         },
         upH5PicChange(e) {
-            this.isUpH5=true
+            this.isUpH5 = true;
             let file = e.target.files[0];
             let self = this;
             let reader = new FileReader();
@@ -540,21 +515,24 @@ export default {
                 dates: [],
                 status: ""
             };
-            this.h5_pic_data='',
-            this.app_pic_data='',
-            this.pc_pic_data=''
+            (this.h5_pic_data = ""),
+                (this.app_pic_data = ""),
+                (this.pc_pic_data = "");
         },
         add() {
+            this.isUpH5 = false;
+            this.isUpApp = false;
+            this.isUpPc = false;
             this.dia_title = "添加公告";
             this.dia_status = "add";
             this.dia_show = true;
-            this.active=0;
+            this.active = 0;
             this.initForm();
         },
         edit(row) {
-            console.log('row',row)
-            this.nowData=row
-            this.active=0;
+            console.log("row", row);
+            this.nowData = row;
+            this.active = 0;
             this.dia_title = "编辑";
             this.dia_status = "edit";
             this.dia_show = true;
@@ -565,59 +543,91 @@ export default {
                 dates: [row.start_time, row.end_time],
                 status: String(row.status)
             };
-            this.app_pic_data=row.app_pic;
-            this.pc_pic_data=row.pc_pic;
-            this.h5_pic_data=row.h5_pic;
-            this.isUpH5=false;
-            this.isUpApp=false;
-            this.isUpPc=false;
+            this.app_pic_data = row.app_pic;
+            this.pc_pic_data = row.pc_pic;
+            this.h5_pic_data = row.h5_pic;
+            this.isUpH5 = false;
+            this.isUpApp = false;
+            this.isUpPc = false;
         },
         editCfm() {
-            console.log('this.nowDate',this.nowData)
-            let h5_pic_id=''
-            let app_pic_id=''
-            let pc_pic_id=''
-            if(this.isUpH5==false &&  this.isUpApp==false && this.isUpPc==false){
-                h5_pic_id=this.nowData.h5_pic_id
-                app_pic_id=this.nowData.app_pic_id
-                pc_pic_id=this.nowData.pc_pic_id
+            console.log("this.nowDate", this.nowData);
+            let h5_pic_id = "";
+            let app_pic_id = "";
+            let pc_pic_id = "";
+            if (
+                this.isUpH5 == false &&
+                this.isUpApp == false &&
+                this.isUpPc == false
+            ) {
+                h5_pic_id = this.nowData.h5_pic_id;
+                app_pic_id = this.nowData.app_pic_id;
+                pc_pic_id = this.nowData.pc_pic_id;
             }
-            if(this.isUpH5==true &&  this.isUpApp==true && this.isUpPc==true){
-                h5_pic_id=this.h5_pic_data
-                app_pic_id=this.app_pic_data
-                pc_pic_id=this.pc_pic_data
+            if (
+                this.isUpH5 == true &&
+                this.isUpApp == true &&
+                this.isUpPc == true
+            ) {
+                h5_pic_id = this.h5_pic_data;
+                app_pic_id = this.app_pic_data;
+                pc_pic_id = this.pc_pic_data;
             }
-            if(this.isUpH5==false &&  this.isUpApp==true && this.isUpPc==true){
-                h5_pic_id=this.nowData.h5_pic_id
-                app_pic_id=this.app_pic_data
-                pc_pic_id=this.pc_pic_data
+            if (
+                this.isUpH5 == false &&
+                this.isUpApp == true &&
+                this.isUpPc == true
+            ) {
+                h5_pic_id = this.nowData.h5_pic_id;
+                app_pic_id = this.app_pic_data;
+                pc_pic_id = this.pc_pic_data;
             }
-            if(this.isUpH5==true &&  this.isUpApp==false && this.isUpPc==true){
-                h5_pic_id=this.h5_pic_data
-                app_pic_id=this.nowData.app_pic_id
-                pc_pic_id=this.pc_pic_data
+            if (
+                this.isUpH5 == true &&
+                this.isUpApp == false &&
+                this.isUpPc == true
+            ) {
+                h5_pic_id = this.h5_pic_data;
+                app_pic_id = this.nowData.app_pic_id;
+                pc_pic_id = this.pc_pic_data;
             }
-            if(this.isUpH5==true &&  this.isUpApp==true && this.isUpPc==false){
-                h5_pic_id=this.h5_pic_data
-                app_pic_id=this.app_pic_data
-                pc_pic_id=this.nowData.pc_pic_id
+            if (
+                this.isUpH5 == true &&
+                this.isUpApp == true &&
+                this.isUpPc == false
+            ) {
+                h5_pic_id = this.h5_pic_data;
+                app_pic_id = this.app_pic_data;
+                pc_pic_id = this.nowData.pc_pic_id;
             }
-            if(this.isUpH5==false &&  this.isUpApp==false && this.isUpPc==true){
-                h5_pic_id=this.nowData.h5_pic_id
-                app_pic_id=this.nowData.app_pic_id
-                pc_pic_id=this.pc_pic_data
+            if (
+                this.isUpH5 == false &&
+                this.isUpApp == false &&
+                this.isUpPc == true
+            ) {
+                h5_pic_id = this.nowData.h5_pic_id;
+                app_pic_id = this.nowData.app_pic_id;
+                pc_pic_id = this.pc_pic_data;
             }
-            if(this.isUpH5==false &&  this.isUpApp==true && this.isUpPc==false){
-                h5_pic_id=this.nowData.h5_pic_id
-                app_pic_id=this.app_pic_data
-                pc_pic_id=this.nowData.pc_pic_id
+            if (
+                this.isUpH5 == false &&
+                this.isUpApp == true &&
+                this.isUpPc == false
+            ) {
+                h5_pic_id = this.nowData.h5_pic_id;
+                app_pic_id = this.app_pic_data;
+                pc_pic_id = this.nowData.pc_pic_id;
             }
-            if(this.isUpH5==true &&  this.isUpApp==false && this.isUpPc==false){
-                h5_pic_id=this.h5_pic_data
-                app_pic_id=this.nowData.app_pic_id
-                pc_pic_id=this.nowData.pc_pic_id
+            if (
+                this.isUpH5 == true &&
+                this.isUpApp == false &&
+                this.isUpPc == false
+            ) {
+                h5_pic_id = this.h5_pic_data;
+                app_pic_id = this.nowData.app_pic_id;
+                pc_pic_id = this.nowData.pc_pic_id;
             }
-            let data = {
+            let datas = {
                 id: this.form.id,
                 title: this.form.title,
                 h5_pic_id: h5_pic_id,
@@ -627,7 +637,8 @@ export default {
                 end_time: this.form.dates[1],
                 status: this.form.status
             };
-            console.log('请求数据',data)
+            console.log("请求数据", data);
+            let data = window.all.tool.rmEmpty(datas);
             let { url, method } = this.$api.announce_systemannounce_edit;
             this.$http({ method, url, data }).then(res => {
                 // console.log('返回数据',res )
@@ -644,64 +655,145 @@ export default {
             await this.upLoadPcPic();
             this.editCfm();
         },
-        async editConCfmH5(){
-           await this.upLoadH5Pic();
-           this.editCfm(); 
+        async editConCfmH5() {
+            await this.upLoadH5Pic();
+            this.editCfm();
         },
-        async editConfCfmApp(){
-            await this.upLoadAppPic()
-            this.editCfm()
+        async editConfCfmApp() {
+            await this.upLoadAppPic();
+            this.editCfm();
         },
-        async editConfCfmPC(){
-            await this.upLoadPcPic()
-            this.editCfm()
+        async editConfCfmPC() {
+            await this.upLoadPcPic();
+            this.editCfm();
         },
-        async editConfCfmH5App(){
-            await this.upLoadH5Pic()
-            await this.upLoadAppPic()
-            this.editCfm()
+        async editConfCfmH5App() {
+            await this.upLoadH5Pic();
+            await this.upLoadAppPic();
+            this.editCfm();
         },
-        async editConfCfmH5Pc(){
-            await this.upLoadH5Pic()
-            await this.upLoadPcPic()
-            this.editCfm()
+        async editConfCfmH5Pc() {
+            await this.upLoadH5Pic();
+            await this.upLoadPcPic();
+            this.editCfm();
         },
-        async editConfCfmAppPc(){
-            await this.upLoadAppPic()
-            await thiis.upLoadPcPic()
-            this.editCfm()
+        async editConfCfmAppPc() {
+            await this.upLoadAppPic();
+            await thiis.upLoadPcPic();
+            this.editCfm();
         },
         diaCfm() {
-            if(!this.checkForm()) return
+            if (!this.checkForm()) return;
             if (this.dia_status === "add") {
-                this.addConfCfm();
+                //判断上传时上传了哪些图片
+                if (
+                    this.isUpH5 == true &&
+                    this.isUpApp == true &&
+                    this.isUpPc == true
+                ) {
+                    this.addConfCfm();
+                }
+                if (
+                    this.isUpH5 == true &&
+                    this.isUpApp == false &&
+                    this.isUpPc == false
+                ) {
+                    this.addConCfmH5();
+                }
+                if (
+                    this.isUpH5 == false &&
+                    this.isUpApp == true &&
+                    this.isUpPc == false
+                ) {
+                    this.addConfCfmApp();
+                }
+                if (
+                    this.isUpH5 == false &&
+                    this.isUpApp == false &&
+                    this.isUpPc == true
+                ) {
+                    this.addConfCfmPC();
+                }
+                if (
+                    this.isUpH5 == true &&
+                    this.isUpApp == true &&
+                    this.isUpPc == false
+                ) {
+                    this.addConfCfmH5App();
+                }
+                if (
+                    this.isUpH5 == true &&
+                    this.isUpApp == false &&
+                    this.isUpPc == true
+                ) {
+                    this.addConfCfmH5Pc();
+                }
+                if (
+                    this.isUpH5 == false &&
+                    this.isUpApp == true &&
+                    this.isUpPc == true
+                ) {
+                    this.addConfCfmAppPc();
+                }
             }
             if (this.dia_status === "edit") {
                 // this.editConfCfm();
                 //判断编辑时是否有上传新图片
-                if(this.isUpH5==true && this.isUpApp==true && this.isUpPc==true){
-                    this.editConfCfm()  
+                if (
+                    this.isUpH5 == true &&
+                    this.isUpApp == true &&
+                    this.isUpPc == true
+                ) {
+                    this.editConfCfm();
                 }
-                if(this.isUpH5==false && this.isUpApp==false && this.isUpPc==false){
-                    this.editCfm()
+                if (
+                    this.isUpH5 == false &&
+                    this.isUpApp == false &&
+                    this.isUpPc == false
+                ) {
+                    this.editCfm();
                 }
-                if(this.isUpH5==true && this.isUpApp==false && this.isUpPc==false){
+                if (
+                    this.isUpH5 == true &&
+                    this.isUpApp == false &&
+                    this.isUpPc == false
+                ) {
                     this.editConCfmH5();
                 }
-                if(this.isUpH5==false && this.isUpApp==true && this.isUpPc==false){
-                    this.editConfCfmApp()
+                if (
+                    this.isUpH5 == false &&
+                    this.isUpApp == true &&
+                    this.isUpPc == false
+                ) {
+                    this.editConfCfmApp();
                 }
-                if(this.isUpH5==false && this.isUpApp==false && this.isUpPc==true){
-                    this.editConfCfmPC()
+                if (
+                    this.isUpH5 == false &&
+                    this.isUpApp == false &&
+                    this.isUpPc == true
+                ) {
+                    this.editConfCfmPC();
                 }
-                if(this.isUpH5==true && this.isUpApp==true && this.isUpPc==false){
-                    this.editConfCfmH5App
+                if (
+                    this.isUpH5 == true &&
+                    this.isUpApp == true &&
+                    this.isUpPc == false
+                ) {
+                    this.editConfCfmH5App;
                 }
-                if(this.isUpH5==true && this.isUpApp==false && this.isUpPc==true){
-                    this.editConfCfmH5Pc()
+                if (
+                    this.isUpH5 == true &&
+                    this.isUpApp == false &&
+                    this.isUpPc == true
+                ) {
+                    this.editConfCfmH5Pc();
                 }
-                if(this.isUpH5==false && this.isUpApp==true && this.isUpPc==true){
-                    this.editConfCfmAppPc()
+                if (
+                    this.isUpH5 == false &&
+                    this.isUpApp == true &&
+                    this.isUpPc == true
+                ) {
+                    this.editConfCfmAppPc();
                 }
             }
         },
@@ -767,16 +859,74 @@ export default {
             });
         },
         addCfm() {
-            let data = {
+            let h5_pic_id = "";
+            let pc_pic_id = "";
+            let app_pic_id = "";
+            if (
+                this.isUpH5 == true &&
+                this.isUpApp == true &&
+                this.isUpPc == true
+            ) {
+                h5_pic_id = this.h5_pic_data;
+                app_pic_id = this.app_pic_data;
+                pc_pic_id = this.pc_pic_data;
+            }
+            if (
+                this.isUpH5 == false &&
+                this.isUpApp == true &&
+                this.isUpPc == true
+            ) {
+                app_pic_id = this.app_pic_data;
+                pc_pic_id = this.pc_pic_data;
+            }
+            if (
+                this.isUpH5 == true &&
+                this.isUpApp == false &&
+                this.isUpPc == true
+            ) {
+                h5_pic_id = this.h5_pic_data;
+                pc_pic_id = this.pc_pic_data;
+            }
+            if (
+                this.isUpH5 == true &&
+                this.isUpApp == true &&
+                this.isUpPc == false
+            ) {
+                h5_pic_id = this.h5_pic_data;
+                app_pic_id = this.app_pic_data;
+            }
+            if (
+                this.isUpH5 == false &&
+                this.isUpApp == false &&
+                this.isUpPc == true
+            ) {
+                pc_pic_id = this.pc_pic_data;
+            }
+            if (
+                this.isUpH5 == false &&
+                this.isUpApp == true &&
+                this.isUpPc == false
+            ) {
+                app_pic_id = this.app_pic_data;
+            }
+            if (
+                this.isUpH5 == true &&
+                this.isUpApp == false &&
+                this.isUpPc == false
+            ) {
+                h5_pic_id = this.h5_pic_data;
+            }
+            let datas = {
                 title: this.form.title,
-                h5_pic_id: this.h5_pic_data,
-                pc_pic_id: this.pc_pic_data,
-                app_pic_id: this.app_pic_data,
+                h5_pic_id: h5_pic_id,
+                pc_pic_id: pc_pic_id,
+                app_pic_id: app_pic_id,
                 start_time: this.form.dates[0],
                 end_time: this.form.dates[1],
                 status: this.form.status
             };
             console.log("请求数据", data);
+            let data = window.all.tool.rmEmpty(datas);
             let { url, method } = this.$api.announce_systemannounce_add;
             this.$http({ method, url, data }).then(res => {
                 console.log("返回数据", res);
@@ -791,6 +941,33 @@ export default {
             await this.upLoadAppPic();
             await this.upLoadPcPic();
             await this.upLoadH5Pic();
+            this.addCfm();
+        },
+        async addConCfmH5() {
+            await this.upLoadH5Pic();
+            this.addCfm();
+        },
+        async addConfCfmApp() {
+            await this.upLoadAppPic();
+            this.addCfm();
+        },
+        async addConfCfmPC() {
+            await this.upLoadPcPic();
+            this.addCfm();
+        },
+        async addConfCfmH5App() {
+            await this.upLoadH5Pic();
+            await this.upLoadAppPic();
+            this.addCfm();
+        },
+        async addConfCfmH5Pc() {
+            await this.upLoadH5Pic();
+            await this.upLoadPcPic();
+            this.addCfm();
+        },
+        async addConfCfmAppPc() {
+            await this.upLoadAppPic();
+            await this.upLoadPcPic();
             this.addCfm();
         },
         getList() {

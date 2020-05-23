@@ -18,7 +18,8 @@
             </ul>
             <ul class="right">
                 <li>
-                    <button class="btn-blue" @click="sortCfm">保存</button>
+                    <button class="btn-blue" @click="sortCfm">保存排序</button>
+                    <button class="btn-blue" @click="downLoadAllPic">下载本页所有图片</button>
                 </li>
             </ul>
         </div>
@@ -60,6 +61,7 @@
                         <div class="gametypes">
                             <div>
                                 <Switchbox
+                                    :disabled="row.hot_new==0"
                                     class="switch-select"
                                     :value="row.hot_new==0 ? 1:0"
                                     @update="switchNormal(row)"
@@ -68,6 +70,7 @@
                             </div>
                             <div>
                                 <Switchbox
+                                    :disabled="row.hot_new==1"
                                     class="switch-select"
                                     :value="row.hot_new==1 ? 1:0"
                                     @update="switchHot(row)"
@@ -76,6 +79,7 @@
                             </div>
                             <div>
                                 <Switchbox
+                                    :disabled="row.hot_new==2"
                                     class="switch-select"
                                     :value="row.hot_new==2 ? 1:0"
                                     @update="switchNew(row)"
@@ -112,7 +116,10 @@
             @updateSize="updateSize"
         />
     </div>
-</template> <script>
+</template> 
+<script>
+import JSZIP from "jszip";
+import FileSaver from "file-saver";
 export default {
     props: {
         // isHot: Boolean,
@@ -144,6 +151,58 @@ export default {
     },
 
     methods: {
+        downLoadAllPic() {
+            console.log("列表", this.list);
+            let all_data = this.list;
+            let all_pic_path = [];
+            for (var i = 0; i < all_data.length; i++) {
+                all_pic_path.push(all_data[i].icon);
+            }
+            //    console.log('图片地址',all_pic_path)
+            let all_pic_name = [];
+            for (var j = 0; j < all_data.length; j++) {
+                all_pic_name.push(all_data[j].vendor + "-" + all_data[j].name);
+            }
+            // console.log('图片名称',all_pic_name)
+            let blogTitle = "PC游戏图片";
+            let zip = new JSZIP();
+            let imgs = zip.folder(blogTitle);
+            let baseList = [];
+            let arr = all_pic_path;
+            let imgNameList = all_pic_name;
+            for (var i = 0; i < arr.length; i++) {
+                let image = new Image();
+                //解决跨域Canvas污染问题
+                image.setAttribute("crossOrigin", "anonymous");
+                image.onload = function() {
+                    let canvas = document.createElement("canvas");
+                    canvas.width = image.width;
+                    canvas.height = image.height;
+
+                    let context = canvas.getContext("2d");
+                    context.drawImage(image, 0, 0, image.width, image.height);
+
+                    let url = canvas.toDataURL(); //得到图片的base64编码数据
+                    canvas.toDataURL("image/png");
+                    
+                    baseList.push(url.substring(22)); // 去掉base64编码前的 data:image/png;base64,
+                    if (baseList.length === arr.length && baseList.length > 0) {
+                        for (let k = 0; k < baseList.length; k++) {
+                            imgs.file(imgNameList[k] + ".png", baseList[k], {
+                                base64: true
+                            });
+                        }
+                        zip.generateAsync({ type: "blob" }).then(function(
+                            content
+                        ) {
+                            //save FileSaver.js
+                            FileSaver.saveAs(content, blogTitle + ".zip");
+                        });
+                    }
+                };
+                image.src = arr[i];
+            }
+        },
         changeDefaultIcon(row) {
             let data = {
                 id: row.id,
@@ -230,6 +289,7 @@ export default {
             this.$http({ method, url, data }).then(res => {
                 if (res && res.code == "200") {
                     this.$toast.success(res && res.message);
+                    this.list=[];
                     this.getList();
                 }
             });
@@ -239,11 +299,11 @@ export default {
                 id: row.id,
                 hot_new: "1"
             };
-
             let { url, method } = this.$api.game_hot_set;
             this.$http({ method, url, data }).then(res => {
                 if (res && res.code == "200") {
                     this.$toast.success(res && res.message);
+                    this.list=[];
                     this.getList();
                 }
             });
@@ -259,6 +319,7 @@ export default {
                 console.log("新游戏", res);
                 if (res && res.code == "200") {
                     this.$toast.success(res && res.message);
+                    this.list=[];
                     this.getList();
                 }
             });
@@ -333,17 +394,18 @@ export default {
                 hot_new: 1,
                 vendor_id: this.filter.vendor_id,
                 name: this.filter.name,
-                deevice: 1,
+                device: 1,
                 page: this.pageNo,
                 pageSize: this.pageSize
             };
+            console.log('请求数据',datas)
             let data = window.all.tool.rmEmpty(datas);
             this.$http({
                 method: this.$api.game_pc_list.method,
                 url: this.$api.game_pc_list.url,
                 data: data
             }).then(res => {
-                // console.log("res", res);
+                console.log("res", res);
                 if (res && res.code === "200") {
                     this.list = res.data.data || [];
                     this.total = this.list.length;
@@ -371,6 +433,7 @@ export default {
         this.getList();
         this.getSelectOpt();
         this.head_path = this.protocol + "//pic.397017.com/";
+        this.sortCfm();
     }
 };
 </script>

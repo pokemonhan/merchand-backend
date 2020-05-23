@@ -15,6 +15,7 @@ let hostList = {
     outer: location.protocol + '//api.397017.com',       // 测试外围
     harris: location.protocol + '//api.jianghu.me',      // harris
     ethan: location.protocol + '//apionline.jianghu.ethanphp',    // ethan
+    stg: location.protocol + '//apistg.397017.com',    // stg
 }
 // 有数据,但匹配不到就直接使用HOST地址 
 const BASE_PATH = hostList[HOST] || HOST

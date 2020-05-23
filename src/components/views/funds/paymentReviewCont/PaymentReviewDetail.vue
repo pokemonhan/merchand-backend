@@ -99,7 +99,8 @@ export default {
             // console.log('all',this.all)
             let datas = {
                 guid: this.all.user && this.all.user.guid,
-                mobile: this.all.user && this.all.user.mobile
+                mobile: this.all.user && this.all.user.mobile,
+                status:this.filter.status
             };
             let data = window.all.tool.rmEmpty(datas);
             console.log("请求数据", data);

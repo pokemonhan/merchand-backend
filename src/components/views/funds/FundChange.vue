@@ -64,6 +64,7 @@
 </template>
 
 <script>
+import axios from 'axios'
 export default {
     name: "FundChange",
     // props: {},
@@ -93,7 +94,9 @@ export default {
             list: [],
             total: 0,
             pageNo: 1,
-            pageSize: 25
+            pageSize: 25,
+            jsonList:{},
+            foundChangeData:[],
         };
     },
     methods: {
@@ -112,8 +115,51 @@ export default {
                 status: ""
             };
         },
+        //获取json资源
         getTypeOfAccount() {
-            
+            axios.get('http://pic.397017.com/common/linter.json').then(res=>{
+                console.log('json',res)
+                if(res && res.status=='200'){
+                    this.jsonList=res.data
+                    if(this.jsonList){
+                        let foundChangeList=this.jsonList.frontend_users_accounts_types
+                        if(foundChangeList){
+                            let foundChangeListPath=foundChangeList.path
+                            // console.log('账变地址',foundChangeListPath)
+                            axios.get(foundChangeListPath).then(res=>{
+                                if(res && res.status=='200'){
+                                    this.foundChangeData=res.data
+                                    // console.log('类型列表',this.foundChangeData)
+                                    this.acc_change_opt=this.backToSelOpt(res.data)
+                                }
+                            })
+                        }
+                    }
+                }
+            })
+        },
+        backToSelOpt(list=[]){
+            // console.log('list',list)
+            let allFoundChangeData=[]
+            let everyFoundChangeData=[]
+            for(var i=0;i<list.length;i++){
+                // console.log('儿子',list[0])
+                let oneFoundChangeData=list[i].account_type
+                for(var j=0;j<oneFoundChangeData.length;j++){
+                    everyFoundChangeData.push(oneFoundChangeData[j])
+                }
+            }
+            // console.log('下级',everyFoundChangeData)
+            let all=[
+                {
+                    label:"全部",
+                    value:""
+                }
+            ]
+            let all_list=everyFoundChangeData.map(item=>{
+                return {label:item.name,valu:item.id}
+            })
+            return all.concat(all_list)
         },
         getList(){
             let created_at="";
@@ -130,11 +176,11 @@ export default {
                 created_at:created_at,
                 type_in:type_in
             }
-            console.log('请求数据',datas)
+            // console.log('请求数据',datas)
             let data=window.all.tool.rmEmpty(datas)
             let {method,url}=this.$api.capital_account_change_list
             this.$http({method,url,data}).then(res=>{
-                console.log('返回数据',res)
+                // console.log('返回数据',res)
                 if(res && res.code=='200'){
                     this.list=res.data.data
                     this.total=res.data.total
@@ -155,7 +201,7 @@ export default {
             }
         },
         exportExcel() {
-            console.log('列表',this.menu_list)
+            // console.log('列表',this.menu_list)
             let firstList={}
             let childList={}
             let fatherList={}

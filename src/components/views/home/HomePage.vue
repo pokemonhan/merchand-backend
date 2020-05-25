@@ -8,12 +8,12 @@
                 </div>
                 <div class="cont">
                     <div>
-                        <span class="number">{{'0.00'}}</span>
+                        <span class="number">{{row1.profit.amount}}</span>
                     </div>
                     <div class="bottom-10">
                         <span>日环比:</span>
-                        <span>{{'0.00%'}}</span>
-                        <span>人</span>
+                        <span>{{row1.profit.percent}}</span>
+                        <!-- <span>人</span> -->
                     </div>
                 </div>
             </li>
@@ -24,7 +24,7 @@
                 </div>
                 <div class="cont">
                     <div>
-                        <span class="number">{{'0.00'}}</span>
+                        <span class="number">{{row1.top_up.amount}}</span>
                     </div>
                     <div class="fcharge-pic">
                         <div id="first_recharge" class="row1-3"></div>
@@ -32,7 +32,7 @@
 
                     <div class="bottom-10">
                         <span>充值人数:</span>
-                        <span>{{'0'}}</span>
+                        <span>{{row1.top_up.people}}</span>
                         <span>人</span>
                     </div>
                 </div>
@@ -44,11 +44,11 @@
                 </div>
                 <div class="cont">
                     <div>
-                        <span class="number">{{'0.00'}}</span>
+                        <span class="number">{{row1.withdrawal.amount}}</span>
                     </div>
                     <div class="bottom-10">
                         <span>提现人数:</span>
-                        <span>{{'0'}}</span>
+                        <span>{{row1.withdrawal.people}}</span>
                         <span>人</span>
                     </div>
                 </div>
@@ -60,12 +60,12 @@
                 </div>
                 <div class="cont">
                     <div>
-                        <span class="number">{{'0.00'}}</span>
+                        <span class="number">{{row1.gifts.amount}}</span>
                     </div>
 
                     <div class="bottom-10">
                         <span>领取人数:</span>
-                        <span>{{'0'}}</span>
+                        <span>{{row1.gifts.people}}</span>
                         <span>人</span>
                     </div>
                 </div>
@@ -254,6 +254,12 @@ export default {
     name: 'Home',
     data() {
         return {
+            row1: {
+                profit: { amount: 0, percent: 0 }, // 今日盈利
+                top_up: { amount: 0, people: 0 }, // 今日首充
+                withdrawal: { amount: 20, people: 0 }, // 今日提现
+                gifts: { amount: 0, people: 0 } // 今日彩金优惠
+            },
             is_show_login: true,
             // 游戏数据
             game_act_index: 0,
@@ -469,7 +475,12 @@ export default {
                         itemStyle: {
                             normal: {
                                 color: function(params) {
-                                    var colors = [ '#4c8bfd', '#4cc013', '#faab08', '#fc4c4c' ]
+                                    var colors = [
+                                        '#4c8bfd',
+                                        '#4cc013',
+                                        '#faab08',
+                                        '#fc4c4c'
+                                    ]
                                     return colors[params.dataIndex]
                                 }
                             }
@@ -562,12 +573,28 @@ export default {
                 ]
             })
         },
+        getList() {
+            // let para = {
+            //     // pageSize: this.pageSize,
+            //     // page: this.pageNo
+            // }
+            // let params = window.all.tool.rmEmpty(para)
+            let { url, method } = this.$api.home_page_list
+            this.$http({ method, url }).then(res => {
+                console.log('列表👌👌👌👌: ', res)
+                if (res && res.code === '200' && res.data) {
+                    let { profit, top_up, withdrawal, gifts } = res.data
+                    this.row1 = { profit, top_up, withdrawal, gifts }
+                }
+            })
+        },
         updateNo(val) {},
         updateSize(val) {}
     },
     mounted() {
+        this.getList()
         // let echarts = window.all.echarts;
-        this.todatyFirstRechargeChartDraw() // 今日首冲
+        // this.todatyFirstRechargeChartDraw() // 今日首冲
         this.loginChartDraw() // 登录统计
         this.registChartDraw() // 注册统计
         this.rechargeChartDraw() // 充提统计

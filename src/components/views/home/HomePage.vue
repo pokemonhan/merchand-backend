@@ -581,7 +581,7 @@ export default {
             // let params = window.all.tool.rmEmpty(para)
             let { url, method } = this.$api.home_page_list
             this.$http({ method, url }).then(res => {
-                console.log('列表👌👌👌👌: ', res)
+                // console.log('列表👌👌👌👌: ', res)
                 if (res && res.code === '200' && res.data) {
                     let { profit, top_up, withdrawal, gifts } = res.data
                     this.row1 = { profit, top_up, withdrawal, gifts }

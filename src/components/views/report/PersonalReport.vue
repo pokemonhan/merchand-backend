@@ -42,7 +42,7 @@
                         <span v-if="row.game_win_sum-row.bet_sum>0">+</span>
                         {{row.game_win_sum-row.bet_sum}}
                     </td>
-                    <td :class="row.real_win_lose>0?'green':'red'">{{row.real_win_lose}}</td>
+                    <td :class="row.real_win_lose>0?'green':'red'">{{row.real_win_lose || '--'}}</td>
                 </template>
             </Table>
             <Page

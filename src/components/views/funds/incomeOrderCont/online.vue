@@ -70,10 +70,10 @@
                     <td>{{row.user && row.user.parent && row.user.parent.mobile}}</td>
                     <td>
                         <i
-                            v-if="row.user && row.user.is_tester=='1'"
+                            v-if="row.user && row.user.is_tester=='0'"
                             class="iconfont icongou green"
                         ></i>
-                        <i v-if="row.user && row.user.is_tester=='0'" class="iconfont iconcha red"></i>
+                        <i v-if="row.user && row.user.is_tester=='1'" class="iconfont iconcha red"></i>
                     </td>
                     <td>{{row.snap_merchant_no}}</td>
                     <td>{{row.snap_merchant_code}}</td>

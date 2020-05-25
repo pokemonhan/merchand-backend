@@ -42,11 +42,11 @@
         <div class="table mt20">
             <Table :headers="headers" :column="list">
                 <template v-slot:item="{row}">
-                    <td>{{row.type && row.type.name}}</td>
-                    <td>{{row.username}}</td>
-                    <td>{{row.account}}</td>
+                    <td>{{row.type && row.type.name || '--'}}</td>
+                    <td>{{row.username || '--'}}</td>
+                    <td>{{row.account || '--'}}</td>
                     <td>{{row.min_amount}}~{{row.max_amount}}</td>
-                    <td>{{row.author}}</td>
+                    <td>{{row.author || '--'}}</td>
                     <td>{{row.created_at}}</td>
                     <td>{{row.last_editor}}</td>
                     <td>{{row.updated_at}}</td>

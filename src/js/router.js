@@ -362,7 +362,7 @@ router.beforeEach((to, from, next) => {
     // console.log('store',store)
 
     let isLogin = window.all.tool.getLocal('isLogin')
-    console.log('islogin', isLogin)
+    // console.log('islogin', isLogin)
     if (to.path !== from.path) {
         next()
     }

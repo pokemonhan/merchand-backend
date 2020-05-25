@@ -241,11 +241,11 @@ export default {
                 page: this.pageNo,
                 pageSize: this.pageSize
             };
-            console.log("请求数据", para);
+            // console.log("请求数据", para);
             let data = window.all.tool.rmEmpty(para);
             let { method, url } = this.$api.black_list_list;
             this.$http({ method: method, url: url, data: data }).then(res => {
-                console.log("返回数据", res);
+                // console.log("返回数据", res);
                 if (res && res.code == "200") {
                     this.list = res.data.data;
                     this.total = res.data.total;
@@ -282,7 +282,7 @@ export default {
             let data = {
                 id: this.curr_row.id
             };
-            console.log("加入黑名单请求数据", data);
+            // console.log("加入黑名单请求数据", data);
             let { url, method } = this.$api.black_list_detail_remove;
             this.$http({ method, url, data }).then(res => {
                 // console.log(res)
@@ -318,7 +318,7 @@ export default {
             let { method, url } = this.$api.black_list_detail_list;
             this.$http({ method: method, url: url, params: params }).then(
                 res => {
-                    console.log(res);
+                    // console.log(res);
                     if (res && res.code == "200") {
                         this.blackList = res.data.data;
                         this.blackTotal = res.data.total;

@@ -17,7 +17,7 @@
         <div class="table mt20">
             <Table :headers="headers" :column="list">
                 <template v-slot:item="{row}">
-                    <td>{{row.activity && row.activity.name}}</td>
+                    <td>{{row.activity && row.activity.name || '--'}}</td>
                     <td>
                         <img
                             style="max-width:200px;max-height:200px;"
@@ -40,9 +40,9 @@
                         />
                     </td>
 
-                    <td>{{row.last_editor && rowm.last_editor.name}}</td>
-                    <td>{{row.updated_at}}</td>
-                    <td>{{row.end_time}}</td>
+                    <td>{{row.last_editor && rowm.last_editor.name || '--'}}</td>
+                    <td>{{row.updated_at || '--'}}</td>
+                    <td>{{row.end_time || '--'}}</td>
                     <td>
                         <Switchbox
                             class="switch-select"

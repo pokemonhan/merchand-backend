@@ -118,8 +118,8 @@ export default {
                 { label: '误存提款', value: '1' }
             ],
             icon_obj: {
-                '1': 'iconfont icongou green',
-                '0': 'iconfont iconyuanquan red'
+                '0': 'iconfont icongou green',
+                '1': 'iconfont iconyuanquan red'
             },
             headers: [
                 '订单号',

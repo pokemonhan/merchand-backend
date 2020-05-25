@@ -213,7 +213,7 @@ export default {
             }
         },
         initLev() {
-            console.log("initial");
+            // console.log("initial");
             this.lev = {
                 name: "", // 等级名称
                 experience_min: "",
@@ -245,7 +245,7 @@ export default {
         },
         addCfm() {
             if (!this.checkLev()) return;
-            console.log("lev", this.lev);
+            // console.log("lev", this.lev);
             let data = {
                 name: this.lev.name,
                 experience_min: this.lev.experience_min,
@@ -328,7 +328,7 @@ export default {
             let data = {
                 id: this.curr_row.id
             };
-            console.log(data);
+            // console.log(data);
             let { url, method } = this.$api.grade_del;
             this.$http({ method, url, data }).then(res => {
                 if (res && res.code === "200") {
@@ -385,7 +385,7 @@ export default {
             let data = window.all.tool.rmEmpty(datas);
             let { method, url } = this.$api.grade_list;
             this.$http({ method, url, data }).then(res => {
-                console.log("返回数据", res);
+                // console.log("返回数据", res);
                 if (res && res.code == "200") {
                     this.list = res.data.data;
                     this.total = res.data.total;

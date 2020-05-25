@@ -32,33 +32,43 @@
                 </div>
                 <ul class="right">
                     <li>
-                        <span @click="goEmail()" >邮件通知</span>
+                        <span @click="goEmail()">邮件通知</span>
                         <span class="badge">
-                            <span class="badge-inner">{{parseInt(email_count)>99?'99+': email_count}}</span>
+                            <span
+                                class="badge-inner"
+                            >{{parseInt(email_count)>99?'99+': email_count}}</span>
                         </span>
                     </li>
                     <li>
-                        <span @click="goOnFounds()" >线上入款</span>
+                        <span @click="goOnFounds()">线上入款</span>
                         <span class="badge">
-                            <span class="badge-inner">{{parseInt(online_top_up_count)>99?'99+': online_top_up_count}}</span>
+                            <span
+                                class="badge-inner"
+                            >{{parseInt(online_top_up_count)>99?'99+': online_top_up_count}}</span>
                         </span>
                     </li>
                     <li>
-                        <span @click="goOffFounds()" >线下入款</span>
+                        <span @click="goOffFounds()">线下入款</span>
                         <span class="badge">
-                            <span class="badge-inner">{{parseInt(offline_top_up_count)>99?'99+': offline_top_up_count}}</span>
+                            <span
+                                class="badge-inner"
+                            >{{parseInt(offline_top_up_count)>99?'99+': offline_top_up_count}}</span>
                         </span>
                     </li>
                     <li>
-                        <span @click="goOrder()" >出款订单</span>
+                        <span @click="goOrder()">出款订单</span>
                         <span class="badge">
-                            <span class="badge-inner">{{parseInt(withdrawal_order_count)>99?'99+': withdrawal_order_count}}</span>
+                            <span
+                                class="badge-inner"
+                            >{{parseInt(withdrawal_order_count)>99?'99+': withdrawal_order_count}}</span>
                         </span>
                     </li>
                     <li>
-                        <span @click="goReview()" >出款审核</span>
+                        <span @click="goReview()">出款审核</span>
                         <span class="badge">
-                            <span class="badge-inner">{{parseInt(withdrawal_review_count)>99?'99+': withdrawal_review_count}}</span>
+                            <span
+                                class="badge-inner"
+                            >{{parseInt(withdrawal_review_count)>99?'99+': withdrawal_review_count}}</span>
                         </span>
                     </li>
                     <!-- 喇叭 -->
@@ -155,15 +165,15 @@ export default {
                 conf_pwd: "",
                 verificCode: ""
             },
-            err_tips: ['', '', '', ''],
+            err_tips: ["", "", "", ""],
             isSocketOpen: false,
-            list:[],
-            email_count:'',
-            online_top_up_count:'',
-            offline_top_up_count:'',
-            withdrawal_order_count:'',
-            withdrawal_review_count:'',
-        }
+            list: [],
+            email_count: "",
+            online_top_up_count: "",
+            offline_top_up_count: "",
+            withdrawal_order_count: "",
+            withdrawal_review_count: ""
+        };
     },
     methods: {
         // fullScreen() {
@@ -245,10 +255,10 @@ export default {
                 url: this.$api.logout.url
                 // data: params
             }).then(res => {
-                console.log('res',res)
+                console.log("res", res);
                 if (res && res.code === "200") {
                     self.$toast("登出成功");
-                    // window.all.tool.setLocal('isLogin','0')
+                    window.all.tool.setLocal("isLogin", "0");
                 }
             });
             window.all.tool.removeSession("token");
@@ -297,49 +307,52 @@ export default {
             }
         },
         socket() {
-            let channel_pre = 'jianghuhuyu_database_merchant_notice_'
-            let platform_sign = window.all.tool.getLocal('platform_sign')
-            if (!platform_sign || this.isSocketOpen === true) return
-            let channel_name = channel_pre + platform_sign
+            let channel_pre = "jianghuhuyu_database_merchant_notice_";
+            let platform_sign = window.all.tool.getLocal("platform_sign");
+            if (!platform_sign || this.isSocketOpen === true) return;
+            let channel_name = channel_pre + platform_sign;
             // channel_name = 'jianghuhuyu_ethan_database_merchant_notice_JHHY'
             // 事件名
-            let event_name = 'PlatformNoticeEvent'
-            this.isSocketOpen = true
+            let event_name = "PlatformNoticeEvent";
+            this.isSocketOpen = true;
             window.Echo.channel(channel_name).listen(event_name, res => {
                 if (res) {
                     // console.log('🍉 res: ', res);
-                    this.$notice({
-                        title: '通知',
-                        message: res.message || 'message is null',
-                        jump: res.message_type
-                    })
+                    let isLogin = window.all.tool.getLocal("isLogin");
+                    if (isLogin == 1) {
+                        this.$notice({
+                            title: "通知",
+                            message: res.message || "message is null",
+                            jump: res.message_type
+                        });
+                    }
                 }
             });
         },
-        getList(){
+        getList() {
             // console.log(111)
-            if(!window.all.tool.getLocal('Authorization')) return
-            
-            let {method,url}=this.$api.header_notification_statistics
-            this.$http({method,url}).then(res=>{
+            if (!window.all.tool.getLocal("Authorization")) return;
+
+            let { method, url } = this.$api.header_notification_statistics;
+            this.$http({ method, url }).then(res => {
                 // console.log('头部返回数据',res)
-                if(res && res.code=='200'){
-                    this.list=res.data
-                    for(var i=0;i<this.list.length;i++){
-                        if(this.list[i].message_type=="email"){
-                            this.email_count=this.list[i].count
+                if (res && res.code == "200") {
+                    this.list = res.data;
+                    for (var i = 0; i < this.list.length; i++) {
+                        if (this.list[i].message_type == "email") {
+                            this.email_count = this.list[i].count;
                         }
-                        if(this.list[i].message_type=="online_top_up"){
-                            this.online_top_up_count=this.list[i].count
+                        if (this.list[i].message_type == "online_top_up") {
+                            this.online_top_up_count = this.list[i].count;
                         }
-                        if(this.list[i].message_type=="offline_top_up"){
-                            this.offline_top_up_count=this.list[i].count
+                        if (this.list[i].message_type == "offline_top_up") {
+                            this.offline_top_up_count = this.list[i].count;
                         }
-                        if(this.list[i].message_type=="withdrawal_order"){
-                            this.withdrawal_order_count=this.list[i].count
+                        if (this.list[i].message_type == "withdrawal_order") {
+                            this.withdrawal_order_count = this.list[i].count;
                         }
-                        if(this.list[i].message_type=="withdrawal_review"){
-                            this.withdrawal_review_count=this.list[i].count
+                        if (this.list[i].message_type == "withdrawal_review") {
+                            this.withdrawal_review_count = this.list[i].count;
                         }
                     }
                     // console.log('email',this.email_count)
@@ -348,31 +361,31 @@ export default {
                     // console.log('withdrawal_order',this.withdrawal_order_count)
                     // console.log('withdrawal_review',this.withdrawal_review_count)
                 }
-            })
+            });
         },
-        goEmail(){
-            this.$router.push('/email/receiveemail')
+        goEmail() {
+            this.$router.push("/email/receiveemail");
         },
-        goOnFounds(){
-            this.$router.push('/funds/incomeorder')
+        goOnFounds() {
+            this.$router.push("/funds/incomeorder");
         },
-        goOffFounds(){
-            this.$router.push('/funds/incomeorder')
+        goOffFounds() {
+            this.$router.push("/funds/incomeorder");
         },
-        goOrder(){
-            this.$router.push('/funds/paymentorder')
+        goOrder() {
+            this.$router.push("/funds/paymentorder");
         },
-        goReview(){
-            this.$router.push('/funds/paymentreview')
-        },
+        goReview() {
+            this.$router.push("/funds/paymentreview");
+        }
     },
     watch: {
         $route(to, from) {
-            if (from.path === '/login') {
-                console.log('222',from.path)
-                console.log('3333',to)
-                this.socket()
-                this.getList()
+            if (from.path === "/login") {
+                console.log("222", from.path);
+                console.log("3333", to);
+                this.socket();
+                this.getList();
                 // console.log('333',from.path)
             }
         }

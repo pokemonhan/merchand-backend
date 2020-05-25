@@ -123,8 +123,8 @@ export default {
                 { label: "洗码增送", value: "2" }
             ],
             icon_obj: {
-                "1": "iconfont icongou green",
-                "0": "iconfont iconyuanquan red"
+                "0": "iconfont icongou green",
+                "1": "iconfont iconyuanquan red"
             },
             headers: [
                 "订单号",

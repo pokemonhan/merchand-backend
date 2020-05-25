@@ -26,15 +26,15 @@
         <div class="table mt20">
             <Table :headers="headers" :column="list">
                 <template v-slot:item="{row}">
-                    <td>{{row.title}}</td>
+                    <td>{{row.title || '--'}}</td>
                     <td>
                         <img style="max-width:200px;max-height:200px;"  :src="head_path+row.pic" alt />
                     </td>
-                    <td>{{row.author && row.author.name}}</td>
-                    <td>{{row.created_at}}</td>
-                    <td>{{row.end_time}}</td>
-                    <td>{{row.last_editor && row.last_editor.name}}</td>
-                    <td>{{row.updated_at}}</td>
+                    <td>{{row.author && row.author.name || '--'}}</td>
+                    <td>{{row.created_at || '--'}}</td>
+                    <td>{{row.end_time || '--'}}</td>
+                    <td>{{row.last_editor && row.last_editor.name || '--'}}</td>
+                    <td>{{row.updated_at || '--'}}</td>
                     <td>
                         <Switchbox class="switch-select" :value="row.status" @update="switchStatus($event,row)" />
                     </td>

@@ -156,7 +156,7 @@ export default {
         },
         addCfm() {
             if (!this.checkForm()) return;
-            console.log("form", this.form);
+            // console.log("form", this.form);
             let data = {
                 title: this.form.title,
                 no_withdraw: this.form.no_withdraw ? 1 : 0,
@@ -167,7 +167,7 @@ export default {
             };
             let { url, method } = this.$api.tag_add;
             this.$http({ method, url, data }).then(res => {
-                console.log("res", res);
+                // console.log("res", res);
                 if (res && res.code === "200") {
                     this.$toast.success(res && res.message);
                     this.mod_show = false;
@@ -250,7 +250,7 @@ export default {
             let data = window.all.tool.rmEmpty(datas);
             let { method, url } = this.$api.tag_list;
             this.$http({ method, url, data }).then(res => {
-                console.log("res", res);
+                // console.log("res", res);
                 if (res && res.code == "200") {
                     this.list = res.data.data;
                     this.total = res.data.total;

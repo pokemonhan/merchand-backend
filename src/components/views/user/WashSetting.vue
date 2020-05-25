@@ -276,7 +276,7 @@ export default {
             });
         },
         editWashModal(row,idx) {
-            console.log('row',row)
+            // console.log('row',row)
             this.initWash();
             this.add_title = false;
             this.show_modal = true;
@@ -331,7 +331,7 @@ export default {
                 bet: String(this.wash_form.code_numbers[1]),
                 percent: JSON.stringify(percent)
             }
-            console.log('请求数据',data)
+            // console.log('请求数据',data)
             let {method,url}=this.$api.wash_code_set;
             this.$http({method,url,data}).then(res=>{
                 if(res && res.code=='200'){
@@ -351,10 +351,10 @@ export default {
             let data = {
                 id: this.curr_row.id
             };
-            console.log('请求数据',data)
+            // console.log('请求数据',data)
             let { method, url } = this.$api.wash_code_del;
             this.$http({ method, url, data }).then(res => {
-                console.log('返回数据',res)
+                // console.log('返回数据',res)
                 if (res && res.code == "200") {
                     this.show_del_modal = false;
                     this.$toast.success(res && res.message);
@@ -374,7 +374,7 @@ export default {
             let { method, url } = this.$api.wash_code_list;
             this.$http({ method: method, url: url, params: params }).then(
                 res => {
-                    console.log("res", res);
+                    // console.log("res", res);
                     if (res && res.code == "200") {
                         this.list = res.data;
                         this.total = res.data.length;

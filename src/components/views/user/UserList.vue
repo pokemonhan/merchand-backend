@@ -578,7 +578,7 @@ export default {
                             arr.push({ label: item.title, value: item.id });
                         }
                         this.user_tab_opt = arr;
-                        console.log('标签数据',this.user_tab_opt)
+                        // console.log('标签数据',this.user_tab_opt)
                     }
                 }
             });
@@ -588,10 +588,10 @@ export default {
                 guid: this.detail_list.guid,
                 label: this.user_tab
             };
-            console.log("修改标签请求数据", data);
+            // console.log("修改标签请求数据", data);
             let { method, url } = this.$api.user_list_tag_edit;
             this.$http({ method, url, data }).then(res => {
-                console.log("修改标签返回数据", res);
+                // console.log("修改标签返回数据", res);
                 if (res && res.code == "200") {
                     this.$toast.success(res.message);
                     this.userDetail(this.curr_row);
@@ -621,10 +621,10 @@ export default {
             let data = {
                 guid: String(row.guid)
             };
-            console.log("请求数据", data);
+            // console.log("请求数据", data);
             let { method, url } = this.$api.user_list_detail;
             this.$http({ method, url, data }).then(res => {
-                console.log("详情返回详情数据", res);
+                // console.log("详情返回详情数据", res);
                 if (res && res.code == "200") {
                     this.detail_list = res.data;
                 }
@@ -639,11 +639,11 @@ export default {
                 id: this.curr_row.id,
                 remark: this.blackRemark
             };
-            console.log('请求数据',datas)
+            // console.log('请求数据',datas)
             let data = window.all.tool.rmEmpty(datas);
             let { method, url } = this.$api.user_list_add_blackList;
             this.$http({ method, url, data }).then(res => {
-                console.log('返回数据',res)
+                // console.log('返回数据',res)
                 if (res && res.code == "200") {
                     this.$toast.success(res.message);
                     this.show_add_black_list = false;
@@ -666,7 +666,7 @@ export default {
             // console.log('请求数据',data)
             let { method, url } = this.$api.user_list_add;
             this.$http({ method, url, data }).then(res => {
-                console.log("返回数据", res);
+                // console.log("返回数据", res);
                 if (res && res.code == "200") {
                     this.inner_mask_show = false;
                     this.$toast.success(res && res.message);
@@ -699,11 +699,11 @@ export default {
                 page: this.pageNo,
                 pageSize: this.pageSize
             };
-            console.log("请求数据", datas);
+            // console.log("请求数据", datas);
             let data = window.all.tool.rmEmpty(datas);
             let { method, url } = this.$api.user_list;
             this.$http({ method, url, data }).then(res => {
-                console.log("返回数据", res);
+                // console.log("返回数据", res);
                 if (res && res.code === "200") {
                     this.list = res.data.data;
                     this.total = res.data.total;
@@ -711,7 +711,7 @@ export default {
             });
         },
         exportExcel() {
-            console.log('列表',this.menu_list)
+            // console.log('列表',this.menu_list)
             let firstList={}
             let childList={}
             let fatherList={}
@@ -725,8 +725,8 @@ export default {
                     }
                 }
             }
-            console.log('最小',childList)
-            console.log('父亲',fatherList)
+            // console.log('最小',childList)
+            // console.log('父亲',fatherList)
             import("../../../js/config/Export2Excel").then(excel => {
                 const tHeaders = this.headers;
                 const data = this.list.map(item => {

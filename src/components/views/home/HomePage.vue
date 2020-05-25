@@ -387,13 +387,7 @@ export default {
                 legend: {
                     orient: 'vertical',
                     x: 'left',
-                    data: [
-                        '直接访问',
-                        '邮件营销',
-                        '联盟广告',
-                        '视频广告',
-                        '搜索引擎'
-                    ]
+                    data: [ '直接访问', '邮件营销', '联盟广告', '视频广告', '搜索引擎' ]
                 },
                 series: [
                     {
@@ -428,12 +422,7 @@ export default {
                         itemStyle: {
                             normal: {
                                 color: function(params) {
-                                    var colors = [
-                                        '#4c8bfd',
-                                        '#4cc013',
-                                        '#faab08',
-                                        '#fc4c4c'
-                                    ]
+                                    var colors = [ '#4c8bfd', '#4cc013', '#faab08', '#fc4c4c' ]
                                     return colors[params.dataIndex]
                                 }
                             }
@@ -607,23 +596,27 @@ export default {
             this.$http({ method, url }).then(res => {
                 console.log('列表👌👌👌👌: ', res)
                 if (res && res.code === '200' && res.data) {
-                    let { profit, top_up, withdrawal, gifts } = res.data
+                    let data = res.data || {}
+                    let { profit, top_up, withdrawal, gifts } = data
                     this.row1 = { profit, top_up, withdrawal, gifts }
 
                     // 登录统计
+                    let online_statistics = data.online_statistics || {}
                     this.online_statistics = {
-                        apk: res.data.online_statistics.apk,
-                        app: res.data.online_statistics.app,
-                        h5: res.data.online_statistics.h5,
-                        pc: res.data.online_statistics.pc
+                        apk: online_statistics.apk,
+                        app: online_statistics.app,
+                        h5: online_statistics.h5,
+                        pc: online_statistics.pc
                     }
-                    this.loginChartDraw() // 注册统计
+                    this.loginChartDraw() // 登录统计
+
+                    let registration_statistics = data.registration_statistics
                     // // 注册统计
                     this.registration_statistics = {
-                        apk: res.data.registration_statistics.apk,
-                        app: res.data.registration_statistics.app,
-                        h5: res.data.registration_statistics.h5,
-                        pc: res.data.registration_statistics.pc
+                        apk: registration_statistics.apk,
+                        app: registration_statistics.app,
+                        h5: registration_statistics.h5,
+                        pc: registration_statistics.pc
                     }
                     this.registChartDraw() // 登录统计
                 }
@@ -633,7 +626,7 @@ export default {
         updateSize(val) {}
     },
     mounted() {
-        // this.getList()
+        this.getList()
         // let echarts = window.all.echarts;
         // this.todatyFirstRechargeChartDraw() // 今日首冲
         // this.loginChartDraw()

@@ -173,7 +173,7 @@ export default {
     },
     watch: {
         allCheck(val) {
-            console.log('🍤 val: ', val);
+            // console.log('🍤 val: ', val);
             setTimeout(()=>{
                 this.all_checked = val
             },50)

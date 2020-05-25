@@ -30,7 +30,7 @@
             <!-- 控制栏 -->
             <div class="tab-control">
                 <div class="left">
-                    <button class="btn-plain" @click="del">删除?</button>
+                    <button class="btn-plain" @click="del">删除</button>
                 </div>
                 <div class="right">
                     <span>{{pageNo}}/{{Math.ceil(total/pageSize)}}</span>
@@ -107,9 +107,9 @@ export default {
                 dates: []
             },
             sender_opt: [
-                {label:'全部',value:0},
-                {label:'已发送',value:0},
-                {label:'未发送',value:0},
+                {label:'全部',value: ''},
+                {label:'已发送',value:1},
+                {label:'未发送',value:2},
             ],
             headers: ['发件人', '内容', '发送日期','发送状态'],
             list: [],

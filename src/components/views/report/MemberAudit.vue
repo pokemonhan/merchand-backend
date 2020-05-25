@@ -117,9 +117,9 @@ export default {
             this.quick_query = this.filter.dates
         },
         getMenuList(){
-            if(!window.all.tool.getSession('Authorization')) return
-            if(window.all.tool.getSession('menu')){
-                this.menu_list=window.all.tool.getSession('menu')
+            if(!window.all.tool.getLocal('Authorization')) return
+            if(window.all.tool.getLocal('menu')){
+                this.menu_list=window.all.tool.getLocal('menu')
             }
         },
         exportExcel() {

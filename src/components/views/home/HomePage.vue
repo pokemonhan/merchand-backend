@@ -8,12 +8,12 @@
                 </div>
                 <div class="cont">
                     <div>
-                        <span class="number">{{'0.00'}}</span>
+                        <span class="number">{{row1.profit.amount}}</span>
                     </div>
                     <div class="bottom-10">
                         <span>日环比:</span>
-                        <span>{{'0.00%'}}</span>
-                        <span>人</span>
+                        <span>{{row1.profit.percent}}</span>
+                        <!-- <span>人</span> -->
                     </div>
                 </div>
             </li>
@@ -24,7 +24,7 @@
                 </div>
                 <div class="cont">
                     <div>
-                        <span class="number">{{'0.00'}}</span>
+                        <span class="number">{{row1.top_up.amount}}</span>
                     </div>
                     <div class="fcharge-pic">
                         <div id="first_recharge" class="row1-3"></div>
@@ -32,7 +32,7 @@
 
                     <div class="bottom-10">
                         <span>充值人数:</span>
-                        <span>{{'0'}}</span>
+                        <span>{{row1.top_up.people}}</span>
                         <span>人</span>
                     </div>
                 </div>
@@ -44,11 +44,11 @@
                 </div>
                 <div class="cont">
                     <div>
-                        <span class="number">{{'0.00'}}</span>
+                        <span class="number">{{row1.withdrawal.amount}}</span>
                     </div>
                     <div class="bottom-10">
                         <span>提现人数:</span>
-                        <span>{{'0'}}</span>
+                        <span>{{row1.withdrawal.people}}</span>
                         <span>人</span>
                     </div>
                 </div>
@@ -60,12 +60,12 @@
                 </div>
                 <div class="cont">
                     <div>
-                        <span class="number">{{'0.00'}}</span>
+                        <span class="number">{{row1.gifts.amount}}</span>
                     </div>
 
                     <div class="bottom-10">
                         <span>领取人数:</span>
-                        <span>{{'0'}}</span>
+                        <span>{{row1.gifts.people}}</span>
                         <span>人</span>
                     </div>
                 </div>
@@ -101,7 +101,7 @@
                     <div>
                         <div class="title">平台排名</div>
                     </div>
-                    <div class="smallTable" >
+                    <div class="smallTable">
                         <Table
                             class="table"
                             :headers="game_plant_headers"
@@ -251,9 +251,15 @@
 <script>
 export default {
     // name: 'HomePage',
-    name: "Home",
+    name: 'Home',
     data() {
         return {
+            row1: {
+                profit: { amount: 0, percent: 0 }, // 今日盈利
+                top_up: { amount: 0, people: 0 }, // 今日首充
+                withdrawal: { amount: 20, people: 0 }, // 今日提现
+                gifts: { amount: 0, people: 0 } // 今日彩金优惠
+            },
             is_show_login: true,
             // 游戏数据
             game_act_index: 0,
@@ -353,6 +359,12 @@ export default {
         },
         // 登录统计 --人数统计
         loginChartDraw() {
+            let echart_data = [
+                { value: 335, name: '安卓' },
+                { value: 310, name: '苹果' },
+                { value: 234, name: 'H5' },
+                { value: 135, name: 'PC' }
+            ]
             let echarts = window.all.echarts
             let login_chart = echarts.init(document.getElementById('login_num'))
             login_chart.setOption({
@@ -414,12 +426,7 @@ export default {
                                 }
                             }
                         },
-                        data: [
-                            { value: 335, name: '安卓' },
-                            { value: 310, name: '苹果' },
-                            { value: 234, name: 'H5' },
-                            { value: 135, name: 'PC' }
-                        ]
+                        data: echart_data
                     }
                 ]
             })
@@ -427,6 +434,12 @@ export default {
 
         // 注册统计
         registChartDraw() {
+            let echart_data = [
+                { value: 335, name: '安卓' },
+                { value: 310, name: '苹果' },
+                { value: 234, name: 'H5' },
+                { value: 135, name: 'Pc' }
+            ]
             let echarts = window.all.echarts
             let regist_chart = echarts.init(
                 document.getElementById('regist_num')
@@ -458,12 +471,7 @@ export default {
                         type: 'pie',
                         radius: '55%',
                         center: ['50%', '60%'],
-                        data: [
-                            { value: 335, name: '安卓' },
-                            { value: 310, name: '苹果' },
-                            { value: 234, name: 'H5' },
-                            { value: 135, name: 'Pc' }
-                        ],
+                        data: echart_data,
                         itemStyle: {
                             normal: {
                                 color: function(params) {
@@ -484,6 +492,11 @@ export default {
 
         // 充提统计
         rechargeChartDraw() {
+            let echart_data = {
+                /** 前日, 昨日, 今日 */
+                topUp: [18203, 23489, 29034], // 充值
+                withdraw: [19325, 23438, 31000] // 提款
+            }
             let echarts = window.all.echarts
             let recharge_chart = echarts.init(
                 document.getElementById('recharge')
@@ -539,7 +552,7 @@ export default {
                                 show: true
                             }
                         },
-                        data: [18203, 23489, 29034]
+                        data: echart_data.topUp
                     },
                     {
                         name: '提款',
@@ -555,17 +568,33 @@ export default {
                                 show: true
                             }
                         },
-                        data: [19325, 23438, 31000]
+                        data: echart_data.withdraw
                     }
                 ]
+            })
+        },
+        getList() {
+            // let para = {
+            //     // pageSize: this.pageSize,
+            //     // page: this.pageNo
+            // }
+            // let params = window.all.tool.rmEmpty(para)
+            let { url, method } = this.$api.home_page_list
+            this.$http({ method, url }).then(res => {
+                console.log('列表👌👌👌👌: ', res)
+                if (res && res.code === '200' && res.data) {
+                    let { profit, top_up, withdrawal, gifts } = res.data
+                    this.row1 = { profit, top_up, withdrawal, gifts }
+                }
             })
         },
         updateNo(val) {},
         updateSize(val) {}
     },
     mounted() {
+        // this.getList()
         // let echarts = window.all.echarts;
-        this.todatyFirstRechargeChartDraw() // 今日首冲
+        // this.todatyFirstRechargeChartDraw() // 今日首冲
         this.loginChartDraw() // 登录统计
         this.registChartDraw() // 注册统计
         this.rechargeChartDraw() // 充提统计
@@ -590,10 +619,10 @@ export default {
 .game-data .v-table {
     min-height: 0;
 }
-.smallTable .v-table  {
+.smallTable .v-table {
     min-height: 0;
 }
-.row3-tab .v-table{
+.row3-tab .v-table {
     min-height: 0;
 }
 .row1 {
@@ -859,7 +888,7 @@ export default {
     background: #f5f5f5;
     /* padding: 20px 30px; */
 }
-.row3-tab{
+.row3-tab {
     margin-left: 20px;
     margin-right: 20px;
 }

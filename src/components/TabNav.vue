@@ -71,7 +71,7 @@ export default {
             )
             // 原来的排除数组
             let origenExclude = this.keepAliveExclude.slice()
-            
+
             let temp_arr = origenExclude.slice()
             temp_arr.push(curr_tab.name)
             this.updateKeepAliveExclude(temp_arr)
@@ -141,7 +141,6 @@ export default {
                 // this.refresh()
                 let path = this.$route.path
                 this.$router.push('/home/home')
-
             }
             if (val === 'current') {
                 let list = this.tab_nav_list.filter(
@@ -180,14 +179,27 @@ export default {
             }
         },
         // 根据当前路由 自动滚动
-        autoScroll(route) {
+        autoScroll(path) {
+            // console.log('path: ', path);
+
             if (this.tab_nav_list.length < 2) return
-            let path = route.fullPath
+
             let ul = this.$refs.ul
             if (!ul) return
+            // console.log('ul: ', [ul]);
             let parent_left = ul.offsetLeft
             let curr_li = this.$refs[path] && this.$refs[path][0]
             let left = curr_li && curr_li.offsetLeft
+            // if(left-ul.scrollLeft-parent_left>0&&left-ul.offsetWidth-ul.scrollLeft-100<0) {
+
+            //     console.log('left: ', left);
+            //     console.log('ul.scrollLeft: ', ul.scrollLeft);
+            //     console.log('里面');
+            // }else {
+            //     console.log('外面');
+            // }
+            // console.log('left-ul.offsetWidth-ul.scrollLeft-100: ', left-ul.offsetWidth-ul.scrollLeft-parent_left);
+
             ul.scrollTo({
                 top: 0,
                 left: left - parent_left,
@@ -200,7 +212,10 @@ export default {
     },
     watch: {
         $route(route) {
-            this.autoScroll(route)
+            if (route.path === '/page404') return
+            setTimeout(()=>{
+                this.autoScroll(route.path)
+            },50)
         }
     },
     mounted() {

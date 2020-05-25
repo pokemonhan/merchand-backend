@@ -112,10 +112,11 @@ export default {
                     // console.log('res',res)
                     if (res && res.code === '200') {
                         let Authorization = res.data.token_type + ' ' + res.data.remember_token
-                        window.all.tool.setSession('Authorization', Authorization)
-                        window.all.tool.setSession('name', res.data.name)
-                        window.all.tool.setSession('email', res.data.email)
-                        window.all.tool.setSession('platform_sign', res.data.platform_sign)
+                        window.all.tool.setLocal('Authorization', Authorization)
+                        window.all.tool.setLocal('name', res.data.name)
+                        window.all.tool.setLocal('email', res.data.email)
+                        window.all.tool.setLocal('platform_sign', res.data.platform_sign)
+                        window.all.tool.setLocal('isLogin',"1")
                         this.$toast.success('登陆成功')
                         this.$router.push('/home/home')
                     }

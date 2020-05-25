@@ -46,10 +46,7 @@
                     </div>
                     <div class="edit-name">
                         <p class="mb10">组名称:</p>
-                        <Input
-                            :disabled="form.id===1"
-                            v-model="form.group_name"
-                        />
+                        <Input :disabled="form.id===1" v-model="form.group_name" />
                         <span v-show="!form.group_name" class="err-tips">组名称不可为空</span>
                     </div>
                     <div class="edit-authority">
@@ -452,9 +449,10 @@ export default {
     background: #f9fbfc;
 }
 .cont .cont-left .had-search {
-    border: 1px solid rgb(250, 207, 195);
-
-    background: rgb(248, 222, 215);
+    /* border: 1px solid rgb(250, 207, 195);
+    background: rgb(248, 222, 215); */
+    border: 1px solid rgb(195, 250, 240);
+    background: rgb(234, 245, 251);
     transition: background-color 0.2s;
 }
 .cont .li-left .li-hd span {

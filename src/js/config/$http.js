@@ -19,7 +19,7 @@ let hostList = {
 }
 // 有数据,但匹配不到就直接使用HOST地址 
 const BASE_PATH = hostList[HOST] || HOST
-// const BASE_PATH = hostList.ethan
+// const BASE_PATH = hostList.ethan // TODO:
 let http = axios.create({
     baseURL: BASE_PATH,
     timeout: 30000,
@@ -51,8 +51,8 @@ http.interceptors.request.use(req => {
         loadingEle.style.display = 'block'
     }
 
-    let Authorization = window.all.tool.getSession('Authorization')
-    // let expires = new Date(window.all.tool.getSession('expires_at')).getTime()
+    let Authorization = window.all.tool.getLocal('Authorization')
+    // let expires = new Date(window.all.tool.getLocal('expires_at')).getTime()
     // let now = new Date().getTime()
     // let not_login = req.url.indexOf(BASE_PATH+'/merchant-api/login') === -1        // 并非 /login页面
     if (Authorization) {
@@ -107,8 +107,13 @@ http.interceptors.response.use(res => {
 
             if (res.data.code !== '200') {
                 // console.log('code !=200 : ', res.data);
+
                 message = message || 'data.code is not 200!'
-                window.__vm__.$toast.error(message)
+                if (res.data.code == '200400') {
+                    window.__vm__.$toast.success(message)
+                }else{
+                    window.__vm__.$toast.error(message)
+                }
             }
         } else {
             // console.log('出错时: ', res.data);

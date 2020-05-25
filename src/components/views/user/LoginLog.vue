@@ -33,7 +33,7 @@
             <Table :headers="headers" :column="list">
                 <template v-slot:item="{row}">
                     <td>{{row.mobile || '--'}}</td>
-                    <td>{{row.uid || '--'}}</td>
+                    <td>{{row.guid || '--'}}</td>
                     <td>{{row.last_login_ip || '--'}}</td>
                     <td>{{row.origin || '--'}}</td>
                     <td>{{row.last_login_device==1?'PC':row.last_login_device==2?'H5':row.last_login_device==3?'APP':row.last_login_device==4?'未知设备':'' || '--'}}</td>

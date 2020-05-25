@@ -107,8 +107,13 @@ http.interceptors.response.use(res => {
 
             if (res.data.code !== '200') {
                 // console.log('code !=200 : ', res.data);
+
                 message = message || 'data.code is not 200!'
-                window.__vm__.$toast.error(message)
+                if (res.data.code == '200400') {
+                    window.__vm__.$toast.success(message)
+                }else{
+                    window.__vm__.$toast.error(message)
+                }
             }
         } else {
             // console.log('出错时: ', res.data);

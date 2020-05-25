@@ -449,17 +449,21 @@ export default {
         passCfm() {
             console.log(1);
             let datas = {
-                id: this.curr_row.id
+                id: String(this.curr_row.id)
             };
             console.log("请求数据", datas);
             let data = window.all.tool.rmEmpty(datas);
-            let {method, url} = this.$api.founds_incomeorder_examination_passed;
+            let {
+                method,
+                url
+            } = this.$api.founds_incomeorder_examination_passed;
             this.$http({ method, url, data }).then(res => {
                 console.log("返回数据", res);
                 if (res && res.code == "200") {
                     this.offline_conf = false;
                     this.getList();
                     this.pass_button_show = false;
+                    this.reject_button_show = false;
                 }
             });
         },
@@ -473,7 +477,7 @@ export default {
         rejectCfm() {
             console.log(2);
             let datas = {
-                id: this.curr_row.id
+                id: String(this.curr_row.id)
             };
             console.log("请求数据", datas);
             let data = window.all.tool.rmEmpty(datas);
@@ -487,6 +491,7 @@ export default {
                     this.offline_conf = false;
                     this.getList();
                     this.reject_button_show = false;
+                    this.pass_button_show = false;
                 }
             });
         },
@@ -541,8 +546,8 @@ export default {
                     this.filter.dates[1]
                 ]);
             }
-            let para = {
-                is_online: "0",
+            let datas = {
+                is_online: 0,
                 mobile: this.filter.account,
                 guid: this.filter.id,
                 created_at: created_at,
@@ -553,10 +558,10 @@ export default {
                 page: this.pageNo,
                 pageSize: this.pageSize
             };
-            // console.log('请求数据',para)
-            let params = window.all.tool.rmEmpty(para);
+            console.log('请求数据',datas)
+            let data = window.all.tool.rmEmpty(datas);
             let { method, url } = this.$api.founds_incomeorder_list;
-            this.$http({ method: method, url: url, params: params }).then(
+            this.$http({ method: method, url: url, data: data }).then(
                 res => {
                     console.log("返回数据：", res);
                     if (res && res.code == "200") {

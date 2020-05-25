@@ -116,6 +116,7 @@ export default {
                         window.all.tool.setLocal('name', res.data.name)
                         window.all.tool.setLocal('email', res.data.email)
                         window.all.tool.setLocal('platform_sign', res.data.platform_sign)
+                        window.all.tool.setLocal('isLogin',"1")
                         this.$toast.success('登陆成功')
                         this.$router.push('/home/home')
                     }

@@ -633,7 +633,7 @@ export default {
         updateSize(val) {}
     },
     mounted() {
-        this.getList()
+        // this.getList()
         // let echarts = window.all.echarts;
         // this.todatyFirstRechargeChartDraw() // 今日首冲
         // this.loginChartDraw()

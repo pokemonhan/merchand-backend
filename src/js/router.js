@@ -3,6 +3,8 @@ import Router from 'vue-router'
 
 import HomePage from '../components/views/home/HomePage.vue'
 import Login from '../components/Login.vue'
+
+import store from './vuex'
 // 测试组件
 // import Test from '../components/Test.vue'
 
@@ -98,7 +100,7 @@ const router = new Router({
     routes: [
         {
             path: '/',
-            redirect:'/login'
+            redirect: '/login'
         },
 
         {
@@ -357,9 +359,21 @@ const router = new Router({
 router.beforeEach((to, from, next) => {
     // console.log(to.path);
     // console.log(from.path);
+    // console.log('store',store)
+
+    let isLogin = window.all.tool.getLocal('isLogin')
+    console.log('islogin', isLogin)
     if (to.path !== from.path) {
         next()
     }
+    if (!isLogin) {
+        next({
+            path: '/login'
+        })
+    } 
+    // if(!isLogin && to.path!='/login'){
+    //     next()
+    // }
 })
 export default router
 // const routes = new Router({

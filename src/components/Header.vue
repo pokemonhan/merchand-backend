@@ -245,8 +245,10 @@ export default {
                 url: this.$api.logout.url
                 // data: params
             }).then(res => {
+                console.log('res',res)
                 if (res && res.code === "200") {
                     self.$toast("登出成功");
+                    // window.all.tool.setLocal('isLogin','0')
                 }
             });
             window.all.tool.removeSession("token");
@@ -365,9 +367,10 @@ export default {
         },
     },
     watch: {
-        $route(from, to) {
+        $route(to, from) {
             if (from.path === '/login') {
-                // console.log('222',from.path)
+                console.log('222',from.path)
+                console.log('3333',to)
                 this.socket()
                 this.getList()
                 // console.log('333',from.path)

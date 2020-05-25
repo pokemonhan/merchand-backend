@@ -11,15 +11,15 @@ import AES_decrypt from './AES_decrypt'
 let HOST = process.env.HOST
 
 let hostList = {
-    inner: location.protocol + '//api.jianghu.local',    // 测试站内网
-    outer: location.protocol + '//api.397017.com',       // 测试外围
-    harris: location.protocol + '//api.jianghu.me',      // harris
+    inner: location.protocol + '//api.jianghu.local',             // 测试站内网
+    outer: location.protocol + '//api.397017.com',                // 测试外围
+    harris: location.protocol + '//api.jianghu.me',               // harris
     ethan: location.protocol + '//apionline.jianghu.ethanphp',    // ethan
-    stg: location.protocol + '//apistg.397017.com',    // stg
+    stg: location.protocol + '//apistg.397017.com',               // stg
 }
 // 有数据,但匹配不到就直接使用HOST地址 
 const BASE_PATH = hostList[HOST] || HOST
-// const BASE_PATH = hostList.ethan // TODO:
+// const BASE_PATH = hostList.ethan //
 let http = axios.create({
     baseURL: BASE_PATH,
     timeout: 30000,
@@ -111,7 +111,7 @@ http.interceptors.response.use(res => {
                 message = message || 'data.code is not 200!'
                 if (res.data.code == '200400') {
                     window.__vm__.$toast.success(message)
-                }else{
+                } else {
                     window.__vm__.$toast.error(message)
                 }
             }

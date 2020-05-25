@@ -8,11 +8,11 @@
                 </div>
                 <div class="cont">
                     <div>
-                        <span class="number">{{row1.profit.amount}}</span>
+                        <span class="number">{{profit_amount}}</span>
                     </div>
                     <div class="bottom-10">
                         <span>日环比:</span>
-                        <span>{{row1.profit.percent}}</span>
+                        <span>{{profit_percent}}</span>
                         <!-- <span>人</span> -->
                     </div>
                 </div>
@@ -24,7 +24,7 @@
                 </div>
                 <div class="cont">
                     <div>
-                        <span class="number">{{row1.top_up.amount}}</span>
+                        <span class="number">{{top_up_amount}}</span>
                     </div>
                     <div class="fcharge-pic">
                         <div id="first_recharge" class="row1-3"></div>
@@ -32,7 +32,7 @@
 
                     <div class="bottom-10">
                         <span>充值人数:</span>
-                        <span>{{row1.top_up.people}}</span>
+                        <span>{{top_up_people}}</span>
                         <span>人</span>
                     </div>
                 </div>
@@ -44,11 +44,11 @@
                 </div>
                 <div class="cont">
                     <div>
-                        <span class="number">{{row1.withdrawal.amount}}</span>
+                        <span class="number">{{withdrawal_amount}}</span>
                     </div>
                     <div class="bottom-10">
                         <span>提现人数:</span>
-                        <span>{{row1.withdrawal.people}}</span>
+                        <span>{{withdrawal_people}}</span>
                         <span>人</span>
                     </div>
                 </div>
@@ -60,12 +60,12 @@
                 </div>
                 <div class="cont">
                     <div>
-                        <span class="number">{{row1.gifts.amount}}</span>
+                        <span class="number">{{gifts_amount}}</span>
                     </div>
 
                     <div class="bottom-10">
                         <span>领取人数:</span>
-                        <span>{{row1.gifts.people}}</span>
+                        <span>{{gifts_people}}</span>
                         <span>人</span>
                     </div>
                 </div>
@@ -177,26 +177,26 @@
                                 <li>
                                     <span class="dot blue"></span>
                                     <span>安卓</span>
-                                    <span>12%</span>
-                                    <span>3人</span>
+                                    <span>{{online_statistics_apk_percent}}</span>
+                                    <span>{{online_statistics_apk_people}}人</span>
                                 </li>
                                 <li>
                                     <span class="dot green"></span>
                                     <span>苹果</span>
-                                    <span>12%</span>
-                                    <span>3人</span>
+                                    <span>{{online_statistics_app_percent}}</span>
+                                    <span>{{online_statistics_app_people}}人</span>
                                 </li>
                                 <li>
                                     <span class="dot orange"></span>
                                     <span>H5</span>
-                                    <span>12%</span>
-                                    <span>3人</span>
+                                    <span>{{online_statistics_h5_percent}}</span>
+                                    <span>{{online_statistics_h5_people}}人</span>
                                 </li>
                                 <li>
                                     <span class="dot red"></span>
                                     <span>PC</span>
-                                    <span>12%</span>
-                                    <span>3人</span>
+                                    <span>{{online_statistics_pc_percent}}</span>
+                                    <span>{{online_statistics_pc_people}}人</span>
                                 </li>
                             </ul>
                         </div>
@@ -209,26 +209,26 @@
                                 <li>
                                     <span class="dot blue"></span>
                                     <span>安卓</span>
-                                    <span>22%</span>
-                                    <span>3人</span>
+                                    <span>{{registration_statistics_apk_percent}}</span>
+                                    <span>{{registration_statistics_apk_people}}人</span>
                                 </li>
                                 <li>
                                     <span class="dot green"></span>
                                     <span>苹果</span>
-                                    <span>32%</span>
-                                    <span>6人</span>
+                                    <span>{{registration_statistics_app_percent}}</span>
+                                    <span>{{registration_statistics_app_people}}人</span>
                                 </li>
                                 <li>
                                     <span class="dot orange"></span>
                                     <span>H5</span>
-                                    <span>12%</span>
-                                    <span>3人</span>
+                                    <span>{{registration_statistics_h5_percent}}</span>
+                                    <span>{{registration_statistics_h5_people}}人</span>
                                 </li>
                                 <li>
                                     <span class="dot red"></span>
                                     <span>PC</span>
-                                    <span>12%</span>
-                                    <span>3人</span>
+                                    <span>{{registration_statistics_pc_percent}}</span>
+                                    <span>{{registration_statistics_pc_people}}人</span>
                                 </li>
                             </ul>
                         </div>
@@ -254,12 +254,36 @@ export default {
     name: 'Home',
     data() {
         return {
-            row1: {
-                profit: { amount: 0, percent: 0 }, // 今日盈利
-                top_up: { amount: 0, people: 0 }, // 今日首充
-                withdrawal: { amount: 20, people: 0 }, // 今日提现
-                gifts: { amount: 0, people: 0 } // 今日彩金优惠
-            },
+            
+            profit_amount: 0,
+            profit_percent: "0%",
+            top_up_amount: 0,
+            top_up_people: 0,
+            withdrawal_amount: 0,
+            withdrawal_people: 0,
+            gifts_amount: 0,
+            gifts_people: 0,
+            // 登录
+            online_statistics_apk_people: 0,
+            online_statistics_apk_percent: "0%",
+            online_statistics_app_people: 0,
+            online_statistics_app_percent: "0%",
+            online_statistics_h5_people: 0,
+            online_statistics_h5_percent: "0%",
+            online_statistics_pc_people: 0,
+            online_statistics_pc_percent: "0%",
+            
+            // 注册
+            registration_statistics_apk_people: 0,
+            registration_statistics_apk_percent: "0%",
+            registration_statistics_app_people: 0,
+            registration_statistics_app_percent: "0%",
+            registration_statistics_h5_people: 0,
+            registration_statistics_h5_percent: "0%",
+            registration_statistics_pc_people: 0,
+            registration_statistics_pc_percent: "0%",
+
+
             is_show_login: true,
             // 游戏数据
             game_act_index: 0,
@@ -360,11 +384,12 @@ export default {
         // 登录统计 --人数统计
         loginChartDraw() {
             let echart_data = [
-                { value: 335, name: '安卓' },
-                { value: 310, name: '苹果' },
-                { value: 234, name: 'H5' },
-                { value: 135, name: 'PC' }
+                {value: this.online_statistics_apk_people,name: '安卓'},
+                {value: this.online_statistics_app_people,name: '苹果'},
+                {value: this.online_statistics_h5_people,name: 'h5'},
+                {value: this.online_statistics_pc_people,name: 'pc'}
             ]
+
             let echarts = window.all.echarts
             let login_chart = echarts.init(document.getElementById('login_num'))
             login_chart.setOption({
@@ -426,6 +451,7 @@ export default {
                                 }
                             }
                         },
+                        // 格式[ { value: 335, name: '安卓' }, { value: 335, name: '苹果' }]
                         data: echart_data
                     }
                 ]
@@ -434,12 +460,15 @@ export default {
 
         // 注册统计
         registChartDraw() {
+            // let device = { apk: '安卓', app: '苹果', h5: 'H5', pc: 'PC' }
+
             let echart_data = [
-                { value: 335, name: '安卓' },
-                { value: 310, name: '苹果' },
-                { value: 234, name: 'H5' },
-                { value: 135, name: 'Pc' }
+                {value: this.registration_statistics_apk_people,name: '安卓'},
+                {value: this.registration_statistics_app_people,name: '苹果'},
+                {value: this.registration_statistics_h5_people,name: 'h5'},
+                {value: this.registration_statistics_pc_people,name: 'pc'}
             ]
+
             let echarts = window.all.echarts
             let regist_chart = echarts.init(
                 document.getElementById('regist_num')
@@ -484,7 +513,8 @@ export default {
                                     return colors[params.dataIndex]
                                 }
                             }
-                        }
+                        },
+                        data: echart_data
                     }
                 ]
             })
@@ -582,9 +612,39 @@ export default {
             let { url, method } = this.$api.home_page_list
             this.$http({ method, url }).then(res => {
                 // console.log('列表👌👌👌👌: ', res)
-                if (res && res.code === '200' && res.data) {
-                    let { profit, top_up, withdrawal, gifts } = res.data
-                    this.row1 = { profit, top_up, withdrawal, gifts }
+                if (res && res.code === '200') {
+                    let data = res.data || {}
+                    this.profit_amount = data.profit_amount, // 盈利
+                    this.profit_percent = data.profit_percent,
+                    this.top_up_amount = data.top_up_amount, // 首充
+                    this.top_up_people = data.top_up_people,
+                    this.withdrawal_amount = data.withdrawal_amount, // 今日提现
+                    this.withdrawal_people = data.withdrawal_people,
+                    this.gifts_amount = data.gifts_amount,           // 彩金
+                    this.gifts_people = data.gifts_people,
+
+                    // 登录
+                    this.online_statistics_apk_people = data.online_statistics_apk_people,
+                    this.online_statistics_apk_percent = data.online_statistics_apk_percent,
+                    this.online_statistics_app_people = data.online_statistics_app_people,
+                    this.online_statistics_app_percent = data.online_statistics_app_percent,
+                    this.online_statistics_h5_people = data.online_statistics_h5_people,
+                    this.online_statistics_h5_percent = data.online_statistics_h5_percent,
+                    this.online_statistics_pc_people = data.online_statistics_pc_people,
+                    this.online_statistics_pc_percent = data.online_statistics_pc_percent,
+                    this.loginChartDraw() // 登录统计
+                    
+                    // 注册
+                    this.registration_statistics_apk_people = data.registration_statistics_apk_people,
+                    this.registration_statistics_apk_percent = data.registration_statistics_apk_percent,
+                    this.registration_statistics_app_people = data.registration_statistics_app_people,
+                    this.registration_statistics_app_percent = data.registration_statistics_app_percent,
+                    this.registration_statistics_h5_people = data.registration_statistics_h5_people,
+                    this.registration_statistics_h5_percent = data.registration_statistics_h5_percent,
+                    this.registration_statistics_pc_people = data.registration_statistics_pc_people,
+                    this.registration_statistics_pc_percent = data.registration_statistics_pc_percent,            
+
+                    this.registChartDraw() // 登录统计
                 }
             })
         },
@@ -592,11 +652,11 @@ export default {
         updateSize(val) {}
     },
     mounted() {
-        // this.getList()
+        this.getList()
         // let echarts = window.all.echarts;
         // this.todatyFirstRechargeChartDraw() // 今日首冲
-        this.loginChartDraw() // 登录统计
-        this.registChartDraw() // 注册统计
+        // this.loginChartDraw()
+        // this.registChartDraw() // 注册统计
         this.rechargeChartDraw() // 充提统计
     }
 }

@@ -453,10 +453,7 @@ export default {
             };
             console.log("请求数据", datas);
             let data = window.all.tool.rmEmpty(datas);
-            let {
-                method,
-                url
-            } = this.$api.founds_incomeorder_examination_passed;
+            let {method, url} = this.$api.founds_incomeorder_examination_passed;
             this.$http({ method, url, data }).then(res => {
                 console.log("返回数据", res);
                 if (res && res.code == "200") {

@@ -32,7 +32,7 @@ export default {
     },
     data() {
         return {
-            curr_list: 'Online'
+            curr_list: 'Offline'
         }
     },
     methods: {},

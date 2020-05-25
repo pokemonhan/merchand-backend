@@ -58,7 +58,7 @@
                     <td>{{row.mobile}}</td>
                     <td>{{row.guid}}</td>
                     <td>
-                        <i :class="['iconfont',row.is_tester==1 ?'icongou green':'iconcha red']"></i>
+                        <i :class="['iconfont',row.is_tester==0 ?'icongou green':'iconcha red']"></i>
                     </td>
                     <td>{{row.user_tag}}</td>
                     <td>{{row.total_members}}</td>
@@ -578,7 +578,7 @@ export default {
                             arr.push({ label: item.title, value: item.id });
                         }
                         this.user_tab_opt = arr;
-                        // console.log('标签数据',this.user_tab_opt)
+                        console.log('标签数据',this.user_tab_opt)
                     }
                 }
             });

@@ -32,12 +32,12 @@
         <div class="table">
             <Table :headers="headers" :column="list">
                 <template v-slot:item="{row}">
-                    <td>{{row.mobile}}</td>
-                    <td>{{row.uid}}</td>
-                    <td>{{row.last_login_ip}}</td>
-                    <td>{{row}}</td>
-                    <td>{{row.last_login_device}}</td>
-                    <td>{{row.last_login_time}}</td>
+                    <td>{{row.mobile || '--'}}</td>
+                    <td>{{row.uid || '--'}}</td>
+                    <td>{{row.last_login_ip || '--'}}</td>
+                    <td>{{row.origin || '--'}}</td>
+                    <td>{{row.last_login_device==1?'PC':row.last_login_device==2?'H5':row.last_login_device==3?'APP':row.last_login_device==4?'未知设备':'' || '--'}}</td>
+                    <td>{{row.updated_at || '--'}}</td>
                 </template>
             </Table>
             <Page
@@ -113,9 +113,10 @@ export default {
             let { method, url } = this.$api.user_login_log_list;
             this.$http({ method: method, url: url, data }).then(
                 res => {
-                    // console.log("res", res);
+                    console.log("res", res);
                     if (res && res.code == "200") {
                         this.list = res.data.data;
+                        this.total=res.data.total
                     }
                 }
             );

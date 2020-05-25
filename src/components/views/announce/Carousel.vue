@@ -68,10 +68,10 @@
                     </li>
                     <li v-if="is_edit" class="conf-btn">
                         <button class="btn-plain-large" @click="editCancel">取消修改</button>
-                        <button class="btn-blue-large ml20" @click="editConf">确定修改</button>
+                        <button class="btn-blue-large ml20" @click="diaCfm">确定修改</button>
                     </li>
                     <li v-else class="conf-btn">
-                        <button class="btn-blue-large" @click="addCfm">确定添加</button>
+                        <button class="btn-blue-large" @click="addConfCfm">确定添加</button>
                     </li>
                 </ul>
             </div>
@@ -177,7 +177,9 @@ export default {
             curr_item: {},
             pic_data: "",
             picFile: {},
-            pic_id: ""
+            pic_id: "",
+            isLoad: false,
+            load_pic_id: ""
         };
     },
     methods: {
@@ -192,6 +194,15 @@ export default {
         h5Show() {
             this.initForm();
             this.is_pc_show = false;
+        },
+        //判断是否修改了图片
+        diaCfm() {
+            if (this.isLoad == false) {
+                this.editConf();
+            }
+            if (this.isLoad == true) {
+                this.editConfCfm();
+            }
         },
         edit(item) {
             console.log("item内容:😀 ", item);
@@ -216,6 +227,7 @@ export default {
             this.curr_btn = String(item.device);
             this.pic_data = item.pic;
             this.pic_id = item.pic_id;
+            this.isLoad = false;
         },
         editConf() {
             // let start_time=''
@@ -226,31 +238,39 @@ export default {
             // if(this.form.dates[1]){
             //     end_time=JSON.stringify([this.form.dates[1]])
             // }
-            let editConf = () => {
-                let data = {
-                    id: this.form.id,
-                    device: this.curr_btn,
-                    title: this.form.name,
-                    pic_id: this.pic_id,
-                    type: this.form.status,
-                    link: this.form.link,
-                    start_time: this.form.dates[0],
-                    end_time: this.form.dates[1],
-                    status: this.form.active
-                };
-                console.log("请求数据", data);
-                let { url, method } = this.$api.announce_carousel_edit;
-                this.$http({ method, url, data }).then(res => {
-                    console.log("返回数据", res);
-                    if (res && res.code == "200") {
-                        this.$toast.success(res && res.message);
-                        this.is_edit = false;
-                        this.getList();
-                        this.initForm();
-                    }
-                });
+            let pic_id = "";
+            if (this.isLoad == false) {
+                pic_id = this.pic_id;
+            }
+            if (this.isLoad == true) {
+                pic_id = this.load_pic_id;
+            }
+            let data = {
+                id: this.form.id,
+                device: this.curr_btn,
+                title: this.form.name,
+                pic_id: pic_id,
+                type: this.form.status,
+                link: this.form.link,
+                start_time: this.form.dates[0],
+                end_time: this.form.dates[1],
+                status: this.form.active
             };
-            this.upLoadPic(editConf)
+            console.log("请求数据", data);
+            let { url, method } = this.$api.announce_carousel_edit;
+            this.$http({ method, url, data }).then(res => {
+                console.log("返回数据", res);
+                if (res && res.code == "200") {
+                    this.$toast.success(res && res.message);
+                    this.is_edit = false;
+                    this.getList();
+                    this.initForm();
+                }
+            });
+        },
+        async editConfCfm() {
+            await this.upLoadPic();
+            this.editConf();
         },
         del(item) {
             this.mod_show = true;
@@ -278,6 +298,7 @@ export default {
                 active: "1"
             };
             this.pic_data = "";
+            this.pic_id = "";
         },
         editCancel() {
             this.is_edit = false;
@@ -296,64 +317,58 @@ export default {
                 self.pic_data = file.target.result;
             };
             this.picFile = e;
+            this.isLoad = true;
             // console.log('图片数据',this.pic_data)
         },
         //上传图片
-        upLoadPic(callback) {
-            let e = this.picFile;
-            let pic = e.target.files[0];
-            let basket = "announce/carousel/uploads";
-            let formList = new FormData();
-            formList.append("file", pic, pic.name);
-            formList.append("basket", basket);
-            let data = formList;
-            let { url, method } = this.$api.update_picture_database;
-            let headers = { "Content-Type": "multipart/form-data" };
-            this.$http({ method, url, data, headers }).then(res => {
-                console.log("图片返回数据", res);
-                if (res && res.code == "200") {
-                    this.pic_data = res.data.id;
-                    this.pic_id = res.data.id;
-                    callback();
-                }
+        upLoadPic() {
+            return new Promise(resolve => {
+                let e = this.picFile;
+                let pic = e.target.files[0];
+                let basket = "announce/carousel/uploads";
+                let formList = new FormData();
+                formList.append("file", pic, pic.name);
+                formList.append("basket", basket);
+                let data = formList;
+                let { url, method } = this.$api.update_picture_database;
+                let headers = { "Content-Type": "multipart/form-data" };
+                this.$http({ method, url, data, headers }).then(res => {
+                    console.log("图片返回数据", res);
+                    if (res && res.code == "200") {
+                        this.pic_data = res.data.id;
+                        this.pic_id = res.data.id;
+                        this.load_pic_id = res.data.id;
+                        resolve(res.data.path);
+                    }
+                });
             });
         },
         addCfm() {
-            let addConfirm = () => {
-                // let start_time=''
-                // if(this.form.dates[0]){
-                //     start_time=JSON.stringify([this.form.dates[0]])
-                // }
-                // let end_time=''
-                // if(this.form.dates[1]){
-                //     end_time=JSON.stringify([this.form.dates[1]])
-                // }
-                // console.log('图片文件',this.picFile)
-                let data = {
-                    device: this.curr_btn,
-                    title: this.form.name,
-                    pic_id: this.pic_data,
-                    type: this.form.status,
-                    link: this.form.link,
-                    start_time: this.form.dates[0],
-                    end_time: this.form.dates[1],
-                    status: this.form.active
-                };
-                console.log("请求数据", data);
-                let { url, method } = this.$api.announce_carousel_add;
-                this.$http({ method, url, data }).then(res => {
-                    console.log("返回数据", res);
-                    if (res && res.code == "200") {
-                        this.$toast.success(res && res.message);
-                        this.getList();
-                        this.initForm();
-                    }
-                });
+            let data = {
+                device: this.curr_btn,
+                title: this.form.name,
+                pic_id: this.pic_data,
+                type: this.form.status,
+                link: this.form.link,
+                start_time: this.form.dates[0],
+                end_time: this.form.dates[1],
+                status: this.form.active
             };
-            //上传图片之后确认
-            this.upLoadPic(addConfirm);
+            console.log("请求数据", data);
+            let { url, method } = this.$api.announce_carousel_add;
+            this.$http({ method, url, data }).then(res => {
+                console.log("返回数据", res);
+                if (res && res.code == "200") {
+                    this.$toast.success(res && res.message);
+                    this.getList();
+                    this.initForm();
+                }
+            });
         },
-
+        async addConfCfm() {
+            await this.upLoadPic();
+            this.addCfm();
+        },
         switchStatus(val, item) {
             let data = {
                 id: item.id,

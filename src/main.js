@@ -23,9 +23,17 @@ import io from 'socket.io-client'
 import 'element-ui/lib/theme-chalk/index.css'
 
 window.io = io
+let HOST = process.env.HOST
+let echoHost=""
+if(HOST=="stg"){
+    echoHost="http://echodev.397017.com:6001"
+}
+if(HOST=="outer"){
+    echoHost="http://echo.397017.com:6001"
+}
 window.Echo = new Echo({
     broadcaster: 'socket.io',
-    host: 'http://echo.397017.com:6001' // laravel-echo-server host
+    host:echoHost  // laravel-echo-server host
 });
 
 Vue.use(plugins)

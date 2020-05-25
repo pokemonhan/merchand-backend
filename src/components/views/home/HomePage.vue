@@ -101,7 +101,7 @@
                     <div>
                         <div class="title">平台排名</div>
                     </div>
-                    <div class="smallTable" >
+                    <div class="smallTable">
                         <Table
                             class="table"
                             :headers="game_plant_headers"
@@ -251,7 +251,7 @@
 <script>
 export default {
     // name: 'HomePage',
-    name: "Home",
+    name: 'Home',
     data() {
         return {
             is_show_login: true,
@@ -353,6 +353,12 @@ export default {
         },
         // 登录统计 --人数统计
         loginChartDraw() {
+            let echart_data = [
+                { value: 335, name: '安卓' },
+                { value: 310, name: '苹果' },
+                { value: 234, name: 'H5' },
+                { value: 135, name: 'PC' }
+            ]
             let echarts = window.all.echarts
             let login_chart = echarts.init(document.getElementById('login_num'))
             login_chart.setOption({
@@ -414,12 +420,7 @@ export default {
                                 }
                             }
                         },
-                        data: [
-                            { value: 335, name: '安卓' },
-                            { value: 310, name: '苹果' },
-                            { value: 234, name: 'H5' },
-                            { value: 135, name: 'PC' }
-                        ]
+                        data: echart_data
                     }
                 ]
             })
@@ -427,6 +428,12 @@ export default {
 
         // 注册统计
         registChartDraw() {
+            let echart_data = [
+                { value: 335, name: '安卓' },
+                { value: 310, name: '苹果' },
+                { value: 234, name: 'H5' },
+                { value: 135, name: 'Pc' }
+            ]
             let echarts = window.all.echarts
             let regist_chart = echarts.init(
                 document.getElementById('regist_num')
@@ -458,21 +465,11 @@ export default {
                         type: 'pie',
                         radius: '55%',
                         center: ['50%', '60%'],
-                        data: [
-                            { value: 335, name: '安卓' },
-                            { value: 310, name: '苹果' },
-                            { value: 234, name: 'H5' },
-                            { value: 135, name: 'Pc' }
-                        ],
+                        data: echart_data,
                         itemStyle: {
                             normal: {
                                 color: function(params) {
-                                    var colors = [
-                                        '#4c8bfd',
-                                        '#4cc013',
-                                        '#faab08',
-                                        '#fc4c4c'
-                                    ]
+                                    var colors = [ '#4c8bfd', '#4cc013', '#faab08', '#fc4c4c' ]
                                     return colors[params.dataIndex]
                                 }
                             }
@@ -484,6 +481,11 @@ export default {
 
         // 充提统计
         rechargeChartDraw() {
+            let echart_data = {
+                /** 前日, 昨日, 今日 */
+                topUp: [18203, 23489, 29034], // 充值
+                withdraw: [19325, 23438, 31000] // 提款
+            }
             let echarts = window.all.echarts
             let recharge_chart = echarts.init(
                 document.getElementById('recharge')
@@ -539,7 +541,7 @@ export default {
                                 show: true
                             }
                         },
-                        data: [18203, 23489, 29034]
+                        data: echart_data.topUp
                     },
                     {
                         name: '提款',
@@ -555,7 +557,7 @@ export default {
                                 show: true
                             }
                         },
-                        data: [19325, 23438, 31000]
+                        data: echart_data.withdraw
                     }
                 ]
             })
@@ -590,10 +592,10 @@ export default {
 .game-data .v-table {
     min-height: 0;
 }
-.smallTable .v-table  {
+.smallTable .v-table {
     min-height: 0;
 }
-.row3-tab .v-table{
+.row3-tab .v-table {
     min-height: 0;
 }
 .row1 {
@@ -859,7 +861,7 @@ export default {
     background: #f5f5f5;
     /* padding: 20px 30px; */
 }
-.row3-tab{
+.row3-tab {
     margin-left: 20px;
     margin-right: 20px;
 }

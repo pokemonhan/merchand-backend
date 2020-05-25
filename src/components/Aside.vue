@@ -1,7 +1,10 @@
 <template>
     <div class="contain" ref="contain">
         <ul class="level-1">
-            <li v-for="(lev1, lev1_index) in (menu_list||[]).filter(item=>item.display)" :key="lev1_index">
+            <li
+                v-for="(lev1, lev1_index) in (menu_list||[]).filter(item=>item.display)"
+                :key="lev1_index"
+            >
                 <span
                     :class="['title',$route.path == lev1.path&&(!lev1.children)?'active-menu':'',curr_ul(lev1)?'lev1-active':'']"
                     @click="expandMenu(lev1,lev1_index)"
@@ -12,9 +15,11 @@
                 </span>
 
                 <!-- 二级菜单 -->
-                <ul
-                 :ref="lev1_index" :class="['level2',curr_ul(lev1)?'active-ul':'']">
-                    <li v-for="(lev2, lev2_index) in (lev1.children||[]).filter(item=>item.display)" :key="lev2_index">
+                <ul :ref="lev1_index" :class="['level2',curr_ul(lev1)?'active-ul':'']">
+                    <li
+                        v-for="(lev2, lev2_index) in (lev1.children||[]).filter(item=>item.display)"
+                        :key="lev2_index"
+                    >
                         <!-- 标题 -->
                         <span
                             :class="['title',$route.path == lev2.path?'active-menu':'']"
@@ -76,39 +81,51 @@ export default {
             return false
         },
         expandMenu(item, index) {
-            console.log("该元素item", item);
-            console.log("这个index", index);
-            if (!item.children) {
-                this.$router.push(item.path)
-                let curr_path = item.path
-                let curr_item = {}
-                
-                menuList.forEach(item => {
-                    if(item.children) {
-                        item.children.forEach(child => {
-                            if(child.path === curr_path) {
-                                curr_item = child
-                            }
-                        })
+            // console.log("该元素item", item);
+            // console.log("这个index", index);
+
+            /** 根据路径获取相关信息 */
+            function getMenuData(path, arr) {
+                let template_data
+                arr.forEach(item => {
+                    if (item.path === path) {
+                        template_data = item
+                    } else if (item.children) {
+                        if (getMenuData(path, item.children)) {
+                            template_data = getMenuData(path, item.children)
+                        }
                     }
                 })
+                return template_data || {}
+            }
+            // 子菜单跳转
+            if (!item.children) {
+                // 获取该path 的所有数据
+                let data = getMenuData(item.path, window.all.menu_list)
+
                 let list = this.tab_nav_list
                 // 导航条没有该页面 就添加进去
-                // console.log('curr_item: ', curr_item);
                 let isHadTab = list.find(tab => tab.path === item.path)
-                if (!isHadTab) {
+                if (!isHadTab && item.path !== '/home/home') {
                     list.push({
-                        label: curr_item.label,
-                        name: curr_item.name,
-                        path: curr_item.path
+                        label: item.label,
+                        path: item.path,
+                        name: data.name
                     })
+                    // 最多多十五个 导航条
+                    if (list.length >= 15) {
+                        list.shift()
+                    }
                     this.updateTab_nav_list(list)
                 }
+                this.$router.push(item.path)
+
                 // 没有 children 就是父级菜单,就下滑打开该菜单
             } else {
-                let ele = this.$refs[index]&&this.$refs[index][0]
+                let ele = this.$refs[item.pre_idx][0]
                 // $(ele).slideToggle(200)
                 Slide.slideToggle(ele)
+                // Slide.slideUp(ele)
             }
         },
 
@@ -142,8 +159,7 @@ export default {
             // return list
         },
         getMenuList() {
-
-            if(!window.all.tool.getLocal('Authorization')) return
+            if (!window.all.tool.getLocal('Authorization')) return
             // this.menu_list = window.all.menu_list
             // console.log('this.menu_list: ', this.menu_list);
             // window.all.tool.setLocal('menu', this.menu_list)
@@ -156,7 +172,7 @@ export default {
                 this.$http({ method, url }).then(res => {
                     // console.log('res',res)
                     if (res && res.code === '200') {
-                        if(!res.data) return
+                        if (!res.data) return
                         let menu = this.objToArr(res.data)
                         this.menu_list = menu
                         window.all.tool.setLocal('menu', menu)
@@ -191,7 +207,7 @@ export default {
                 // page: this.form.
             }
             data = window.all.tool.rmEmpty(data)
-                                                   
+
             let { url, method } = this.$api.current_admin_menu
             this.$http({ method, url, data }).then(res => {
                 // console.log('列表👌👌👌👌: ', res)

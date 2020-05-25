@@ -143,13 +143,13 @@ export default {
         },
         getMenuList() {
 
-            if(!window.all.tool.getLocal('Authorization')) return
+            if(!window.all.tool.getSession('Authorization')) return
             // this.menu_list = window.all.menu_list
             // console.log('this.menu_list: ', this.menu_list);
             // window.all.tool.setLocal('menu', this.menu_list)
             // return
-            if (window.all.tool.getLocal('menu')) {
-                this.menu_list = window.all.tool.getLocal('menu')
+            if (window.all.tool.getSession('menu')) {
+                this.menu_list = window.all.tool.getSession('menu')
             } else {
                 let { method, url } = this.$api.current_admin_menu
 
@@ -159,7 +159,7 @@ export default {
                         if(!res.data) return
                         let menu = this.objToArr(res.data)
                         this.menu_list = menu
-                        window.all.tool.setLocal('menu', menu)
+                        window.all.tool.setSession('menu', menu)
                     }
                 })
             }

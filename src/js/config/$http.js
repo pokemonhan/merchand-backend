@@ -51,8 +51,8 @@ http.interceptors.request.use(req => {
         loadingEle.style.display = 'block'
     }
 
-    let Authorization = window.all.tool.getLocal('Authorization')
-    // let expires = new Date(window.all.tool.getLocal('expires_at')).getTime()
+    let Authorization = window.all.tool.getSession('Authorization')
+    // let expires = new Date(window.all.tool.getSession('expires_at')).getTime()
     // let now = new Date().getTime()
     // let not_login = req.url.indexOf(BASE_PATH+'/merchant-api/login') === -1        // 并非 /login页面
     if (Authorization) {

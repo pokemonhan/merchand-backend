@@ -196,7 +196,7 @@ export default {
     },
     methods: {
         getSenddetail(){
-            this.senderInformation=window.all.tool.getLocal('email')
+            this.senderInformation=window.all.tool.getSession('email')
             // console.log('邮箱',this.senderInformation)
         },
         initTime() {

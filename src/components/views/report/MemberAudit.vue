@@ -42,18 +42,18 @@
         <div class="table">
             <Table :headers="headers" :column="list">
                 <template v-slot:item="{row}">
-                    <td>{{row.mobile}}</td>
-                    <td>{{row.guid}}</td>
-                    <td>{{row.order_number}}</td>
-                    <td>{{row.type}}</td>
-                    <td>{{row.amount}}</td>
-                    <td>{{row.demand_bet}}</td>
-                    <td>{{row.achieved_bet}}</td>
+                    <td>{{row.mobile || '--'}}</td>
+                    <td>{{row.guid || '--'}}</td>
+                    <td>{{row.order_number || '--'}}</td>
+                    <td>{{row.type || '--'}}</td>
+                    <td>{{row.amount || '--'}}</td>
+                    <td>{{row.demand_bet || '--'}}</td>
+                    <td>{{row.achieved_bet || '--'}}</td>
                     <td>
-                        <span :class="status_opt[row.status].color">{{status_opt[row.status].text}}</span>
+                        <span :class="status_opt[row.status].color">{{status_opt[row.status].text || '--'}}</span>
                     </td>
-                    <td>{{row.created_at}}</td>
-                    <td>{{row.achieved_time}}</td>
+                    <td>{{row.created_at || '--'}}</td>
+                    <td>{{row.achieved_time || '--'}}</td>
                 </template>
             </Table>
             <Page
@@ -117,9 +117,9 @@ export default {
             this.quick_query = this.filter.dates
         },
         getMenuList(){
-            if(!window.all.tool.getLocal('Authorization')) return
-            if(window.all.tool.getLocal('menu')){
-                this.menu_list=window.all.tool.getLocal('menu')
+            if(!window.all.tool.getSession('Authorization')) return
+            if(window.all.tool.getSession('menu')){
+                this.menu_list=window.all.tool.getSession('menu')
             }
         },
         exportExcel() {

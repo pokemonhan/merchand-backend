@@ -611,7 +611,7 @@ export default {
             // let params = window.all.tool.rmEmpty(para)
             let { url, method } = this.$api.home_page_list
             this.$http({ method, url }).then(res => {
-                console.log('列表👌👌👌👌: ', res)
+                // console.log('列表👌👌👌👌: ', res)
                 if (res && res.code === '200') {
                     let data = res.data || {}
                     this.profit_amount = data.profit_amount, // 盈利

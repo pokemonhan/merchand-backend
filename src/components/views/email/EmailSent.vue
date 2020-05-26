@@ -21,7 +21,7 @@
                     <Select v-model="filter.sender" :options="sender_opt" ></Select>
                 </li>
                 <li>
-                    <button class="btn-blue" @click="getList">查询?</button>
+                    <button class="btn-blue" @click="getList">查询</button>
                     <button class="btn-red" @click="clearFilter">清空</button>
                 </li>
             </ul>

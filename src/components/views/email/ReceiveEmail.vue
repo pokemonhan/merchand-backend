@@ -7,7 +7,7 @@
             <ul class="left">
                 <li>
                     <span>发件人</span>
-                    <Input class="w100" v-model="filter.platform_sign" />
+                    <Input class="w100" v-model="filter.sender" />
                 </li>
                 <li>
                     <span>收件日期</span>
@@ -17,7 +17,7 @@
                     <Date type="daterange" v-model="filter.dates" @update="timeUpdate()" />
                 </li>
                 <li>
-                    <button class="btn-blue" @click="getList">查询?</button>
+                    <button class="btn-blue" @click="getList">查询</button>
                     <button class="btn-red" @click="clearFilter">清空</button>
                 </li>
             </ul>
@@ -104,7 +104,7 @@ export default {
         return {
             quick_query: [],
             filter: {
-                platform_sign: '',
+                sender: '',
                 dates: []
             },
             headers: ['标题', '内容', '发件人', '收件日期'],
@@ -219,12 +219,13 @@ export default {
                 created_at = JSON.stringify(this.filter.dates)
             }
             let para = {
-                platform_sign: this.filter.platform_sign, // 厅主标识
-                created_at: created_at, // 接收日期
+                sender: this.filter.sender, // 发件人
+                send_time: created_at, // 接收日期
                 pageSize: this.pageSize,
                 page: this.pageNo
             }
             let data = window.all.tool.rmEmpty(para)
+            console.log('🍺 para: ', para);
 
             let { url, method } = this.$api.email_received
             this.$http({ method, url, data }).then(res => {

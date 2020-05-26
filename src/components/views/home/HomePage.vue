@@ -523,7 +523,6 @@ export default {
         // 注册统计
         registChartDraw() {
             // let device = { apk: '安卓', app: '苹果', h5: 'H5', pc: 'PC' }
-
             let echart_data = [
                 {
                     value: this.sign_up_apk_people,

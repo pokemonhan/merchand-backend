@@ -19,7 +19,7 @@ let hostList = {
 }
 // 有数据,但匹配不到就直接使用HOST地址 
 const BASE_PATH = hostList[HOST] || HOST
-// const BASE_PATH = hostList.ethan //
+// const BASE_PATH = hostList.ethan // TODO:
 let http = axios.create({
     baseURL: BASE_PATH,
     timeout: 30000,

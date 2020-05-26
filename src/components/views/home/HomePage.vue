@@ -77,7 +77,7 @@
                     :class="['mr8',game_act_index===index?'btn-active':'btn-plain-white']"
                     v-for="(item,index) in ['昨日','本周','本月','全年']"
                     :key="index"
-                    @click="searchGame(item,index)"
+                    @click="searchGame(index)"
                 >{{item}}</button>
                 <!-- <button class="btn">本周</button>
                 <button class="btn">本月</button>
@@ -92,7 +92,7 @@
                     <Table class="table" :headers="game_data_headers" :column="game_data_list">
                         <template v-slot:item="{row}">
                             <td>{{row.plant_form}}</td>
-                            <td>{{row.value}}</td>
+                            <td :class="row.value>0?'text-green':'text-red'">{{row.value}}</td>
                         </template>
                     </Table>
                 </div>
@@ -177,26 +177,26 @@
                                 <li>
                                     <span class="dot blue"></span>
                                     <span>安卓</span>
-                                    <span>{{online_statistics_apk_percent}}</span>
-                                    <span>{{online_statistics_apk_people}}人</span>
+                                    <span>{{online_apk_percent}}</span>
+                                    <span>{{online_apk_people}}人</span>
                                 </li>
                                 <li>
                                     <span class="dot green"></span>
                                     <span>苹果</span>
-                                    <span>{{online_statistics_app_percent}}</span>
-                                    <span>{{online_statistics_app_people}}人</span>
+                                    <span>{{online_app_percent}}</span>
+                                    <span>{{online_app_people}}人</span>
                                 </li>
                                 <li>
                                     <span class="dot orange"></span>
                                     <span>H5</span>
-                                    <span>{{online_statistics_h5_percent}}</span>
-                                    <span>{{online_statistics_h5_people}}人</span>
+                                    <span>{{online_h5_percent}}</span>
+                                    <span>{{online_h5_people}}人</span>
                                 </li>
                                 <li>
                                     <span class="dot red"></span>
                                     <span>PC</span>
-                                    <span>{{online_statistics_pc_percent}}</span>
-                                    <span>{{online_statistics_pc_people}}人</span>
+                                    <span>{{online_pc_percent}}</span>
+                                    <span>{{online_pc_people}}人</span>
                                 </li>
                             </ul>
                         </div>
@@ -209,26 +209,26 @@
                                 <li>
                                     <span class="dot blue"></span>
                                     <span>安卓</span>
-                                    <span>{{registration_statistics_apk_percent}}</span>
-                                    <span>{{registration_statistics_apk_people}}人</span>
+                                    <span>{{sign_up_apk_percent}}</span>
+                                    <span>{{sign_up_apk_people}}人</span>
                                 </li>
                                 <li>
                                     <span class="dot green"></span>
                                     <span>苹果</span>
-                                    <span>{{registration_statistics_app_percent}}</span>
-                                    <span>{{registration_statistics_app_people}}人</span>
+                                    <span>{{sign_up_app_percent}}</span>
+                                    <span>{{sign_up_app_people}}人</span>
                                 </li>
                                 <li>
                                     <span class="dot orange"></span>
                                     <span>H5</span>
-                                    <span>{{registration_statistics_h5_percent}}</span>
-                                    <span>{{registration_statistics_h5_people}}人</span>
+                                    <span>{{sign_up_h5_percent}}</span>
+                                    <span>{{sign_up_h5_people}}人</span>
                                 </li>
                                 <li>
                                     <span class="dot red"></span>
                                     <span>PC</span>
-                                    <span>{{registration_statistics_pc_percent}}</span>
-                                    <span>{{registration_statistics_pc_people}}人</span>
+                                    <span>{{sign_up_pc_percent}}</span>
+                                    <span>{{sign_up_pc_people}}人</span>
                                 </li>
                             </ul>
                         </div>
@@ -254,9 +254,8 @@ export default {
     name: 'Home',
     data() {
         return {
-            
             profit_amount: 0,
-            profit_percent: "0%",
+            profit_percent: '0%',
             top_up_amount: 0,
             top_up_people: 0,
             withdrawal_amount: 0,
@@ -264,58 +263,62 @@ export default {
             gifts_amount: 0,
             gifts_people: 0,
             // 登录
-            online_statistics_apk_people: 0,
-            online_statistics_apk_percent: "0%",
-            online_statistics_app_people: 0,
-            online_statistics_app_percent: "0%",
-            online_statistics_h5_people: 0,
-            online_statistics_h5_percent: "0%",
-            online_statistics_pc_people: 0,
-            online_statistics_pc_percent: "0%",
-            
+            online_apk_people: 0,
+            online_apk_percent: '0%',
+            online_app_people: 0,
+            online_app_percent: '0%',
+            online_h5_people: 0,
+            online_h5_percent: '0%',
+            online_pc_people: 0,
+            online_pc_percent: '0%',
+
             // 注册
-            registration_statistics_apk_people: 0,
-            registration_statistics_apk_percent: "0%",
-            registration_statistics_app_people: 0,
-            registration_statistics_app_percent: "0%",
-            registration_statistics_h5_people: 0,
-            registration_statistics_h5_percent: "0%",
-            registration_statistics_pc_people: 0,
-            registration_statistics_pc_percent: "0%",
-
-
+            sign_up_apk_people: 0,
+            sign_up_apk_percent: '0%',
+            sign_up_app_people: 0,
+            sign_up_app_percent: '0%',
+            sign_up_h5_people: 0,
+            sign_up_h5_percent: '0%',
+            sign_up_pc_people: 0,
+            sign_up_pc_percent: '0%',
+            
             is_show_login: true,
+
             // 游戏数据
-            game_act_index: 0,
-            game_data_headers: [{ label: '游戏平台' }, { label: '今日盈亏' }],
-            game_data_list: [
-                { plant_form: '开元棋牌', value: '+520.12' },
-                { plant_form: '龙城棋牌', value: '-630.32' }
-            ],
+            game_act_index: '',
+            game_data_headers: ['游戏平台', '今日盈亏'],
+            game_data_list: [],
+            game_data_obj: {
+                yesterday: undefined,
+                thisWeek: undefined,
+                thisMonth: undefined,
+                allYear: undefined
+            },
             // 游戏平台
-            game_plant_headers: [
-                { label: '平台名称' },
-                { label: '平台排行' },
-                { label: '游戏人数' }
-            ],
+            game_plant_headers: ['平台名称', '平台排行', '游戏人数'],
             game_plant_list: [
                 { plant_form: '开元棋牌', rank: '1', number: '100' },
                 { plant_form: '龙城棋牌', rank: '2', number: '60' }
             ],
             // 优惠活动数据
-            promotion_headers: [
-                { label: '排名' },
-                { label: '热门活动' },
-                { label: '参与人数' },
-                { label: '彩金' }
-            ],
+            promotion_headers: ['排名', '热门活动', '参与人数', '彩金'],
             promotion_list: [
                 { plant_form: '开元棋牌', rank: '1', number: '100' },
                 { plant_form: '龙城棋牌', rank: '2', number: '60' }
             ],
             total: 0,
             pageNo: 1,
-            pageSize: 25
+            pageSize: 25,
+            
+            // 充提统计
+            top_up_and_withdrawal: {
+                yesterday_top_up: 0,
+                before_yesterday_top_up: 0,
+                today_top_up: 0,
+                before_yesterday_withdraw: 0,
+                yesterday_withdraw: 0,
+                today_withdraw: 0,
+            }
         }
     },
     created() {},
@@ -378,16 +381,75 @@ export default {
             })
         },
         // 游戏数据 row2
-        searchGame(item, index) {
+        searchGame(index) {
+            if (this.game_act_index === index) return
+            // 昨日','本周','本月','全年
+
             this.game_act_index = index
+            var now = new Date() //当前日期
+            var nowYear = now.getFullYear() // 当前年
+            var nowMonth = now.getMonth() // 当前月
+            var nowDay = now.getDate() // 当前日
+
+            var nowDayOfWeek = now.getDay() // 今天是本周的第几天
+            // (周日获取的是第0天,设置为7天)
+            if (nowDayOfWeek === 0) {
+                nowDayOfWeek = 7
+            }
+            // 昨天
+            function getYesterday() {
+                let yesterday = new Date().valueOf() - 1000 * 60 * 60 * 24
+                let start = new Date(yesterday)
+                let end = new Date()
+                return [start, end]
+            }
+            // 本周
+            function getThisweek() {
+                let start = new Date(
+                    nowYear,
+                    nowMonth,
+                    nowDay - nowDayOfWeek + 1
+                )
+                // let end = new Date(
+                //     nowYear,
+                //     nowMonth,
+                //     nowDay + (7 - nowDayOfWeek) + 1
+                // )
+                let end = new Date().valueOf() + 1000 * 60 * 60 * 24
+                return [start, end]
+            }
+            // 本月
+            function getThismonth() {
+                let start = new Date(nowYear, nowMonth, 1)
+                // let end = new Date(nowYear, nowMonth + 1, 1)
+                let end = new Date().valueOf() + 1000 * 60 * 60 * 24
+                return [start, end]
+            }
+            // 全年
+            function getAllYear() {
+                let start = new Date(nowYear, 1, 1)
+                let end = new Date().valueOf() + 1000 * 60 * 60 * 24
+                return [start, end]
+            }
+            let date_arr = ['yesterday', 'thisWeek', 'thisMonth', 'allYear']
+
+            let time = [
+                getYesterday(),
+                getThisweek(),
+                getThismonth(),
+                getAllYear()
+            ]
+            let date_start = window.all.tool.formatDate(time[index][0])
+            let date_end = window.all.tool.formatDate(time[index][1])
+            this.getGameDataList([date_start, date_end], date_arr[index])
         },
         // 登录统计 --人数统计
         loginChartDraw() {
             let echart_data = [
-                {value: this.online_statistics_apk_people,name: '安卓'},
-                {value: this.online_statistics_app_people,name: '苹果'},
-                {value: this.online_statistics_h5_people,name: 'h5'},
-                {value: this.online_statistics_pc_people,name: 'pc'}
+                { value: this.online_apk_people, name: '安卓' },
+                { value: this.online_app_people, name: '苹果' },
+                { value: this.online_h5_people, name: 'h5' },
+                { value: this.online_pc_people, name: 'pc' }
             ]
 
             let echarts = window.all.echarts
@@ -463,10 +525,16 @@ export default {
             // let device = { apk: '安卓', app: '苹果', h5: 'H5', pc: 'PC' }
 
             let echart_data = [
-                {value: this.registration_statistics_apk_people,name: '安卓'},
-                {value: this.registration_statistics_app_people,name: '苹果'},
-                {value: this.registration_statistics_h5_people,name: 'h5'},
-                {value: this.registration_statistics_pc_people,name: 'pc'}
+                {
+                    value: this.sign_up_apk_people,
+                    name: '安卓'
+                },
+                {
+                    value: this.sign_up_app_people,
+                    name: '苹果'
+                },
+                { value: this.sign_up_h5_people, name: 'h5' },
+                { value: this.sign_up_pc_people, name: 'pc' }
             ]
 
             let echarts = window.all.echarts
@@ -520,18 +588,18 @@ export default {
             })
         },
 
-        // 充提统计
+        // 充提统计表
         rechargeChartDraw() {
+            let datas = this.top_up_and_withdrawal || {}
             let echart_data = {
                 /** 前日, 昨日, 今日 */
-                topUp: [18203, 23489, 29034], // 充值
-                withdraw: [19325, 23438, 31000] // 提款
+                topUp: [datas.yesterday_top_up, datas.before_yesterday_top_up, datas.today_top_up], // 充值
+                withdraw: [datas.before_yesterday_withdraw, datas.yesterday_withdraw, datas.today_withdraw] // 提款
             }
             let echarts = window.all.echarts
             let recharge_chart = echarts.init(
                 document.getElementById('recharge')
             )
-
             recharge_chart.setOption({
                 // title: {
                 //     text: '充提统计'
@@ -603,6 +671,35 @@ export default {
                 ]
             })
         },
+        // 游戏数据 游戏报表
+        getGameDataList(dates, selectDate) {
+            // console.log('🥐 selectDate: ', selectDate);
+             // 已经请求过 ,就不在请求, 直接获取
+            if (this.game_data_obj[selectDate]) {
+                this.game_data_list = this.game_data_obj[selectDate]
+            } else {
+                let data = {
+                    project_day: JSON.stringify(dates)
+                }
+
+                let { url, method } = this.$api.game_report_list
+                this.$http({ method, url, data }).then(res => {
+                    if (res && res.code === '200') {
+                        let dataList = (res.data && res.data.data) || []
+                        this.game_data_list = []
+                        this.game_data_list = dataList.map(item => {
+                            return {
+                                plant_form: item.game_vendor_name,
+                                value: item.win_money - item.bet_money
+                            }
+                        })
+                        this.game_data_obj[selectDate] = JSON.parse(
+                            JSON.stringify(this.game_data_list)
+                        )
+                    }
+                })
+            }
+        },
         getList() {
             // let para = {
             //     // pageSize: this.pageSize,
@@ -620,31 +717,33 @@ export default {
                     this.top_up_people = data.top_up_people,
                     this.withdrawal_amount = data.withdrawal_amount, // 今日提现
                     this.withdrawal_people = data.withdrawal_people,
-                    this.gifts_amount = data.gifts_amount,           // 彩金
+                    this.gifts_amount = data.gifts_amount, // 彩金
                     this.gifts_people = data.gifts_people,
-
                     // 登录
-                    this.online_statistics_apk_people = data.online_statistics_apk_people,
-                    this.online_statistics_apk_percent = data.online_statistics_apk_percent,
-                    this.online_statistics_app_people = data.online_statistics_app_people,
-                    this.online_statistics_app_percent = data.online_statistics_app_percent,
-                    this.online_statistics_h5_people = data.online_statistics_h5_people,
-                    this.online_statistics_h5_percent = data.online_statistics_h5_percent,
-                    this.online_statistics_pc_people = data.online_statistics_pc_people,
-                    this.online_statistics_pc_percent = data.online_statistics_pc_percent,
+                    this.online_apk_people = data.online_apk_people,
+                    this.online_apk_percent = data.online_apk_percent,
+                    this.online_app_people = data.online_app_people,
+                    this.online_app_percent = data.online_app_percent,
+                    this.online_h5_people = data.online_h5_people,
+                    this.online_h5_percent = data.online_h5_percent,
+                    this.online_pc_people = data.online_pc_people,
+                    this.online_pc_percent = data.online_pc_percent,
                     this.loginChartDraw() // 登录统计
-                    
-                    // 注册
-                    this.registration_statistics_apk_people = data.registration_statistics_apk_people,
-                    this.registration_statistics_apk_percent = data.registration_statistics_apk_percent,
-                    this.registration_statistics_app_people = data.registration_statistics_app_people,
-                    this.registration_statistics_app_percent = data.registration_statistics_app_percent,
-                    this.registration_statistics_h5_people = data.registration_statistics_h5_people,
-                    this.registration_statistics_h5_percent = data.registration_statistics_h5_percent,
-                    this.registration_statistics_pc_people = data.registration_statistics_pc_people,
-                    this.registration_statistics_pc_percent = data.registration_statistics_pc_percent,            
 
+                    // 注册
+                    this.sign_up_apk_people = data.sign_up_apk_people,
+                    this.sign_up_apk_percent = data.sign_up_apk_percent,
+                    this.sign_up_app_people = data.sign_up_app_people,
+                    this.sign_up_app_percent = data.sign_up_app_percent,
+                    this.sign_up_h5_people = data.sign_up_h5_people,
+                    this.sign_up_h5_percent = data.sign_up_h5_percent,
+                    this.sign_up_pc_people = data.sign_up_pc_people,
+                    this.sign_up_pc_percent = data.sign_up_pc_percent,
                     this.registChartDraw() // 登录统计
+
+                    this.top_up_and_withdrawal = data.top_up_and_withdrawal
+                    this.rechargeChartDraw() // 充提统计
+
                 }
             })
         },
@@ -653,11 +752,12 @@ export default {
     },
     mounted() {
         this.getList()
+        this.searchGame(0) // 游戏数据
+
         // let echarts = window.all.echarts;
         // this.todatyFirstRechargeChartDraw() // 今日首冲
         // this.loginChartDraw()
         // this.registChartDraw() // 注册统计
-        this.rechargeChartDraw() // 充提统计
     }
 }
 </script>
@@ -926,7 +1026,12 @@ export default {
 .red {
     background: #fc4c4c;
 }
-
+.text-red {
+    color: #fc4c4c;
+}
+.text-green {
+    color: #4cc013;
+}
 .row3 {
     display: flex;
     justify-content: space-between;

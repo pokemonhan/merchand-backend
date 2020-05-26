@@ -26,7 +26,7 @@
             <!-- 控制栏 -->
             <div class="tab-control">
                 <div class="left">
-                    <button class="btn-plain" @click="del">删除??</button>
+                    <button class="btn-plain" @click="del">删除</button>
                 </div>
                 <div class="right">
                     <span>{{pageNo}}/{{Math.ceil(total/pageSize)}}</span>
@@ -78,7 +78,7 @@
         <!-- 详情 -->
         <Dialog class="dialog" :show.sync="dia_show" title="收件箱详情">
             <div class="dia-inner">
-                <Detail :row="curr_row" @close="dia_show=false" />
+                <Detail :row="curr_row" @close="dialogClose" />
             </div>
         </Dialog>
         <!-- 删除确认 -->
@@ -118,7 +118,7 @@ export default {
             curr_row: {},
             dia_show: false,
             mod_show: false,
-            mod_status: '',
+            mod_status: ''
         }
     },
     methods: {
@@ -169,6 +169,13 @@ export default {
 
             this.dia_show = true
         },
+        dialogClose(command) {
+            console.log('🦀 command: ', command)
+            this.dia_show = false
+            if (command === 'getList') {
+                this.getList()
+            }
+        },
         modConf() {
             console.log('确认删除')
             if (this.mod_status === 'del') {
@@ -185,11 +192,11 @@ export default {
                 this.$toast.info('未选中任何邮件')
                 return
             }
-            console.log('delIdArray: ', delIdArray)
+            // console.log('delIdArray: ', delIdArray)
             let data = {
                 email_id: JSON.stringify(delIdArray)
             }
-            console.log('🍰 删除的内容: ', data)
+            // console.log('🍰 删除的内容: ', data)
             let { url, method } = this.$api.email_received_del
             this.$http({ method, url, data }).then(res => {
                 if (res && res.code === '200') {

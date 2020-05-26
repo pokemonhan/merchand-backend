@@ -45,6 +45,13 @@
                 <span class="p" v-html="$xss(content.content)"></span>
             </div>
         </div>
+        <Modal
+            :show.sync="mod_show"
+            title="删除"
+            content="是否删除选中邮件"
+            @cancel="mod_show=false"
+            @confirm="modConf"
+        ></Modal>
     </div>
 </template>
 
@@ -66,7 +73,9 @@ export default {
 
             pageNo: 1,
             pageSize: 25,
-            total: 0
+            total: 0,
+
+            mod_show: false,
         }
     },
     methods: {
@@ -79,7 +88,7 @@ export default {
             })
         },
         delClick() {
-            
+            this.mod_show = true
         },
         goBack() {
             this.$emit('close')
@@ -91,6 +100,33 @@ export default {
             } else {
                 this.getReceiveList()
             }
+        },
+        // 确认删除
+        modConf() {
+            // console.log('🍣 this.isSend: ', this.isSend);
+            // console.log('🌯 this.content.id: ', this.content.id);
+            
+            let id = this.isSend ? this.content.id : this.content.email_id
+            let data = {
+                email_id: JSON.stringify([id])
+            }
+            let url
+            let method
+            if(this.isSend) {
+                url = this.$api.email_sent_del.url
+                method = this.$api.email_sent_del.method
+            } else {
+                url = this.$api.email_received_del.url
+                method = this.$api.email_received_del.method
+            }
+            this.$http({ method, url, data }).then(res => {
+                // console.log('列表👌👌👌👌: ', res)
+                if (res && res.code === '200') {
+                    this.$toast.success(res.message)
+                    this.mod_show = false
+                    this.$emit('close','getList')
+                }
+            })
         },
         // 获取 收件箱
         getReceiveList() {
@@ -162,6 +198,7 @@ export default {
         // 1. 已发邮件
         if (this.isSend) {
             this.content = this.row
+            console.log('😊  this.content: ',  this.content);
 
             // 2. 收件箱
         } else {

@@ -2,28 +2,29 @@
     <div class="container">
         <div class="select-list">
             <button
-                :class="[curr_list==='Online'?'btn':'btn-blue']"
-                @click="curr_list='Offline'"
+                :class="[founds_incomeorder==='Online'?'btn':'btn-blue']"
+                @click="offlineShow"
             >线下入款</button>
             <button
-                :class="[curr_list==='Online'?'btn-blue':'btn']"
-                @click="curr_list='Online'"
+                :class="[founds_incomeorder==='Online'?'btn-blue':'btn']"
+                @click="onlineShow"
             >线上入款</button>
         </div>
         <!-- ------------------------------------    线下   --------------------------------------------->
 
-            <Offline v-show="curr_list==='Offline'"></Offline>
+            <Offline v-show="founds_incomeorder==='Offline'"></Offline>
 
 
         <!-- ------------------------------------    线上入款    ---------------------------------------->
 
-            <Online v-show="curr_list==='Online'"></Online>
+            <Online v-show="founds_incomeorder==='Online'"></Online>
     </div>
 </template>
 
 <script>
 import Offline from './incomeOrderCont/offline.vue'
 import Online from './incomeOrderCont/online.vue'
+import{mapState,mapMutations,mapGetters} from 'vuex'
 export default {
     name: "IncomeOrder",
     components: {
@@ -32,11 +33,25 @@ export default {
     },
     data() {
         return {
-            curr_list: 'Offline'
+
         }
     },
-    methods: {},
-    mounted() {}
+    computed:{
+        ...mapState(['founds_incomeorder'])
+    },
+    methods: {
+        ...mapMutations(['updateFounds_incomeorder']),
+        offlineShow(){
+            this.updateFounds_incomeorder('Offline')
+        },
+        onlineShow(){
+            this.updateFounds_incomeorder('Online')
+        },
+    },
+    mounted() {
+        // this.curr_list=this.founds_incomeorder
+        // console.log('传入',this.$route)
+    }
 }
 </script>
 

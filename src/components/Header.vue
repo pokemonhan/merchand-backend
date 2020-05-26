@@ -149,6 +149,9 @@
 </template>
 
 <script>
+import { mapState, mapMutations, mapGetters } from "vuex";
+import Slide from "../js/config/slide";
+import menuList from "../js/menuList";
 export default {
     name: "Header",
     // components: { tabNav, langSelect },
@@ -175,7 +178,11 @@ export default {
             withdrawal_review_count: ""
         };
     },
+    computed: {
+        ...mapState(["tab_nav_list", "founds_incomeorder"])
+    },
     methods: {
+        ...mapMutations(["updateTab_nav_list", "updateFounds_incomeorder"]),
         // fullScreen() {
         //     if (this.isfullScreen) {
         //         var docElm = document.documentElement;
@@ -363,20 +370,155 @@ export default {
                 }
             });
         },
+        //获取列表
+        getMenuList() {
+            if (!window.all.tool.getLocal("Authorization")) return;
+            if (window.all.tool.getLocal("menu")) {
+                this.menu_list = window.all.tool.getLocal("menu");
+            }
+        },
         goEmail() {
-            this.$router.push("/email/receiveemail");
+            let email = [];
+            for (var i = 0; i < this.menu_list.length; i++) {
+                let item = this.menu_list[i].children;
+                if (item) {
+                    for (var j = 0; j < item.length; j++) {
+                        email.push(item[j]);
+                    }
+                }
+            }
+            let emailItem = {};
+            for (var k = 0; k < email.length; k++) {
+                if (email[k].path == "/email/receiveemail") {
+                    emailItem = email[k];
+                }
+            }
+            let list = this.tab_nav_list;
+            let isHadTab = list.find(tab => tab.path === emailItem.path);
+            if (!isHadTab) {
+                list.push({
+                    label: emailItem.label,
+                    name: emailItem.namme,
+                    path: emailItem.path
+                });
+                this.updateTab_nav_list(list);
+            }
+            this.$router.push(emailItem.path);
         },
         goOnFounds() {
-            this.$router.push("/funds/incomeorder");
+            let founds = [];
+            for (var i = 0; i < this.menu_list.length; i++) {
+                let item = this.menu_list[i].children;
+                if (item) {
+                    for (var j = 0; j < item.length; j++) {
+                        founds.push(item[j]);
+                    }
+                }
+            }
+            let foundsItem = {};
+            for (var k = 0; k < founds.length; k++) {
+                if (founds[k].path == "/funds/incomeorder") {
+                    foundsItem = founds[k];
+                }
+            }
+            let list = this.tab_nav_list;
+            let isHadTab = list.find(tab => tab.path === foundsItem.path);
+            if (!isHadTab) {
+                list.push({
+                    label: foundsItem.label,
+                    name: foundsItem.namme,
+                    path: foundsItem.path
+                });
+                this.updateTab_nav_list(list);
+            }
+            this.$router.push({ path: foundsItem.path });
+            this.updateFounds_incomeorder("Online");
         },
         goOffFounds() {
-            this.$router.push("/funds/incomeorder");
+            let founds = [];
+            for (var i = 0; i < this.menu_list.length; i++) {
+                let item = this.menu_list[i].children;
+                if (item) {
+                    for (var j = 0; j < item.length; j++) {
+                        founds.push(item[j]);
+                    }
+                }
+            }
+            let foundsItem = {};
+            for (var k = 0; k < founds.length; k++) {
+                if (founds[k].path == "/funds/incomeorder") {
+                    foundsItem = founds[k];
+                }
+            }
+            let list = this.tab_nav_list;
+            let isHadTab = list.find(tab => tab.path === foundsItem.path);
+            if (!isHadTab) {
+                list.push({
+                    label: foundsItem.label,
+                    name: foundsItem.namme,
+                    path: foundsItem.path
+                });
+                this.updateTab_nav_list(list);
+                console.log("asdf", 1111111);
+            }
+            this.$router.push({ path: foundsItem.path });
+            this.updateFounds_incomeorder("Offline");
         },
         goOrder() {
-            this.$router.push("/funds/paymentorder");
+            let founds = [];
+            for (var i = 0; i < this.menu_list.length; i++) {
+                let item = this.menu_list[i].children;
+                if (item) {
+                    for (var j = 0; j < item.length; j++) {
+                        founds.push(item[j]);
+                    }
+                }
+            }
+            let foundsItem = {};
+            for (var k = 0; k < founds.length; k++) {
+                if (founds[k].path == "/funds/paymentorder") {
+                    foundsItem = founds[k];
+                }
+            }
+            let list = this.tab_nav_list;
+            let isHadTab = list.find(tab => tab.path === foundsItem.path);
+            if (!isHadTab) {
+                list.push({
+                    label: foundsItem.label,
+                    name: foundsItem.namme,
+                    path: foundsItem.path
+                });
+                this.updateTab_nav_list(list);
+            }
+            this.$router.push(foundsItem.path);
         },
         goReview() {
-            this.$router.push("/funds/paymentreview");
+            let founds = [];
+            for (var i = 0; i < this.menu_list.length; i++) {
+                let item = this.menu_list[i].children;
+                if (item) {
+                    for (var j = 0; j < item.length; j++) {
+                        founds.push(item[j]);
+                    }
+                }
+            }
+            let foundsItem = {};
+            for (var k = 0; k < founds.length; k++) {
+                if (founds[k].path == "/funds/paymentreview") {
+                    foundsItem = founds[k];
+                }
+            }
+            let list = this.tab_nav_list;
+            let isHadTab = list.find(tab => tab.path === foundsItem.path);
+            if (!isHadTab) {
+                list.push({
+                    label: foundsItem.label,
+                    name: foundsItem.namme,
+                    path: foundsItem.path
+                });
+                this.updateTab_nav_list(list);
+            }
+            this.$router.push(foundsItem.path);
         }
     },
     watch: {
@@ -393,6 +535,7 @@ export default {
     mounted() {
         this.socket();
         this.getList();
+        this.getMenuList();
     }
 };
 </script>

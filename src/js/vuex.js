@@ -5,14 +5,16 @@ import Vuex from 'vuex';
 Vue.use(Vuex);
 
 const state = {
-    isLogin:false,
+    isLogin: false,
     isShowLoading: false,
     showMask: false,
     tab_nav_list: [],        // 顶部导航菜单
-    BASE_PATH:'',
+    BASE_PATH: '',
     keepAliveExclude: ['SendEmail'],   // 不需要缓存的 组件name
     picPrefix: window.location.protocol + '//pic.397017.com/', // 静态图片前缀
     loadingShow: false,
+    //路由传参
+    founds_incomeorder: 'Offline'
 };
 const getters = {
     keepAliveInclude(state) {
@@ -34,6 +36,7 @@ for (let key in state) {
     mutations[mutationKey] = (state, value) => {
         state[key] = value
     }
+    
 }
 export default new Vuex.Store({
     state,

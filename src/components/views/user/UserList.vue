@@ -884,6 +884,7 @@ export default {
             }
             // console.log('bankItem',bankItem)
             let list=this.tab_nav_list
+            // console.log('表',list)
             let isHadTab=list.find(tab=>tab.path===bankItem.path)
             if(!isHadTab){
                 list.push({

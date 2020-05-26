@@ -312,12 +312,12 @@ export default {
             
             // 充提统计
             top_up_and_withdrawal: {
-                yesterday_top_up_sum: 0,
-                before_yesterday_top_up_sum: 0,
-                today_top_up_sum: 0,
-                before_yesterday_withdraw_sum: 0,
-                yesterday_withdraw_sum: 0,
-                today_withdraw_sum: 0,
+                yesterday_top_up: 0,
+                before_yesterday_top_up: 0,
+                today_top_up: 0,
+                before_yesterday_withdraw: 0,
+                yesterday_withdraw: 0,
+                today_withdraw: 0,
             }
         }
     },
@@ -593,8 +593,8 @@ export default {
             let datas = this.top_up_and_withdrawal || {}
             let echart_data = {
                 /** 前日, 昨日, 今日 */
-                topUp: [datas.yesterday_top_up_sum, datas.before_yesterday_top_up_sum, datas.today_top_up_sum], // 充值
-                withdraw: [datas.before_yesterday_withdraw_sum, datas.yesterday_withdraw_sum, datas.today_withdraw_sum] // 提款
+                topUp: [datas.yesterday_top_up, datas.before_yesterday_top_up, datas.today_top_up], // 充值
+                withdraw: [datas.before_yesterday_withdraw, datas.yesterday_withdraw, datas.today_withdraw] // 提款
             }
             let echarts = window.all.echarts
             let recharge_chart = echarts.init(
@@ -708,7 +708,7 @@ export default {
             // let params = window.all.tool.rmEmpty(para)
             let { url, method } = this.$api.home_page_list
             this.$http({ method, url }).then(res => {
-                console.log('列表👌👌👌👌: ', res)
+                // console.log('列表👌👌👌👌: ', res)
                 if (res && res.code === '200') {
                     let data = res.data || {}
                     this.profit_amount = data.profit_amount, // 盈利

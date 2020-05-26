@@ -30,7 +30,7 @@
         <!-- 已选 下方选择框-->
         <transition name="date-picker">
             <div class="date-container">
-                <div v-show="showPanel" :class="['date-box', pickerClassName]" ref="date-box">
+                <div v-show="showPanel" :style="{left:styleLeft}" :class="['date-box', pickerClassName]" ref="date-box">
                     <!-- 当前选中 顶部-->
                     <div class="date-info">
                         <span>
@@ -311,6 +311,9 @@ export default {
         quickdate: {    // 今天,昨天,本月等.快速选择
             type:Boolean,
             defalut: () => false
+        },
+        styleLeft: {
+            type: String
         }
         // ,
         // furture:{

@@ -5,7 +5,7 @@
             <ul class="left">
                 <li>
                     <span>会员账号</span>
-                    <Input class="w100" v-model="filter.acount" />
+                    <Input class="w100" v-model="filter.account" />
                 </li>
                 <li>
                     <span>会员ID</span>
@@ -13,10 +13,10 @@
                 </li>
                 <li>
                     <span>起止时间</span>
-                    <Date type="datetimerange" style="width:300px;" v-model="filter.dates" />
+                    <Date type="daterange" v-model="filter.dates" />
                 </li>
                 <li>
-                    <button class="btn-blue">查询</button>
+                    <button class="btn-blue" @click="getList" >查询</button>
                     <button
                         class="btn-blue"
                         style="margin-left:10px;"
@@ -40,9 +40,11 @@
                     <td>{{row.activity_sum || '--'}}</td>
                     <td :class="row.game_win_sum-row.bet_sum>0?'green':'red'">
                         <span v-if="row.game_win_sum-row.bet_sum>0">+</span>
-                        {{row.game_win_sum-row.bet_sum}}
+                        {{row.game_win_sum-row.bet_sum || '--'}}
                     </td>
-                    <td :class="row.real_win_lose>0?'green':'red'">{{row.real_win_lose || '--'}}</td>
+                    <td
+                        :class="row.game_win_sum-row.bet_sum-row.activity_sum-row.reduced_sum>0?'green':'red'"
+                    >{{row.game_win_sum-row.bet_sum-row.activity_sum-row.reduced_sum || '--'}}</td>
                 </template>
             </Table>
             <Page
@@ -86,7 +88,7 @@ export default {
             total: 0,
             pageNo: 1,
             pageSize: 25,
-            menu_list:[],
+            menu_list: []
         };
     },
     methods: {
@@ -103,10 +105,11 @@ export default {
                 guid: this.filter.user_id,
                 report_day: report_day
             };
+            console.log('请求数据',datas)
             let data = window.all.tool.rmEmpty(datas);
             let { method, url } = this.$api.personal_list;
             this.$http({ method, url, data }).then(res => {
-                // console.log("返回数据", res);
+                console.log("返回数据", res);
                 if (res && res.code == "200") {
                     this.list = res.data.data;
                     this.total = res.data.total;
@@ -121,24 +124,24 @@ export default {
             this.getList();
         },
         //获取列表
-        getMenuList(){
-            if(!window.all.tool.getLocal('Authorization')) return
-            if(window.all.tool.getLocal('menu')){
-                this.menu_list=window.all.tool.getLocal('menu')
+        getMenuList() {
+            if (!window.all.tool.getLocal("Authorization")) return;
+            if (window.all.tool.getLocal("menu")) {
+                this.menu_list = window.all.tool.getLocal("menu");
             }
         },
         exportExcel() {
-            console.log('列表',this.menu_list)
-            let firstList={}
-            let childList={}
-            let fatherList={}
-            for(var i=0;i<this.menu_list.length;i++){
-                firstList=this.menu_list[i].children
-                let fatherTemplate=this.menu_list[i]
-                for(var j=0;j<firstList.length;j++){
-                    if(firstList[j].path=='/report/personalreport'){
-                        fatherList=fatherTemplate
-                        childList=firstList[j]
+            console.log("列表", this.menu_list);
+            let firstList = {};
+            let childList = {};
+            let fatherList = {};
+            for (var i = 0; i < this.menu_list.length; i++) {
+                firstList = this.menu_list[i].children;
+                let fatherTemplate = this.menu_list[i];
+                for (var j = 0; j < firstList.length; j++) {
+                    if (firstList[j].path == "/report/personalreport") {
+                        fatherList = fatherTemplate;
+                        childList = firstList[j];
                     }
                 }
             }
@@ -146,24 +149,27 @@ export default {
                 const tHeader = this.headers;
                 const data = this.list.map(item => {
                     return [
-                        item.day || '--',
-                        item.mobile || '--',
-                        item.guid || '--',
-                        item.recharge_sum+'/'+item.recharge_num || '--',
-                        item.withdraw_sum+'/'+item.withdraw_num || '--',
-                        item.bet_sum+'/'+item.bet_num || '--',
-                        item.reduced_sum || '--',
-                        item.effective_bet_sum || '--',
-                        item.commission || '--',
-                        item.activity_sum || '--',
-                        item.game_win_sum-item.bet_sum,
-                        item.real_win_lose
+                        item.day || "--",
+                        item.mobile || "--",
+                        item.guid || "--",
+                        item.recharge_sum + "/" + item.recharge_num || "--",
+                        item.withdraw_sum + "/" + item.withdraw_num || "--",
+                        item.bet_sum + "/" + item.bet_num || "--",
+                        item.reduced_sum || "--",
+                        item.effective_bet_sum || "--",
+                        item.commission || "--",
+                        item.activity_sum || "--",
+                        item.game_win_sum - item.bet_sum,
+                        item.game_win_sum -
+                            item.bet_sum -
+                            item.activity_sum -
+                            item.reduced_sum
                     ];
                 });
                 excel.export_json_to_excel({
                     header: tHeader,
                     data,
-                    filename: fatherList.label+'-'+"个人报表",
+                    filename: fatherList.label + "-" + "个人报表",
                     autoWidth: true,
                     bookType: "xlsx"
                 });

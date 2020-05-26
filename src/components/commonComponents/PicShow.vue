@@ -35,7 +35,7 @@ export default {
     },
     methods: {
         onmouseover(e) {
-            console.log("🍪 e: ", e);
+            // console.log("🍪 e: ", e);
             // console.log('鼠标悬浮')
             this.isShow = true;
 

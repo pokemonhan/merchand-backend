@@ -3,13 +3,18 @@
         <QuickQuery :date="quick_query" @update="qqUpd" />
 
         <div class="filter p10">
-            <ul class="left"> 
+            <ul class="left">
                 <li>
-                    <span>起止时间</span>
-                    <Date type="datetimerange" style="width:300px;" v-model="filter.dates" @update="timeUpdate()" />
+                    <span>起止时间:</span>
+                    <Date
+                        type="daterange"
+                        styleLeft="85px"
+                        v-model="filter.dates"
+                        @update="timeUpdate()"
+                    />
                 </li>
                 <li>
-                    <button class="btn-blue">查询</button>
+                    <button class="btn-blue" @click="getList">查询</button>
                     <button class="btn-blue" @click="exportExcel()">导出Excel</button>
                     <button class="btn-red" @click="clearFilter">清空</button>
                 </li>
@@ -18,110 +23,153 @@
         <div class="table">
             <Table :headers="headers" :column="list">
                 <template v-slot:item="{row}">
-                    <td>{{row.a1}}</td>
-                    <td>{{row.a2}}</td>
-                    <td>{{row.a3}}</td>
-                    <td>{{row.a4}}</td>
-                    <td>{{row.a5}}</td>
-                    <td>{{row.a6}}</td>
+                    <td>{{row.day || '--'}}</td>
+                    <td>{{row.withdraw_sum || '--'}}</td>
+                    <td>{{row.recharge_sum || '--'}}</td>
+                    <td>{{row.reduced_sum || '--'}}</td>
+                    <td>{{row.activity_sum || '--'}}</td>
+                    <td
+                        :class="row.recharge_sum-row.withdraw_sum-row.reduced_sum-row.activity_sum>0?'green':'red'"
+                    >
+                        <span
+                            v-if="row.recharge_sum-row.withdraw_sum-row.reduced_sum-row.activity_sum>0"
+                        >+</span>
+                        {{row.recharge_sum-row.withdraw_sum-row.reduced_sum-row.activity_sum}}
+                    </td>
                 </template>
             </Table>
-            <Page 
-                class="table-page" 
-                :total="total" 
-                :pageNo.sync="pageNo" 
+            <Page
+                class="table-page"
+                :total="total"
+                :pageNo.sync="pageNo"
                 :pageSize.sync="pageSize"
-                @updateNo="updateNo" 
-                @updateSize="updateSize" />
+                @updateNo="updateNo"
+                @updateSize="updateSize"
+            />
         </div>
     </div>
 </template>
 
 
 <script>
-
-
 export default {
-    name: 'CompanyReport',
+    name: "CompanyReport",
     data() {
         return {
-            quick_query:[],
-            filter:{
-                dates:[],
+            quick_query: [],
+            filter: {
+                dates: []
             },
-            headers:[
-                '日期',
-                '提款金额',
-                '存入金额',
-                '优惠金额',
-                '活动金额',
-                '盈利金额',
+            headers: [
+                "日期",
+                "提款金额",
+                "充值金额",
+                "优惠金额",
+                "活动金额",
+                "盈利金额"
             ],
-            list:[
-                {
-                    a1: '2018/8/8',
-                    a2: '10000',
-                    a3: '100',
-                    a4: '5000',
-                    a5: '500',
-                    a6: '5000'
-                },
-                {
-                    a1: '2018/8/8',
-                    a2: '10000',
-                    a3: '100',
-                    a4: '5000',
-                    a5: '500',
-                    a6: '5000'
-                }
-            ],
-            total:100,
-            pageNo:1,
-            pageSize:25,
+            list: [],
+            total: 0,
+            pageNo: 1,
+            pageSize: 25,
         };
     },
     methods: {
-        timeUpdate(){
-            this.quick_query=this.filter.dates
+        getList() {
+            let report_day = "";
+            if (this.filter.dates[0] && this.filter.dates[1]) {
+                report_day = JSON.stringify([
+                    this.filter.dates[0],
+                    this.filter.dates[1]
+                ]);
+            }
+            let datas = {
+                report_day: report_day
+            };
+            let data = window.all.tool.rmEmpty(datas);
+            let { method, url } = this.$api.company_report_list;
+            this.$http({ method, url, data }).then(res => {
+                console.log("公司报表", res);
+                if (res && res.code == "200") {
+                    this.list = res.data.data;
+                    this.total = res.data.total;
+                }
+            });
         },
-        qqUpd(dates){
-            let arr = [dates[0] + " 00:00:00", dates[1] + " 00:00:00"];
+        timeUpdate() {
+            this.quick_query = this.filter.dates;
+        },
+        qqUpd(dates) {
+            let arr = [dates[0], dates[1]];
             this.$set(this.filter, "dates", arr);
         },
-        updateNo(val){},
-        updateSize(val){},
-        clearFilter(){
-            this.filter={
-                dates:[]
+        updateNo(val) {
+            this.getList();
+        },
+        updateSize(val) {
+            this.pageNo = 1;
+            this.getList();
+        },
+        clearFilter() {
+            this.filter = {
+                dates: []
+            };
+        },
+        //获取列表
+        getMenuList() {
+            if (!window.all.tool.getLocal("Authorization")) return;
+            if (window.all.tool.getLocal("menu")) {
+                this.menu_list = window.all.tool.getLocal("menu");
             }
         },
-        exportExcel(){
-            import('../../../js/config/Export2Excel').then(excel=>{
-                const tHeader=this.headers
-                const data=this.list.map(item=>{
-                    return[item.a1,item.a2,item.a3,item.a4,item.a5,item.a6]
-                })
+        exportExcel() {
+            let firstList = {};
+            let childList = {};
+            let fatherList = {};
+            for (var i = 0; i < this.menu_list.length; i++) {
+                firstList = this.menu_list[i].children;
+                let fatherTemplate = this.menu_list[i];
+                for (var j = 0; j < firstList.length; j++) {
+                    if (firstList[j].path == "/report/companyreport") {
+                        fatherList = fatherTemplate;
+                        childList = firstList[j];
+                    }
+                }
+            }
+            import("../../../js/config/Export2Excel").then(excel => {
+                const tHeader = this.headers;
+                const data = this.list.map(item => {
+                    return [
+                        item.day || '--',
+                        item.withdraw_sum || '--',
+                        item.recharge_sum || '--',
+                        item.reduced_sum || '--',
+                        item.activity_sum || '--',
+                        item.recharge_sum-item.withdraw_sum-item.reduced_sum-item.activity_sum
+                    ];
+                });
                 excel.export_json_to_excel({
-                    header:tHeader,
+                    header: tHeader,
                     data,
-                    filename:excel,
-                    autoWidth:true,
-                    bookType:'xlsx'
-                })
-            })
+                    filename: fatherList.label + "-" + "公司报表",
+                    autoWidth: true,
+                    bookType: "xlsx"
+                });
+            });
         }
     },
     mounted() {
-
-    },
+        this.getList();
+        this.getMenuList();
+    }
 };
 </script>
 
 <style scoped>
-    .p10{
-        padding: 10px;
-    }
-    .table{
-        margin-top:20px;
-    }
+.p10 {
+    padding: 10px;
+}
+.table {
+    margin-top: 20px;
+}
 </style>

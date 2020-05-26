@@ -8,7 +8,7 @@
                 </li>
                 <li>
                     <span>起止时间</span>
-                    <Date type="datetimerange" v-model="filter.dates" />
+                    <Date type="daterange" v-model="filter.dates" />
                 </li>
                 <li>
                     <button class="btn-blue" @click="getList">查询</button>

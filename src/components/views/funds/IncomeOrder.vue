@@ -2,13 +2,13 @@
     <div class="container">
         <div class="select-list">
             <button
-                :class="[curr_list==='Online'?'btn-blue':'btn']"
-                @click="curr_list='Online'"
-            >线上入款</button>
-            <button
                 :class="[curr_list==='Online'?'btn':'btn-blue']"
                 @click="curr_list='Offline'"
             >线下入款</button>
+            <button
+                :class="[curr_list==='Online'?'btn-blue':'btn']"
+                @click="curr_list='Online'"
+            >线上入款</button>
         </div>
         <!-- ------------------------------------    线下   --------------------------------------------->
 

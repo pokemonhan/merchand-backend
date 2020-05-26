@@ -469,6 +469,11 @@ export default {
         url:'/merchant-api/report/game-detail',
         method:'post'
     },
+    //公司报表 - 列表
+    company_report_list:{
+        url:'/merchant-api/report/platform',
+        method:'post'
+    },
     /*=========================== 游戏管理 ===========================--*/
 
     // 游戏列表 - 公用接口 - 获取查询条件

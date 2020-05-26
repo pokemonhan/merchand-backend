@@ -69,13 +69,13 @@
                     >{{(review_status_obj[row.status]||{}).text}}</td>
                     <td>{{row.created_at}}</td>
                     <td>
-                        <button class="btn-blue" @click="showDetail(row)">详情</button>
-                        <button v-if="row.status==3" class="btn-blue" @click="passShow(row)">通过</button>
+                        <button v-if="row.status==3" class="btn-green" @click="passShow(row)">通过</button>
                         <button
                             v-if="row.status==3"
-                            class="btn-blue"
+                            class="btn-red"
                             @click="rejectShow(row)"
                         >拒绝</button>
+                        <button class="btn-blue" @click="showDetail(row)">详情</button>
                     </td>
                 </template>
             </Table>

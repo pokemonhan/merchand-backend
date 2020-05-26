@@ -15,7 +15,7 @@
                 </li>
                 <li>
                     <span style="margin-left:10px ">起始时间</span>
-                    <Date type="datetimerange" style="width:300px;" v-model="filter.dates" />
+                    <Date type="daterange"  v-model="filter.dates" />
                 </li>
                 <li>
                     <button class="btn-blue" @click="getList">查询</button>
@@ -150,7 +150,7 @@ export default {
             }
             let datas = {
                 game_vendor_name: this.filter.account,
-                project_data: project_data
+                project_day: project_data
             };
             console.log("请求数据", datas);
             let data = window.all.tool.rmEmpty(datas);

@@ -382,6 +382,8 @@ export default {
         },
         // 游戏数据 row2
         searchGame(index) {
+            let table_header_arr = ['昨日盈亏','本周盈亏','本月盈亏','全年盈亏']
+            this.game_data_headers[1] = table_header_arr[index]
             if (this.game_act_index === index) return
             // 昨日','本周','本月','全年
 

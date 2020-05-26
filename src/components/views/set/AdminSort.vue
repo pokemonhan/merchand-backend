@@ -473,8 +473,12 @@ export default {
 }
 .cont-center {
     display: flex;
+    margin-left: 50px;
     /* padding-right: 20px; */
     /* border-right: ; */
+}
+.cont-right {
+    margin-left: 50px;
 }
 .edit-form {
     width: 500px;

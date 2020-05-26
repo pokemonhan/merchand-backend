@@ -43,8 +43,6 @@
                         :class="[pageNo<Math.ceil(total/pageSize)?'btn-plain':'btn-disabled']"
                         @click="nextPage"
                     >下一页</button>
-                    <!-- <button class="btn-plain">上一页</button>
-                    <button class="btn-plain">下一页</button> -->
                 </div>
             </div>
             <!-- table -->
@@ -77,7 +75,7 @@
         <!-- 详情 -->
         <Dialog :show.sync="dia_show" title="已发邮件详情">
             <div class="dia-inner">
-                <Detail class="email-detail" isSend :row="curr_row" @close="dia_show=false" />
+                <Detail class="email-detail" isSend :row="curr_row" @close="dialogClose" />
             </div>
         </Dialog>
         <!-- 删除确认 -->
@@ -169,8 +167,16 @@ export default {
         del() {
             this.mod_status = 'del'
             this.mod_show = true
+
         },
-        modConf() {
+        dialogClose(command) {
+            // console.log('🦀 command: ', command);
+            this.dia_show = false
+            if(command==='getList') {
+                this.getList()
+            }
+        },
+        modConf(command) {
             // console.log('确认删除')
             if(this.mod_status==='del') {
                 this.delConf()

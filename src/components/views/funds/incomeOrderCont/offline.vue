@@ -70,14 +70,13 @@
                     <td>{{row.created_at}}</td>
                     <td>
                         <button class="btn-blue" @click="showDetail(row)">详情</button>
-                        <button v-if="pass_button_show" class="btn-blue" @click="passShow(row)">通过</button>
+                        <button v-if="row.status==0" class="btn-blue" @click="passShow(row)">通过</button>
                         <button
-                            v-if="reject_button_show"
+                            v-if="row.status==0"
                             class="btn-blue"
                             @click="rejectShow(row)"
                         >拒绝</button>
                     </td>
-                    <td>{{row.admin && row.admin.name}}</td>
                 </template>
             </Table>
             <div class="total-table">
@@ -153,21 +152,24 @@ export default {
                 account: "",
                 id: "",
                 dates: [],
-                review_status: "0",
+                review_status: "",
                 income_acc: "",
-                formal_status: "0",
+                formal_status: "",
                 order_id: ""
             },
             review_status_opt: [
-                { label: "全部", value: "0" },
-                { label: "审核中", value: "1" },
-                { label: "审核通过", value: "2" },
-                { label: "审核拒绝", value: "3" }
+                { label: "全部", value: "" },
+                { label: "审核中", value: "0" },
+                { label: "审核通过", value: "1" },
+                { label: "审核拒绝", value: "-1" },
+                { label: "订单过期", value: "-2"},
+                { label: "客户确认付款", value: "3"},
+                { label: "客户撤销订单", value: "-3"}
             ],
             formal_status_opt: [
-                { label: "全部", value: "0" },
-                { label: "是", value: "1" },
-                { label: "否", value: "2" }
+                { label: "全部", value: "" },
+                { label: "是", value: "0" },
+                { label: "否", value: "1" }
             ],
             review_status_obj: {
                 "0": { text: "审核中", color: "yellow" },
@@ -200,8 +202,6 @@ export default {
             offline_content: "",
             offline_status: "",
             curr_row: {},
-            pass_button_show: true,
-            reject_button_show: true,
             all_money: "",
             all_withDraw_money: "",
             total_money: "",
@@ -225,7 +225,7 @@ export default {
             }
         },
         exportExcel() {
-            console.log("列表", this.menu_list);
+            // console.log("列表", this.menu_list);
             let firstList = {};
             let childList = {};
             let fatherList = {};
@@ -447,7 +447,7 @@ export default {
             this.curr_row = row;
         },
         passCfm() {
-            console.log(1);
+            // console.log(1);
             let datas = {
                 id: String(this.curr_row.id)
             };
@@ -462,8 +462,6 @@ export default {
                 if (res && res.code == "200") {
                     this.offline_conf = false;
                     this.getList();
-                    this.pass_button_show = false;
-                    this.reject_button_show = false;
                 }
             });
         },
@@ -475,7 +473,7 @@ export default {
             this.curr_row = row;
         },
         rejectCfm() {
-            console.log(2);
+            // console.log(2);
             let datas = {
                 id: String(this.curr_row.id)
             };
@@ -490,8 +488,6 @@ export default {
                 if (res && res.code == "200") {
                     this.offline_conf = false;
                     this.getList();
-                    this.reject_button_show = false;
-                    this.pass_button_show = false;
                 }
             });
         },
@@ -538,7 +534,7 @@ export default {
             document.body.removeChild(aLink);
         },
         getList() {
-            console.log(1);
+            // console.log(1);
             let created_at = "";
             if (this.filter.dates[0] && this.filter.dates[1]) {
                 created_at = JSON.stringify([
@@ -573,7 +569,7 @@ export default {
             );
         },
         countFunction(count) {
-            console.log("count", count);
+            // console.log("count", count);
             let top_up_money = 0;
             for (var i = 0; i < count.length; i++) {
                 if (!count[i].money) {

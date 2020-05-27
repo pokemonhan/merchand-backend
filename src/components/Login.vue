@@ -126,6 +126,7 @@ export default {
     },
     mounted() {
         localStorage.clear()
+        // sessionStorage.clear()
     }
 }
 </script>

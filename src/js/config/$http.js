@@ -18,8 +18,10 @@ let hostList = {
     stg: location.protocol + '//apistg.397017.com',               // stg
 }
 // 有数据,但匹配不到就直接使用HOST地址 
-const BASE_PATH = hostList[HOST] || HOST
-// const BASE_PATH = hostList.ethan // TODO:
+let BASE_PATH = hostList[HOST] || HOST
+// if(process.env.NODE_ENV==='development') {
+//     BASE_PATH = hostList.ethan
+// }
 let http = axios.create({
     baseURL: BASE_PATH,
     timeout: 30000,

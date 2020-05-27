@@ -157,6 +157,7 @@ export default {
     data() {
         return {
             // isfullScreen: true,
+            menu_list: [],
             play_music: false,
             account_ishow: false,
             logout_conf_show: false,
@@ -186,7 +187,7 @@ export default {
         ...mapState(['tab_nav_list', 'founds_incomeorder'])
     },
     methods: {
-        ...mapMutations(['updateTab_nav_list', 'updateFounds_incomeorder']),
+        ...mapMutations(['updateTab_nav_list', 'updateFounds_incomeorder','updateAside_scroll_path']),
         // fullScreen() {
         //     if (this.isfullScreen) {
         //         var docElm = document.documentElement;
@@ -412,11 +413,35 @@ export default {
                 }
             })
         },
+        objToArr(obj, pre_idx = '') {
+            return Object.keys(obj).map((key, index) => {
+                let item = obj[key]
+                let template = {
+                    id: item.id,
+                    label: item.label,
+                    icon: item.icon,
+                    en_name: item.en_name,
+                    path: item.route,
+                    display: item.display,
+                    pre_idx: pre_idx + index,
+                    // type: '',
+                    level: item.level
+                }
+                if (item.child) {
+                    template.children = this.objToArr( item.child, pre_idx + index + '-' )
+                }
+                return template
+            })
+        },
         //获取列表
         getMenuList() {
             if (!window.all.tool.getLocal('Authorization')) return
             if (window.all.tool.getLocal('menu')) {
                 this.menu_list = window.all.tool.getLocal('menu')
+            }else {
+                setTimeout(()=>{
+                    this.menu_list = window.all.tool.getLocal('menu')
+                },310)
             }
         },
         goEmail() {
@@ -446,6 +471,7 @@ export default {
                 this.updateTab_nav_list(list)
             }
             this.$router.push(emailItem.path)
+            this.updateAside_scroll_path(emailItem.path)
         },
         goOnFounds() {
             let founds = []
@@ -475,6 +501,8 @@ export default {
             }
             this.$router.push({ path: foundsItem.path })
             this.updateFounds_incomeorder('Online')
+            this.updateAside_scroll_path(foundsItem.path) // aside自动滚动
+
         },
         goOffFounds() {
             let founds = []
@@ -504,6 +532,7 @@ export default {
                 console.log('asdf', 1111111)
             }
             this.$router.push({ path: foundsItem.path })
+            this.updateAside_scroll_path(foundsItem.path) // aside自动滚动
             this.updateFounds_incomeorder('Offline')
         },
         goOrder() {
@@ -533,6 +562,7 @@ export default {
                 this.updateTab_nav_list(list)
             }
             this.$router.push(foundsItem.path)
+            this.updateAside_scroll_path(foundsItem.path) // aside自动滚动
         },
         goReview() {
             let founds = []
@@ -561,6 +591,7 @@ export default {
                 this.updateTab_nav_list(list)
             }
             this.$router.push(foundsItem.path)
+            this.updateAside_scroll_path(foundsItem.path) // aside自动滚动
         }
     },
     watch: {
@@ -569,6 +600,8 @@ export default {
                 this.socket()
                 this.getRightList()
                 this.getLeftList()
+                this.getMenuList()
+
             }
         }
     },

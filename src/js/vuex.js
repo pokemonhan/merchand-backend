@@ -14,7 +14,8 @@ const state = {
     picPrefix: window.location.protocol + '//pic.397017.com/', // 静态图片前缀
     loadingShow: false,
     //路由传参
-    founds_incomeorder: 'Offline'
+    founds_incomeorder: 'Offline',
+    aside_scroll_path: '',
 };
 const getters = {
     keepAliveInclude(state) {

@@ -2,7 +2,7 @@
     <transition name="notice">
         <div v-if="show" class="vue-notice">
             <div class="inner">
-                <div>
+                <div class="notice-header">
                     <i v-if="type==='warning'" class="notice-warning iconfont iconjinggao1-"></i>
                     <i v-else-if="type==='success'" class="notice-success iconfont iconchenggong-"></i>
                     <i v-else-if="type==='error'" class="notice-error iconfont iconcuowuguanbi-"></i>
@@ -44,6 +44,7 @@ export default {
             type: Number,
             default: () => 3000
         },
+        /** 跳转链接 */
         jump: {
             type: String,
             defalut: ''
@@ -63,10 +64,10 @@ export default {
             let self = this
             if (this.jump) {
                 let path_obj = {
-                    notice_of_withdraw: '/funds/paymentreview',      // 出款订单
-                    notice_of_recharge_on: '/funds/incomeorder',    // 线上入款通知
-                    notice_of_recharge_off: '/funds/incomeorder',   // 线下入款通知
-                    notice_of_email: '/email/receiveemail',         // 邮件通知
+                    notice_of_withdraw: '/funds/paymentorder',      // 出款订单
+                    notice_of_recharge_on: '/funds/incomeorder',     // 线上入款通知
+                    notice_of_recharge_off: '/funds/incomeorder',    // 线下入款通知
+                    notice_of_email: '/email/receiveemail',          // 邮件通知
                     notice_of_withdraw_audit: '/funds/paymentreview' // 出款审核通知
                 }
                 let path = path_obj[this.jump] || ''
@@ -87,7 +88,7 @@ export default {
                     message: this.message,
                     jump: this.jump
                 })
-            }, 3 * 1000)
+            }, 3 * 60 * 1000)
         }
     },
     mounted() {
@@ -132,21 +133,32 @@ export default {
     justify-content: center; */
     overflow: hidden;
 }
+
 .vue-notice .inner {
     height: 100%;
-    padding: 12px 20px;
+    /* padding: 12px 20px; */
     border-radius: 4px;
-    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.26);
     background-color: #fff;
     /* display: flex; */
     /* flex-direction: row; */
     /* justify-content: center; */
     /* align-items: center; */
 }
+.notice-header {
+    padding-top: 3px;
+    padding-bottom: 3px;
+    padding-left: 10px;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+    background: #70a1fd;
+    color: #fff;
+}
 .vue-notice i {
     margin-right: 8px;
+    color: #fff;
 }
-.vue-notice .notice-success {
+/* .vue-notice .notice-success {
     color: #19be6b;
 }
 .vue-notice .notice-warning {
@@ -157,7 +169,7 @@ export default {
 }
 .vue-notice .notice-error {
     color: #ed4014;
-}
+} */
 .title {
     font-size: 14px;
     font-weight: 600;
@@ -166,18 +178,21 @@ export default {
     font-size: 20px;
     position: absolute;
     right: 10px;
-    top: 15px;
-    color: #9c7267;
+    top: 10px;
+    color: #fff;
 }
 .close:hover {
-    font-size: 20px;
-    color: rgb(245, 81, 40);
+    /* color: rgb(245, 81, 40); */
+    transform: scale(1.2);
 }
 .mt10 {
     margin-top: 10px;
+    padding-left: 15px;
+    padding-right: 15px;
 }
 .opera-button {
     margin-top: 20px;
+    padding-bottom: 10px;
     display: flex;
     justify-content: space-around;
 }

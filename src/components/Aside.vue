@@ -22,6 +22,7 @@
                     >
                         <!-- 标题 -->
                         <span
+                            :ref="lev2.path"
                             :class="['title',$route.path == lev2.path?'active-menu':'']"
                             @click="expandMenu(lev2, lev1_index+'_'+lev2_index)"
                         >
@@ -64,7 +65,7 @@ export default {
         }
     },
     computed: {
-        ...mapState(['tab_nav_list'])
+        ...mapState(['tab_nav_list','aside_scroll_path'])
     },
     methods: {
         ...mapMutations(['updateTab_nav_list']),
@@ -160,10 +161,7 @@ export default {
         },
         getMenuList() {
             if (!window.all.tool.getLocal('Authorization')) return
-            // this.menu_list = window.all.menu_list
-            // console.log('this.menu_list: ', this.menu_list);
-            // window.all.tool.setLocal('menu', this.menu_list)
-            // return
+           
             if (window.all.tool.getLocal('menu')) {
                 this.menu_list = window.all.tool.getLocal('menu')
             } else {
@@ -171,8 +169,7 @@ export default {
 
                 this.$http({ method, url }).then(res => {
                     // console.log('res',res)
-                    if (res && res.code === '200') {
-                        if (!res.data) return
+                    if (res && res.data && res.code === '200') {
                         let menu = this.objToArr(res.data)
                         this.menu_list = menu
                         window.all.tool.setLocal('menu', menu)
@@ -240,6 +237,19 @@ export default {
             if (from.path === '/login') {
                 this.getMenuList()
             }
+        },
+        aside_scroll_path(jumpPath){
+            if(!jumpPath) return
+            let containEle = this.$refs.contain
+            let currEle = this.$refs[jumpPath][0]
+            let parent_top = containEle.offsetTop
+            let curr_top = currEle &&currEle.offsetTop
+            // curr_top - parent_top
+            containEle.scrollTo({
+                top: curr_top - parent_top -50,
+                left: 0,
+                behavior: 'smooth'
+            })
         }
     },
     mounted() {

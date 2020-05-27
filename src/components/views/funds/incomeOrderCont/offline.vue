@@ -120,7 +120,7 @@
                     <canvas
                         style="border:1px solid white"
                         ref="offlineCanvas"
-                        width="520"
+                        width="650"
                         height="280"
                     ></canvas>
                 </div>
@@ -321,44 +321,41 @@ export default {
                     context.font = "16px Arial";
                     //背景色
                     context.fillStyle = "#fff";
-                    context.fillRect(0, 0, 520, 300);
+                    context.fillRect(0, 0, 720, 400);
                     // 绘制 字体内容
                     context.fillStyle = "#444";
                     let ml = 50; // 左边框
-                    let w = 280; // 左边文字所占宽度, 右边col起始位置
+                    let w = 350; // 左边文字所占宽度, 右边col起始位置
                     let mt = 40; //上下行间距
                     // row1
 
-                    context.fillText("会员账号", ml, mt);
+                    context.fillText("会员账号：", ml, mt);
                     // context.font = "16px Arial";
                     // context.fillStyle = "#444";
                     context.fillText(row.user && row.user.mobile, ml + 100, mt);
 
-                    context.fillText("会员ID", w, mt);
+                    context.fillText("会员ID：", w, mt);
                     context.fillText(row.user && row.user.guid, w + 100, mt);
 
                     // row2   -------------------
                     // 会员等级 ----
-                    context.fillText("会员等级", ml, mt * 2);
+                    context.fillText("会员等级：", ml, mt * 2);
                     context.fillText(row.snap_user_grade, ml + 100, mt * 2);
                     //  row3
-                    context.fillText("转入银行", ml, mt * 3);
-                    let bank_name = "暂无返回数据";
-                    context.fillText(bank_name, ml + 100, mt * 3);
-                    context.fillText("转入账号", w, mt * 3);
-                    context.fillText("暂无返回数据", w + 100, mt * 3);
+                    context.fillText("转入银行：", ml, mt * 3);
+                    context.fillText(row.bank, ml + 100, mt * 3);
+                    context.fillText("转入账号：", w, mt * 3);
+                    context.fillText(row.card_number, w + 100, mt * 3);//ok
                     // row4
-                    context.fillText("充值金额", ml, mt * 4);
+                    context.fillText("充值金额：", ml, mt * 4);
                     context.fillText(row.money, ml + 100, mt * 4);
                     //  row5
-                    context.fillText("收款银行", ml, mt * 5);
-                    let receipt_bank = "暂无返回数据";
-                    context.fillText(receipt_bank, ml + 100, mt * 5);
-                    context.fillText("收款账号", w, mt * 5);
-                    let receipt_account = "暂无返回数据";
-                    context.fillText(receipt_account, w + 100, mt * 5);
+                    context.fillText("收款银行：", ml, mt * 5);
+                    context.fillText(row.snap_bank, ml + 100, mt * 5);
+                    context.fillText("收款账号：", w, mt * 5);
+                    context.fillText(row.snap_account, w + 100, mt * 5);
                     // row 6
-                    context.fillText("交易时间", ml, mt * 6);
+                    context.fillText("交易时间：", ml, mt * 6);
                     context.fillText(row.created_at, ml + 100, mt * 6);
                 });
             }, 110);
@@ -671,7 +668,7 @@ table {
     border-radius: 7px;
 }
 .dialog {
-    width: 520px;
+    width: 750px;
     text-align: center;
 }
 .g-modal-mask .iconcuowuguanbi- {

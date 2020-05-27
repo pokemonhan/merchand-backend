@@ -24,12 +24,15 @@ import 'element-ui/lib/theme-chalk/index.css'
 
 window.io = io
 let HOST = process.env.HOST
+// console.log('host',HOST)
 let echoHost=""
 if(HOST=="stg"){
-    echoHost="http://echodev.397017.com:6001"
+    echoHost="http://echo.397017.com:6001"
 }
 if(HOST=="outer"){
-    echoHost="http://echo.397017.com:6001"
+    echoHost="http://echodev.397017.com:6002"
+}else{
+    echoHost="http://echo.397017.com:6001" 
 }
 window.Echo = new Echo({
     broadcaster: 'socket.io',

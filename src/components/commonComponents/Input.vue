@@ -98,7 +98,9 @@ export default {
             this.$emit('focus')
         },
         keyup() {
-            this.regs[this.limit] && (this.val = this.val.toString().replace(this.regs[this.limit], ""));
+            if(this.val && this.regs[this.limit]){
+                this.val = (this.val||'').toString().replace(this.regs[this.limit], "")
+            }
             // console.log(this.val)
             this.$emit("keyup", this.val);
             this.$emit("update", this.val);

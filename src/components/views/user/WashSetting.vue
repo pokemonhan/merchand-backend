@@ -4,18 +4,18 @@
             <span
                 v-for="(game, index) in games"
                 :key="index"
-                :class="[active_game===index?'actived':'']"
-                @click="actSort(index)"
-            >{{game}}</span>
+                :class="[active_game===game.value?'actived':'']"
+                @click="actSort(game.value)"
+            >{{game.label}}</span>
         </div>
         <div class="game-plant">
             <span>选择游戏平台:</span>
             <button
                 v-for="(game_plant, index) in plants"
                 :key="index"
-                :class="[active_plant===index?'btn-blue':'btn-plain']"
-                @click="choose_platform(index)"
-            >{{game_plant}}</button>
+                :class="[active_plant===game_plant.value?'btn-blue':'btn-plain']"
+                @click="choose_platform(game_plant.value)"
+            >{{game_plant.label}}</button>
             <button style="margin-left:40px;" class="btn-blue" @click="addWash">添加洗码规则</button>
         </div>
         <div class="table">
@@ -40,13 +40,8 @@
                 @updateSize="updateSize"
             />
         </div>
-        <div class="g-modal-mask" v-if="show_modal">
-            <div class="g-v-modal edit-modal">
-                <div class="mod-head">
-                    <span v-if="add_title">添加洗码规则</span>
-                    <span v-if="is_edit">编辑</span>
-                    <i class="iconfont iconcuowuguanbi-" @click="show_modal=false"></i>
-                </div>
+        <Dialog :show.sync="show_modal" :title="dia_title">
+            <div class="dia-inner">
                 <div class="mod-body center-box">
                     <table :class="['form-table', !is_edit?'ml-210':'']">
                         <tr class="row1">
@@ -58,8 +53,8 @@
                             <td>
                                 <div>
                                     <span>打码额度:</span>
-                                    <Input class="w100 ml-10" v-model="wash_form.code_numbers[0]"/>
-                                    <i @click="getBetListFirst"  class="iconfont iconsousuo ml-10"></i>
+                                    <Input class="w100 ml-10" v-model="wash_form.code_numbers[0]" />
+                                    <i @click="getBetListFirst" class="iconfont iconsousuo ml-10"></i>
                                 </div>
                             </td>
                             <td>
@@ -77,13 +72,13 @@
                             </td>
                         </tr>
                         <tr class="vip-data" v-for="(item,index) in lev_list" :key="index">
-                            <td>
+                            <td  >
                                 <span>{{item.name}}:</span>
                                 <span
                                     class="ml-10"
                                 >{{wash_list[index] && wash_list[index].percent}}%</span>
                             </td>
-                            <td>
+                            <td class="table-data">
                                 <div class="edit-form">
                                     <span>{{item.name}}:</span>
                                     <Input
@@ -94,10 +89,12 @@
                                     <span class="ml-10">%</span>
                                 </div>
                             </td>
-                            <td v-if="is_edit">
+                            <td class="table-data" v-if="is_edit">
                                 <div class="edit-form">
                                     <span>{{item.name}}:</span>
-                                    <span class="ml-10">{{wash_list_back[index] && wash_list_back[index].percent }}%</span>
+                                    <span
+                                        class="ml-10"
+                                    >{{wash_list_back[index] && wash_list_back[index].percent }}%</span>
                                 </div>
                             </td>
                         </tr>
@@ -108,7 +105,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </Dialog>
         <Modal
             :show="show_del_modal"
             title="删除等级"
@@ -125,17 +122,11 @@ export default {
     name: "WashSetting",
     data() {
         return {
-            games: ["刺激棋牌", "经典棋牌", "电子游艺", "趣味竞猜"],
-            active_game: 0,
-
+            games: [],
+            active_game: "tarot",
             // game_plant: 0,
-            active_plant: 0,
-            plants: ["开元棋牌", "龙城棋牌", "财神棋牌", "欢乐棋牌"],
-            game_plant_option: [
-                { label: "全部", value: "2" },
-                { label: "甲", value: "3" }
-            ],
-            user_id: "",
+            active_plant: "KY",
+            plants: [],
             headers: ["编号", "打码量", "操作"],
             list: [],
             total: 0,
@@ -157,18 +148,58 @@ export default {
             show_del_modal: false,
             // modal_status: '',
             is_edit: true,
-            add_title: true,
-            aaaaaa: {},
             lev_list: [],
             wash_list: [],
-            wash_list_back:[],            
+            wash_list_back: [],
             dia_status: "",
             curr_row: {},
-            row_id:{},
+            row_id: {},
+            gameTypeData: [],
+            dia_title:'',
         };
     },
-    
+
     methods: {
+        gameVendorData() {
+            let gameVendors = [];
+            let { url, method } = this.$api.game_search_condition_list;
+            this.$http({ url, method }).then(res => {
+                // console.log('厂商数据',res)
+                if (res && res.code == "200") {
+                    for (var j = 0; j < res.data.gameVendors.length; j++) {
+                        gameVendors.push(res.data.gameVendors[j]);
+                    }
+                }
+                this.plants = this.backToVendorData(gameVendors);
+            });
+        },
+        backToVendorData(list = []) {
+            let all = [];
+            let back_list = list.map(item => {
+                return { label: item.name, value: item.sign };
+            });
+            return all.concat(back_list);
+        },
+        getTypeData() {
+            let gameTypes = [];
+            let { url, method } = this.$api.game_search_condition_list;
+            this.$http({ method, url }).then(res => {
+                // console.log("返回数据：", res);
+                if (res && res.code == "200") {
+                    for (var i = 0; i < res.data.gameTypes.length; i++) {
+                        gameTypes.push(res.data.gameTypes[i]);
+                    }
+                    this.games = this.backToTypeData(gameTypes);
+                }
+            });
+        },
+        backToTypeData(list = []) {
+            let all = [];
+            let back_list = list.map(item => {
+                return { label: item.name, value: item.sign };
+            });
+            return all.concat(back_list);
+        },
         getLevList() {
             let { method, url } = this.$api.grade_list;
             this.$http({ method, url }).then(res => {
@@ -178,12 +209,14 @@ export default {
                 }
             });
         },
-        actSort(index) {
-            this.active_game = index;
+        actSort(sign) {
+            console.log("类型标识", sign);
+            this.active_game = sign;
             this.getList();
         },
-        choose_platform(index) {
-            this.active_plant = index;
+        choose_platform(sign) {
+            console.log("平台标识", sign);
+            this.active_plant = sign;
             this.getList();
         },
         initWash() {
@@ -191,39 +224,39 @@ export default {
                 code_numbers: [],
                 rate: []
             };
-            this.wash_list=[]
-            this.wash_list_back=[]
+            this.wash_list = [];
+            this.wash_list_back = [];
         },
         //放大镜功能 查找  第一个
-        getBetListFirst(){
-            let firstBetList=[];
-            let search=this.wash_form.code_numbers[0];
-            if(search==''){
-                this.wash_list=[]
+        getBetListFirst() {
+            let firstBetList = [];
+            let search = this.wash_form.code_numbers[0];
+            if (search == "") {
+                this.wash_list = [];
             }
-            for(let i=0;i<this.list.length;i++){
-                 if(search==this.list[i].bet){
-                     firstBetList=this.list[i].percent_data
-                 }
+            for (let i = 0; i < this.list.length; i++) {
+                if (search == this.list[i].bet) {
+                    firstBetList = this.list[i].percent_data;
+                }
             }
-            if(firstBetList){
-                this.wash_list=firstBetList
+            if (firstBetList) {
+                this.wash_list = firstBetList;
             }
         },
         //最后一个
-        getBetListLast(){
-            let lastBetList=[];
-            let search=this.wash_form.code_numbers[2];
-            if(search==''){
-                this.wash_list_back=[]
+        getBetListLast() {
+            let lastBetList = [];
+            let search = this.wash_form.code_numbers[2];
+            if (search == "") {
+                this.wash_list_back = [];
             }
-            for(let i=0;i<this.list.length;i++){
-                if(search==this.list[i].bet){
-                    lastBetList=this.list[i].percent_data
+            for (let i = 0; i < this.list.length; i++) {
+                if (search == this.list[i].bet) {
+                    lastBetList = this.list[i].percent_data;
                 }
             }
-            if(lastBetList){
-                this.wash_list_back=lastBetList
+            if (lastBetList) {
+                this.wash_list_back = lastBetList;
             }
         },
         diaCfm() {
@@ -236,17 +269,19 @@ export default {
         },
         addWash() {
             this.initWash();
-            this.add_title = true;
+            this.dia_title='添加洗码规则'
             this.show_modal = true;
             this.is_edit = false;
             this.dia_status = "add";
             let last = {};
             if (this.list.length === 0) {
                 last = {};
-                this.wash_form.code_numbers[0]=''
+                this.wash_form.code_numbers[0] = "";
             } else {
                 last = (this.list || [])[this.list.length - 1];
-                this.wash_form.code_numbers[0]=this.list[this.list.length-1].bet
+                this.wash_form.code_numbers[0] = this.list[
+                    this.list.length - 1
+                ].bet;
             }
             if (last && last.percent_data) {
                 this.wash_list = last.percent_data;
@@ -259,8 +294,8 @@ export default {
                 percent[item.experience_max] = this.wash_form.rate[i];
             }
             let data = {
-                game_type_id: this.active_game + 1,
-                game_vendor_id: this.active_plant + 1,
+                game_type_sign: this.active_game,
+                game_vendor_sign: this.active_plant,
                 bet: String(this.wash_form.code_numbers[1]),
                 percent: JSON.stringify(percent)
             };
@@ -275,47 +310,47 @@ export default {
                 }
             });
         },
-        editWashModal(row,idx) {
+        editWashModal(row, idx) {
             // console.log('row',row)
             this.initWash();
-            this.add_title = false;
+            this.dia_title='编辑';
             this.show_modal = true;
             this.is_edit = true;
             this.dia_status = "edit";
-            this.row_id=row
+            this.row_id = row;
             //获取列表本条洗码率
-            let editPercent=row.percent_data;
-            let editWash=[]
-            for(let i=0;i<editPercent.length;i++){
-                editWash=editPercent[i].percent
-                this.wash_form.rate.push(editWash)
+            let editPercent = row.percent_data;
+            let editWash = [];
+            for (let i = 0; i < editPercent.length; i++) {
+                editWash = editPercent[i].percent;
+                this.wash_form.rate.push(editWash);
             }
             //获取本条打码量
-            this.wash_form.code_numbers[1]=row.bet;
+            this.wash_form.code_numbers[1] = row.bet;
 
             //获取上一条打码数据
-            let frontWash={}
-            if(idx<1){
-                this.wash_form.code_numbers[0]=''
-                frontWash=[]
-            }else{
-                this.wash_form.code_numbers[0]=this.list[idx-1].bet;
-                frontWash=(this.list || [])[idx-1];
+            let frontWash = {};
+            if (idx < 1) {
+                this.wash_form.code_numbers[0] = "";
+                frontWash = [];
+            } else {
+                this.wash_form.code_numbers[0] = this.list[idx - 1].bet;
+                frontWash = (this.list || [])[idx - 1];
             }
-            if(frontWash && frontWash.percent_data){
-                this.wash_list=frontWash.percent_data;
+            if (frontWash && frontWash.percent_data) {
+                this.wash_list = frontWash.percent_data;
             }
             //获取下一条数据
-            let lastWash={}
-            if(idx==this.list.length-1){
-                this.wash_form.code_numbers[2]=''
-                lastWash=[]
-            }else{
-                this.wash_form.code_numbers[2]=this.list[idx+1].bet;
-                lastWash=(this.list || [])[idx+1];
+            let lastWash = {};
+            if (idx == this.list.length - 1) {
+                this.wash_form.code_numbers[2] = "";
+                lastWash = [];
+            } else {
+                this.wash_form.code_numbers[2] = this.list[idx + 1].bet;
+                lastWash = (this.list || [])[idx + 1];
             }
-            if(lastWash && lastWash.percent_data){
-                this.wash_list_back=lastWash.percent_data
+            if (lastWash && lastWash.percent_data) {
+                this.wash_list_back = lastWash.percent_data;
             }
         },
         editCfm() {
@@ -324,22 +359,22 @@ export default {
                 let item = this.lev_list[i];
                 percent[item.experience_max] = this.wash_form.rate[i];
             }
-            let data={
-                id:this.row_id.id,
-                game_type_id: this.active_game + 1,
-                game_vendor_id: this.active_plant + 1,
+            let data = {
+                id: this.row_id.id,
+                game_type_id: this.active_game,
+                game_vendor_id: this.active_plant,
                 bet: String(this.wash_form.code_numbers[1]),
                 percent: JSON.stringify(percent)
-            }
+            };
             // console.log('请求数据',data)
-            let {method,url}=this.$api.wash_code_set;
-            this.$http({method,url,data}).then(res=>{
-                if(res && res.code=='200'){
-                    this.show_modal=false;
-                    this.$toast.success(res.message)
+            let { method, url } = this.$api.wash_code_set;
+            this.$http({ method, url, data }).then(res => {
+                if (res && res.code == "200") {
+                    this.show_modal = false;
+                    this.$toast.success(res.message);
                     this.getList();
                 }
-            })
+            });
         },
         delWashModal(row) {
             // console.log(row);
@@ -363,47 +398,49 @@ export default {
             });
         },
         getList() {
-            let para = {
-                game_type: this.active_game + 1,
-                game_vendor: this.active_plant + 1,
-                page:this.pageNo,
-                pageSize:this.pageSize
+            let datas = {
+                game_type: this.active_game,
+                game_vendor: this.active_plant,
+                page: this.pageNo,
+                pageSize: this.pageSize
             };
-            // console.log("请求数据", para);
-            let params = window.all.tool.rmEmpty(para);
+            console.log("请求数据", datas);
+            let data = window.all.tool.rmEmpty(datas);
             let { method, url } = this.$api.wash_code_list;
-            this.$http({ method: method, url: url, params: params }).then(
-                res => {
-                    // console.log("res", res);
-                    if (res && res.code == "200") {
-                        this.list = res.data;
-                        this.total = res.data.length;
-                        // { label: '编号' }
-                        let vip_list = [];
-                        vip_list = (res.data && res.data[0] && res.data[0].percent_data) || [];
-                        let vip_head = vip_list.map(item => {
-                            return item.grade_name;
-                        });
-                        this.headers = Array.concat(
-                            ["编号", "打码量"],
-                            vip_head,
-                            "操作"
-                        );
-                    }
+            this.$http({ method: method, url: url, data: data }).then(res => {
+                console.log("res", res);
+                if (res && res.code == "200") {
+                    this.list = res.data;
+                    this.total = res.data.length;
+                    // { label: '编号' }
+                    let vip_list = [];
+                    vip_list =
+                        (res.data && res.data[0] && res.data[0].percent_data) ||
+                        [];
+                    let vip_head = vip_list.map(item => {
+                        return item.grade_name;
+                    });
+                    this.headers = Array.concat(
+                        ["编号", "打码量"],
+                        vip_head,
+                        "操作"
+                    );
                 }
-            );
+            });
         },
         updateNo(val) {
             this.getList();
         },
         updateSize(val) {
-            this.pageNo=1;
+            this.pageNo = 1;
             this.getList();
-        },
+        }
     },
     mounted() {
         this.getList();
         this.getLevList();
+        this.getTypeData();
+        this.gameVendorData();
     }
 };
 </script>
@@ -478,6 +515,7 @@ export default {
 }
 .form-table tr td {
     height: 50px;
+    text-align: unset;
 }
 .form-table .row1 {
     text-align: center;
@@ -500,4 +538,8 @@ export default {
 .vip-data td span:first-child {
     margin-left: 40px;
 }
+.table-data div{
+    margin-left: 10px;
+}
+
 </style>

@@ -176,11 +176,11 @@ export default {
                 page: this.pageNo,
                 pageSize: this.pageSize
             };
-            // console.log('查询条件：',para)
+            console.log('查询条件：',datas)
             let data = window.all.tool.rmEmpty(datas);
             let { url, method } = this.$api.game_type_list;
             this.$http({ method, url, data }).then(res => {
-                // console.log("返回数据：", res);
+                console.log("返回数据：", res);
                 if (res && res.code == "200") {
                     this.total = res.data.total;
                     this.list = res.data && res.data.data;

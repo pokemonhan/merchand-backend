@@ -46,16 +46,6 @@
                     </li>
                 </ul>
             </div>
-            <!-- <div class="mb20">
-                <Page
-                    class="table-page"
-                    :total="total"
-                    :pageNo.sync="pageNo"
-                    :pageSize.sync="pageSize"
-                    @updateNo="updateNo"
-                    @updateSize="updateSize"
-                />
-            </div>-->
         </div>
         <Dialog :show.sync="dia_show" title="操作详情">
             <div class="dia-inner">
@@ -223,14 +213,6 @@ export default {
                 dates: []
             };
         },
-        // updateNo(val) {
-        //     this.getList();
-        // },
-        // updateSize(val) {
-        //     this.pageNo = 1;
-        //     this.getList();
-        // },
-
         // 计算时间间隔, 即显示 多久以前
         timeAgo(time) {
             let reg = /^(\d{1,4})(-|\/)(\d{1,2})\2(\d{1,2}) (\d{1,2}):(\d{1,2}):(\d{1,2})$/;

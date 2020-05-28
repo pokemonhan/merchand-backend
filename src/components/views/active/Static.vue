@@ -28,19 +28,23 @@
                 <template v-slot:item="{row}">
                     <td>{{row.title || '--'}}</td>
                     <td>
-                        <img style="max-width:200px;max-height:200px;"  :src="head_path+row.pic" alt />
+                        <img style="max-width:200px;max-height:200px;" :src="row.picture" alt="图片加载失败"/>
                     </td>
-                    <td>{{row.author && row.author.name || '--'}}</td>
+                    <td>{{row.author || '--'}}</td>
                     <td>{{row.created_at || '--'}}</td>
                     <td>{{row.end_time || '--'}}</td>
-                    <td>{{row.last_editor && row.last_editor.name || '--'}}</td>
+                    <td>{{row.last_editor || '--'}}</td>
                     <td>{{row.updated_at || '--'}}</td>
                     <td>
-                        <Switchbox class="switch-select" :value="row.status" @update="switchStatus($event,row)" />
+                        <Switchbox
+                            class="switch-select"
+                            :value="row.status"
+                            @update="switchStatus($event,row)"
+                        />
                     </td>
                     <td>
                         <button class="btns-blue" @click="edit(row)">编辑</button>
-                        <button class="btns-red" @click="del(row)" >删除</button>
+                        <button class="btns-red" @click="del(row)">删除</button>
                     </td>
                 </template>
             </Table>
@@ -63,9 +67,13 @@
                     </li>
                     <li>
                         <span>活动图片:</span>
-                        <Input style="width:172px;" v-model="form.pic_path" />
+                        <div class="img-area">
+                            <img style="max-width:290px;max-height:140px;" :src="pic_data" alt />
+                        </div>
+                    </li>
+                    <li>
                         <Upload
-                            style="width:125px;"
+                            style="width:125px;margin:0 auto"
                             title="上传图片"
                             @change="upPicChange($event)"
                             type="file"
@@ -95,9 +103,12 @@
     </div>
 </template> <script>
 export default {
-    name: 'Static',
+    name: "Static",
     data() {
         return {
+            pic_data: "",
+            picFile: {},
+            isLoad: false,
             buttons: [
                 { label: "PC电脑", value: "1" },
                 { label: "手机H5", value: "2" },
@@ -106,7 +117,7 @@ export default {
             curr_btn: "1",
 
             filter: {
-                title: "",
+                title: ""
             },
             headers: [
                 "活动标题",
@@ -127,9 +138,9 @@ export default {
             // dialog
             dia_show: false,
             dia_title: "",
-            dia_status:"",
-            mod_show:false,
-            curr_row:{},
+            dia_status: "",
+            mod_show: false,
+            curr_row: {},
             form: {
                 title: "",
                 dates: [],
@@ -137,25 +148,36 @@ export default {
                 pic_path: ""
             },
             protocol: window.location.protocol,
-            head_path:'',
+            head_path: "",
+            pic_id:""
         };
     },
     methods: {
         initForm() {
             this.form = {
                 title: "",
-                pic_path: "",
                 dates: [],
                 status: false
             };
+            this.pic_data = "";
         },
         diaCfm() {
             if (this.dia_status === "add") {
-                this.addCfm();
+                this.addConfCfm();
             }
             if (this.dia_status === "edit") {
-                this.editCfm();
+                if(this.isLoad==false){
+                    this.editCfm();
+                }
+                if(this.isLoad==true){
+                    this.editConfCfm();
+                }
+
             }
+        },
+        async addConfCfm() {
+            await this.upLoadPic();
+            this.addCfm();
         },
         add() {
             this.initForm();
@@ -163,20 +185,40 @@ export default {
             this.dia_title = "添加活动";
             this.dia_show = true;
         },
+        //展示图片
         upPicChange(e) {
-            let pic = e.target.files[0];
-            let basket = "active/static/uploads";
-            let formList = new FormData();
-            formList.append("file", pic, pic.name);
-            formList.append("basket", basket);
-            let { url, method } = this.$api.update_picture_database;
-            let data = formList;
-            let headers = { "Content-Type": "multipart/form-data" };
-            this.$http({ method, url, data, headers }).then(res => {
-                // console.log(res)
-                if (res && res.code == "200") {
-                    this.form.pic_path = res.data.path;
-                }
+            let file = e.target.files[0];
+            let self = this;
+            let reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onerror = function() {
+                return;
+            };
+            reader.onload = function(file) {
+                self.pic_data = file.target.result;
+            };
+            this.picFile = e;
+            this.isLoad = true;
+        },
+        //上传图片
+        upLoadPic() {
+            return new Promise(resolve => {
+                let e = this.picFile;
+                let pic = e.target.files[0];
+                let basket = "active/static/uploads";
+                let formList = new FormData();
+                formList.append("file", pic, pic.name);
+                formList.append("basket", basket);
+                let { url, method } = this.$api.update_picture_database;
+                let data = formList;
+                let headers = { "Content-Type": "multipart/form-data" };
+                this.$http({ method, url, data, headers }).then(res => {
+                    // console.log(res)
+                    if (res && res.code == "200") {
+                        this.pic_data = res.data.id;
+                        resolve(res.data.path);
+                    }
+                });
             });
         },
         addCfm() {
@@ -188,48 +230,55 @@ export default {
             // if(this.form.dates[1]){
             //     end_time=JSON.stringify([this.form.dates[1]])
             // }
-            let data={
-                device:this.curr_btn,
-                title:this.form.title,
-                pic:this.form.pic_path,
-                start_time:this.form.dates[0],
-                end_time:this.form.dates[1],
-                status:this.form.status
-            }
-            let {url,method}=this.$api.static_active_add;
-            this.$http({method,url,data}).then(res=>{
+            let data = {
+                device: this.curr_btn,
+                title: this.form.title,
+                pic_id: this.pic_data,
+                start_time: this.form.dates[0],
+                end_time: this.form.dates[1],
+                status: this.form.status
+            };
+            console.log('请求数据',data)
+            let { url, method } = this.$api.static_active_add;
+            this.$http({ method, url, data }).then(res => {
                 // console.log('返回数据',res)
-                if(res && res.code=='200'){
+                if (res && res.code == "200") {
                     this.$toast.success(res && res.message);
-                    this.dia_show=false;
+                    this.dia_show = false;
                     this.getList();
                 }
-            })
+            });
         },
-        switchStatus(val,row){
-            let data={
-                id:row.id,
-                status:val ? 1 : 0
-            }
-            let {url,method}=this.$api.static_active_change_status;
-            this.$http({method,url,data}).then(res=>{
-                if(res && res.code=='200'){
+        switchStatus(val, row) {
+            let data = {
+                id: row.id,
+                status: val ? 1 : 0
+            };
+            let { url, method } = this.$api.static_active_change_status;
+            this.$http({ method, url, data }).then(res => {
+                if (res && res.code == "200") {
                     this.$toast.success(res && res.message);
                     this.getList();
                 }
-            })
+            });
+        },
+        async editConfCfm(){
+            await this.upLoadPic();
+            this.editCfm();
         },
         edit(row) {
+            this.initForm();
             this.dia_status = "edit";
             this.dia_title = "编辑";
             this.dia_show = true;
-            this.form={
-                id:row.id,
-                title:row.title,
-                pic_path:row.pic,
-                dates:[row.created_at,row.end_time],
-                status:row.status,
-            }
+            this.form = {
+                id: row.id,
+                title: row.title,
+                dates: [row.created_at, row.end_time],
+                status: row.status
+            };
+            this.pic_data = row.picture;
+            this.pic_id=row.pic_id;
         },
         editCfm() {
             // let start_time=''
@@ -240,43 +289,50 @@ export default {
             // if(this.form.dates[1]){
             //     end_time=JSON.stringify([this.form.dates[1]])
             // }
-            let data={
-                device:this.curr_btn,
-                id:this.form.id,
-                title:this.form.title,
-                pic:this.form.pic_path,
-                start_time:this.form.dates[0],
-                end_time:this.form.dates[1],
-                status:this.form.status,
+            let pic_id=""
+            if(this.isLoad==false){
+                pic_id=this.pic_id
             }
+            if(this.isLoad==true){
+                pic_id=this.pic_data
+            }
+            let data = {
+                device: this.curr_btn,
+                id: this.form.id,
+                title: this.form.title,
+                pic_id: pic_id,
+                start_time: this.form.dates[0],
+                end_time: this.form.dates[1],
+                status: this.form.status
+            };
             // console.log(data)
-            let {url,method}=this.$api.static_active_edit;
-            this.$http({method,url,data}).then(res=>{
-                if(res && res.code=='200'){
+            let { url, method } = this.$api.static_active_edit;
+            this.$http({ method, url, data }).then(res => {
+                if (res && res.code == "200") {
                     this.$toast.success(res && res.message);
-                    this.dia_show=false;
+                    this.dia_show = false;
                     this.getList();
                 }
-            })
+            });
         },
-        del(row){
-            this.curr_row=row;
-            this.mod_show=true;
+        del(row) {
+            this.curr_row = row;
+            this.mod_show = true;
         },
-        modConf(){
-            let data={
-                id:this.curr_row.id
-            }
-            let {url,method}=this.$api.static_active_delte;
-            this.$http({method,url,data}).then(res=>{
+        modConf() {
+            let data = {
+                id: this.curr_row.id
+            };
+            let { url, method } = this.$api.static_active_delte;
+            this.$http({ method, url, data }).then(res => {
                 // console.log('res: ', res);
-                
-                if(res && res.code=='200'){
+
+                if (res && res.code == "200") {
                     this.$toast.success(res && res.message);
-                    this.mod_show=false;
+                    this.mod_show = false;
                     this.getList();
                 }
-            })
+            });
         },
         selectBtn(item) {
             this.curr_btn = item.value;
@@ -286,20 +342,20 @@ export default {
             this.getList();
         },
         updateSize(val) {
-            this.pageNo=1;
+            this.pageNo = 1;
             this.getList();
         },
         getList() {
             let datas = {
                 device: this.curr_btn,
                 title: this.filter.title,
-                page:this.pageNo,
-                pageSize:this.pageSize
+                page: this.pageNo,
+                pageSize: this.pageSize
             };
             let data = window.all.tool.rmEmpty(datas);
             let { method, url } = this.$api.static_active_list;
             this.$http({ method, url, data }).then(res => {
-                // console.log('返回数据',res);
+                console.log("返回数据", res);
                 if (res && res.code == "200") {
                     this.total = res.data.total;
                     this.list = res.data.data;
@@ -308,7 +364,7 @@ export default {
         }
     },
     mounted() {
-        this.head_path=this.protocol+'//pic.397017.com/'
+        this.head_path = this.protocol + "//pic.397017.com/";
         this.getList();
     }
 };
@@ -323,7 +379,11 @@ export default {
     max-width: 150px;
     max-height: 100px;
 }
-.form li {
+.form {
+    width: 390px;
+    margin: 0 auto;
+}
+.form > li {
     display: flex;
     align-items: center;
 }
@@ -336,5 +396,16 @@ export default {
 .conf-btn {
     display: flex;
     justify-content: center;
+}
+.dia-inner {
+    width: 550px;
+    height: 40-0px;
+}
+.img-area {
+    width: 300px;
+    height: 140px;
+    border: 1px solid #ddd;
+    text-align: center;
+    border-radius: 5px;
 }
 </style>

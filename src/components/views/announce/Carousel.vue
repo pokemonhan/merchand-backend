@@ -83,13 +83,13 @@
                             <li class="row1">
                                 <span class="pic-title">热门活动</span>
                                 <div>
-                                    <span style="font-size:12px;">创建时间：{{item.created_at}}</span>
+                                    <span style="font-size:12px;">开始时间：{{item.start_time}}</span>
                                     <br />
                                     <span style="font-size:12px;">结束时间：{{item.end_time}}</span>
                                 </div>
                             </li>
                             <li class="row2">
-                                <img class="pic-pic" :src="item.pic" alt="图片加载失败。" />
+                                <img class="pic-pic" :src="item.pic" alt="图片加载失败" />
                             </li>
                             <li class="row3">
                                 <Switchbox

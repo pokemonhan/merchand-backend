@@ -90,14 +90,6 @@ export default {
                 // console.log("arr", arr);
                 let template_data;
                 arr.forEach(lev1_menu => {
-                    // console.log("item", item.path);
-                    // console.log('path',path)
-                    // if (item.path === path) {
-                    //     template_data = item;
-                    //     return
-                    // } else if (item.children) {
-                    //     template_data = getMenuData(path, item.children);
-                    // }
                     if (lev1_menu.children) {
                         let hadFindData = lev1_menu.children.find(lev2_menu => {
                             // console.log("lev2", lev2_menu.path);

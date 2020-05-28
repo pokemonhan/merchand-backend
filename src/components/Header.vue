@@ -337,7 +337,6 @@ export default {
         passwordConf() {
             this.err_tips = ['', '', '', '']
             if (this.checkPwd()) {
-                // console.log('执行内容')
             }
         },
         socket() {

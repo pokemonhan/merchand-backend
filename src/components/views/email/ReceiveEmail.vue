@@ -170,7 +170,7 @@ export default {
             this.dia_show = true
         },
         dialogClose(command) {
-            console.log('🦀 command: ', command)
+            // console.log('🦀 command: ', command)
             this.dia_show = false
             if (command === 'getList') {
                 this.getList()
@@ -225,11 +225,11 @@ export default {
                 page: this.pageNo
             }
             let data = window.all.tool.rmEmpty(para)
-            console.log('🍺 para: ', para);
+            // console.log('🍺 para: ', para);
 
             let { url, method } = this.$api.email_received
             this.$http({ method, url, data }).then(res => {
-                console.log('列表: ', res)
+                // console.log('列表: ', res)
                 if (res && res.code === '200') {
                     this.total = res.data.total
                     this.list = res.data.data

@@ -15,7 +15,7 @@ const state = {
     loadingShow: false,
     //路由传参
     founds_incomeorder: 'Offline',
-    aside_scroll_path: '',
+    aside_scroll_path: '', // 自动滚动的路径
 };
 const getters = {
     keepAliveInclude(state) {

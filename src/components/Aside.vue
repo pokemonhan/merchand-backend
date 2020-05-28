@@ -87,7 +87,7 @@ export default {
 
             /** 根据路径获取相关信息 */
             function getMenuData(path, arr) {
-                console.log("arr", arr);
+                // console.log("arr", arr);
                 let template_data;
                 arr.forEach(lev1_menu => {
                     // console.log("item", item.path);

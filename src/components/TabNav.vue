@@ -76,7 +76,6 @@ export default {
             temp_arr.push(curr_tab.name)
             this.updateKeepAliveExclude(temp_arr)
 
-            // this.$router.replace('/page404') // 跳转到空页面,
             setTimeout(() => {
                 // this.$router.replace({ path: path })
                 this.reload() // 刷新页面
@@ -307,7 +306,7 @@ export default {
     font-size: 12px;
     text-align: center;
     margin-right: 5px;
-    margin-top: 6px;
+    margin-top: 5px;
     color: rgb(158, 158, 158);
     border-radius: 50%;
     background: #fff;

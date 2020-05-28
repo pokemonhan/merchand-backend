@@ -151,7 +151,7 @@
 <script>
 import { mapState, mapMutations, mapGetters } from 'vuex'
 import Slide from '../js/config/slide'
-import menuList from '../js/menuList'
+import MenuList from '../js/menuList'
 export default {
     name: 'Header',
     data() {
@@ -187,7 +187,11 @@ export default {
         ...mapState(['tab_nav_list', 'founds_incomeorder'])
     },
     methods: {
-        ...mapMutations(['updateTab_nav_list', 'updateFounds_incomeorder','updateAside_scroll_path']),
+        ...mapMutations([
+            'updateTab_nav_list',
+            'updateFounds_incomeorder',
+            'updateAside_scroll_path'
+        ]),
         // fullScreen() {
         //     if (this.isfullScreen) {
         //         var docElm = document.documentElement;
@@ -269,7 +273,6 @@ export default {
             let self = this
             setTimeout(() => {
                 if (self.account_ishow === false) {
-                    //todo
                     ele.style.display = 'none'
                 }
             }, 300)
@@ -360,7 +363,7 @@ export default {
                 }
             })
         },
-        
+
         getLeftList() {
             if (!window.all.tool.getLocal('Authorization')) return
             if (this.platform_end_time) return
@@ -370,13 +373,20 @@ export default {
                     // console.log('🍉 res: ', res)
                     let data = res.data || {}
                     this.platform_end_time = data.platform_end_time
-                    this.active_num = parseInt(data.online_apk_people) + parseInt(data.online_app_people) + parseInt(data.online_h5_people) + parseInt(data.online_pc_people)
-                    this.sign_up_and_top_up_today = data.sign_up_and_top_up_today
+                    this.active_num =
+                        parseInt(data.online_apk_people) +
+                        parseInt(data.online_app_people) +
+                        parseInt(data.online_h5_people) +
+                        parseInt(data.online_pc_people)
+                    this.sign_up_and_top_up_today =
+                        data.sign_up_and_top_up_today
                     this.sign_up_today = data.sign_up_today
                     let lastTimeInterval = undefined
                     clearInterval(lastTimeInterval)
                     this.setLastTime()
-                    lastTimeInterval = setInterval(() => { this.setLastTime() }, 1 * 1000)
+                    lastTimeInterval = setInterval(() => {
+                        this.setLastTime()
+                    }, 1 * 1000)
                 }
             })
         },
@@ -429,7 +439,10 @@ export default {
                     level: item.level
                 }
                 if (item.child) {
-                    template.children = this.objToArr( item.child, pre_idx + index + '-' )
+                    template.children = this.objToArr(
+                        item.child,
+                        pre_idx + index + '-'
+                    )
                 }
                 return template
             })
@@ -439,160 +452,59 @@ export default {
             if (!window.all.tool.getLocal('Authorization')) return
             if (window.all.tool.getLocal('menu')) {
                 this.menu_list = window.all.tool.getLocal('menu')
-            }else {
-                setTimeout(()=>{
+            } else {
+                setTimeout(() => {
                     this.menu_list = window.all.tool.getLocal('menu')
-                },310)
+                    if (this.menu_list.length === 0) {
+                        this.menu_list = MenuList
+                    }
+                }, 310)
+            }
+        },
+        PathJump(jump_path) {
+            this.menu_list = window.all.tool.getLocal('menu')
+            if (this.menu_list.length > 0) {
+                let curr_menu
+                this.menu_list.forEach(lev1 => {
+                    if (lev1.children) {
+                        let find_menu = lev1.children.find( lev2 => lev2.path === jump_path )
+                        if (find_menu) {
+                            curr_menu = find_menu
+                        }
+                    }
+                })
+                let navList = this.tab_nav_list
+                let isHadTab = navList.find( tab => tab.path === jump_path )
+                if (!isHadTab) {
+                    navList.push({
+                        label: curr_menu.label,
+                        name: curr_menu.namme,
+                        path: curr_menu.path
+                    })
+                    this.updateTab_nav_list(navList)
+                }
+                this.$router.push(curr_menu.path)
+                this.updateAside_scroll_path(curr_menu.path) // Aside.vue 自动滚动路径
+            }else {
+                this.$toast('没有菜单列表')
             }
         },
         goEmail() {
-            let email = []
-            for (var i = 0; i < this.menu_list.length; i++) {
-                let item = this.menu_list[i].children
-                if (item) {
-                    for (var j = 0; j < item.length; j++) {
-                        email.push(item[j])
-                    }
-                }
-            }
-            let emailItem = {}
-            for (var k = 0; k < email.length; k++) {
-                if (email[k].path == '/email/receiveemail') {
-                    emailItem = email[k]
-                }
-            }
-            let list = this.tab_nav_list
-            let isHadTab = list.find(tab => tab.path === emailItem.path)
-            if (!isHadTab) {
-                list.push({
-                    label: emailItem.label,
-                    name: emailItem.namme,
-                    path: emailItem.path
-                })
-                this.updateTab_nav_list(list)
-            }
-            this.$router.push(emailItem.path)
-            this.updateAside_scroll_path(emailItem.path)
+            this.PathJump('/email/receiveemail')
         },
         goOnFounds() {
-            let founds = []
-            for (var i = 0; i < this.menu_list.length; i++) {
-                let item = this.menu_list[i].children
-                if (item) {
-                    for (var j = 0; j < item.length; j++) {
-                        founds.push(item[j])
-                    }
-                }
-            }
-            let foundsItem = {}
-            for (var k = 0; k < founds.length; k++) {
-                if (founds[k].path == '/funds/incomeorder') {
-                    foundsItem = founds[k]
-                }
-            }
-            let list = this.tab_nav_list
-            let isHadTab = list.find(tab => tab.path === foundsItem.path)
-            if (!isHadTab) {
-                list.push({
-                    label: foundsItem.label,
-                    name: foundsItem.namme,
-                    path: foundsItem.path
-                })
-                this.updateTab_nav_list(list)
-            }
-            this.$router.push({ path: foundsItem.path })
+            this.PathJump('/funds/incomeorder')
             this.updateFounds_incomeorder('Online')
-            this.updateAside_scroll_path(foundsItem.path) // aside自动滚动
-
         },
         goOffFounds() {
-            let founds = []
-            for (var i = 0; i < this.menu_list.length; i++) {
-                let item = this.menu_list[i].children
-                if (item) {
-                    for (var j = 0; j < item.length; j++) {
-                        founds.push(item[j])
-                    }
-                }
-            }
-            let foundsItem = {}
-            for (var k = 0; k < founds.length; k++) {
-                if (founds[k].path == '/funds/incomeorder') {
-                    foundsItem = founds[k]
-                }
-            }
-            let list = this.tab_nav_list
-            let isHadTab = list.find(tab => tab.path === foundsItem.path)
-            if (!isHadTab) {
-                list.push({
-                    label: foundsItem.label,
-                    name: foundsItem.namme,
-                    path: foundsItem.path
-                })
-                this.updateTab_nav_list(list)
-                console.log('asdf', 1111111)
-            }
-            this.$router.push({ path: foundsItem.path })
-            this.updateAside_scroll_path(foundsItem.path) // aside自动滚动
+            this.PathJump('/funds/incomeorder')
             this.updateFounds_incomeorder('Offline')
         },
         goOrder() {
-            let founds = []
-            for (var i = 0; i < this.menu_list.length; i++) {
-                let item = this.menu_list[i].children
-                if (item) {
-                    for (var j = 0; j < item.length; j++) {
-                        founds.push(item[j])
-                    }
-                }
-            }
-            let foundsItem = {}
-            for (var k = 0; k < founds.length; k++) {
-                if (founds[k].path == '/funds/paymentorder') {
-                    foundsItem = founds[k]
-                }
-            }
-            let list = this.tab_nav_list
-            let isHadTab = list.find(tab => tab.path === foundsItem.path)
-            if (!isHadTab) {
-                list.push({
-                    label: foundsItem.label,
-                    name: foundsItem.namme,
-                    path: foundsItem.path
-                })
-                this.updateTab_nav_list(list)
-            }
-            this.$router.push(foundsItem.path)
-            this.updateAside_scroll_path(foundsItem.path) // aside自动滚动
+            this.PathJump('/funds/paymentorder')
         },
         goReview() {
-            let founds = []
-            for (var i = 0; i < this.menu_list.length; i++) {
-                let item = this.menu_list[i].children
-                if (item) {
-                    for (var j = 0; j < item.length; j++) {
-                        founds.push(item[j])
-                    }
-                }
-            }
-            let foundsItem = {}
-            for (var k = 0; k < founds.length; k++) {
-                if (founds[k].path == '/funds/paymentreview') {
-                    foundsItem = founds[k]
-                }
-            }
-            let list = this.tab_nav_list
-            let isHadTab = list.find(tab => tab.path === foundsItem.path)
-            if (!isHadTab) {
-                list.push({
-                    label: foundsItem.label,
-                    name: foundsItem.namme,
-                    path: foundsItem.path
-                })
-                this.updateTab_nav_list(list)
-            }
-            this.$router.push(foundsItem.path)
-            this.updateAside_scroll_path(foundsItem.path) // aside自动滚动
+            this.PathJump('/funds/paymentreview')
         }
     },
     watch: {
@@ -602,7 +514,6 @@ export default {
                 this.getRightList()
                 this.getLeftList()
                 this.getMenuList()
-
             }
         }
     },

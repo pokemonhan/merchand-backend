@@ -193,7 +193,7 @@ export default {
                 this.$toast.info('未选中任何邮件')
                 return
             }
-            console.log('delIdArray: ', delIdArray)
+            // console.log('delIdArray: ', delIdArray)
             let data = {
                 email_id: JSON.stringify(delIdArray)
             }

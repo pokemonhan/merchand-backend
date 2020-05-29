@@ -2,14 +2,6 @@
     <div id="app" @mousedown="initSound">
         <!-- 顶部 -->
         <Header class="app-header"></Header>
-        <audio
-            ref="myaudio"
-            src="./assets/audio/alarm2.mp3"
-            controls="controls"
-            autoplay
-            loop="true"
-            hidden="true"
-        ></audio>
         <div class="app-content" >
             <!-- 侧边栏 -->
             <Aside class="app-aside"></Aside>
@@ -47,8 +39,7 @@ export default {
     },
     provide() {
         return {
-            reload: this.reload,
-            playSound: this.playSound
+            reload: this.reload
         }
     },
     data() {
@@ -72,11 +63,11 @@ export default {
     },
     methods: {
         initSound() {
-            this.audio = new Audio(require('./assets/audio/alarm2.mp3'))
+            window.alarm = new Audio(require('./assets/audio/alarm2.mp3'))
         },
         playSound() {
-            if (!this.audio) return
-            this.audio.play()
+            if (!window.alarm) return
+            window.alarm.play()
         },
         reload() {
             this.isRouterAlive = false

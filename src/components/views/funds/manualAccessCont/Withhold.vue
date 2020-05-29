@@ -258,6 +258,9 @@ export default {
         without(){
             this.dia_show=true;
             this.clearForm();
+            this.form={
+                withhold_type: '1',
+            }
         },
         withHoldCfm(){
             let data={
@@ -306,6 +309,9 @@ export default {
 .dia-inner .form li{
     display: flex;
     margin-top: 20px;
+}
+.form li{
+    align-items: baseline;
 }
 .form li >span:first-child{
     min-width: 80px;

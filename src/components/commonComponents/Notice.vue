@@ -89,10 +89,16 @@ export default {
                     jump: this.jump
                 })
             }, 3 * 60 * 1000)
+        },
+        playSound() {
+            if(!window.alarm) return
+            window.alarm.play()
         }
     },
     mounted() {
         this.show = true
+        this.playSound()
+
         // setTimeout( ()=>{
         //     this.show = false
         // }, this.duration-400)

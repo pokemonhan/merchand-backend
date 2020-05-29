@@ -253,8 +253,8 @@ export default {
             // audio.play();
 
             //方式2
-            var audio = new Audio(require('../assets/audio/wan.wav'))
-            audio.play()
+            // var audio = new Audio(require('../assets/audio/wan.wav'))
+            // audio.play()
         },
         accoutEnter() {
             let ele = document.querySelector('.account-inner')
@@ -454,7 +454,8 @@ export default {
             } else {
                 setTimeout(() => {
                     this.menu_list = window.all.tool.getLocal('menu')
-                    if (this.menu_list.length === 0) {
+                    console.log('🥟 this.menu_list: ', this.menu_list);
+                    if ((this.menu_list && this.menu_list.length === 0) ||!this.menu_list) {
                         this.menu_list = MenuList
                     }
                 }, 310)

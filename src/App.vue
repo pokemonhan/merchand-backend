@@ -1,8 +1,16 @@
 <template>
-    <div id="app">
+    <div id="app" @mousedown="initSound">
         <!-- 顶部 -->
         <Header class="app-header"></Header>
-        <div class="app-content">
+        <audio
+            ref="myaudio"
+            src="./assets/audio/alarm2.mp3"
+            controls="controls"
+            autoplay
+            loop="true"
+            hidden="true"
+        ></audio>
+        <div class="app-content" >
             <!-- 侧边栏 -->
             <Aside class="app-aside"></Aside>
             <div class="app-main">
@@ -39,13 +47,16 @@ export default {
     },
     provide() {
         return {
-            reload: this.reload
+            reload: this.reload,
+            playSound: this.playSound
         }
     },
     data() {
         return {
             play: true,
-            isRouterAlive: true
+            isRouterAlive: true,
+            first_play: true,
+            audio: undefined
         }
     },
     computed: {
@@ -60,20 +71,12 @@ export default {
         }
     },
     methods: {
-        playMusic() {
-            //方式1
-            // var audio = document.createElement("audio");
-            // audio.src = require("./assets/audio/wan.wav");
-            // audio.play();
-            // 方式2
-            var audio = new Audio(require('./assets/audio/wan.wav'))
-            // audio.play();
-            let play = true
-            document.body.addEventListener('mouseenter', function() {
-                play && audio.play()
-                play = false
-                // audio = null;
-            })
+        initSound() {
+            this.audio = new Audio(require('./assets/audio/alarm2.mp3'))
+        },
+        playSound() {
+            if (!this.audio) return
+            this.audio.play()
         },
         reload() {
             this.isRouterAlive = false
@@ -99,11 +102,9 @@ export default {
         })
     },
     mounted() {
-        let self = this
-        setTimeout(() => {
-            // self.playMusic()
-        }, 400)
-        // this.$loading.show()
+        // setInterval(() => {
+        //     this.playSound()
+        // }, 4000)
         // this.$notice({
         //     title: '标题',
         //     message: '这是邮箱的内容',

@@ -149,6 +149,7 @@
 </template>
 
 <script>
+
 import { mapState, mapMutations, mapGetters } from 'vuex'
 import Slide from '../js/config/slide'
 import MenuList from '../js/menuList'
@@ -292,7 +293,7 @@ export default {
                 console.log('res', res)
                 if (res && res.code === '200') {
                     self.$toast('登出成功')
-                    window.all.tool.setLocal('isLogin', '0')
+                    window.all.tool.setLocal('isLogin', '')
                 }
             })
             window.all.tool.removeSession('token')
@@ -342,17 +343,17 @@ export default {
         socket() {
             let channel_pre = 'jianghuhuyu_database_merchant_notice_'
             let platform_sign = window.all.tool.getLocal('platform_sign')
-            if (!platform_sign || this.isSocketOpen === true) return
+            if (!platform_sign || window.isSocketOpen === true) return
             let channel_name = channel_pre + platform_sign
             // channel_name = 'jianghuhuyu_ethan_database_merchant_notice_JHHY'
             // 事件名
             let event_name = 'PlatformNoticeEvent'
-            this.isSocketOpen = true
+            Window.isSocketOpen = true // 只监听一次
             window.Echo.channel(channel_name).listen(event_name, res => {
                 if (res) {
                     // console.log('🍉 res: ', res);
                     let isLogin = window.all.tool.getLocal('isLogin')
-                    if (isLogin == 1) {
+                    if (isLogin === '1') {
                         this.$notice({
                             title: '通知',
                             message: res.message || 'message is null',

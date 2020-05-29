@@ -146,7 +146,7 @@ export default {
             dia_show: false,
             form: {
                 account:'',
-                deposit_type:'',
+                deposit_type:"1",
                 deposit_amount:'',
                 remark:'',
             },
@@ -263,6 +263,9 @@ export default {
         add(){
             this.dia_show=true;
             this.clearForm();
+            this.form={
+                deposit_type:'1',
+            }
         },
         addCfm(){
             let data={
@@ -323,6 +326,9 @@ export default {
 .dia-inner .form li {
     display: flex;
     margin-top: 20px;
+}
+.form li{
+    align-items: baseline;
 }
 .form li > span:first-child {
     min-width: 80px;

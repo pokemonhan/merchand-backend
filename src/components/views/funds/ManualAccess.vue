@@ -10,6 +10,10 @@
                 :class="[curr_list==='withdrawal'?'btn-blue':'btn']"
                 @click="curr_list='withdrawal'"
             >人工扣款记录</button>
+            <button
+                :class="[curr_list==='eventGift'?'btn-blue':'btn']"
+                @click="curr_list='eventGift'"
+            >人工活动礼金记录</button>
         </div>
 
         <!-----------------------------------  人工存款__记录  ------------------------------------->
@@ -17,26 +21,31 @@
 
         <!-----------------------------------  人工取款__记录  ------------------------------------->
         <Withhold v-show="curr_list==='withdrawal'"></Withhold>
+
+        <!-----------------------------------  人工活动礼金__记录  ------------------------------------->
+        <EventGift v-show="curr_list==='eventGift'"></EventGift>
     </div>
 </template>
 
 <script>
-import Deposit from './manualAccessCont/Deposit'
-import Withhold from './manualAccessCont/Withhold'
+import Deposit from "./manualAccessCont/Deposit";
+import Withhold from "./manualAccessCont/Withhold";
+import EventGift from "./manualAccessCont/EventGift";
 export default {
-    name: 'ManualAccess',
+    name: "ManualAccess",
     components: {
         Deposit,
-        Withhold
+        Withhold,
+        EventGift
     },
     data() {
         return {
-            curr_list: 'deposit'
-        }
+            curr_list: "deposit"
+        };
     },
     methods: {},
     mounted() {}
-}
+};
 </script>
 
 <style scoped>

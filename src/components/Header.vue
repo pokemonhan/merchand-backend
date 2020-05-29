@@ -454,7 +454,7 @@ export default {
             } else {
                 setTimeout(() => {
                     this.menu_list = window.all.tool.getLocal('menu')
-                    if (this.menu_list.length === 0) {
+                    if (this.menu_list && this.menu_list.length === 0) {
                         this.menu_list = MenuList
                     }
                 }, 310)

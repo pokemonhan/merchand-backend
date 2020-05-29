@@ -645,11 +645,6 @@ export default {
         url: '/merchant-api/offline-finance/edit',
         method: 'post',
     },
-    // 线下支付配置 - 编辑线下金流获取前置数据 (标签选择的内容)
-    offline_finance_select_list: {
-        url: '/merchant-api/offline-finance/edit',
-        method: 'get',
-    },
 
     // ---------------- 线上金流配置 ------------
     // 线上金流配置 - 获取金流通道

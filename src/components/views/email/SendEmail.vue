@@ -35,7 +35,7 @@
                     <li>
                         <span>内容:</span>
                         <!-- <textarea class="textarea" v-model="content"></textarea> -->
-                        <div v-show="!dia_show" ref="editor" style="width:100%"></div>
+                        <div v-show="!dia_show" ref="editor" style="width:100%" class="editor"></div>
                     </li>
                     <li>
                         <span>发件人：</span>
@@ -462,8 +462,13 @@ export default {
         this.editor.create()
         this.editor.txt.append()
         let editorDom = this.$refs.editor || {}
+        // editorDom.style.border='1px solid #4c8bfd'
         let header = editorDom.children[0] || {}
         header.style.padding = '6px 0'
+        header.style.borderColor = '#d8e2f5'
+        header.style.background = '#d8e2f5'
+        let body = editorDom.children[1] || {}
+        body.style.border = 'none'
     }
 }
 </script>
@@ -489,9 +494,7 @@ export default {
     width: 40rem;
     min-width: 500px;
 }
-.p10 {
-    padding: 10px;
-}
+
 .form > li {
     display: flex;
     align-items: baseline;
@@ -500,34 +503,43 @@ export default {
 .form > li > span:first-child {
     width: 4.5em;
 }
-.li-pic {
+/* .li-pic {
     display: flex;
-    /* border: 1px solid #000; */
     align-items: center;
-}
+} */
+
 /* 图片 */
-.img-show {
+/* .img-show {
     max-width: 250px;
     max-height: 100px;
     margin-left: 20px;
-}
-.pic-show {
+} */
+/* .pic-show {
     user-select: text;
 }
 .form .textarea {
     width: 500px;
     height: 330px;
-}
-.ml10 {
+} */
+/* .ml10 {
     margin-left: 10px;
+} */
+/* .editor {
+    box-shadow: -1px 6px 14px #c5ccd8;
+} */
+.editor {
+    width: calc(100% - 5em);
+    border: 1px solid #dee6f5;
+    border-radius: 4px;
+    box-shadow: 1px 3px 12px #ebeef3;
 }
 
 .right {
     width: 500px;
     margin-left: 20px;
     border-radius: 5px;
-    border: 1px solid #ccc;
     user-select: text;
+    box-shadow: 1px 3px 12px #d3d7df;
 }
 /* 最近联系人 */
 .right .recent-contact {
@@ -539,12 +551,10 @@ export default {
     padding: 12px 10px;
     font-size: 16px;
     /* color: #4c8bfd; */
-    background: #f2f2f2;
-    border-bottom: 1px solid #ccc;
+    background: #d8e2f5;
+    border-bottom: 1px solid #d8e2f5;
 }
-.right .contact .head {
-    border-top: 1px solid #ccc;
-}
+
 .recent-contact .head span:nth-child(2) {
     font-size: 14px;
     margin-left: 160px;

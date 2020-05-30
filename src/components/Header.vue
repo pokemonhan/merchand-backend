@@ -149,6 +149,7 @@
 </template>
 
 <script>
+
 import { mapState, mapMutations, mapGetters } from 'vuex'
 import Slide from '../js/config/slide'
 import MenuList from '../js/menuList'
@@ -253,8 +254,8 @@ export default {
             // audio.play();
 
             //方式2
-            var audio = new Audio(require('../assets/audio/wan.wav'))
-            audio.play()
+            // var audio = new Audio(require('../assets/audio/wan.wav'))
+            // audio.play()
         },
         accoutEnter() {
             let ele = document.querySelector('.account-inner')
@@ -292,7 +293,7 @@ export default {
                 console.log('res', res)
                 if (res && res.code === '200') {
                     self.$toast('登出成功')
-                    window.all.tool.setLocal('isLogin', '0')
+                    window.all.tool.setLocal('isLogin', '')
                 }
             })
             window.all.tool.removeSession('token')
@@ -342,17 +343,17 @@ export default {
         socket() {
             let channel_pre = 'jianghuhuyu_database_merchant_notice_'
             let platform_sign = window.all.tool.getLocal('platform_sign')
-            if (!platform_sign || this.isSocketOpen === true) return
+            if (!platform_sign || window.isSocketOpen === true) return
             let channel_name = channel_pre + platform_sign
             // channel_name = 'jianghuhuyu_ethan_database_merchant_notice_JHHY'
             // 事件名
             let event_name = 'PlatformNoticeEvent'
-            this.isSocketOpen = true
+            Window.isSocketOpen = true // 只监听一次
             window.Echo.channel(channel_name).listen(event_name, res => {
                 if (res) {
                     // console.log('🍉 res: ', res);
                     let isLogin = window.all.tool.getLocal('isLogin')
-                    if (isLogin == 1) {
+                    if (isLogin === '1') {
                         this.$notice({
                             title: '通知',
                             message: res.message || 'message is null',
@@ -454,7 +455,7 @@ export default {
             } else {
                 setTimeout(() => {
                     this.menu_list = window.all.tool.getLocal('menu')
-                    if (this.menu_list && this.menu_list.length === 0) {
+                    if ((this.menu_list && this.menu_list.length === 0) ||!this.menu_list) {
                         this.menu_list = MenuList
                     }
                 }, 310)
@@ -462,7 +463,7 @@ export default {
         },
         PathJump(jump_path) {
             this.menu_list = window.all.tool.getLocal('menu')
-            if (this.menu_list.length > 0) {
+            if (this.menu_list && this.menu_list.length > 0) {
                 let curr_menu
                 this.menu_list.forEach(lev1 => {
                     if (lev1.children) {
@@ -485,7 +486,7 @@ export default {
                 this.$router.push(curr_menu.path)
                 this.updateAside_scroll_path(curr_menu.path) // Aside.vue 自动滚动路径
             }else {
-                this.$toast('没有菜单列表')
+                this.$toast('没有菜单列表,请刷新,或等待加载完成')
             }
         },
         goEmail() {

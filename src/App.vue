@@ -1,12 +1,13 @@
 <template>
-    <div id="app">
+    <div id="app" @mousedown="initSound">
         <!-- 顶部 -->
         <Header class="app-header"></Header>
-        <div class="app-content">
+        <div class="app-content" >
             <!-- 侧边栏 -->
             <Aside class="app-aside"></Aside>
             <div class="app-main">
                 <TabNav class="tab-nav"></TabNav>
+                <!-- <Breadcrumb /> -->
                 <!-- <router-view class="router-view"/> -->
                 <transition name="fade-transform" mode="out-in">
                     <keep-alive :include="keepAliveInclude" :exclude="keepAliveExclude">
@@ -29,13 +30,15 @@ import { mapGetters } from 'vuex'
 import Header from './components/Header.vue'
 import Aside from './components/Aside.vue'
 import TabNav from './components/TabNav.vue'
+import Breadcrumb from './components/commonComponents/Breadcrumb'
 
 export default {
     name: 'App',
     components: {
         Header,
         Aside,
-        TabNav
+        TabNav,
+        Breadcrumb
     },
     provide() {
         return {
@@ -45,7 +48,9 @@ export default {
     data() {
         return {
             play: true,
-            isRouterAlive: true
+            isRouterAlive: true,
+            first_play: true,
+            audio: undefined
         }
     },
     computed: {
@@ -60,20 +65,12 @@ export default {
         }
     },
     methods: {
-        playMusic() {
-            //方式1
-            // var audio = document.createElement("audio");
-            // audio.src = require("./assets/audio/wan.wav");
-            // audio.play();
-            // 方式2
-            var audio = new Audio(require('./assets/audio/wan.wav'))
-            // audio.play();
-            let play = true
-            document.body.addEventListener('mouseenter', function() {
-                play && audio.play()
-                play = false
-                // audio = null;
-            })
+        initSound() {
+            window.alarm = new Audio(require('./assets/audio/alarm2.mp3'))
+        },
+        playSound() {
+            if (!window.alarm) return
+            window.alarm.play()
         },
         reload() {
             this.isRouterAlive = false
@@ -99,11 +96,9 @@ export default {
         })
     },
     mounted() {
-        let self = this
-        setTimeout(() => {
-            // self.playMusic()
-        }, 400)
-        // this.$loading.show()
+        // setInterval(() => {
+        //     this.playSound()
+        // }, 4000)
         // this.$notice({
         //     title: '标题',
         //     message: '这是邮箱的内容',

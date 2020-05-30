@@ -474,6 +474,16 @@ export default {
         url:'/merchant-api/report/platform',
         method:'post'
     },
+    // 会员洗码 - 列表
+    user_wash_list:{
+        url:'/merchant-api/report/commission',
+        method:'post'
+    },
+    //会员洗码 - 详情
+    user_wash_detail:{
+        url:'/merchant-api/report/commission-detail',
+        method:'post'
+    },
     /*=========================== 游戏管理 ===========================--*/
 
     // 游戏列表 - 公用接口 - 获取查询条件

@@ -30,7 +30,7 @@ const Tool = {
     // 通用工具类************************************************************************* //
     isType: type => Object.prototype.toString.call(type).slice(8, Object.prototype.toString.call(type).length - 1), // 数据类型判断工具
     // 时间格式化
-    formatDate(time, withTime = false) {
+    formatDate (time, withTime = false) {
         let arr1 = [],
             arr2 = [],
             date = new Date(time);
@@ -46,11 +46,11 @@ const Tool = {
         return `${arr1.join('-')} ${arr2.join(':')}`
     },
 
-    now() {
+    now () {
         return new Date().valueOf()
     },
     // 节流
-    throttle(fn, delay) {
+    throttle (fn, delay) {
         var lastTime;
         var timer;
         var delay = delay || 200;
@@ -76,7 +76,7 @@ const Tool = {
     },
 
     // 防抖
-    debounce(fn, delay) {
+    debounce (fn, delay) {
         // 记录上一次的延时器
         var timer = null;
         var delay = delay || 200;
@@ -92,7 +92,7 @@ const Tool = {
     },
 
     // 去除为param空的 属性
-    rmEmpty(obj) {
+    rmEmpty (obj) {
         let params = {}
         for (const key in obj) {
             if (Array.isArray(obj[key])) {
@@ -106,7 +106,7 @@ const Tool = {
         return params
     },
     // 简单的下拉slide
-    slideDown(ele, time = 200) {
+    slideDown (ele, time = 200) {
         // let ele = this.$refs.ul
         if (!ele) return
         if (!(ele instanceof Element)) {
@@ -126,7 +126,7 @@ const Tool = {
 
         }, time + 100)
     },
-    slideUp(ele, time = 20) {
+    slideUp (ele, time = 20) {
         // let ele = this.$refs.ul
         if (!ele) return
         if (!(ele instanceof Element)) {
@@ -146,7 +146,7 @@ const Tool = {
             // ele.style.overflow = ''
         }, time + 100)
     },
-    slideToggle(ele, time = 200) {
+    slideToggle (ele, time = 200) {
         if (!ele) return
         if (!(ele instanceof Element)) {
             ele = ele[0]
@@ -183,8 +183,8 @@ const Tool = {
         }
     },
     // 可拖动框窗口 
-    dragBox(drag, wrap) {
-        function getCss(ele, prop) {
+    dragBox (drag, wrap) {
+        function getCss (ele, prop) {
             return parseInt(window.getComputedStyle(ele)[prop]);
         }
 
@@ -217,6 +217,31 @@ const Tool = {
             wrapRight = getCss(wrap, "top");
         }, false);
 
+    },
+    /** 链级 名称，如: 厅主管理-登录记录 */
+    getChainName (path) {
+        if (!path) {
+            // console.log('no path')
+            return ''
+        }
+        let menuList = window.all.tool.getLocal('menu')
+        if (!menuList) {
+            // console.log('wait get the menu list')
+            return ''
+        }
+        let chain_name = ''
+        if (menuList) {
+            menuList.forEach(father => {
+                if (father.children) {
+                    father.children.forEach(child => {
+                        if (path === child.path) {
+                            chain_name = father.label + '-' + child.label
+                        }
+                    })
+                }
+            })
+        }
+        return chain_name
     },
 
 };

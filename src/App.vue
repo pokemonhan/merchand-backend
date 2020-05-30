@@ -7,6 +7,7 @@
             <Aside class="app-aside"></Aside>
             <div class="app-main">
                 <TabNav class="tab-nav"></TabNav>
+                <!-- <Breadcrumb /> -->
                 <!-- <router-view class="router-view"/> -->
                 <transition name="fade-transform" mode="out-in">
                     <keep-alive :include="keepAliveInclude" :exclude="keepAliveExclude">
@@ -29,13 +30,15 @@ import { mapGetters } from 'vuex'
 import Header from './components/Header.vue'
 import Aside from './components/Aside.vue'
 import TabNav from './components/TabNav.vue'
+import Breadcrumb from './components/commonComponents/Breadcrumb'
 
 export default {
     name: 'App',
     components: {
         Header,
         Aside,
-        TabNav
+        TabNav,
+        Breadcrumb
     },
     provide() {
         return {

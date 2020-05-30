@@ -227,16 +227,7 @@ export default {
     },
     watch: {
         $route: function(to, from) {
-            // if (to.path === '/home') return
-            // console.log("TCL: path", path);
-            /*       1.同一父级,则 退出 2.不同父级,关闭以前,打开跳转的父级菜单 */
-            //1.同一父级,则 退出
-            //取 path 的父级
-            // menu_list = this.menu_list
-            /*** TODO:
-             *
-             */
-            // 当前没有菜单就 localStorage找
+            
             // this.getFather()
             if (from.path === "/login") {
                 this.getMenuList();

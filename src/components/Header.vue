@@ -463,7 +463,7 @@ export default {
         },
         PathJump(jump_path) {
             this.menu_list = window.all.tool.getLocal('menu')
-            if (this.menu_list.length > 0) {
+            if (this.menu_list && this.menu_list.length > 0) {
                 let curr_menu
                 this.menu_list.forEach(lev1 => {
                     if (lev1.children) {
@@ -486,7 +486,7 @@ export default {
                 this.$router.push(curr_menu.path)
                 this.updateAside_scroll_path(curr_menu.path) // Aside.vue 自动滚动路径
             }else {
-                this.$toast('没有菜单列表')
+                this.$toast('没有菜单列表,请刷新,或等待加载完成')
             }
         },
         goEmail() {

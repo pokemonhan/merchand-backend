@@ -4,15 +4,15 @@
             <div class="filter p10">
                 <ul class="left">
                     <li>
-                        <span>管理员</span>
+                        <span>管理员：</span>
                         <Input v-model="filter.vendor" />
                     </li>
                     <li>
-                        <span>IP搜索</span>
+                        <span>IP搜索：</span>
                         <Input v-model="filter.dataIP" />
                     </li>
                     <li>
-                        <span>日期选择</span>
+                        <span>日期选择：</span>
                         <Date style="width:300px" type="datetimerange" v-model="filter.dates" />
                         <!-- <span style="margin:0 5px;">~</span>
                         <Date v-model="filter.dates[1]" />-->
@@ -34,73 +34,67 @@
                         <div class="opera-cont">
                             <div class="cont-left">
                                 <div class="cont-title">{{item.title}}</div>
-                                <div class="mt8">
-                                    <span>操作时间:</span>
-                                    <span>{{item.created_at}}</span>
-                                </div>
                             </div>
-                            <div class="cont-right">
-                                <button class="btn-blue" @click="detail(item)">查看详情</button>
+                            <div>
+                                <ul class="detail">
+                                    <li >
+                                        <span style="font-weight:bold;color:#4c8bfd;">详情</span>
+                                    </li>
+                                    <li>
+                                        <span>管理员：</span>
+                                        <span>{{item.admin_name}}</span>
+                                    </li>
+                                    <li>
+                                        <span>时间：</span>
+                                        <span>{{item.created_at}}</span>
+                                    </li>
+                                    <li>
+                                        <span>来源：</span>
+                                        <span>{{item.origin}}</span>
+                                    </li>
+                                    <li>
+                                        <span>IP：</span>
+                                        <span>{{item.ip}}</span>
+                                    </li>
+                                    <li>
+                                        <span>浏览器：</span>
+                                        <span>{{getBrowerPic(item)}}</span>
+                                        <span>
+                                            <img
+                                                v-if="fireFoxShow"
+                                                src="../../../assets/image/browser/firefox.png"
+                                                alt
+                                            />
+                                            <img
+                                                v-if="ChromeShow"
+                                                src="../../../assets/image/browser/google.png"
+                                                alt
+                                            />
+                                            <img
+                                                v-if="IEShow"
+                                                src="../../../assets/image/browser/IE.png"
+                                                alt
+                                            />
+                                            <img
+                                                v-if="operaShow"
+                                                src="../../../assets/image/browser/opera.png"
+                                                alt
+                                            />
+                                            <img
+                                                v-if="SafariShow"
+                                                src="../../../assets/image/browser/safari.png"
+                                                alt
+                                            />
+                                        </span>
+                                        <span>{{item.user_agent}}</span>
+                                    </li>
+                                </ul>
                             </div>
                         </div>
                     </li>
                 </ul>
             </div>
         </div>
-        <Dialog :show.sync="dia_show" title="操作详情">
-            <div class="dia-inner">
-                <ul>
-                    <li>
-                        <div class="bold-blue">{{curr_row.title}}</div>
-                    </li>
-                    <li class="detail">
-                        <div>
-                            <span>管理员:</span>
-                            <span>{{curr_row.admin_name}}</span>
-                        </div>
-                        <div>
-                            <span>时间:</span>
-                            <span>{{curr_row.created_at}}</span>
-                        </div>
-                        <div>
-                            <span class>来源:</span>
-                            <span>{{curr_row.origin}}</span>
-                        </div>
-                        <div>
-                            <span>IP:</span>
-                            <span>{{curr_row.ip}}</span>
-                        </div>
-                        <div>
-                            <span>浏览器:</span>
-                            <span>
-                                <img
-                                    v-if="fireFoxShow"
-                                    src="../../../assets/image/browser/firefox.png"
-                                    alt
-                                />
-                                <img
-                                    v-if="ChromeShow"
-                                    src="../../../assets/image/browser/google.png"
-                                    alt
-                                />
-                                <img v-if="IEShow" src="../../../assets/image/browser/IE.png" alt />
-                                <img
-                                    v-if="operaShow"
-                                    src="../../../assets/image/browser/opera.png"
-                                    alt
-                                />
-                                <img
-                                    v-if="SafariShow"
-                                    src="../../../assets/image/browser/safari.png"
-                                    alt
-                                />
-                            </span>
-                            <span>{{curr_row.user_agent}}</span>
-                        </div>
-                    </li>
-                </ul>
-            </div>
-        </Dialog>
     </div>
 </template>
 
@@ -135,11 +129,6 @@ export default {
         };
     },
     methods: {
-        detail(item) {
-            this.dia_show = true;
-            this.curr_row = item;
-            this.getBrowerPic(item);
-        },
         // 第一次加载
         firstLoad() {
             this.pageNo = 1;
@@ -280,42 +269,42 @@ export default {
         },
         // 滚动加载
         scroll() {
-            let isLoading = false
-            let ele = this.$refs.operalog
-            let max_scroll_top = 0
+            let isLoading = false;
+            let ele = this.$refs.operalog;
+            let max_scroll_top = 0;
             ele.onscroll = () => {
                 // 距离底部200px时加载一次
-                let scrollHeight = ele.scrollHeight
-                let scrollTop = ele.scrollTop
+                let scrollHeight = ele.scrollHeight;
+                let scrollTop = ele.scrollTop;
                 // console.log('🍭 scrollTop: ', scrollTop)
-                let offsetHeight = ele.offsetHeight
+                let offsetHeight = ele.offsetHeight;
                 /** 窗口底部距离 */
-                let bottomOfWindow = scrollHeight - scrollTop - offsetHeight
+                let bottomOfWindow = scrollHeight - scrollTop - offsetHeight;
                 // console.log('🍹 isLoading: ', isLoading)
                 if (scrollTop > max_scroll_top) {
-                    max_scroll_top = scrollTop
+                    max_scroll_top = scrollTop;
                 }
 
                 if (bottomOfWindow < 200 && isLoading == false) {
-                    let totalPage = Math.ceil(this.total / this.pageSize)
+                    let totalPage = Math.ceil(this.total / this.pageSize);
                     // 如果是加载到最后一条,不执行()
                     if (this.pageNo === totalPage) {
                         if (scrollTop >= max_scroll_top) {
-                            this.$toast.warning('已是最后一条')
+                            this.$toast.warning("已是最后一条");
                         }
-                        return
+                        return;
                     }
 
-                    isLoading = true
-                    this.pageNo++ // 请求下一页
+                    isLoading = true;
+                    this.pageNo++; // 请求下一页
                     this.getList().then(res => {
-                        isLoading = false
+                        isLoading = false;
                         if (res.data) {
-                            this.list = this.list.concat(res.data.data || [])
+                            this.list = this.list.concat(res.data.data || []);
                         }
-                    })
+                    });
                 }
-            }
+            };
         }
     },
     mounted() {
@@ -337,7 +326,7 @@ export default {
 }
 .opera-list {
     /* margin-left: 100px; */
-    width: 730px;
+    width: 1200px;
     margin: 20px auto 0 auto;
     /* border: 1px solid #000; */
 }
@@ -375,7 +364,7 @@ export default {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    width: 500px;
+    width: 1000px;
     /* height: 60px; */
     padding: 10px;
     margin-left: 10px;
@@ -386,14 +375,12 @@ export default {
     font-weight: bold;
     color: #4c8bfd;
 }
-.detail div > span:first-child {
+.detail li > span:first-child {
     display: inline-block;
     min-width: 5em;
-    margin-top: 20px;
+    margin-top: 5px;
     margin-right: 10px;
-    /* text-align: right; */
     text-align-last: justify; /* ie9*/
-    /* font-weight: bold; */
     font-size: 1.1em;
     color: #444;
 }
@@ -402,14 +389,8 @@ export default {
     width: 20px;
     height: 20px;
 }
-
 .mt8 {
     margin-top: 8px;
-}
-.bold-blue {
-    /* font-weight: bold; */
-    font-size: 1.3em;
-    color: #4c8bfd;
 }
 .mt30 {
     margin-top: 30px;

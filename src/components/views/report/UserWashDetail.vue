@@ -71,7 +71,7 @@ export default {
                 game_name: this.filter.account,
                 report_day: report_day
             };
-            // console.log('请求数据',datas)
+            console.log('请求数据',datas)
             let data = window.all.tool.rmEmpty(datas);
             let { method, url } = this.$api.user_wash_detail;
             this.$http({ method, url, data }).then(res => {
@@ -115,7 +115,7 @@ export default {
             }
         },
         exportExcel() {
-            console.log("列表", this.menu_list);
+            // console.log("列表", this.menu_list);
             let firstList = {};
             let childList = {};
             let fatherList = {};

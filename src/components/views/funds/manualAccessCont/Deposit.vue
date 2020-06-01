@@ -15,7 +15,12 @@
                 </li>
                 <li>
                     <span>充值时间</span>
-                    <Date type="datetimerange" style="width:300px;" v-model="filter.dates" @update="timeUpdate()" />
+                    <Date
+                        type="datetimerange"
+                        style="width:300px;"
+                        v-model="filter.dates"
+                        @update="timeUpdate()"
+                    />
                 </li>
                 <li>
                     <span>正式账号</span>
@@ -60,7 +65,7 @@
                 @updateSize="updateSize"
             />
         </div>
-        <Dialog :show.sync="dia_show" title="人工充值">
+        <Dialog :show.sync="dia_show" title="人工扣款">
             <div class="dia-inner">
                 <ul class="form">
                     <li>
@@ -69,11 +74,13 @@
                     </li>
                     <li>
                         <span>存款类型</span>
-                        <Select
+                        <!-- <Select
+                            disabled
                             style="width:250px;"
                             v-model="form.deposit_type"
                             :options="deposit_type_opt"
-                        ></Select>
+                        ></Select>-->
+                        <Input disabled style="width:250px;" v-model="form.deposit_type" />
                     </li>
                     <li>
                         <span>存款金额</span>
@@ -91,7 +98,7 @@
                 </ul>
                 <div class="dia-buttons">
                     <button class="btn-plain-large" @click="dia_show=false">取消</button>
-                    <button class="btn-blue-large ml50" @click="addCfm" >确定</button>
+                    <button class="btn-blue-large ml50" @click="addCfm">确定</button>
                 </div>
             </div>
         </Dialog>
@@ -145,22 +152,22 @@ export default {
             // 人工充值 添加-dialog
             dia_show: false,
             form: {
-                account:'',
-                deposit_type:"1",
-                deposit_amount:'',
-                remark:'',
+                account: "",
+                deposit_type: "1",
+                deposit_amount: "",
+                remark: ""
             },
             deposit_type_opt: [
                 // 目前就一个
-                { label: "优惠存款", value: "1"}
+                { label: "优惠存款", value: "1" }
             ],
-            menu_list:[],
+            menu_list: []
         };
     },
     methods: {
         qqUpd(dates) {
             //同步时间筛选值
-             let arr=[dates[0]+' 00:00:00',dates[1]+' 00:00:00']
+            let arr = [dates[0] + " 00:00:00", dates[1] + " 00:00:00"];
             this.$set(this.filter, "dates", arr);
         },
         clearAll() {
@@ -172,22 +179,25 @@ export default {
                 charge_type: ""
             };
         },
-        clearForm(){
-            this.form={
-                account:'',
-                deposit_type:'',
-                deposit_amount:'',
-                remark:'',
-            }
+        clearForm() {
+            this.form = {
+                account: "",
+                deposit_type: "",
+                deposit_amount: "",
+                remark: ""
+            };
         },
         timeUpdate() {
             //同步快捷查询时间
             this.quick_query = this.filter.dates;
         },
         getList() {
-            let created_at = ''
+            let created_at = "";
             if (this.filter.dates[0] && this.filter.dates[1]) {
-                created_at = JSON.stringify([this.filter.dates[0],this.filter.dates[1]])
+                created_at = JSON.stringify([
+                    this.filter.dates[0],
+                    this.filter.dates[1]
+                ]);
             }
             let datas = {
                 mobile: this.filter.account,
@@ -195,8 +205,8 @@ export default {
                 created_at: created_at,
                 is_tester: this.filter.official_account,
                 type: this.filter.charge_type,
-                page:this.pageNo,
-                pageSize:this.pageSize
+                page: this.pageNo,
+                pageSize: this.pageSize
             };
             // console.log('请求数据',para);
             let data = window.all.tool.rmEmpty(datas);
@@ -204,34 +214,32 @@ export default {
                 method,
                 url
             } = this.$api.founds_manualaccess_artificial_recharge_recording;
-            this.$http({ method: method, url: url, data:data }).then(
-                res => {
-                    console.log("返回数据：", res);
-                    if (res && res.code == "200") {
-                        this.list = res.data.data;
-                        this.total = res.data.total;
-                    }
+            this.$http({ method: method, url: url, data: data }).then(res => {
+                console.log("返回数据：", res);
+                if (res && res.code == "200") {
+                    this.list = res.data.data;
+                    this.total = res.data.total;
                 }
-            );
+            });
         },
-        getMenuList(){
-            if(!window.all.tool.getLocal('Authorization')) return
-            if(window.all.tool.getLocal('menu')){
-                this.menu_list=window.all.tool.getLocal('menu')
+        getMenuList() {
+            if (!window.all.tool.getLocal("Authorization")) return;
+            if (window.all.tool.getLocal("menu")) {
+                this.menu_list = window.all.tool.getLocal("menu");
             }
         },
         exportExcel() {
-            console.log('列表',this.menu_list)
-            let firstList={}
-            let childList={}
-            let fatherList={}
-            for(var i=0;i<this.menu_list.length;i++){
-                firstList=this.menu_list[i].children
-                let fatherTemplate=this.menu_list[i]
-                for(var j=0;j<firstList.length;j++){
-                    if(firstList[j].path=='/funds/manualaccess'){
-                        fatherList=fatherTemplate
-                        childList=firstList[j]
+            console.log("列表", this.menu_list);
+            let firstList = {};
+            let childList = {};
+            let fatherList = {};
+            for (var i = 0; i < this.menu_list.length; i++) {
+                firstList = this.menu_list[i].children;
+                let fatherTemplate = this.menu_list[i];
+                for (var j = 0; j < firstList.length; j++) {
+                    if (firstList[j].path == "/funds/manualaccess") {
+                        fatherList = fatherTemplate;
+                        childList = firstList[j];
                     }
                 }
             }
@@ -242,54 +250,57 @@ export default {
                         item.order_no,
                         item.user && item.user.mobile,
                         item.user && item.user.guid,
-                        item.type==1?'优惠赠送':'洗码赠送',
-                        item.user && item.user.is_tester==0?'否':'是',
+                        item.type == 1 ? "优惠赠送" : "洗码赠送",
+                        item.user && item.user.is_tester == 0 ? "否" : "是",
                         item.money,
                         item.balance,
                         item.created_at,
                         item.admin && item.admin.name,
-                        item.remark,
+                        item.remark
                     ];
                 });
                 excel.export_json_to_excel({
                     header: tHeaders,
                     data,
-                    filename:fatherList.label+'-'+ "人工存款记录",
+                    filename: fatherList.label + "-" + "人工存款记录",
                     autoWidth: true,
                     bookType: "xlsx"
                 });
             });
         },
-        add(){
-            this.dia_show=true;
+        add() {
+            this.dia_show = true;
             this.clearForm();
-            this.form={
-                deposit_type:'1',
-            }
+            this.form = {
+                deposit_type: "优惠存款"
+            };
         },
-        addCfm(){
-            let data={
-               user:this.form.account,
-               type:this.form.deposit_type,
-               money:this.form.deposit_amount,
-               remark:this.form.remark,
-            }
-            console.log(data)
-            let {url,method}=this.$api.founds_manualaccess_artificial_recharge;
-            this.$http({method,url,data}).then(res=>{
-                console.log('返回数据',res)
-                if(res && res.code=='200'){
+        addCfm() {
+            let data = {
+                user: this.form.account,
+                type: "1",
+                money: this.form.deposit_amount,
+                remark: this.form.remark
+            };
+            console.log(data);
+            let {
+                url,
+                method
+            } = this.$api.founds_manualaccess_artificial_recharge;
+            this.$http({ method, url, data }).then(res => {
+                console.log("返回数据", res);
+                if (res && res.code == "200") {
                     this.$toast.success(res && res.message);
-                    this.dia_show=false;
+                    this.dia_show = false;
                     this.getList();
                 }
-            })
+            });
         },
         updateNo(val) {
             this.getList();
         },
         updateSize(val) {
-            this.pageNo=1;
+            this.pageNo = 1;
             this.getList();
         }
     },
@@ -327,7 +338,7 @@ export default {
     display: flex;
     margin-top: 20px;
 }
-.form li{
+.form li {
     align-items: baseline;
 }
 .form li > span:first-child {

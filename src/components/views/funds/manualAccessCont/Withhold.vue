@@ -14,7 +14,12 @@
                 </li>
                 <li>
                     <span>扣款时间</span>
-                    <Date type="datetimerange" style="width:300px;" v-model="filter.dates" @update="timeUpdate()" />
+                    <Date
+                        type="datetimerange"
+                        style="width:300px;"
+                        v-model="filter.dates"
+                        @update="timeUpdate()"
+                    />
                 </li>
                 <li>
                     <span>正式账号</span>
@@ -25,8 +30,8 @@
                     <Select v-model="filter.withhold_type" :options="withhold_opt"></Select>
                 </li>
                 <li class="right">
-                    <button class="btn-blue" @click="getList" >查询</button>
-                    <button class="btn-blue" @click="exportExccel()" >导出Excel</button>
+                    <button class="btn-blue" @click="getList">查询</button>
+                    <button class="btn-blue" @click="exportExccel()">导出Excel</button>
                     <button class="btn-red" @click="clearFilter">清空</button>
                     <button class="btn-blue" @click="without">人工扣款</button>
                 </li>
@@ -67,11 +72,13 @@
                     </li>
                     <li>
                         <span>扣款类型</span>
-                        <Select
+                        <!-- <Select
+                            disabled
                             style="width:250px;"
                             v-model="form.withhold_type"
                             :options="withhold_type_opt"
-                        ></Select>
+                        ></Select>-->
+                        <Input disabled style="width:250px;" v-model="form.withhold_type" />
                     </li>
                     <li>
                         <span>扣款金额</span>
@@ -89,7 +96,7 @@
                 </ul>
                 <div class="dia-buttons">
                     <button class="btn-plain-large" @click="dia_show=false">取消</button>
-                    <button class="btn-blue-large ml50" @click="withHoldCfm" >确定</button>
+                    <button class="btn-blue-large ml50" @click="withHoldCfm">确定</button>
                 </div>
             </div>
         </Dialog>
@@ -102,36 +109,36 @@ export default {
         return {
             quick_query: [],
             filter: {
-                account: '',
-                game_id: '',
+                account: "",
+                game_id: "",
                 dates: [],
-                offcial_acc: '',
-                withhold_type: ''
+                offcial_acc: "",
+                withhold_type: ""
             },
             official_opt: [
-                { label: '全部', value: '' },
-                { label: '是', value: '1' },
-                { label: '否', value: '0' }
+                { label: "全部", value: "" },
+                { label: "是", value: "1" },
+                { label: "否", value: "0" }
             ],
             withhold_opt: [
-                { label: '全部', value: '' },
-                { label: '误存提款', value: '1' }
+                { label: "全部", value: "" },
+                { label: "误存提款", value: "1" }
             ],
             icon_obj: {
-                '0': 'iconfont icongou green',
-                '1': 'iconfont iconyuanquan red'
+                "0": "iconfont icongou green",
+                "1": "iconfont iconyuanquan red"
             },
             headers: [
-                '订单号',
-                '会员账号',
-                '会员ID',
-                '扣款类型',
-                '正式账号',
-                '扣款金额',
-                '账户余额',
-                '扣款时间',
-                '操作人',
-                '备注'
+                "订单号",
+                "会员账号",
+                "会员ID",
+                "扣款类型",
+                "正式账号",
+                "扣款金额",
+                "账户余额",
+                "扣款时间",
+                "操作人",
+                "备注"
             ],
             list: [],
             total: 0,
@@ -139,94 +146,95 @@ export default {
             pageSize: 25,
             //dialog
             dia_show: false,
-            form:{
-                account: '',
-                withhold_type: '',
-                withhold_amount: '',
-                remark: '',
+            form: {
+                account: "",
+                withhold_type: "",
+                withhold_amount: "",
+                remark: ""
             },
-            withhold_type_opt:[
-                {label:'误存提款',value:'1'}
-            ],
-        }
+            withhold_type_opt: [{ label: "误存提款", value: "1" }]
+        };
     },
     methods: {
         qqUpd(dates) {
             //同步时间筛选值
-            let arr=[dates[0]+' 00:00:00',dates[1]+' 00:00:00']
+            let arr = [dates[0] + " 00:00:00", dates[1] + " 00:00:00"];
             this.$set(this.filter, "dates", arr);
         },
         timeUpdate() {
             //同步快捷查询时间
-            this.quick_query = this.filter.dates
+            this.quick_query = this.filter.dates;
         },
-        clearFilter(){
+        clearFilter() {
             this.filter = {
-                account: '',
-                game_id: '',
+                account: "",
+                game_id: "",
                 dates: [],
-                offcial_acc: '',
-                withhold_type: ''
-            }
+                offcial_acc: "",
+                withhold_type: ""
+            };
         },
-        clearForm(){
-            this.form={
-                account: '',
-                withhold_type: '',
-                withhold_amount: '',
-                remark: '',
-            }
+        clearForm() {
+            this.form = {
+                account: "",
+                withhold_type: "",
+                withhold_amount: "",
+                remark: ""
+            };
         },
         withholdUpdateNo(val) {
             this.getList();
         },
         withholdUpdateSize(val) {
-            this.pageNo=1;
+            this.pageNo = 1;
             this.getList();
         },
-        getList(){
-            let created_at = ''
+        getList() {
+            let created_at = "";
             if (this.filter.dates[0] && this.filter.dates[1]) {
-                created_at = [this.filter.dates[0],this.filter.dates[1]]
+                created_at = [this.filter.dates[0], this.filter.dates[1]];
             }
-            let datas={
-                mobile:this.filter.account,
-                guid:this.filter.game_id,
-                created_at:created_at,
-                is_tester:this.filter.offcial_acc,
-                type:this.filter.withhold_type,
-                page:this.pageNo,
-                pageSize:this.pageSize,
+            let datas = {
+                mobile: this.filter.account,
+                guid: this.filter.game_id,
+                created_at: created_at,
+                is_tester: this.filter.offcial_acc,
+                type: this.filter.withhold_type,
+                page: this.pageNo,
+                pageSize: this.pageSize
             };
             // console.log('请求数据',datas);
-            let data=window.all.tool.rmEmpty(datas);
-            let {method,url}=this.$api.founds_manualaccess_artificial_charge_recording;
-            this.$http({method:method,url:url,data:data}).then(res=>{
+            let data = window.all.tool.rmEmpty(datas);
+            let {
+                method,
+                url
+            } = this.$api.founds_manualaccess_artificial_charge_recording;
+            this.$http({ method: method, url: url, data: data }).then(res => {
                 // console.log('返回数据：',res)
-                if(res && res.code=='200'){
-                    this.list=res.data.data;
-                    this.total=res.data.total;
+                if (res && res.code == "200") {
+                    this.list = res.data.data;
+                    this.total = res.data.total;
                 }
-            })
+            });
         },
-        getMenuList(){
-            if(!window.all.tool.getLocal('Authorization')) return
-            if(window.all.tool.getLocal('menu')){
-                this.menu_list=window.all.tool.getLocal('menu')
+        getMenuList() {
+            if (!window.all.tool.getLocal("Authorization")) return;
+            if (window.all.tool.getLocal("menu")) {
+                this.menu_list = window.all.tool.getLocal("menu");
             }
         },
-        exportExccel(){
-            console.log('列表',this.menu_list)
-            let firstList={}
-            let childList={}
-            let fatherList={}
-            for(var i=0;i<this.menu_list.length;i++){
-                firstList=this.menu_list[i].children
-                let fatherTemplate=this.menu_list[i]
-                for(var j=0;j<firstList.length;j++){
-                    if(firstList[j].path=='/funds/manualaccess'){
-                        fatherList=fatherTemplate
-                        childList=firstList[j]
+        exportExccel() {
+            console.log("列表", this.menu_list);
+            let firstList = {};
+            let childList = {};
+            let fatherList = {};
+            for (var i = 0; i < this.menu_list.length; i++) {
+                firstList = this.menu_list[i].children;
+                let fatherTemplate = this.menu_list[i];
+                for (var j = 0; j < firstList.length; j++) {
+                    if (firstList[j].path == "/funds/manualaccess") {
+                        fatherList = fatherTemplate;
+                        childList = firstList[j];
                     }
                 }
             }
@@ -237,55 +245,58 @@ export default {
                         item.order_no,
                         item.user && item.user.mobile,
                         item.user && item.user.guid,
-                        item.type==1?'误存扣款':'其他',
-                        item.user && item.user.is_tester==0?'否':'是',
+                        item.type == 1 ? "误存扣款" : "其他",
+                        item.user && item.user.is_tester == 0 ? "否" : "是",
                         item.money,
                         item.balance,
                         item.created_at,
                         item.admin && item.admin.name,
-                        item.remark,
+                        item.remark
                     ];
                 });
                 excel.export_json_to_excel({
                     header: tHeaders,
                     data,
-                    filename:fatherList.label+'-'+  "人工扣款记录",
+                    filename: fatherList.label + "-" + "人工扣款记录",
                     autoWidth: true,
                     bookType: "xlsx"
                 });
-            });   
+            });
         },
-        without(){
-            this.dia_show=true;
+        without() {
+            this.dia_show = true;
             this.clearForm();
-            this.form={
-                withhold_type: '1',
-            }
+            this.form = {
+                withhold_type: "误存提款"
+            };
         },
-        withHoldCfm(){
-            let data={
-               user:this.form.account,
-               type:this.form.withhold_type,
-               money:this.form.withhold_amount,
-               remark:this.form.remark,
-            }
-            // console.log(data)
-            let {url,method}=this.$api.founds_manualaccess_artificial_charge;
-            this.$http({method,url,data}).then(res=>{
+        withHoldCfm() {
+            let data = {
+                user: this.form.account,
+                type: "1",
+                money: this.form.withhold_amount,
+                remark: this.form.remark
+            };
+            console.log(data)
+            let {
+                url,
+                method
+            } = this.$api.founds_manualaccess_artificial_charge;
+            this.$http({ method, url, data }).then(res => {
                 // console.log('返回数据',res)
-                if(res && res.code=='200'){
+                if (res && res.code == "200") {
                     this.$toast.success(res && res.message);
-                    this.dia_show=false;
+                    this.dia_show = false;
                     this.getList();
                 }
-            })
-        },
+            });
+        }
     },
     mounted() {
         this.getList();
         this.getMenuList();
     }
-}
+};
 </script>
 <style scoped>
 /* .filter 全局样式 */
@@ -297,35 +308,34 @@ export default {
 .withhold-filter li {
     margin-top: 10px;
 }
-.dia-inner{
+.dia-inner {
     width: 700px;
     height: 350px;
-   
 }
 .dia-inner .form {
     width: 360px;
     margin: 0 auto;
 }
-.dia-inner .form li{
+.dia-inner .form li {
     display: flex;
     margin-top: 20px;
 }
-.form li{
+.form li {
     align-items: baseline;
 }
-.form li >span:first-child{
+.form li > span:first-child {
     min-width: 80px;
     text-align: right;
     margin-right: 10px;
 }
-.w250{
+.w250 {
     width: 250px;
 }
-.dia-buttons{
+.dia-buttons {
     margin-top: 50px;
     text-align: center;
 }
-.ml50{
+.ml50 {
     margin-left: 50px;
 }
 </style>

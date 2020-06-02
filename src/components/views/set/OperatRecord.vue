@@ -315,6 +315,10 @@ export default {
 </script>
 
 <style scoped>
+.cont-left{
+    width:320px;
+    margin-left:5px;
+}
 .cont {
     width: 1000px;
     max-height: 80vh;
@@ -356,7 +360,7 @@ export default {
     left: 50%;
     bottom: 0;
     width: 2px;
-    height: 45px;
+    height: 180px;
     background: #eee;
 }
 

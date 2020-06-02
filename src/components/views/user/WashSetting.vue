@@ -72,7 +72,7 @@
                             </td>
                         </tr>
                         <tr class="vip-data" v-for="(item,index) in lev_list" :key="index">
-                            <td  >
+                            <td>
                                 <span>{{item.name}}:</span>
                                 <span
                                     class="ml-10"
@@ -155,7 +155,7 @@ export default {
             curr_row: {},
             row_id: {},
             gameTypeData: [],
-            dia_title:'',
+            dia_title: ""
         };
     },
 
@@ -269,7 +269,7 @@ export default {
         },
         addWash() {
             this.initWash();
-            this.dia_title='添加洗码规则'
+            this.dia_title = "添加洗码规则";
             this.show_modal = true;
             this.is_edit = false;
             this.dia_status = "add";
@@ -299,10 +299,10 @@ export default {
                 bet: String(this.wash_form.code_numbers[1]),
                 percent: JSON.stringify(percent)
             };
-            // console.log('请求数据',data)
+            console.log("请求数据", data);
             let { method, url } = this.$api.wash_code_add;
             this.$http({ method, url, data }).then(res => {
-                // console.log('返回数据',res)
+                console.log("返回数据", res);
                 if (res && res.code == "200") {
                     this.show_modal = false;
                     this.$toast.success(res && res.message);
@@ -313,7 +313,7 @@ export default {
         editWashModal(row, idx) {
             // console.log('row',row)
             this.initWash();
-            this.dia_title='编辑';
+            this.dia_title = "编辑";
             this.show_modal = true;
             this.is_edit = true;
             this.dia_status = "edit";
@@ -538,8 +538,7 @@ export default {
 .vip-data td span:first-child {
     margin-left: 40px;
 }
-.table-data div{
+.table-data div {
     margin-left: 10px;
 }
-
 </style>

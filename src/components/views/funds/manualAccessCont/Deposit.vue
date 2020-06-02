@@ -153,7 +153,7 @@ export default {
             dia_show: false,
             form: {
                 account: "",
-                deposit_type: "1",
+                deposit_type: "",
                 deposit_amount: "",
                 remark: ""
             },

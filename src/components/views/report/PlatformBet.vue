@@ -6,11 +6,11 @@
                 <ul class="left">
                     <li>
                         <span>会员账号</span>
-                        <Input class="w100" v-model="filter.account" />
+                        <Input limit="en-num" class="w100" v-model="filter.account" />
                     </li>
                     <li>
                         <span>会员ID</span>
-                        <Input class="w100" v-model="filter.userid" />
+                        <Input limit="en-num" class="w100" v-model="filter.userid" />
                     </li>
                     <li>
                         <span>派彩时间</span>
@@ -35,7 +35,7 @@
                     </li>
                     <li>
                         <span>注单号</span>
-                        <Input class="w100" v-model="filter.order_num" />
+                        <Input limit="en-num" class="w100" v-model="filter.order_num" />
                     </li>
                     <li>
                         <span>注单时间</span>

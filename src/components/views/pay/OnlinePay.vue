@@ -6,7 +6,7 @@
             <ul class="left">
                 <li>
                     <span>商户号</span>
-                    <Input v-model="filter.merchant_num" />
+                    <Input limit="en-num" v-model="filter.merchant_num" />
                 </li>
                 <li>
                     <span>创建人</span>
@@ -22,7 +22,7 @@
                 </li>
                 <li>
                     <span>商户编号</span>
-                    <Input v-model="filter.merchant_code" />
+                    <Input limit="en-num" v-model="filter.merchant_code" />
                 </li>
                 <li>
                     <span>更新人</span>

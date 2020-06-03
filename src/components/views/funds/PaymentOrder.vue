@@ -6,7 +6,7 @@
             <ul class="left filter-item">
                 <li>
                     <span>订单号</span>
-                    <Input v-model="filter.order_no" />
+                    <Input limit="en-num" v-model="filter.order_no" />
                 </li>
                 <li>
                     <span>会员账号</span>

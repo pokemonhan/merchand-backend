@@ -5,11 +5,11 @@
             <ul class="left">
                 <li>
                     <span>会员账号</span>
-                    <Input v-model="filter.acc" />
+                    <Input limit="en-num" v-model="filter.acc" />
                 </li>
                 <li>
                     <span>会员ID</span>
-                    <Input v-model="filter.id" />
+                    <Input limit="en-num" v-model="filter.id" />
                 </li>
                 <li>
                     <span>银行名称</span>
@@ -17,7 +17,7 @@
                 </li>
                 <li>
                     <span>银行卡号</span>
-                    <Input v-model="filter.card" />
+                    <Input limit="en-num" v-model="filter.card" />
                 </li>
                 <li>
                     <span>绑定日期</span>

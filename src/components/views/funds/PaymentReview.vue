@@ -8,11 +8,11 @@
             <ul class="left">
                 <li>
                     <span>会员账号</span>
-                    <Input v-model="filter.account" />
+                    <Input limit="en-num" v-model="filter.account" />
                 </li>
                 <li>
                     <span>订单号</span>
-                    <Input v-model="filter.order_id" />
+                    <Input limit="en-num" v-model="filter.order_id" />
                 </li>
                 <li>
                     <span>申请时间</span>
@@ -25,7 +25,7 @@
                 </li>
                 <li>
                     <span style="width:4em;">会员ID</span>
-                    <Input v-model="filter.acc_id" />
+                    <Input limit="en-num" v-model="filter.acc_id" />
                 </li>
                 <li>
                     <span>审核人</span>

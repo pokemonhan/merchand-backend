@@ -5,11 +5,11 @@
             <ul class="left">
                 <li>
                     <span>会员账号</span>
-                    <Input class="w90" v-model="filter.account" />
+                    <Input limit="en-num" class="w90" v-model="filter.account" />
                 </li>
                 <li>
                     <span>会员ID</span>
-                    <Input class="w90" v-model="filter.userId" />
+                    <Input limit="en-num" class="w90" v-model="filter.userId" />
                 </li>
                 <li>
                     <span>日期</span>

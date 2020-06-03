@@ -9,7 +9,7 @@
                     </li>
                     <li>
                         <span>IP搜索：</span>
-                        <Input v-model="filter.dataIP" />
+                        <Input errmsg="格式错误" :showerr="errIpShow(filter.dataIP)" v-model="filter.dataIP" />
                     </li>
                     <li>
                         <span>日期选择：</span>
@@ -129,6 +129,22 @@ export default {
         };
     },
     methods: {
+        //校验ip地址
+        errIpShow(val){
+            if(!val) return false
+            let reg=/^(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])$/
+
+            return !reg.test(val)
+        },
+        //校验查询条件
+        checkFilter(){
+            let reg=/^(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])$/
+            // let re=new RegExp(IpCheck)
+            if(!reg.test(this.filter.dataIP) && this.filter.dataIP!='' ){
+                return false
+            }
+            return true
+        },
         // 第一次加载
         firstLoad() {
             this.pageNo = 1;
@@ -168,6 +184,7 @@ export default {
         },
         getList() {
             return new Promise((resolve, reject) => {
+                if(!this.checkFilter()) return  
                 let createdAt = "";
                 if (this.filter.dates[0] && this.filter.dates[1]) {
                     createdAt = JSON.stringify([

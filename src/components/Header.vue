@@ -396,26 +396,14 @@ export default {
 
             let { method, url } = this.$api.header_notification_statistics
             this.$http({ method, url }).then(res => {
-                // console.log('头部返回数据',res)
+                console.log('头部返回数据',res)
                 if (res && res.code == '200') {
                     this.list = res.data
-                    for (var i = 0; i < this.list.length; i++) {
-                        if (this.list[i].message_type == 'email') {
-                            this.email_count = this.list[i].count
-                        }
-                        if (this.list[i].message_type == 'online_top_up') {
-                            this.online_top_up_count = this.list[i].count
-                        }
-                        if (this.list[i].message_type == 'offline_top_up') {
-                            this.offline_top_up_count = this.list[i].count
-                        }
-                        if (this.list[i].message_type == 'withdrawal_order') {
-                            this.withdrawal_order_count = this.list[i].count
-                        }
-                        if (this.list[i].message_type == 'withdrawal_review') {
-                            this.withdrawal_review_count = this.list[i].count
-                        }
-                    }
+                    this.email_count=this.list.email;
+                    this.online_top_up_count=this.list.online_top_up;
+                    this.offline_top_up_count=this.list.offline_top_up;
+                    this.withdrawal_order_count=this.list.withdrawal_order;
+                    this.withdrawal_review_count=this.list.withdrawal_review;
                     // console.log('email',this.email_count)
                     // console.log('online_top_up',this.online_top_up_count)
                     // console.log('offline_top_up',this.offline_top_up_count)

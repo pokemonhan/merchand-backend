@@ -308,7 +308,7 @@
                     <ul>
                         <li>
                             <span>会员账号:</span>
-                            <Input v-model="form.account" />
+                            <Input limit="en-num" v-model="form.account" />
                         </li>
                         <li>
                             <span>账号类型:</span>

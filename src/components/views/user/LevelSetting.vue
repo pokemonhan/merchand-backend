@@ -39,19 +39,30 @@
                 </div>
                 
             </div>
-        </div> -->
+        </div>-->
         <Dialog :show.sync="show_lev_modal" :title="lev_modal_name">
             <div class="lev-mod">
                 <div class="mod-body center-box">
                     <ul class="form">
                         <li>
                             <span>等级名称</span>
-                            <Input class="w200" v-model="lev.name" />
+                            <Input
+                                class="w200"
+                                v-model="lev.name"
+                                errmsg="等级名称已存在"
+                                :showerr="errNameShow(lev.name)"
+                            />
                         </li>
 
                         <li>
                             <span>晋级经验:</span>
-                            <Input class="w88" v-model="lev.experience_min" limit="number" />
+                            <Input
+                                class="w88"
+                                v-model="lev.experience_min"
+                                :errmsg="dia_err"
+                                :showerr="errExpShow(lev.experience_min,lev.experience_max)"
+                                limit="number"
+                            />
                             <span style="margin:0 7px;">~</span>
                             <Input class="w88" v-model="lev.experience_max" limit="number" />
                         </li>
@@ -164,9 +175,11 @@ export default {
                 "操作"
             ],
             list: [],
+            exList: [],
             total: 0,
             pageNo: 1,
             pageSize: 25,
+            dia_err: "",
             //晋级方式
 
             up_method: "",
@@ -193,10 +206,66 @@ export default {
             /* 删除 */
             show_del_modal: false,
             curr_row: {},
-            rise_type: ""
+            rise_type: "",
+            testList: []
         };
     },
     methods: {
+        getLevName(list = []) {
+            let levName = [];
+            for (var i = 0; i < list.length; i++) {
+                levName.push(list[i].name);
+            }
+            // console.log("名字", levName);
+            this.exList = levName;
+        },
+        errNameShow(val) {
+            if (this.dia_status === "addLev") {
+                if (!val) return false;
+                for (var i = 0; i < this.exList.length; i++) {
+                    if (val == this.exList[i]) {
+                        return true;
+                    }
+                }
+            }
+            //如果是编辑 判断除本条以外的名字是否重复
+            if (this.dia_status === "editLev") {
+                if (!val) return false;
+                let thisName = this.curr_row.name;
+                let nameIndex = -1;
+                for (var j = 0; j < this.exList.length; j++) {
+                    if (this.exList[j] === thisName) {
+                        nameIndex = j;
+                    }
+                }
+                if (nameIndex > -1) {
+                    this.exList.splice(nameIndex, 1);
+                }
+                for (var k = 0; k < this.exList.length; k++) {
+                    if (val == this.exList[k]) {
+                        return true;
+                    }
+                }
+            }
+        },
+        errExpShow(min, max) {
+            if (this.dia_status === "addLev") {
+                if (
+                    parseInt(min) <
+                    parseInt(
+                        this.testList[this.testList.length - 1].experience_max
+                    )
+                ) {
+                    this.dia_err = "区间已存在";
+                    return true;
+                }
+            }
+            if (!min && !max) return false;
+            if (parseInt(min) > parseInt(max)) {
+                this.dia_err = "数据错误";
+                return true;
+            }
+        },
         updateNo(val) {
             this.getList();
         },
@@ -223,6 +292,14 @@ export default {
             };
         },
         checkLev() {
+            if (this.dia_status !== "editLev") {
+                for (var i = 0; i < this.exList.length; i++) {
+                    if (this.exList[i] == this.lev.name) {
+                        this.$toast.warning("等级名称已存在");
+                        return false;
+                    }
+                }
+            }
             if (this.lev.name === "") {
                 this.$toast.warning("等级名称不可为空");
                 return false;
@@ -235,8 +312,21 @@ export default {
                 this.$toast.warning("最大晋级经验不能为空");
                 return false;
             }
+            if (this.lev.promotion_gift === "") {
+                this.$toast.warning("晋级奖励不能为空");
+                return false;
+            }
+            if (this.lev.weekly_gift == "") {
+                this.$toast.warning("周奖励不能为空");
+                return false;
+            }
+            if (this.lev.experience_min > this.lev.experience_max) {
+                this.$toast.warning("最小晋级经验不能大于最大晋级经验");
+                return false;
+            }
             return true;
         },
+
         addLev() {
             this.initLev();
             this.lev_modal_name = "添加等级";
@@ -269,6 +359,7 @@ export default {
             this.lev_modal_name = "编辑详情";
             this.dia_status = "editLev";
             this.show_lev_modal = true;
+            this.curr_row = row;
             this.lev = {
                 id: row.id,
                 name: row.name,
@@ -385,10 +476,12 @@ export default {
             let data = window.all.tool.rmEmpty(datas);
             let { method, url } = this.$api.grade_list;
             this.$http({ method, url, data }).then(res => {
-                // console.log("返回数据", res);
+                console.log("返回数据", res);
                 if (res && res.code == "200") {
                     this.list = res.data.data;
                     this.total = res.data.total;
+                    this.testList = res.data.data;
+                    this.getLevName(res.data.data);
                 }
             });
         }

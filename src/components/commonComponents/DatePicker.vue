@@ -4,7 +4,7 @@
         v-clickoutside="closePanel"
         :style="css"
     >
-        <!-- 已选 -->
+        <!-- 已选 input 框-->
         <div
             @click="chooseDate"
             @mouseover="changeClearState(true)"
@@ -26,11 +26,10 @@
             <i v-else class="iconfont iconrili"></i>-->
         </div>
 
-
-        <!-- 已选 下方选择框-->
+        <!-- 下方 弹出选择框-->
         <transition name="date-picker">
             <div class="date-container">
-                <div v-show="showPanel" :style="{left:styleLeft}" :class="['date-box', pickerClassName]" ref="date-box">
+                <div v-show="showPanel" :class="['date-box', pickerClassName]" ref="date-box">
                     <!-- 当前选中 顶部-->
                     <div class="date-info">
                         <span>
@@ -72,31 +71,37 @@
                     <!-- 当前选中 -->
                     <div class="list-container">
                         <div class="list-box">
-                            <!-- 日期 -->
+                            <!-- 日期 默认选择界面 -->
                             <div class="date-list" v-show="step===1">
                                 <ul class="week-list">
                                     <li v-for="(day, index) in weekList" :key="index">{{day}}</li>
                                 </ul>
                                 <ul class="days-list">
+                                    <!-- 上月 日期 -->
+                                    <!-- @click="changeDate(preMonthLastDate-beforeThisMonthDays+n, -1)" -->
                                     <li
-                                        @click="changeDate(preMonthLastDate-beforeThisMonthDays+n, -1)"
                                         class="pre-month-day"
                                         v-for="n in beforeThisMonthDays"
                                         :key="'0'+n"
                                     >{{preMonthLastDate-beforeThisMonthDays+n}}</li>
+
+                                    <!-- 本月 日期 -->
                                     <li
-                                        @click="changeDate(n, 0)"
+                                        @click="changeDate(n, 0,disSelect(startYear,startMonth,n))"
                                         :class="{
                                             'cur-month-day': true,
                                             today: startYear===todayYear && startMonth===todayMonth && n===todayDate,
                                             active: startYear===curStartYear && startMonth===curStartMonth && n===curStartDate || startYear===curEndYear && startMonth===curEndMonth && n===curEndDate,
+                                            disabled: disSelect(startYear,startMonth,n),
                                             'range-day': `${startYear}-${('0' + startMonth).slice(-2)}-${('0' + n).slice(-2)}` > resultTime[0] && `${startYear}-${('0' + startMonth).slice(-2)}-${('0' + n).slice(-2)}` < resultTime[1]
                                         }"
                                         v-for="n in thisMonthDays"
                                         :key="'1'+n"
                                     >{{n}}</li>
+
+                                    <!-- 下月 日期 -->
+                                    <!-- @click="changeDate(n, 1)" -->
                                     <li
-                                        @click="changeDate(n, 1)"
                                         class="next-month-day"
                                         v-for="n in afterThisMonthDays"
                                         :key="'2'+n"
@@ -105,7 +110,7 @@
                             </div>
                             <!-- 日期 -->
 
-                            <!-- 年份 -->
+                            <!-- 年份 选择界面 -->
                             <div v-show="step===2" class="year-list">
                                 <ul>
                                     <li v-for="n in 10" :key="n">
@@ -172,25 +177,33 @@
                                     <li v-for="(day, index) in weekList" :key="index">{{day}}</li>
                                 </ul>
                                 <ul class="days-list">
+                                    <!-- 上月 灰色字体 -->
+                                    <!-- @click="changeDate(thisMonthLastDate-beforeNextMonthDays+n, 0)" -->
+
                                     <li
-                                        @click="changeDate(thisMonthLastDate-beforeNextMonthDays+n, 0)"
                                         class="pre-month-day"
                                         v-for="n in beforeNextMonthDays"
                                         :key="'0'+n"
                                     >{{thisMonthLastDate-beforeNextMonthDays+n}}</li>
+                                    <!-- 本月 日期 -->
                                     <li
-                                        @click="changeDate(n, 1)"
+                                        @click="changeDate(n, 1,disSelect(endYear,endMonth,n))"
                                         :class="{
                                             'cur-month-day': true,
                                             today: endYear===todayYear && endMonth===todayMonth && n===todayDate,
                                             active: endYear===curEndYear && endMonth===curEndMonth && n===curEndDate || endYear===curStartYear && endMonth===curStartMonth && n===curStartDate,
+                                            disabled: disSelect(endYear,endMonth,n),
                                             'range-day': `${endYear}-${('0' + endMonth).slice(-2)}-${('0' + n).slice(-2)}` < resultTime[1] && resultTime[0] < `${endYear}-${('0' + endMonth).slice(-2)}-${('0' + n).slice(-2)}`
                                         }"
                                         v-for="n in nextMonthDays"
                                         :key="'1'+n"
                                     >{{n}}</li>
+                                    <!-- 本月 日期 -->
+
+                                    <!-- 下月 灰色 -->
+                                    <!-- @click="changeDate(n, 2)" -->
+
                                     <li
-                                        @click="changeDate(n, 2)"
                                         class="next-month-day"
                                         v-for="n in afterNextMonthDays"
                                         :key="'2'+n"
@@ -198,6 +211,7 @@
                                 </ul>
                             </div>
                             <!-- 日期 -->
+
                             <!-- 年份 -->
                             <div v-show="step===2" class="year-list">
                                 <ul>
@@ -269,7 +283,10 @@
                     <div style="padding-left:150px;" v-else>
                         <button class="clear-btn" @click="clear" v-if="clearable">清空</button>
                     </div>
-                    <div class="mt5 mb5" v-if="quickdate&&(type==='daterange'||type=='datetimerange')">
+                    <div
+                        class="mt5 mb5"
+                        v-if="quickdate&&(type==='daterange'||type=='datetimerange')"
+                    >
                         <button class="btns-plain-blue" @click="quickSelect('today')">今天</button>
                         <button class="btns-plain-blue" @click="quickSelect('yesterday')">昨天</button>
                         <button class="btns-plain-blue" @click="quickSelect('lastweek')">上周</button>
@@ -308,12 +325,13 @@ export default {
             type: Boolean,
             default: () => false
         },
-        quickdate: {    // 今天,昨天,本月等.快速选择
-            type:Boolean,
+        quickdate: {
+            // 今天,昨天,本月等.快速选择
+            type: Boolean,
             defalut: () => false
         },
-        styleLeft: {
-            type: String
+        disabledDate: {
+            type: [Function, Array]
         }
         // ,
         // furture:{
@@ -372,6 +390,39 @@ export default {
         }
     },
     methods: {
+        disSelect(year, month, date, isStart) {
+            var now = new Date() //当前日期
+            var nowYear = now.getFullYear() // 当前年
+            var nowMonth = now.getMonth() // 当前月
+            var nowDay = now.getDate() // 当前日
+            let yesterday = new Date(nowYear, nowMonth, nowDay-1).valueOf()
+            let today = new Date(nowYear, nowMonth, nowDay).valueOf()
+            let tomorrow = new Date(nowYear, nowMonth, nowDay+1).valueOf()
+            let this_date = new Date(year, month-1, date).valueOf()
+            // this.disabledDate = ['afterTodayDisabled']
+            if (!this.disabledDate) return false
+            if (Array.isArray(this.disabledDate)) {
+                if (this.disabledDate.indexOf('no_after_today') !== -1) {
+                    if (this_date > today) return true
+                }
+                if (this.disabledDate.indexOf('no_after_tomorrow') !== -1) {
+                    if (this_date > tomorrow) return true
+                }
+                if (this.disabledDate.indexOf('no_before_yesterday') !== -1) {
+                    if (this_date < yesterday) return true
+                }
+                if (this.disabledDate.indexOf('no_before_today') !== -1) {
+                    if (this_date < today) return true
+                }
+                if (this.disabledDate.indexOf('no_today') !== -1) {
+                    if (this_date === today) return true
+                }
+            }
+            let type = typeof this.disabledDate
+            if (type === 'function') {
+                return this.disabledDate(this_date)
+            }
+        },
         changeClearState(bool) {
             if (this.disabled) return
             this.isClear = bool
@@ -423,7 +474,8 @@ export default {
             }
             this.showPanel = false
         },
-        changeDate(date, type) {
+        changeDate(date, type, disabled) {
+            if (disabled) return
             if (this.resultTime[0] && this.resultTime[1]) {
                 this.resultTime = ['', '']
                 this.curStartDate = this.curEndDate = undefined
@@ -438,6 +490,7 @@ export default {
             }
             let year, month, timeType
             switch (type) {
+                // 上月
                 case -1:
                     month = this.startMonth - 1
                     if (month < 1) {
@@ -448,10 +501,12 @@ export default {
                     }
                     this.changeMonth('-')
                     break
+                // 本月
                 case 0:
                     month = this.startMonth
                     year = this.startYear
                     break
+                // 下月
                 case 1:
                     month = this.startMonth + 1
                     if (month > 12) {
@@ -468,6 +523,7 @@ export default {
                         this.changeMonth('+')
                     }
                     break
+                // 结束月 + 1
                 case 2:
                     month = this.endMonth + 1
                     if (month > 12) {
@@ -712,7 +768,7 @@ export default {
             ))
             this.preMonthLastDate = this.getDaysInOneMonth(
                 this.startYear,
-                this.startMonth-1
+                this.startMonth - 1
             )
             this.beforeThisMonthDays = new Date(
                 `${this.startYear}-${this.startMonth}-1`
@@ -750,7 +806,6 @@ export default {
             if (nowDayOfWeek === 0) {
                 nowDayOfWeek = 7
             }
-
             // 今天
             function getToday() {
                 return [new Date(), new Date().valueOf() + 1000 * 60 * 60 * 24]
@@ -929,7 +984,7 @@ export default {
                     this.resultTime = val
                     this.dateStr = val.join(' ~ ')
                 }
-            // 非数组单个 type: 1. date 2. datetime
+                // 非数组单个 type: 1. date 2. datetime
             } else {
                 arr = val.split(' ')[0].split('-')
                 date = new Date(val)
@@ -1284,16 +1339,23 @@ export default {
     align-items: center;
 }
 .days-list li {
-    cursor: pointer;
+    /* cursor: pointer; */
     color: #c5c8ce;
     text-align: center;
 }
+
 .days-list .cur-month-day {
     box-sizing: border-box;
     color: #2c3e50;
+    cursor: pointer;
 }
 .days-list .cur-month-day.range-day {
     background-color: #d0f0ff;
+}
+
+.days-list .cur-month-day.disabled {
+    color: #c5c8ce;
+    cursor: not-allowed;
 }
 .days-list .cur-month-day:hover {
     background-color: #d0f0ff;

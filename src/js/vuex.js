@@ -8,6 +8,8 @@ const state = {
     isLogin: false,
     isShowLoading: false,
     showMask: false,
+
+    loudSpeakerOpen: true, // 是否打开喇叭
     tab_nav_list: [],        // 顶部导航菜单
     BASE_PATH: '',
     keepAliveExclude: ['SendEmail'],   // 不需要缓存的 组件name
@@ -25,7 +27,6 @@ const getters = {
             return item.name
         })
         return arr.concat(home)
-
     }
 }
 const mutations = {};

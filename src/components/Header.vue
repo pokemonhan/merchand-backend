@@ -72,9 +72,9 @@
                         </span>
                     </li>
                     <!-- 喇叭 -->
-                    <li style="width:22px;" @click="play_music=!play_music">
-                        <i v-if="play_music" class="iconfont iconspeaker"></i>
-                        <i v-if="!play_music" class="iconfont iconmute"></i>
+                    <li style="width:22px;" @click="setLoudspeaker">
+                        <i v-if="loudSpeakerOpen" class="iconfont iconspeaker"></i>
+                        <i v-if="!loudSpeakerOpen" class="iconfont iconmute"></i>
                     </li>
                     <li class="account" @mouseenter="accoutEnter" @mouseleave="accountLeave">
                         <span>
@@ -149,7 +149,6 @@
 </template>
 
 <script>
-
 import { mapState, mapMutations, mapGetters } from 'vuex'
 import Slide from '../js/config/slide'
 import MenuList from '../js/menuList'
@@ -158,6 +157,7 @@ export default {
     data() {
         return {
             // isfullScreen: true,
+            // loudSpeakerOpen: window.loudSpeakerOpen,
             menu_list: [],
             play_music: false,
             account_ishow: false,
@@ -185,13 +185,14 @@ export default {
         }
     },
     computed: {
-        ...mapState(['tab_nav_list', 'founds_incomeorder'])
+        ...mapState(['tab_nav_list', 'founds_incomeorder','loudSpeakerOpen'])
     },
     methods: {
         ...mapMutations([
             'updateTab_nav_list',
             'updateFounds_incomeorder',
-            'updateAside_scroll_path'
+            'updateAside_scroll_path',
+            'updateLoudSpeakerOpen'
         ]),
         // fullScreen() {
         //     if (this.isfullScreen) {
@@ -244,6 +245,12 @@ export default {
                 this.last_time = '0分'
             }
         },
+        // 设置喇叭
+        setLoudspeaker() {
+            // this.loudSpeakerOpen = !this.loudSpeakerOpen
+            // window.loudSpeakerOpen = !window.loudSpeakerOpen
+            this.updateLoudSpeakerOpen(!this.loudSpeakerOpen)
+        },
         playMusic() {
             // let ele = document.querySelector('.playMusic');
             // console.log("TCL: playMusic -> ele", ele)
@@ -252,7 +259,6 @@ export default {
             // var audio = document.createElement("audio");
             // audio.src = require("../assets/audio/wan.wav");
             // audio.play();
-
             //方式2
             // var audio = new Audio(require('../assets/audio/wan.wav'))
             // audio.play()
@@ -396,14 +402,14 @@ export default {
 
             let { method, url } = this.$api.header_notification_statistics
             this.$http({ method, url }).then(res => {
-                console.log('头部返回数据',res)
+                console.log('头部返回数据', res)
                 if (res && res.code == '200') {
                     this.list = res.data
-                    this.email_count=this.list.email;
-                    this.online_top_up_count=this.list.online_top_up;
-                    this.offline_top_up_count=this.list.offline_top_up;
-                    this.withdrawal_order_count=this.list.withdrawal_order;
-                    this.withdrawal_review_count=this.list.withdrawal_review;
+                    this.email_count = this.list.email
+                    this.online_top_up_count = this.list.online_top_up
+                    this.offline_top_up_count = this.list.offline_top_up
+                    this.withdrawal_order_count = this.list.withdrawal_order
+                    this.withdrawal_review_count = this.list.withdrawal_review
                     // console.log('email',this.email_count)
                     // console.log('online_top_up',this.online_top_up_count)
                     // console.log('offline_top_up',this.offline_top_up_count)
@@ -427,10 +433,7 @@ export default {
                     level: item.level
                 }
                 if (item.child) {
-                    template.children = this.objToArr(
-                        item.child,
-                        pre_idx + index + '-'
-                    )
+                    template.children = this.objToArr( item.child, pre_idx + index + '-' )
                 }
                 return template
             })
@@ -443,7 +446,10 @@ export default {
             } else {
                 setTimeout(() => {
                     this.menu_list = window.all.tool.getLocal('menu')
-                    if ((this.menu_list && this.menu_list.length === 0) ||!this.menu_list) {
+                    if (
+                        (this.menu_list && this.menu_list.length === 0) ||
+                        !this.menu_list
+                    ) {
                         this.menu_list = MenuList
                     }
                 }, 310)
@@ -455,14 +461,16 @@ export default {
                 let curr_menu
                 this.menu_list.forEach(lev1 => {
                     if (lev1.children) {
-                        let find_menu = lev1.children.find( lev2 => lev2.path === jump_path )
+                        let find_menu = lev1.children.find(
+                            lev2 => lev2.path === jump_path
+                        )
                         if (find_menu) {
                             curr_menu = find_menu
                         }
                     }
                 })
                 let navList = this.tab_nav_list
-                let isHadTab = navList.find( tab => tab.path === jump_path )
+                let isHadTab = navList.find(tab => tab.path === jump_path)
                 if (!isHadTab) {
                     navList.push({
                         label: curr_menu.label,
@@ -473,7 +481,7 @@ export default {
                 }
                 this.$router.push(curr_menu.path)
                 this.updateAside_scroll_path(curr_menu.path) // Aside.vue 自动滚动路径
-            }else {
+            } else {
                 this.$toast('没有菜单列表,请刷新,或等待加载完成')
             }
         },
@@ -506,6 +514,7 @@ export default {
         }
     },
     mounted() {
+        
         this.socket()
         this.getLeftList()
         this.getRightList()

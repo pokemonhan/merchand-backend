@@ -24,6 +24,7 @@
 
 <script>
 import router from '../../js/router'
+// import 
 export default {
     name: 'notice',
     props: {
@@ -55,6 +56,7 @@ export default {
             show: false
         }
     },
+
     methods: {
         close() {
             this.show = false
@@ -88,10 +90,13 @@ export default {
                     message: this.message,
                     jump: this.jump
                 })
-            }, 3 * 60 * 1000)
+            }, 3 * 1 * 1000)
         },
         playSound() {
+
             if(!window.alarm) return
+            // 喇叭关闭 退出不播放
+            if(!window.all.store.getters.loudSpeakerOpen) return
             window.alarm.play()
         }
     },

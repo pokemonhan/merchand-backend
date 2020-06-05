@@ -363,17 +363,14 @@ router.beforeEach((to, from, next) => {
 
     let isLogin = window.all.tool.getLocal('isLogin')
     // console.log('islogin', isLogin)
-    if (to.path !== from.path) {
+    // if (to.path !== from.path) {
+    //     next()
+    // }else
+    if (!isLogin && to.path !== '/login') {
+        next({ path: '/login' })
+    }else if(to.path !== from.path){
         next()
     }
-    if (!isLogin) {
-        next({
-            path: '/login'
-        })
-    } 
-    // if(!isLogin && to.path!='/login'){
-    //     next()
-    // }
 })
 export default router
 // const routes = new Router({

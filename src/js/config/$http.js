@@ -99,7 +99,6 @@ http.interceptors.response.use(res => {
         let resUrl = res.config && res.config.url
         // console.log('url', resUrl)
         if (resUrl.indexOf('merchant-api/upload') > -1) {
-
         } else {
             res.data = AES_decrypt(res.data)
         }
@@ -123,11 +122,14 @@ http.interceptors.response.use(res => {
                 message = message || '401 未登录，或者没权限'
                 window.__vm__.$toast.error(message)
                 router.push('/login')
-            }
-            if (res.status === 403) {
+            }else if (res.status === 403) {
                 message = message || '403, 禁止访问: 访问被拒绝'
                 window.__vm__.$toast.error(message)
+            }else {
+                message = message || 'status is not 200!'
+                window.__vm__.$toast(message)
             }
+            
         }
         return res.data
 

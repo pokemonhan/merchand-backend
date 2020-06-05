@@ -99,11 +99,13 @@ export default {
         // setInterval(() => {
         //     this.playSound()
         // }, 4000)
-        // this.$notice({
+        // setTimeout(() => {
+        //     this.$notice({
         //     title: '标题',
         //     message: '这是邮箱的内容',
         //     jump: 'notice_of_withdraw'
         // })
+        // }, 5000);
     }
 }
 </script>

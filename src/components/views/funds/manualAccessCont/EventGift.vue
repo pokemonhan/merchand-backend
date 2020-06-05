@@ -65,7 +65,7 @@
                 <ul class="form">
                     <li>
                         <span>会员账号/ID</span>
-                        <Input class="w250" v-model="form.account" />
+                        <Input limit="en-num" class="w250" v-model="form.account" />
                     </li>
                     <li>
                         <span>礼金类型</span>
@@ -77,7 +77,7 @@
                     </li>
                     <li>
                         <span>礼金金额</span>
-                        <Input class="w250" v-model="form.gift_amount" />
+                        <Input limit="number" class="w250" v-model="form.gift_amount" />
                     </li>
                     <li>
                         <span>备注</span>

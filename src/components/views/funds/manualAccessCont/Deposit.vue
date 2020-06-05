@@ -70,7 +70,7 @@
                 <ul class="form">
                     <li>
                         <span>会员账号/ID</span>
-                        <Input class="w250" v-model="form.account" />
+                        <Input limit="en-num" class="w250" v-model="form.account" />
                     </li>
                     <li>
                         <span>存款类型</span>
@@ -84,7 +84,7 @@
                     </li>
                     <li>
                         <span>存款金额</span>
-                        <Input class="w250" v-model="form.deposit_amount" />
+                        <Input limit="number" class="w250" v-model="form.deposit_amount" />
                     </li>
                     <li>
                         <span>备注</span>

@@ -87,7 +87,12 @@
                         </li>
                         <li v-show="form.inconm === 1">
                             <span>所属银行:</span>
-                            <Select style="width:250px;" v-model="form.bank" :options="bank_opt"></Select>
+                            <Select
+                                input
+                                style="width:250px;"
+                                v-model="form.bank"
+                                :options="bank_opt"
+                            ></Select>
                         </li>
                         <li>
                             <span>二维码:</span>
@@ -109,7 +114,7 @@
                         </li>
                         <li>
                             <span>银行卡号:</span>
-                            <Input class="w250" v-model="form.bank_card" />
+                            <Input limit="number" class="w250" v-model="form.bank_card" />
                         </li>
                         <li>
                             <span>开户地址:</span>
@@ -140,7 +145,7 @@
                                 >{{item.label}}</span>
                             </div>
                         </li>
-                        <li @click.stop class="chooseTag" style="display:block" >
+                        <li @click.stop class="chooseTag" style="display:block">
                             <p
                                 v-show="tag_show"
                                 v-for="(item) in all_tag"
@@ -153,7 +158,7 @@
                                     v-model="form.formtag[item.value]"
                                     @change="tagChange(item)"
                                 />
-                                <span >{{item.label}}</span>
+                                <span>{{item.label}}</span>
                             </p>
                         </li>
                         <li class="declare">
@@ -179,6 +184,7 @@
 </template>
 
 <script>
+import axios from "axios";
 export default {
     name: "OfflinePay",
     data() {
@@ -239,6 +245,44 @@ export default {
         };
     },
     methods: {
+        //获取json资源
+        getJsonData() {
+            axios.get("http://pic.397017.com/common/linter.json").then(res => {
+                // console.log("json", res);
+                if (res && res.status == "200") {
+                    this.jsonList = res.data;
+                    if (this.jsonList) {
+                        let bankList = this.jsonList.system_banks_available;
+                        if (bankList) {
+                            let bankListPath = bankList.path;
+                            // console.log('银行地址',bankListPath)
+                            axios.get(bankListPath).then(res => {
+                                if (res && res.status == "200") {
+                                    this.bankListData = res.data;
+                                    // console.log('银行列表',this.bankListData)
+                                    this.bank_opt = this.backToOpt(res.data);
+                                }
+                            });
+                        }
+                    }
+                }
+            });
+        },
+        backToOpt(list = []) {
+            let all = [
+                {
+                    label: "全部",
+                    value: ""
+                }
+            ];
+            let back_list = list.map(item => {
+                return {
+                    label: item.name + "(" + item.code+ ")",
+                    value: item.id
+                };
+            });
+            return all.concat(back_list);
+        },
         getSelectOpt() {
             let { url, method } = this.$api.offline_finance_types_list;
             this.$http({ url, method }).then(res => {
@@ -259,23 +303,6 @@ export default {
                 return { label: item.name, value: item.id };
             });
             return all.concat(back_list);
-        },
-        getBankSelOpt() {
-            let { url, method } = this.$api.offline_finance_bank_list;
-            this.$http({ url, method }).then(res => {
-                // console.log('银行列表：',res);
-                if (res && res.code == "200") {
-                    this.bankSelect = res.data;
-                    this.bank_opt = this.backToBankSelOpt(res.data);
-                }
-            });
-        },
-        backToBankSelOpt(list = []) {
-            let all = [];
-            let bank_list = list.map(item => {
-                return { label: item.name, value: item.id };
-            });
-            return all.concat(bank_list);
         },
         getTagList() {
             let { url, method } = this.$api.tag_list;
@@ -524,7 +551,7 @@ export default {
                 page: this.pageNo,
                 pageSize: this.pageSize
             };
-            console.log('请求数据',datas)
+            console.log("请求数据", datas);
             let data = window.all.tool.rmEmpty(datas);
             let { method, url } = this.$api.offline_finance_list;
             this.$http({ method, url, data }).then(res => {
@@ -540,8 +567,8 @@ export default {
         this.getList();
         this.menu_list = window.all.menu_list;
         this.getSelectOpt();
-        this.getBankSelOpt();
         this.getTagList();
+        this.getJsonData();
     }
 };
 </script>
@@ -617,10 +644,9 @@ export default {
 }
 .chooseTag p {
     width: 175px;
-
 }
 .allTag-list {
-    display: inline-block; 
+    display: inline-block;
 }
 .choosebox {
     vertical-align: middle;

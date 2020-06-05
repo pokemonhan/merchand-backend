@@ -58,32 +58,10 @@
                                     </li>
                                     <li>
                                         <span>浏览器：</span>
-                                        <span>{{getBrowerPic(item)}}</span>
                                         <span>
                                             <img
-                                                v-if="fireFoxShow"
-                                                src="../../../assets/image/browser/firefox.png"
-                                                alt
-                                            />
-                                            <img
-                                                v-if="ChromeShow"
-                                                src="../../../assets/image/browser/google.png"
-                                                alt
-                                            />
-                                            <img
-                                                v-if="IEShow"
-                                                src="../../../assets/image/browser/IE.png"
-                                                alt
-                                            />
-                                            <img
-                                                v-if="operaShow"
-                                                src="../../../assets/image/browser/opera.png"
-                                                alt
-                                            />
-                                            <img
-                                                v-if="SafariShow"
-                                                src="../../../assets/image/browser/safari.png"
-                                                alt
+                                                :src="getBrowerPic(item.user_agent)"
+                                                alt="图片加载失败"
                                             />
                                         </span>
                                         <span>{{item.user_agent}}</span>
@@ -155,32 +133,37 @@ export default {
                 }
             });
         },
-        getBrowerPic(item) {
-            let userAgent = item.user_agent;
-            console.log("userAgent", userAgent);
-            let isOprea = userAgent.indexOf("OPR") > -1;
-            if (isOprea) {
-                this.operaShow = true;
+        getBrowerPic(explore) {
+            // console.log('🍟 explorer: ', explore);
+            let name = window.all.tool.getExploreName(explore)
+
+            switch (name) {
+                case 'Opera':
+                    return require('../../../assets/image/browser/opera.png')
+                    break
+                case 'IE':
+                    return require('../../../assets/image/browser/IE.png')
+                    break
+                case 'Edge':
+                    return require('../../../assets/image/browser/edge.png')
+                    break
+                case 'Firefox':
+                    return require('../../../assets/image/browser/firefox.png')
+                case 'Safari':
+                    return require('../../../assets/image/browser/safari.png')
+                    break
+                case 'Chrome':
+                    return require('../../../assets/image/browser/chrome.png')
+                    break
+                case 'IE>=11':
+                    return require('../../../assets/image/browser/IE.png')
+                    break
+
+                default:
+                    // return require('../../../assets/image/browser/IE.png')
+                    break
             }
-            if (userAgent.indexOf("Firefox") > -1) {
-                this.fireFoxShow = true;
-            }
-            if (
-                userAgent.indexOf("Edge") > -1 &&
-                userAgent.indexOf("MSIE") > -1 &&
-                !isOprea
-            ) {
-                this.IEShow = true;
-            }
-            if (userAgent.indexOf("Chrome") > -1) {
-                this.ChromeShow = true;
-            }
-            if (
-                userAgent.indexOf("Mac") > -1 &&
-                userAgent.indexOf("Safari") > -1
-            ) {
-                this.SafariShow = true;
-            }
+
         },
         getList() {
             return new Promise((resolve, reject) => {

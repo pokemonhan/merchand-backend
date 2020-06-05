@@ -1,3 +1,102 @@
+import store from './vuex'
+import axios from 'axios'
+/**css样式修改 
+ * @param {object} el 元素
+ * @param {string} prop 属性 例如'height'
+ * @param {string} val 值 可以是数字
+*/
+function css (el, prop, val) {
+    var style = el && el.style;
+
+    if (style) {
+        if (val === void 0) {
+            if (document.defaultView && document.defaultView.getComputedStyle) {
+                val = document.defaultView.getComputedStyle(el, '');
+            } else if (el.currentStyle) {
+                val = el.currentStyle;
+            }
+
+            return prop === void 0 ? val : val[prop];
+        } else {
+            if (!(prop in style)) {
+                prop = '-webkit-' + prop;
+            }
+            style[prop] = val + (typeof val === 'string' ? '' : 'px');
+        }
+    }
+}
+// 简单的下拉slide
+function slideDown (ele, time = 200) {
+    // let ele = this.$refs.ul
+    if (!ele) return
+    if (!(ele instanceof Element)) {
+        ele = ele[0]
+    }
+    // 初始值
+
+    let prevStyle = ele.currentStyle || getComputedStyle(ele, null)
+    // console.log('🥖 prevRect: ', prevStyle);
+    let overflow = prevStyle.overflow
+    css(ele, 'transition', 'max-height ' + time + 'ms');
+    ele.style.display = 'block'
+    ele.style.overflow = 'hidden'
+    let offsetHeight = ele.offsetHeight
+    // console.log('🌯 offsetHeight: ', offsetHeight);
+    ele.style.maxHeight = '0'
+    setTimeout(() => {
+        ele.style.maxHeight = offsetHeight + 'px'
+        // ele.style.overflow = 'hidden'
+    }, 20)
+    setTimeout(() => {
+        ele.style.maxHeight = 'none'
+        // ele.style.display = 'block'
+        ele.style.overflow = overflow
+
+    }, time)
+}
+function slideUp (ele, time = 200) {
+    // let ele = this.$refs.ul
+    if (!ele) return
+    if (!(ele instanceof Element)) {
+        ele = ele[0]
+        // if(!(ele instanceof Element)) {
+        //     return
+        // }
+    }
+    ele.style.maxHeight = ele.offsetHeight + 'px'
+    let overflow = ele.style.overflow // 预先存储overflow初始状态, 后面动画完, 还原
+    // ele.style.transition = 'maxHeight .2s'
+    css(ele, 'transition', 'max-height ' + time + 'ms');
+    ele.style.overflow = 'hidden'
+    setTimeout(() => {
+        ele.style.maxHeight = '0'
+    }, 20)
+    setTimeout(() => {
+        ele.style.maxHeight = 'none'
+        ele.style.display = 'none'
+        ele.style.overflow = overflow // 原来是啥就是啥
+    }, time)
+}
+function slideToggle (ele, time = 200) {
+    if (!ele) return
+    if (!(ele instanceof Element)) {
+        ele = ele[0]
+    }
+    // if (!(ele instanceof Element)) {
+    //     return
+    // }
+
+    // 如果有就slideUp 上滑
+    if (ele.clientHeight) {
+        slideUp(ele, time)
+        // 没有就 slideDown 下拉
+    } else {
+        slideDown(ele, time)
+    }
+}
+
+
+
 const Tool = {
     //工具汇总
 
@@ -97,7 +196,14 @@ const Tool = {
         for (const key in obj) {
             if (Array.isArray(obj[key])) {
                 if (obj[key].length > 0) {
-                    params[key] = obj[key]
+                    if(obj[key].length===2){
+                        // 数组[0] 或者[1] 有值才赋值
+                        if(obj[key][0]||obj[key][1]){
+                            params[key] = obj[key]
+                        }
+                    }else {
+                        params[key] = obj[key]
+                    }
                 }
             } else if (obj[key] !== '' && obj[key] !== null && obj[key] !== undefined) {
                 params[key] = obj[key]
@@ -105,128 +211,25 @@ const Tool = {
         }
         return params
     },
-    // 简单的下拉slide
-    slideDown (ele, time = 200) {
-        // let ele = this.$refs.ul
-        if (!ele) return
-        if (!(ele instanceof Element)) {
-            ele = ele[0]
-        }
-        ele.style.maxHeight = 'none'
-        ele.style.overflow = 'hidden'
-        let offsetHeight = ele.offsetHeight
-        ele.style.maxHeight = '0'
-        setTimeout(() => {
-            ele.style.maxHeight = offsetHeight + 'px'
-        }, 20)
-        setTimeout(() => {
-            ele.style.maxHeight = 'none'
-            ele.style.display = 'block'
-            // ele.style.overflow = ''
-
-        }, time + 100)
-    },
-    slideUp (ele, time = 20) {
-        // let ele = this.$refs.ul
-        if (!ele) return
-        if (!(ele instanceof Element)) {
-            ele = ele[0]
-            // if(!(ele instanceof Element)) {
-            //     return
-            // }
-        }
-        ele.style.maxHeight = ele.offsetHeight + 'px'
-        ele.style.overflow = 'hidden'
-        setTimeout(() => {
-            ele.style.maxHeight = '0'
-        }, 20)
-        setTimeout(() => {
-            ele.style.maxHeight = 'none'
-            ele.style.display = 'none'
-            // ele.style.overflow = ''
-        }, time + 100)
-    },
-    slideToggle (ele, time = 200) {
-        if (!ele) return
-        if (!(ele instanceof Element)) {
-            ele = ele[0]
-        }
-        let offsetHeight = ele.clientHeight
-        // this.offsetHeight || this.initMaxHeight()
-        // 如果有就slideUp
-        if (offsetHeight) {
-            ele.style.maxHeight = ele.offsetHeight + 'px'
-            ele.style.overflow = 'hidden'
-            setTimeout(() => {
-                ele.style.maxHeight = '0'
-            }, 20)
-            setTimeout(() => {
-                ele.style.display = 'none'
-                ele.style.maxHeight = 'none'
-                // ele.style.overflow = ''
-            }, time + 100)
-            // 没有就 slideDown
-        } else {
-            ele.style.maxHeight = 'none'
-            ele.style.display = 'block'
-            ele.style.overflow = 'hidden'
-            let offsetHeight = ele.offsetHeight
-            ele.style.maxHeight = '0'
-            setTimeout(() => {
-                ele.style.maxHeight = offsetHeight + 'px'
-            }, 20)
-            setTimeout(() => {
-                ele.style.maxHeight = 'none'
-                ele.style.display = 'block'
-                // ele.style.overflow = ''
-            }, time + 100)
-        }
-    },
-    // 可拖动框窗口 
-    dragBox (drag, wrap) {
-        function getCss (ele, prop) {
-            return parseInt(window.getComputedStyle(ele)[prop]);
-        }
-
-        var initX,
-            initY,
-            dragable = false,
-            wrapLeft = getCss(wrap, "left"),
-            wrapRight = getCss(wrap, "top");
-
-        drag.addEventListener("mousedown", function (e) {
-            dragable = true;
-            initX = e.clientX;
-            initY = e.clientY;
-        }, false);
-
-        document.addEventListener("mousemove", function (e) {
-            if (dragable === true) {
-                var nowX = e.clientX,
-                    nowY = e.clientY,
-                    disX = nowX - initX,
-                    disY = nowY - initY;
-                wrap.style.left = wrapLeft + disX + "px";
-                wrap.style.top = wrapRight + disY + "px";
-            }
-        });
-
-        drag.addEventListener("mouseup", function (e) {
-            dragable = false;
-            wrapLeft = getCss(wrap, "left");
-            wrapRight = getCss(wrap, "top");
-        }, false);
-
-    },
+    slideDown: slideDown,
+    slideUp: slideUp,
+    slideToggle: slideToggle,
+    /**
+     * 修改 元素样式 
+     * @param {Object} el 元素Dom
+     * @param {String} prop 修改的属性
+     * @param {String, Number} val 值
+     */
+    css: css,
     /** 链级 名称，如: 厅主管理-登录记录 */
     getChainName (path) {
         if (!path) {
-            // console.log('no path')
+            console.log('no path')
             return ''
         }
         let menuList = window.all.tool.getLocal('menu')
-        if (!menuList) {
-            // console.log('wait get the menu list')
+        if(!menuList) {
+            console.log('wait get the menu list')
             return ''
         }
         let chain_name = ''
@@ -243,6 +246,57 @@ const Tool = {
         }
         return chain_name
     },
+    getExploreName (userAgent) {
+        if (!userAgent) return
+        // var userAgent = navigator.userAgent;
+        if (userAgent.indexOf("Opera") > -1 || userAgent.indexOf("OPR") > -1) {
+            return 'Opera';
+        } else if (userAgent.indexOf("compatible") > -1 && userAgent.indexOf("MSIE") > -1) {
+            return 'IE';
+        } else if (userAgent.indexOf("Edge") > -1) {
+            return 'Edge';
+        } else if (userAgent.indexOf("Firefox") > -1) {
+            return 'Firefox';
+        } else if (userAgent.indexOf("Safari") > -1 && userAgent.indexOf("Chrome") == -1) {
+            return 'Safari';
+        } else if (userAgent.indexOf("Chrome") > -1 && userAgent.indexOf("Safari") > -1) {
+            return 'Chrome';
+        } else if (!!window.ActiveXObject || "ActiveXObject" in window) {
+            return 'IE>=11';
+        } else {
+            return 'Unkonwn';
+        }
+    },
+    getJsonOpt (key) {
+        return new Promise(resolve => {
+            let all_json_base_url = store.state.picPrefix + 'common/linter.json'
+            // 请求所有下拉路径
+            let all_url = window.all.tool.getSession('allJsonUrl')
+            if (!all_url) {
+                axios.get(all_json_base_url).then(res => {
+                    if (res && res.data) {
+                        all_url = res.data
+                        window.all.tool.setSession('allJsonUrl', res.data)
+                        let all_url_obj = all_url[key] || {}
+                        // 请求 命令集opt
+                        if (all_url_obj.path) {
+                            axios.get(all_url_obj.path).then(response => {
+                                resolve(response && response.data)
+                            })
+                        }
+                    }
+                })
+            } else {
+                let all_url_obj = all_url[key] || {}
+                // 请求 命令集opt
+                if (all_url_obj.path) {
+                    axios.get(all_url_obj.path).then(response => {
+                        resolve(response && response.data)
+                    })
+                }
+            }
 
+        })
+    },
 };
 export default Tool;

@@ -91,11 +91,11 @@
                     </li>
                     <li>
                         <span>商户号:</span>
-                        <Input class="w250" v-model="form.merchant_num" />
+                        <Input limit="en-num" class="w250" v-model="form.merchant_num" />
                     </li>
                     <li>
                         <span>商户编号:</span>
-                        <Input class="w250" v-model="form.merchant_code" />
+                        <Input  limit="en-num" class="w250" v-model="form.merchant_code" />
                     </li>
                     <li>
                         <span>密钥方式:</span>

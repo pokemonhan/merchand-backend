@@ -67,10 +67,16 @@ export default {
     },
     data() {
         return {
-            content: {},
+            content: {
+                title: '', //标题
+                sender: '', // 发件人
+                created_at: '', // 发送时间
+                receivers: [], // 收件人
+                content: '',
+            },
             list_idx: 1, // 第几个
-            content_obj: {},
-
+            content_obj: {}, // 已经读取过则不再读取
+            receive_id_obj: {}, // 根据下标保存 其id
             pageNo: 1,
             pageSize: 25,
             total: 0,
@@ -98,7 +104,12 @@ export default {
             if (this.isSend) {
                 this.getSentList()
             } else {
-                this.getReceiveList()
+                if(this.receive_id_obj[this.list_idx]) {
+                    this.getReceiveList(this.receive_id_obj[this.list_idx])
+                }else {
+                    this.useIndexFindId()
+                }
+               
             }
         },
         // 确认删除
@@ -128,9 +139,8 @@ export default {
                 }
             })
         },
-        // 获取 收件箱
-        getReceiveList() {
-            // console.log('获取');
+        // 根据收件箱index 序列找到id (需要用读邮件接口,方便知道邮件已读)
+        useIndexFindId() {
             let para = {
                 pageSize: this.pageSize,
                 page: Math.ceil(this.list_idx / this.pageSize)
@@ -144,9 +154,27 @@ export default {
                     list.forEach((item, index) => {
                         // 后台数据的第几个,存入content_obj 中.
                         let idx = (para.page - 1) * this.pageSize + index + 1
-                        this.content_obj[String(idx)] = item
+                        // this.content_obj[String(idx)] = item
+                        // console.log('🍗 item: ', item);
+                        this.receive_id_obj[idx] = item.email_id
+                        console.log('😘 this.receive_id_obj[idx]: ', this.receive_id_obj[idx]);
                     })
-                    this.content = this.content_obj[this.list_idx] || {}
+                    this.getReceiveList(this.receive_id_obj[this.list_idx])
+                }
+            })
+        },
+        // 获取 收件箱
+        getReceiveList(email_id) {
+            // console.log('获取');
+            let data = {
+                id: email_id,
+            }
+            let { url, method } = this.$api.email_read_list
+            this.$http({ method, url, data }).then(res => {
+                // console.log('列表👌👌👌👌: ', res)
+                if (res && res.code === '200'&&res.data) {
+                    this.content = res.data
+                    this.content_obj[this.list_idx] = res.data
                 }
             })
         },
@@ -195,20 +223,22 @@ export default {
         }
     },
     mounted() {
+        this.total = this.row.total
+        // 这是后端数据的第几条
+        this.list_idx = (this.row.pageNo - 1) * this.row.pageSize + this.row.index + 1
         // 1. 已发邮件
         if (this.isSend) {
             this.content = this.row
-            console.log('😊  this.content: ',  this.content);
+            // console.log('😊  this.content: ',  this.content);
 
             // 2. 收件箱
         } else {
-            this.content = this.row
+            // this.content = this.row
             console.log('this.row: ', this.row);
+            this.receive_id_obj[this.list_idx] = this.row.email_id
+            this.getReceiveList(this.row.email_id) // 触发读邮件
         }
-        this.total = this.row.total
-        // 这是后端数据的第几条
-        this.list_idx =
-            (this.row.pageNo - 1) * this.row.pageSize + this.row.index + 1
+        
     }
 }
 </script>

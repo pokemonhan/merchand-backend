@@ -426,6 +426,11 @@ export default {
         url: '/merchant-api/email/received-index',
         method: 'post'
     },
+    // 读邮件
+    email_read_list: {
+        url: '/merchant-api/email/read',
+        method: 'post'
+    },
     // 删除邮件 (收件箱)
     email_received_del: {
         url: '/merchant-api/email/destroy-incoming-email',

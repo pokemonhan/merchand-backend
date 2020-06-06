@@ -694,7 +694,7 @@ button:hover {
 /* 重写element ui loading 样式 */
 .el-loading-parent--relative .el-loading-mask {
     position: fixed;
-    background-color: rgba(255, 255, 255, 0.9);
+    background-color: rgba(255, 255, 255, 0.6);
     margin: 0;
     top: 50%;
     left: 50%;

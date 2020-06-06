@@ -1109,7 +1109,7 @@ table {
     overflow-x: auto;
 }
 .table .v-table {
-    min-height: 0;
+    /* min-height: 0; */
     width: 2000px;
 }
 /* .g-modal-mask ---在 App.vue公共区 */

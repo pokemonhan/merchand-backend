@@ -9,7 +9,11 @@
                     </li>
                     <li>
                         <span>IP搜索：</span>
-                        <Input errmsg="格式错误" :showerr="errIpShow(filter.dataIP)" v-model="filter.dataIP" />
+                        <Input
+                            errmsg="格式错误"
+                            :showerr="errIpShow(filter.dataIP)"
+                            v-model="filter.dataIP"
+                        />
                     </li>
                     <li>
                         <span>日期选择：</span>
@@ -37,8 +41,11 @@
                             </div>
                             <div>
                                 <ul class="detail">
-                                    <li >
-                                        <span style="font-weight:bold;color:#4c8bfd;">详情</span>
+                                    <li>
+                                        <span style="font-weight:bold;color:#4c8bfd;">
+                                            详情
+                                            <span>&nbsp;&nbsp;</span>
+                                        </span>
                                     </li>
                                     <li>
                                         <span>管理员：</span>
@@ -59,10 +66,8 @@
                                     <li>
                                         <span>浏览器：</span>
                                         <span>
-                                            <img
-                                                :src="getBrowerPic(item.user_agent)"
-                                                alt="图片加载失败"
-                                            />
+                                            <img :src="getBrowerPic(item.user_agent)" alt="图片加载失败" />
+                                            
                                         </span>
                                         <span>{{item.user_agent}}</span>
                                     </li>
@@ -108,20 +113,20 @@ export default {
     },
     methods: {
         //校验ip地址
-        errIpShow(val){
-            if(!val) return false
-            let reg=/^(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])$/
+        errIpShow(val) {
+            if (!val) return false;
+            let reg = /^(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])$/;
 
-            return !reg.test(val)
+            return !reg.test(val);
         },
         //校验查询条件
-        checkFilter(){
-            let reg=/^(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])$/
+        checkFilter() {
+            let reg = /^(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])$/;
             // let re=new RegExp(IpCheck)
-            if(!reg.test(this.filter.dataIP) && this.filter.dataIP!='' ){
-                return false
+            if (!reg.test(this.filter.dataIP) && this.filter.dataIP != "") {
+                return false;
             }
-            return true
+            return true;
         },
         // 第一次加载
         firstLoad() {
@@ -135,39 +140,38 @@ export default {
         },
         getBrowerPic(explore) {
             // console.log('🍟 explorer: ', explore);
-            let name = window.all.tool.getExploreName(explore)
+            let name = window.all.tool.getExploreName(explore);
 
             switch (name) {
-                case 'Opera':
-                    return require('../../../assets/image/browser/opera.png')
-                    break
-                case 'IE':
-                    return require('../../../assets/image/browser/IE.png')
-                    break
-                case 'Edge':
-                    return require('../../../assets/image/browser/edge.png')
-                    break
-                case 'Firefox':
-                    return require('../../../assets/image/browser/firefox.png')
-                case 'Safari':
-                    return require('../../../assets/image/browser/safari.png')
-                    break
-                case 'Chrome':
-                    return require('../../../assets/image/browser/chrome.png')
-                    break
-                case 'IE>=11':
-                    return require('../../../assets/image/browser/IE.png')
-                    break
+                case "Opera":
+                    return require("../../../assets/image/browser/opera.png");
+                    break;
+                case "IE":
+                    return require("../../../assets/image/browser/IE.png");
+                    break;
+                case "Edge":
+                    return require("../../../assets/image/browser/edge.png");
+                    break;
+                case "Firefox":
+                    return require("../../../assets/image/browser/firefox.png");
+                case "Safari":
+                    return require("../../../assets/image/browser/safari.png");
+                    break;
+                case "Chrome":
+                    return require("../../../assets/image/browser/chrome.png");
+                    break;
+                case "IE>=11":
+                    return require("../../../assets/image/browser/IE.png");
+                    break;
 
                 default:
                     // return require('../../../assets/image/browser/IE.png')
-                    break
+                    break;
             }
-
         },
         getList() {
             return new Promise((resolve, reject) => {
-                if(!this.checkFilter()) return  
+                if (!this.checkFilter()) return;
                 let createdAt = "";
                 if (this.filter.dates[0] && this.filter.dates[1]) {
                     createdAt = JSON.stringify([
@@ -315,9 +319,9 @@ export default {
 </script>
 
 <style scoped>
-.cont-left{
-    width:320px;
-    margin-left:5px;
+.cont-left {
+    width: 200px;
+    margin-left: 10px;
 }
 .cont {
     width: 1000px;
@@ -330,7 +334,7 @@ export default {
 }
 .opera-list {
     /* margin-left: 100px; */
-    width: 1200px;
+    width: 1700px;
     margin: 20px auto 0 auto;
     /* border: 1px solid #000; */
 }
@@ -368,7 +372,7 @@ export default {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    width: 1000px;
+    width: 1300px;
     /* height: 60px; */
     padding: 10px;
     margin-left: 10px;

@@ -348,7 +348,7 @@ table {
     overflow-x: auto;
 }
 .table .v-table {
-    min-height: 0;
+    /* min-height: 0; */
     width: 2000px;
 }
 .dia-inner {

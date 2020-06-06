@@ -69,10 +69,9 @@
                     >{{(review_status_obj[row.status]||{}).text}}</td>
                     <td>{{row.created_at}}</td>
                     <td>
-                        <button v-if="row.status==3" class="btn-green" @click="passShow(row)">通过</button>
+                        <button :class="['btn-green',row.status==3?'visit-view':'visit-hide']"  @click="passShow(row)">通过</button>
                         <button
-                            v-if="row.status==3"
-                            class="btn-red"
+                            :class="['btn-red',row.status==3?'visit-view':'visit-hide']"
                             @click="rejectShow(row)"
                         >拒绝</button>
                         <button class="btn-blue" @click="showDetail(row)">详情</button>
@@ -139,8 +138,6 @@
         ></Modal>
     </div>
 </template>
-
-
 <script>
 export default {
     name: "Offline",
@@ -359,82 +356,6 @@ export default {
                     context.fillText(row.created_at, ml + 100, mt * 6);
                 });
             }, 110);
-
-            // this.$nextTick(() => {
-            //     // 获取像素比
-            //     let getPixelRatio = function(context) {
-            //         let backingStore =
-            //             context.backingStorePixelRatio ||
-            //             context.webkitBackingStorePixelRatio ||
-            //             context.mozBackingStorePixelRatio ||
-            //             context.msBackingStorePixelRatio ||
-            //             context.oBackingStorePixelRatio ||
-            //             context.backingStorePixelRatio ||
-            //             1;
-            //         return (window.devicePixelRatio || 1) / backingStore;
-            //     };
-            //     //画文字
-            //     console.log('15465',this.$refs)
-            //     let ele = this.$refs.offlineCanvas;
-            //     // if(!ele) return
-            //     console.log('ele',ele)
-            //     let context = ele.getContext("2d");
-            //     let ratio = getPixelRatio(context);
-
-            //     ele.style.width = ele.width + "px";
-            //     ele.style.height = ele.height + "px";
-
-            //     ele.width = ele.width * ratio;
-            //     ele.height = ele.height * ratio;
-
-            //     // 放大倍数
-            //     context.scale(ratio, ratio);
-
-            //     context.font = "16px Arial";
-            //     //背景色
-            //     context.fillStyle = "#fff";
-            //     context.fillRect(0, 0, 520, 300);
-            //     // 绘制 字体内容
-            //     context.fillStyle = "#444";
-            //     let ml = 50; // 左边框
-            //     let w = 280; // 左边文字所占宽度, 右边col起始位置
-            //     let mt = 40; //上下行间距
-            //     // row1
-
-            //     context.fillText("会员账号", ml, mt);
-            //     // context.font = "16px Arial";
-            //     // context.fillStyle = "#444";
-            //     context.fillText("65464646", ml + 100, mt);
-
-            //     context.fillText("会员ID", w, mt);
-            //     context.fillText("65464646", w + 100, mt);
-
-            //     // row2   -------------------
-            //     // 会员等级 ----
-            //     context.fillText("会员等级", ml, mt * 2);
-            //     context.fillText("VIP7", ml + 100, mt * 2);
-            //     //  row3
-            //     context.fillText("转入银行", ml, mt * 3);
-            //     let bank_name = "招商银行";
-            //     context.fillText(bank_name, ml + 100, mt * 3);
-            //     context.fillText("转入账号", w, mt * 3);
-            //     let account = "234324";
-            //     context.fillText(account, w + 100, mt * 3);
-            //     // row4
-            //     context.fillText("充值金额", ml, mt * 4);
-            //     context.fillText("235353255", ml + 100, mt * 4);
-            //     //  row5
-            //     context.fillText("收款银行", ml, mt * 5);
-            //     let receipt_bank = "招商银行";
-            //     context.fillText(receipt_bank, ml + 100, mt * 5);
-            //     context.fillText("收款账号", w, mt * 5);
-            //     let receipt_account = "324324";
-            //     context.fillText(receipt_account, w + 100, mt * 5);
-            //     // row 6
-            //     let deal_time = window.all.tool.formatDate(new Date());
-            //     context.fillText("交易时间", ml, mt * 6);
-            //     context.fillText(deal_time, ml + 100, mt * 6);
-            // });
         },
         passShow(row) {
             this.offline_conf = true;
@@ -605,6 +526,12 @@ export default {
 </script>
 
 <style scoped>
+.visit-hide{
+    visibility: hidden;
+}
+.visit-view{
+    visibility: visible;
+}
 .filter {
     margin-bottom: 10px;
     padding-bottom: 10px;
@@ -638,7 +565,7 @@ table {
     overflow-x: auto;
 }
 .table .v-table {
-    min-height: 0;
+    /* min-height: 0; */
     min-width: 2000px;
 }
 .total-table {
@@ -692,7 +619,7 @@ table {
 }
 .save-btn {
     text-align: center;
-    margin-top: 40px;
+    margin-top: 20px;
 }
 .save-btn .btn-blue-large {
     text-align: center;

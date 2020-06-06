@@ -137,26 +137,21 @@
             </div>
         </Dialog>
         <Dialog :show.sync="detail_show" title="详情">
-            <div>
-                <ul>
-                    <li class="detail-show">
-                        <div>
-                            <span>三方通知单号：</span>
-                            <span>{{detailList.their_notifyId}}</span>
-                        </div>
-                        <div>
-                            <span>用户名：</span>
-                            <span>{{detailList.username}}</span>
-                        </div>
-                        <div>
-                            <span>IP：</span>
-                            <span>{{detailList.ip}}</span>
-                        </div>
-                    </li>
-                    <!-- <li>三方通知单号号：{{detailList.their_notifyId}}</li>
-                    <li>用户名：{{detailList.username}}</li>
-                    <li>IP：{{detailList.ip}}</li>-->
-                </ul>
+            <div class="dialog">
+                <div class="mask-detail">
+                    <canvas
+                        style="border:1px solid white"
+                        ref="plathFormDetailCanvas"
+                        width="650"
+                        height="400"
+                    ></canvas>
+                </div>
+                <div class="save-btn">
+                    <button
+                        class="btn-blue-large"
+                        @click="plathFormDetailSavePicture('plathFormDetailCanvas')"
+                    >保存图片</button>
+                </div>
             </div>
         </Dialog>
     </div>
@@ -201,12 +196,12 @@ export default {
             },
             payOut_status: "",
             user_payOut_status: [
-                    { label: "全部", value: "" },
-                    { label: "已投注", value: "0" },
-                    { label: "已撤销", value: "1" },
-                    { label: "未中奖", value: "2" },
-                    { label: "已中奖", value: "3" },
-                    { label: "已派奖", value: "4" }
+                { label: "全部", value: "" },
+                { label: "已投注", value: "0" },
+                { label: "已撤销", value: "1" },
+                { label: "未中奖", value: "2" },
+                { label: "已中奖", value: "3" },
+                { label: "已派奖", value: "4" }
             ],
             headers: [
                 "注单号",
@@ -243,13 +238,161 @@ export default {
                 dates_range: []
             },
             dia_show: false,
-            menu_list:[],
+            menu_list: []
         };
     },
     methods: {
         detailShow(row) {
+            console.log("row", row);
             this.detail_show = true;
-            this.detailList = row;
+            // this.detailList = row;
+            setTimeout(() => {
+                this.$nextTick(() => {
+                    //获取像素比
+                    let getPixelRatio = function(context) {
+                        let backingStore =
+                            context.backingStorePixelRatio ||
+                            context.webkitBackingStorePixelRatio ||
+                            context.mozBackingStorePixelRatio ||
+                            context.msBackingStorePixelRatio ||
+                            context.oBackingStorePixelRatio ||
+                            context.backingStorePixelRatio ||
+                            1;
+                        return (window.devicePixelRatio || 1) / backingStore;
+                    };
+                    //画文字
+                    let ele = this.$refs.plathFormDetailCanvas;
+                    let context = ele.getContext("2d");
+                    let ratio = getPixelRatio(context);
+
+                    ele.style.width = ele.width + "px";
+                    ele.style.height = ele.height + "px";
+
+                    ele.width = ele.width * ratio;
+                    ele.height = ele.height * ratio;
+
+                    // 放大倍数
+                    context.scale(ratio, ratio);
+
+                    context.font = "16px Arial";
+                    //背景色
+                    context.fillStyle = "#fff";
+                    context.fillRect(0, 0, 720, 400);
+                    // 绘制 字体内容
+                    context.fillStyle = "#444";
+                    let ml = 50; // 左边框
+                    let w = 350; // 左边文字所占宽度, 右边col起始位置
+                    let mt = 40; //上下行间距
+                    //row1
+                    context.fillText("注单号：", ml, mt);
+                    context.fillText(row.serial_number || "--", ml + 60, mt);
+
+                    context.fillText("会员账号：", w, mt);
+                    context.fillText(row.mobile || "--", w + 75, mt);
+                    //row2
+                    context.fillText("会员ID：", ml, mt * 2);
+                    context.fillText(row.guid || "--", ml + 60, mt * 2);
+
+                    context.fillText("VIP等级：", w, mt * 2);
+                    context.fillText(row.level_name || "--", w + 75, mt * 2);
+                    //row3
+                    context.fillText("游戏平台：", ml, mt * 3);
+                    context.fillText(row.game_vendor || "--", ml + 80, mt * 3);
+
+                    context.fillText("游戏名称：", w, mt * 3);
+                    context.fillText(row.game_name || "--", w + 75, mt * 3);
+                    //row4
+                    context.fillText("投注额：", ml, mt * 4);
+                    context.fillText(row.bet_money || "--", ml + 65, mt * 4);
+
+                    context.fillText("有效下注：", w, mt * 4);
+                    context.fillText(row.effective_bet || "--", w + 75, mt * 4);
+                    //row5
+                    context.fillText("抽水：", ml, mt * 5);
+                    context.fillText(row.charged_fees || "--", ml + 50, mt * 5);
+
+                    context.fillText("输赢：", w, mt * 5);
+                    context.fillText(
+                        row.win_money - row.bet_money || "--",
+                        w + 50,
+                        mt * 5
+                    );
+                    //row6
+                    context.fillText("派彩状态：", ml, mt * 6);
+                    context.fillText(
+                        row.status == 0
+                            ? "已投注"
+                            : row.status == 1
+                            ? "已撤销"
+                            : row.status == 2
+                            ? "未中奖"
+                            : row.status == 3
+                            ? "已中奖"
+                            : row.status == 4
+                            ? "已派奖"
+                            : "--",
+                        ml + 75,
+                        mt * 6
+                    );
+
+                    context.fillText("注单时间：", w, mt * 6);
+                    context.fillText(
+                        row.their_create_time || "--",
+                        w + 75,
+                        mt * 6
+                    );
+                    //row7
+                    context.fillText("派彩时间：", ml, mt * 7);
+                    context.fillText(
+                        row.delivery_time || "--",
+                        ml + 75,
+                        mt * 7
+                    );
+
+                    context.fillText("入库时间：", w, mt * 7);
+                    context.fillText(row.created_at || "--", w + 75, mt * 7);
+                    //row8
+                    context.fillText("三方通知单号：", ml, mt * 8);
+                    context.fillText(
+                        row.their_notifyId || "--",
+                        ml + 110,
+                        mt * 8
+                    );
+
+                    //row9
+                    context.fillText("用户名：", ml, mt * 9);
+                    context.fillText(row.username || "--", ml + 60, mt * 9);
+
+                    context.fillText("IP：", w, mt * 9);
+                    context.fillText(row.ip || "--", w + 30, mt * 9);
+                });
+            }, 115);
+        },
+        plathFormDetailSavePicture(ref) {
+            this.exportCanvasAsPNG(ref, "平台注单详情");
+        },
+        // canvas 转png 图片
+        exportCanvasAsPNG(ref, fileName) {
+            // let canvasElement = document.getElementById(id);
+            let canvasElement = this.$refs[ref];
+
+            let MIME_TYPE = "image/png";
+
+            let imgURL = canvasElement.toDataURL(MIME_TYPE);
+
+            let aLink = document.createElement("a");
+
+            aLink.download = fileName;
+            aLink.href = imgURL;
+            aLink.dataset.downloadurl = [
+                MIME_TYPE,
+                aLink.download,
+                aLink.href
+            ].join(":");
+
+            document.body.appendChild(aLink);
+            aLink.click();
+            document.body.removeChild(aLink);
         },
         qqUpd(dates) {
             let arr = [dates[0] + " 00:00:00", dates[1] + " 00:00:00"];
@@ -267,24 +410,24 @@ export default {
             this.quick_query = this.filter.warehouse_dates;
         },
         //获取列表
-        getMenuList(){
-            if(!window.all.tool.getLocal('Authorization')) return
-            if(window.all.tool.getLocal('menu')){
-                this.menu_list=window.all.tool.getLocal('menu')
+        getMenuList() {
+            if (!window.all.tool.getLocal("Authorization")) return;
+            if (window.all.tool.getLocal("menu")) {
+                this.menu_list = window.all.tool.getLocal("menu");
             }
         },
         exportExcel() {
-            console.log('列表',this.menu_list)
-            let firstList={}
-            let childList={}
-            let fatherList={}
-            for(var i=0;i<this.menu_list.length;i++){
-                firstList=this.menu_list[i].children
-                let fatherTemplate=this.menu_list[i]
-                for(var j=0;j<firstList.length;j++){
-                    if(firstList[j].path=='/report/platformbet'){
-                        fatherList=fatherTemplate
-                        childList=firstList[j]
+            console.log("列表", this.menu_list);
+            let firstList = {};
+            let childList = {};
+            let fatherList = {};
+            for (var i = 0; i < this.menu_list.length; i++) {
+                firstList = this.menu_list[i].children;
+                let fatherTemplate = this.menu_list[i];
+                for (var j = 0; j < firstList.length; j++) {
+                    if (firstList[j].path == "/report/platformbet") {
+                        fatherList = fatherTemplate;
+                        childList = firstList[j];
                     }
                 }
             }
@@ -292,29 +435,39 @@ export default {
                 const tHeader = this.dHeaders;
                 const data = this.list.map(item => {
                     return [
-                        item.serial_number || '--',
-                        item.mobile || '--',
-                        item.guid  || '--',
-                        item.level_name || '--',
-                        item.game_vendor || '--',
-                        item.game_name || '--',
-                        item.bet_money  || '--',
-                        item.effective_bet  || '--',
-                        item.charged_fees || '--',
-                        item.win_money-item.bet_money,
-                        item.status==0?'已投注': item.status==1?'已撤销': item.status==2?'未中奖':item.status==3?'已中奖':item.status==4?'已派奖':'--',
-                        item.their_create_time || '--',
-                        item.delivery_time ||  '--',
-                        item.created_at || '--',
-                        item.their_notifyId  || '--',
-                        item.username || '--',
-                        item.ip || '--'
+                        item.serial_number || "--",
+                        item.mobile || "--",
+                        item.guid || "--",
+                        item.level_name || "--",
+                        item.game_vendor || "--",
+                        item.game_name || "--",
+                        item.bet_money || "--",
+                        item.effective_bet || "--",
+                        item.charged_fees || "--",
+                        item.win_money - item.bet_money,
+                        item.status == 0
+                            ? "已投注"
+                            : item.status == 1
+                            ? "已撤销"
+                            : item.status == 2
+                            ? "未中奖"
+                            : item.status == 3
+                            ? "已中奖"
+                            : item.status == 4
+                            ? "已派奖"
+                            : "--",
+                        item.their_create_time || "--",
+                        item.delivery_time || "--",
+                        item.created_at || "--",
+                        item.their_notifyId || "--",
+                        item.username || "--",
+                        item.ip || "--"
                     ];
                 });
                 excel.export_json_to_excel({
                     header: tHeader,
                     data,
-                    filename: fatherList.label+'-'+"平台注单",
+                    filename: fatherList.label + "-" + "平台注单",
                     autoWidth: true,
                     bookType: "xlsx"
                 });
@@ -330,7 +483,7 @@ export default {
                 bet_slip_dates: [],
                 warehouse_dates: []
             };
-           this.payOut_status=""
+            this.payOut_status = "";
         },
         updateNo(val) {
             this.getList();
@@ -418,7 +571,7 @@ export default {
     overflow-x: auto;
 }
 .container .table .v-table {
-    min-height: 0;
+    /* min-height: 0; */
     width: 1900px;
     margin-top: 20px;
 }
@@ -457,5 +610,12 @@ export default {
     /* font-weight: bold; */
     font-size: 1.1em;
     color: #444;
+}
+.save-btn {
+    text-align: center;
+    margin-top: 20px;
+}
+.save-btn .btn-blue-large {
+    text-align: center;
 }
 </style>

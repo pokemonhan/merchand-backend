@@ -51,16 +51,16 @@
         <div class="table">
             <Table :column="list" :headers="headers">
                 <template v-slot:item="{row}">
-                    <td>{{row.order_no}}</td>
-                    <td>{{row.user && row.user.mobile}}</td>
-                    <td>{{row.user && row.user.guid}}</td>
-                    <td>{{withdraw_obj[row.account_type].text}}</td>
-                    <td>{{row.amount}}</td>
-                    <td>{{row.audit_fee}}</td>
-                    <td>{{row.amount_received}}</td>
-                    <td>{{row.handing_fee}}</td>
-                    <td>{{row.created_at}}</td>
-                    <td>{{row.reviewer && row.reviewer.name}}</td>
+                    <td>{{row.order_no || '--'}}</td>
+                    <td>{{row.user && row.user.mobile || '--'}}</td>
+                    <td>{{row.user && row.user.guid || '--'}}</td>
+                    <td>{{withdraw_obj[row.account_type].text || '--'}}</td>
+                    <td>{{row.amount || '--'}}</td>
+                    <td>{{row.audit_fee || '--'}}</td>
+                    <td>{{row.amount_received || '--'}}</td>
+                    <td>{{row.handing_fee || '--'}}</td>
+                    <td>{{row.created_at || '--'}}</td>
+                    <td>{{row.reviewer && row.reviewer.name || '--'}}</td>
                     <td>
                         <span :class="color_obj[row.status].color">{{color_obj[row.status].text}}</span>
                     </td>

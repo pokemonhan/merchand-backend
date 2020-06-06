@@ -369,7 +369,6 @@ export default {
                 }
             })
         },
-
         getLeftList() {
             if (!window.all.tool.getLocal('Authorization')) return
             if (this.platform_end_time) return

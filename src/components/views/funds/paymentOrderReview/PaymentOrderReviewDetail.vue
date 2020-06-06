@@ -61,14 +61,15 @@
                          <td>收款姓名</td>
                          <td>{{row.account_snap && row.account_snap.owner_name || '--' }}</td>
                          <td>收款账号</td>
-                         <td>{{row.account_snap && row.account_snap.card_number || '--'}}</td>
+                         <td style="word-wrap:break-word;word-break:break-all;">{{row.account_snap && row.account_snap.card_number || '--'}}</td>
                          <td>开户行</td>
                          <td>{{row.account_snap && row.account_snap.branch || '--'}}</td>
                      </tr>
                      <tr>
                          <td>备注</td>
                          <td colspan="5">
-                             <input type="text" class="remarkText" v-model="row.remark" placeholder="请填写审核备注">
+                            <input disabled v-show="row.status==2" class="remarkText" type="text"  v-model="row.remark" >
+                            <input v-show="row.status==1" class="remarkText" type="text"  v-model="row.remark" placeholder="请输入备注内容">
                          </td>
                      </tr>
                  </table>
@@ -122,6 +123,11 @@ export default {
         }
     },
     methods: {
+        // getInput(val){
+        //     if(val=='null'){
+        //         val='空'
+        //     }
+        // },
         reject(row){
             let datas={
                 id:this.row.id,
@@ -153,11 +159,25 @@ export default {
         }
     },
     mounted() {
+        if(this.row.remark=='null'){
+            this.row.remark="空"
+        }
+        if(this.row.remark){
+            this.row.remark=this.row.remark
+        }else{
+            this.row.remark="空"
+        }
     }
 }
 </script>
 
 <style scoped>
+.remark-disabled :disabled{
+    display: none;
+}
+.cont{
+    text-align: -webkit-center;
+}
 .order {
     text-align: center;
     font-size: 16px;

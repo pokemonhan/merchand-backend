@@ -137,7 +137,6 @@ http.interceptors.response.use(res => {
         window.__vm__.$toast.error('没有data数据，出现服务问题或被禁止!')
         // console.log('res: ', res);
         return res
-
     }
 }, (error) => {
     // console.log('error: ', [error]);

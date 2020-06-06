@@ -4,31 +4,31 @@
             <span>成员列表：</span>
             <button class="btn-blue" @click="addMember">添加成员</button>
         </div>
-        <Table :headers="headers" :column="list">
-            <template v-slot:item="{row}">
-                <td>{{row.name}}</td>
-                <td>{{row.email}}</td>
-                <td>
-                    <Switchbox class="switch-select"
-                    :value="row.status"
-                    @update="modConf($event,row)" />
-                </td>
-                <td>
-                    <button class="btns-blue" @click="editPwd(row)">修改密码</button>
-                </td>
-            </template>
-        </Table>
+        <div class="show-table">
+            <Table class="admin-table" :headers="headers" :column="list">
+                <template v-slot:item="{row}">
+                    <td>{{row.name}}</td>
+                    <td>{{row.email}}</td>
+                    <td>
+                        <Switchbox class="switch-select" :value="row.status" @update="modConf($event,row)" />
+                    </td>
+                    <td>
+                        <button class="btns-blue" @click="editPwd(row)">修改密码</button>
+                    </td>
+                </template>
+            </Table>
 
-        <Page
-            v-show="!isSearch"
-            class="table-page"
-            :total="total"
-            :pageNo.sync="pageNo"
-            :pageSize.sync="pageSize"
-            @updateNo="updateNo"
-            @updateSize="updateSize"
-        />
-       
+            <Page
+                v-show="!isSearch"
+                class="table-page"
+                :total="total"
+                :pageNo.sync="pageNo"
+                :pageSize.sync="pageSize"
+                @updateNo="updateNo"
+                @updateSize="updateSize"
+            />
+        </div>
+
         <Dialog :show="dia_show!==''" :title="dia_title" @close="dia_show=''">
             <div class="dia-inner">
                 <div v-if="dia_show==='add_member'">
@@ -138,12 +138,12 @@ export default {
                 cfm_pwd: ''
             },
             edit_conf_pwd: '',
-            mod_show: false,
+            mod_show: false
         }
     },
     methods: {
         // 给父组件调用此方法
-        setList(list,total=0) {
+        setList(list, total = 0) {
             this.isSearch = true
             this.list = list
             this.total = total
@@ -156,7 +156,6 @@ export default {
             }
             let { url, method } = this.$api.admin_group_users_list
             this.$http({ method, url, params }).then(res => {
-
                 if (res && res.code === '200') {
                     this.total = res.data.total
                     this.list = res.data.data
@@ -169,7 +168,7 @@ export default {
             this.addForm = {
                 name: '',
                 email: '',
-                pwd: '',
+                pwd: ''
                 // cfm_pwd: ''
             }
         },
@@ -285,7 +284,7 @@ export default {
                 name: this.curr_row.name,
                 password: this.editForm.pwd
             }
-            let { method, url } = this.$api.admin_user_other_pwd_set 
+            let { method, url } = this.$api.admin_user_other_pwd_set
             this.$http({ method, url, data }).then(res => {
                 // console.log('res: ', res)
                 if (res && res.code === '200') {
@@ -297,23 +296,22 @@ export default {
         },
         // 目前里面只有禁用
         // 禁用管理员
-        modConf(val,row) {
+        modConf(val, row) {
             let data = {
                 id: row.id,
                 status: val ? 0 : 1
             }
 
             let { url, method } = this.$api.admin_user_status_set
-            this.$http({ method, url, data }).then(res => { 
-            // console.log('列表👌👌👌👌: ', res)
+            this.$http({ method, url, data }).then(res => {
+                // console.log('列表👌👌👌👌: ', res)
                 if (res && res.code === '200') {
-        
                     this.$toast.success(res && res.message)
-                    this.mod_show=false
-                    
-                    if(this.isSearch) {
+                    this.mod_show = false
+
+                    if (this.isSearch) {
                         this.$emit('search')
-                    }else {
+                    } else {
                         this.getList()
                     }
                 }
@@ -325,7 +323,7 @@ export default {
         updateSize() {
             this.pageNo = 1
             this.getList()
-        },
+        }
     },
 
     watch: {
@@ -344,6 +342,10 @@ export default {
 <style scoped>
 .mb20 {
     margin-bottom: 20px;
+}
+.show-table .admin-table {
+    min-width: 500px;
+    min-height: 150px;
 }
 .form > li {
     display: flex;

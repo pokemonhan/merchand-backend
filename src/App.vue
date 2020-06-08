@@ -113,6 +113,7 @@ export default {
 <style scoped>
 .app-header {
     width: 100%;
+    box-shadow: 0 2px 10px #a0a0a0;
 }
 .app-content {
     /* max-width: 1200px; */

@@ -12,7 +12,7 @@
                     <i :class="['close','iconfont iconicon-test']" @click="close"></i>
                 </div>
 
-                <div class="content mt10">{{message}}</div>
+                <div class="notice-content mt10">{{message}}</div>
                 <div class="opera-button">
                     <button class="btns-plain" @click="go">去处理</button>
                     <button class="btns-plain" @click="laterRemind">稍后提醒</button>
@@ -196,11 +196,12 @@ export default {
     /* color: rgb(245, 81, 40); */
     transform: scale(1.2);
 }
-.mt10 {
-    margin-top: 10px;
+.notice-content {
+    margin-top: 20px;
     padding-left: 15px;
     padding-right: 15px;
 }
+
 .opera-button {
     margin-top: 20px;
     padding-bottom: 10px;

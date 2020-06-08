@@ -181,7 +181,10 @@ export default {
             },
             err_tips: ['', '', '', ''],
             isSocketOpen: false,
-            // list: [],
+            rightList: [],
+            hadsetIntervalGetRightList: false,
+            // 右侧数据
+            isFirstGetRight: true,
             email_count: '',
             online_top_up_count: '',
             offline_top_up_count: '',
@@ -400,20 +403,85 @@ export default {
                 }
             })
         },
-        getRightList(needToast) {
-            // console.log(111)
+        setToast() {
+            let path_obj = {
+                // 邮件通知
+                email: {
+                    message: '你有未处理的【出款订单】!',
+                    path: 'notice_of_email'
+                },
+                // 线上入款
+                online_top_up: {
+                    message: '你有未处理的【线上入款】！',
+                    path: 'notice_of_recharge_on'
+                },
+                // 线下入款
+                offline_top_up: {
+                    message: '你有未处理【线下入款】',
+                    path: 'notice_of_recharge_off'
+                },
+                // 出款订单
+                withdrawal_order: {
+                    message: '你有未处理的【出款订单】',
+                    path: 'notice_of_withdraw'
+                },
+                // 出款审核
+                withdrawal_review: {
+                    message: '你有未处理【出款审核】',
+                    path: 'notice_of_withdraw_audit'
+                }
+            }
+            let arr = [
+                'email',
+                'online_top_up',
+                'offline_top_up',
+                'withdrawal_order',
+                'withdrawal_review'
+            ]
+            arr.forEach(key => {
+                if (this.rightList[key] && parseInt(this.rightList[key]) > 0) {
+                    let notice_boxs = document.getElementById('notice-box')
+                    if(notice_boxs&&notice_boxs.children){
+                        for (let child of notice_boxs.children) {
+                            let contentEle = child.getElementsByClassName('notice-content')
+                            if(contentEle&&contentEle[0].innerText===path_obj[key].message){
+                                notice_boxs.removeChild(child)
+                            }
+                        }
+                    }
+                    this.$notice({
+                        title: '通知',
+                        message: path_obj[key].message,
+                        jump: path_obj[key].path
+                    })
+                }
+            })
+        },
+        intervalGetRightList() {
             if (!window.all.tool.getLocal('Authorization')) return
-
+            if (!this.hadsetIntervalGetRightList) {
+                this.hadsetIntervalGetRightList = true
+                this.getRightList()
+                setInterval(() => {
+                    this.getRightList()
+                }, 5 * 60 * 1000)
+            }
+        },
+        getRightList() {
+            if (!window.all.tool.getLocal('Authorization')) return
+            // if (this.isFirstGetRight) return
+            // this.isFirstGetRight = true
             let { method, url } = this.$api.header_notification_statistics
+            // console.log('🍠 method: ', new Date())
             this.$http({ method, url }).then(res => {
                 // console.log('头部返回数据', res)
                 if (res && res.code === '200' && res.data) {
-                    let data = res.data
-                    this.email_count = data.email
-                    this.online_top_up_count = data.online_top_up
-                    this.offline_top_up_count = data.offline_top_up
-                    this.withdrawal_order_count = data.withdrawal_order
-                    this.withdrawal_review_count = data.withdrawal_review
+                    this.rightList = res.data
+                    this.email_count = this.rightList.email
+                    this.online_top_up_count = this.rightList.online_top_up
+                    this.offline_top_up_count = this.rightList.offline_top_up
+                    this.withdrawal_order_count = this.rightList.withdrawal_order
+                    this.withdrawal_review_count = this.rightList.withdrawal_review
                     // let path_obj = {
                     //     notice_of_withdraw: '/funds/paymentorder', // 出款订单
                     //     notice_of_recharge_on: '/funds/incomeorder', // 线上入款通知
@@ -421,55 +489,11 @@ export default {
                     //     notice_of_email: '/email/receiveemail', // 邮件通知
                     //     notice_of_withdraw_audit: '/funds/paymentreview' // 出款审核通知
                     // }
-                    let path_obj = {
-                        // 邮件通知
-                        email: {
-                            message: '你有未处理的【出款订单】!',
-                            path: 'notice_of_email'
-                        },
-                        // 线上入款
-                        online_top_up: {
-                            message: '你有未处理的【线上入款】！',
-                            path: 'notice_of_recharge_on'
-                        },
-                        // 线下入款
-                        offline_top_up: {
-                            message: '你有未处理【线下入款】',
-                            path: 'notice_of_recharge_off'
-                        },
-                        // 出款订单
-                        withdrawal_order: {
-                            message: '你有未处理的【出款订单】',
-                            path: 'notice_of_withdraw'
-                        },
-                        // 出款审核
-                        withdrawal_review: {
-                            message: '你有未处理【出款审核】',
-                            path: 'notice_of_withdraw_audit'
-                        }
+                    // 第一次不通知
+                    if (!this.isFirstGetRight) {
+                        this.setToast()
                     }
-                    let arr = [
-                        'email',
-                        'online_top_up',
-                        'offline_top_up',
-                        'withdrawal_order',
-                        'withdrawal_review'
-                    ]
-                    // let self = this
-                    // let allToast = function() {
-                    //     arr.forEach(key => {
-                    //         if (data[key] && parseInt(data[key]) > 0) {
-                    //             self.$notice({
-                    //                 title: '通知',
-                    //                 message: path_obj[key].message,
-                    //                 jump: path_obj[key].path
-                    //             })
-                    //         }
-                    //     })
-                    // }
-                    // if (needToast) {
-                    //     setTimeout(allToast, 1)
-                    // }
+                    this.isFirstGetRight = false
                 }
             })
         },
@@ -565,7 +589,7 @@ export default {
         $route(to, from) {
             if (from.path === '/login') {
                 this.socket()
-                this.getRightList(true)
+                this.intervalGetRightList()
                 this.getLeftList()
                 this.getMenuList()
             }
@@ -574,7 +598,7 @@ export default {
     mounted() {
         this.socket()
         this.getLeftList()
-        this.getRightList(true)
+        this.intervalGetRightList()
         this.getMenuList()
     }
 }

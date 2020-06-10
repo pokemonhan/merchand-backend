@@ -243,7 +243,7 @@ export default {
     },
     methods: {
         detailShow(row) {
-            console.log("row", row);
+            // console.log("row", row);
             this.detail_show = true;
             // this.detailList = row;
             setTimeout(() => {

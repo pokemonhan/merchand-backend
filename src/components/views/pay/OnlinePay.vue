@@ -318,10 +318,10 @@ export default {
         },
         backToSelOpt(list = []) {
             let all = [
-                {
-                    label: "全部",
-                    value: ""
-                }
+                // {
+                //     label: "全部",
+                //     value: ""
+                // }
             ];
             let back_list = list.map(item => {
                 // console.log(item)
@@ -355,7 +355,7 @@ export default {
         },
         addClearAll() {
             this.form = {
-                pay_method: "",
+                pay_method: 1,
                 front_name: "",
                 merchant_num: "",
                 merchant_code: "",
@@ -379,7 +379,7 @@ export default {
             this.dia_status = "add";
             this.dia_title = "新增线上入款";
             this.dia_show = true;
-            // this.addClearAll();
+            this.addClearAll();
         },
         addCfm() {
             if (!this.checkForm()) return;
@@ -392,7 +392,7 @@ export default {
                 merchant_secret: this.form.merchant_key,
                 public_key: this.form.merchant_public,
                 private_key: this.form.merchant_private,
-                // certificate: this.form.certificate_path,
+                certificate: this.form.certificate_path,
                 request_url: this.form.url,
                 vendor_url: this.form.third_href,
                 app_id: this.form.terminal,
@@ -401,8 +401,8 @@ export default {
                         return String(item.value);
                     })
                 ),
-                min: this.form.pay_limit[0],
-                max: this.form.pay_limit[1],
+                min_amount: this.form.pay_limit[0],
+                max_amount: this.form.pay_limit[1],
                 handle_fee: this.form.income_charge,
                 desc: this.form.specifcation,
                 backend_remark: this.form.mark
@@ -411,7 +411,7 @@ export default {
             let data = window.all.tool.rmEmpty(datas);
             let { url, method } = this.$api.online_finance_add;
             this.$http({ method, url, data }).then(res => {
-                // console.log('添加返回数据',res)
+                console.log('添加返回数据',res)
                 if (res && res.code == "200") {
                     this.dia_show = false;
                     this.getList();
@@ -485,7 +485,7 @@ export default {
             let data = window.all.tool.rmEmpty(datas);
             console.log("编辑请求数据", data);
             let { method, url } = this.$api.online_finance_edit;
-            this.$http({ methhod, url, data }).then(res => {
+            this.$http({ method, url, data }).then(res => {
                 console.log("编辑返回数据", res);
                 if (res && res.code == "200") {
                     this.dia_show = false;

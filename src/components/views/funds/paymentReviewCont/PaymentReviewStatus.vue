@@ -57,7 +57,8 @@
                      <tr>
                          <td>备注:</td>
                          <td colspan="5">
-                            <input type="text" class="remarkText" v-model="row.remark" placeholder="请填写审核备注" >
+                            <input disabled v-show="row.status==-1 || row.status==1" class="remarkText" type="text"  v-model="row.remark" >
+                            <input v-show="row.status==0" class="remarkText" type="text"  v-model="row.remark" placeholder="请输入备注内容">
                          </td>
                      </tr>
                  </table>
@@ -135,6 +136,14 @@ export default {
         },
     },
     mounted() {
+        if(this.row.remark=='null'){
+            this.row.remark="空"
+        }
+        if(this.row.remark){
+            this.row.remark=this.row.remark
+        }else{
+            this.row.remark="空"
+        }
     }
 }
 </script>

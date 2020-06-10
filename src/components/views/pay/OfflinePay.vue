@@ -220,7 +220,7 @@ export default {
             bank_opt: [],
             bankSelect: {},
             form: {
-                inconm: 1,
+                inconm: "1",
                 bank: "",
                 // accountName: "",
                 qrcode: "",
@@ -277,7 +277,7 @@ export default {
             ];
             let back_list = list.map(item => {
                 return {
-                    label: item.name + "(" + item.code+ ")",
+                    label: item.name + "(" + item.code + ")",
                     value: item.id
                 };
             });
@@ -294,10 +294,10 @@ export default {
         },
         backToSelOpt(list = []) {
             let all = [
-                {
-                    label: "全部",
-                    value: ""
-                }
+                // {
+                //     label: "全部",
+                //     value: ""
+                // }
             ];
             let back_list = list.map(item => {
                 return { label: item.name, value: item.id };
@@ -354,7 +354,7 @@ export default {
         },
         addClearAll() {
             this.form = {
-                inconm: "",
+                inconm: 1,
                 bank: "",
                 // accountName: "",
                 qrcode: "",
@@ -408,16 +408,19 @@ export default {
                 branch: this.form.bank_address,
                 min_amount: this.form.minimum_deposit,
                 max_amount: this.form.maxmum_deposit,
-                fee: this.form.deposit_fee,
-                tags: this.showTag.map(item => {
-                    return String(item.value);
-                }),
-                reamrk: this.form.description
+                service_fee: this.form.deposit_fee,
+                tags: JSON.stringify(
+                    this.showTag.map(item => {
+                        return String(item.value);
+                    })
+                ),
+                remark: this.form.description
             };
             let data = window.all.tool.rmEmpty(datas);
             console.log("请求数据", data);
             let { url, method } = this.$api.offline_finance_add;
             this.$http({ method, url, data }).then(res => {
+                console.log("返回数据", res);
                 if (res && res.code == "200") {
                     this.$toast.success(res && res.message);
                     this.dia_show = false;
@@ -483,11 +486,11 @@ export default {
                 branch: this.form.bank_address,
                 min_amount: this.form.minimum_deposit,
                 max_amount: this.form.maxmum_deposit,
-                fee: this.form.deposit_fee,
-                tags: this.showTag.map(item => {
+                service_fee: this.form.deposit_fee,
+                tags:JSON.stringify( this.showTag.map(item => {
                     return String(item.value);
-                }),
-                reamrk: this.form.description
+                })),
+                remark: this.form.description
             };
             let data = window.all.tool.rmEmpty(datas);
             console.log("请求数据", data);

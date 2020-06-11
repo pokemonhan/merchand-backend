@@ -66,7 +66,7 @@ export default {
     },
     methods: {
         initSound() {
-            window.alarm = new Audio(require('./assets/audio/alarm2.mp3'))
+            window.alarm = new Audio(require('./assets/audio/newMessage.mp3'))
         },
         playSound() {
             if (!window.alarm) return

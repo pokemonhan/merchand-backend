@@ -23,7 +23,12 @@
                 </li>
                 <li>
                     <span>账变类型</span>
-                    <Select style="width:220px" v-model="filter.status" :options="acc_change_opt"></Select>
+                    <Select
+                        input
+                        style="width:220px"
+                        v-model="filter.status"
+                        :options="acc_change_opt"
+                    ></Select>
                 </li>
                 <li>
                     <button class="btn-blue" @click="getList()">查询</button>
@@ -41,9 +46,9 @@
                     <td>{{row.mobile}}</td>
                     <td>{{row.guid}}</td>
                     <td>{{row.before_balance}}</td>
-                    <td :class="row.in_out==1? 'green': 'red'" >
-                        <span v-if="row.in_out==1" >+</span>
-                        <span v-if="row.in_out==2" >-</span>
+                    <td :class="row.in_out==1? 'green': 'red'">
+                        <span v-if="row.in_out==1">+</span>
+                        <span v-if="row.in_out==2">-</span>
                         {{row.amount}}
                     </td>
                     <td>{{row.balance}}</td>
@@ -64,7 +69,7 @@
 </template>
 
 <script>
-import axios from 'axios'
+import axios from "axios";
 export default {
     name: "FundChange",
     // props: {},
@@ -82,21 +87,21 @@ export default {
             headers: [
                 "流水编号",
                 "账变类型",
-                "资金流向" ,
+                "资金流向",
                 "会员账户",
                 "会员ID",
                 "帐变前金额",
-                "账变金额" ,
+                "账变金额",
                 "账变后金额",
                 "冻结金额",
-                "账变时间" 
+                "账变时间"
             ],
             list: [],
             total: 0,
             pageNo: 1,
             pageSize: 25,
-            jsonList:{},
-            foundChangeData:[],
+            jsonList: {},
+            foundChangeData: []
         };
     },
     methods: {
@@ -117,75 +122,82 @@ export default {
         },
         //获取json资源
         getTypeOfAccount() {
-            axios.get('http://pic.397017.com/common/linter.json').then(res=>{
-                console.log('json',res)
-                if(res && res.status=='200'){
-                    this.jsonList=res.data
-                    if(this.jsonList){
-                        let foundChangeList=this.jsonList.frontend_users_accounts_types
-                        if(foundChangeList){
-                            let foundChangeListPath=foundChangeList.path
+            axios.get("http://pic.397017.com/common/linter.json").then(res => {
+                // console.log("json", res);
+                if (res && res.status == "200") {
+                    this.jsonList = res.data;
+                    if (this.jsonList) {
+                        let foundChangeList = this.jsonList
+                            .frontend_users_accounts_types;
+                        if (foundChangeList) {
+                            let foundChangeListPath = foundChangeList.path;
                             // console.log('账变地址',foundChangeListPath)
-                            axios.get(foundChangeListPath).then(res=>{
-                                if(res && res.status=='200'){
-                                    this.foundChangeData=res.data
+                            axios.get(foundChangeListPath).then(res => {
+                                if (res && res.status == "200") {
+                                    this.foundChangeData = res.data;
                                     // console.log('类型列表',this.foundChangeData)
-                                    this.acc_change_opt=this.backToSelOpt(res.data)
+                                    this.acc_change_opt = this.backToSelOpt(
+                                        res.data
+                                    );
+                                    // console.log("asdas", this.acc_change_opt);
                                 }
-                            })
+                            });
                         }
                     }
                 }
-            })
+            });
         },
-        backToSelOpt(list=[]){
+        backToSelOpt(list = []) {
             // console.log('list',list)
-            let allFoundChangeData=[]
-            let everyFoundChangeData=[]
-            for(var i=0;i<list.length;i++){
+            let allFoundChangeData = [];
+            let everyFoundChangeData = [];
+            for (var i = 0; i < list.length; i++) {
                 // console.log('儿子',list[0])
-                let oneFoundChangeData=list[i].account_type
-                for(var j=0;j<oneFoundChangeData.length;j++){
-                    everyFoundChangeData.push(oneFoundChangeData[j])
+                let oneFoundChangeData = list[i].account_type;
+                for (var j = 0; j < oneFoundChangeData.length; j++) {
+                    everyFoundChangeData.push(oneFoundChangeData[j]);
                 }
             }
             // console.log('下级',everyFoundChangeData)
-            let all=[
+            let all = [
                 {
-                    label:"全部",
-                    value:""
+                    label: "全部",
+                    value: ""
                 }
-            ]
-            let all_list=everyFoundChangeData.map(item=>{
-                return {label:item.name,valu:item.id}
-            })
-            return all.concat(all_list)
+            ];
+            let all_list = everyFoundChangeData.map(item => {
+                return { label: item.name, value: item.sign };
+            });
+            return all.concat(all_list);
         },
-        getList(){
-            let created_at="";
-            if(this.filter.date[0] && this.filter.date[1]){
-                created_at=JSON.stringify([this.filter.date[0],this.filter.date[1]])
+        getList() {
+            let created_at = "";
+            if (this.filter.date[0] && this.filter.date[1]) {
+                created_at = JSON.stringify([
+                    this.filter.date[0],
+                    this.filter.date[1]
+                ]);
             }
-            let type_in=""
-            if(this.filter.status){
-                type_in=JSON.stringify([this.filter.status])
+            let type_in = "";
+            if (this.filter.status) {
+                type_in = JSON.stringify([this.filter.status]);
             }
-            let datas={
-                mobile:this.filter.account,
-                guid:this.filter.userid,
-                created_at:created_at,
-                type_in:type_in
-            }
-            // console.log('请求数据',datas)
-            let data=window.all.tool.rmEmpty(datas)
-            let {method,url}=this.$api.capital_account_change_list
-            this.$http({method,url,data}).then(res=>{
+            let datas = {
+                mobile: this.filter.account,
+                guid: this.filter.userid,
+                created_at: created_at,
+                type_in: type_in
+            };
+            console.log('请求数据',datas)
+            let data = window.all.tool.rmEmpty(datas);
+            let { method, url } = this.$api.capital_account_change_list;
+            this.$http({ method, url, data }).then(res => {
                 // console.log('返回数据',res)
-                if(res && res.code=='200'){
-                    this.list=res.data.data
-                    this.total=res.data.total
+                if (res && res.code == "200") {
+                    this.list = res.data.data;
+                    this.total = res.data.total;
                 }
-            })
+            });
         },
         updateNo(val) {
             this.getList();
@@ -194,24 +206,24 @@ export default {
             this.pageNo = 1;
             this.getList();
         },
-        getMenuList(){
-            if(!window.all.tool.getLocal('Authorization')) return
-            if(window.all.tool.getLocal('menu')){
-                this.menu_list=window.all.tool.getLocal('menu')
+        getMenuList() {
+            if (!window.all.tool.getLocal("Authorization")) return;
+            if (window.all.tool.getLocal("menu")) {
+                this.menu_list = window.all.tool.getLocal("menu");
             }
         },
         exportExcel() {
             // console.log('列表',this.menu_list)
-            let firstList={}
-            let childList={}
-            let fatherList={}
-            for(var i=0;i<this.menu_list.length;i++){
-                firstList=this.menu_list[i].children
-                let fatherTemplate=this.menu_list[i]
-                for(var j=0;j<firstList.length;j++){
-                    if(firstList[j].path=='/funds/fundchange'){
-                        fatherList=fatherTemplate
-                        childList=firstList[j]
+            let firstList = {};
+            let childList = {};
+            let fatherList = {};
+            for (var i = 0; i < this.menu_list.length; i++) {
+                firstList = this.menu_list[i].children;
+                let fatherTemplate = this.menu_list[i];
+                for (var j = 0; j < firstList.length; j++) {
+                    if (firstList[j].path == "/funds/fundchange") {
+                        fatherList = fatherTemplate;
+                        childList = firstList[j];
                     }
                 }
             }
@@ -225,7 +237,9 @@ export default {
                         item.mobile,
                         item.guid,
                         item.before_balance,
-                        item.in_out==1?'+'+item.amount:'-'+item.amount,
+                        item.in_out == 1
+                            ? "+" + item.amount
+                            : "-" + item.amount,
                         item.balance,
                         item.frozen_balance,
                         item.created_at
@@ -234,7 +248,7 @@ export default {
                 excel.export_json_to_excel({
                     header: tHeaders,
                     data,
-                    filename:fatherList.label+'-'+ "资金账变",
+                    filename: fatherList.label + "-" + "资金账变",
                     autoWidth: true,
                     bookType: "xlsx"
                 });

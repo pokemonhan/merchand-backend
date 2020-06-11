@@ -33,6 +33,7 @@
                                 v-if="item.editable_type.indexOf('1')!=-1"
                             />
                             <div style="width:50px;" v-if="item.editable_type.indexOf('1')!=-1">
+                                <i v-if="item.sign=='withdraw_commission'">%</i>
                                 <i
                                     v-if="input_show[item.sign]"
                                     class="orange iconfont iconjinggao1- ml5"
@@ -147,7 +148,8 @@ export default {
             before_data: [],
             initial_data: {},
             childs_data: {},
-            switch_initial_data: {}
+            switch_initial_data: {},
+            percent_sign_show: {}
         };
     },
     methods: {
@@ -165,6 +167,26 @@ export default {
             // console.log("item", item);
             this.curr_row = item;
             this.childs = item.childs || [];
+            //隐藏聊天室等级 推广分享地址
+            let childsIndex = -1;
+            for (var k = 0; k < this.childs.length; k++) {
+                if (this.childs[k].sign == "chat_user_grade") {
+                    childsIndex = k;
+                }
+            }
+            if (childsIndex > -1) {
+                this.childs.splice(childsIndex, 1);
+            }
+            let childsIndexSecond = -1;
+            for (var m = 0; m < this.childs.length; m++) {
+                if (this.childs[m].sign == "popularize_url") {
+                    childsIndexSecond = m;
+                }
+            }
+            if (childsIndexSecond > -1) {
+                this.childs.splice(childsIndexSecond, 1);
+            }
+
             this.button_show = item.id;
             // console.log("childs", this.childs);
             //获取原始数值保存
@@ -196,9 +218,9 @@ export default {
                             if (this.curr_row.id === item.id) {
                                 this.setChange(item);
                                 // console.log("item", item);
-                                this.input_show={}
-                                this.switch_show={}
-                                this.select_show={}
+                                this.input_show = {};
+                                this.switch_show = {};
+                                this.select_show = {};
                             }
                         }
                         // console.log('发音',curr_item)
@@ -213,6 +235,7 @@ export default {
                 key: "value",
                 value: item.value
             };
+            // console.log("上传数据",datas)
             let data = window.all.tool.rmEmpty(datas);
             let { method, url } = this.$api.allarea_set_save;
             this.$http({ method, url, data }).then(res => {
@@ -239,6 +262,7 @@ export default {
                 key: "status",
                 value: String(item.status ? 1 : 0)
             };
+            console.log("上传数据", datas);
             let data = window.all.tool.rmEmpty(datas);
             let { method, url } = this.$api.allarea_set_save;
             this.$http({ method, url, data }).then(res => {
@@ -247,7 +271,7 @@ export default {
                     this.$toast.success(res.message);
                     this.getTitleList();
                     this.switchSaved[item.sign] = true;
-                    this.switch_show[item.sign]=false
+                    this.switch_show[item.sign] = false;
                 }
             });
         },
@@ -276,7 +300,7 @@ export default {
                     this.$toast.success(res.message);
                     this.getTitleList();
                     this.selectSaved[item.sign] = true;
-                    this.select_show[item.sign]=false
+                    this.select_show[item.sign] = false;
                 }
             });
         },

@@ -5,7 +5,7 @@
                 v-for="(game, index) in games"
                 :key="index"
                 :class="[active_game===game.value?'actived':'']"
-                @click="actSort(game.value)"
+                @click="actSort(game)"
             >{{game.label}}</span>
         </div>
         <div class="game-plant">
@@ -16,7 +16,7 @@
                 :class="[active_plant===game_plant.value?'btn-blue':'btn-plain']"
                 @click="choose_platform(game_plant.value)"
             >{{game_plant.label}}</button>
-            <button style="margin-left:40px;" class="btn-blue" @click="addWash">添加洗码规则</button>
+            <button style="float:right;" class="btn-blue" @click="addWash">添加洗码规则</button>
         </div>
         <div class="table">
             <Table :headers="headers" :column="list">
@@ -118,12 +118,13 @@
 </template>
 
 <script>
+import axios from "axios";
 export default {
     name: "WashSetting",
     data() {
         return {
             games: [],
-            active_game: "tarot",
+            active_game: "",
             // game_plant: 0,
             active_plant: "KY",
             plants: [],
@@ -155,48 +156,50 @@ export default {
             curr_row: {},
             row_id: {},
             gameTypeData: [],
-            dia_title: ""
+            dia_title: "",
+            jsonList: {},
+            gameData: []
         };
     },
 
     methods: {
-        gameVendorData() {
-            let gameVendors = [];
-            let { url, method } = this.$api.game_search_condition_list;
-            this.$http({ url, method }).then(res => {
-                // console.log('厂商数据',res)
-                if (res && res.code == "200") {
-                    for (var j = 0; j < res.data.gameVendors.length; j++) {
-                        gameVendors.push(res.data.gameVendors[j]);
+        getGameTypeData() {
+            axios.get("http://pic.397017.com/common/linter.json").then(res => {
+                // console.log("json", res);
+                if (res && res.status == "200") {
+                    this.jsonList = res.data;
+                    if (this.jsonList) {
+                        let gameVendorData = this.jsonList.game_type_vendors;
+                        if (gameVendorData) {
+                            let gameVendorDataPath = gameVendorData.path;
+                            axios.get(gameVendorDataPath).then(res => {
+                                // console.log('数据',res)
+                                if (res && res.status == "200") {
+                                    this.gameData = res.data;
+                                    // console.log("数据", this.gameData);
+                                    this.games = this.processGameTypeData(
+                                        res.data
+                                    );
+                                    if (this.games) {
+                                        let firstGame = this.games[0];
+                                        this.actSort(firstGame);
+                                    }
+                                }
+                            });
+                        }
                     }
                 }
-                this.plants = this.backToVendorData(gameVendors);
             });
         },
-        backToVendorData(list = []) {
+        processGameTypeData(list = []) {
+            // console.log("list", list);
             let all = [];
             let back_list = list.map(item => {
-                return { label: item.name, value: item.sign };
-            });
-            return all.concat(back_list);
-        },
-        getTypeData() {
-            let gameTypes = [];
-            let { url, method } = this.$api.game_search_condition_list;
-            this.$http({ method, url }).then(res => {
-                // console.log("返回数据：", res);
-                if (res && res.code == "200") {
-                    for (var i = 0; i < res.data.gameTypes.length; i++) {
-                        gameTypes.push(res.data.gameTypes[i]);
-                    }
-                    this.games = this.backToTypeData(gameTypes);
-                }
-            });
-        },
-        backToTypeData(list = []) {
-            let all = [];
-            let back_list = list.map(item => {
-                return { label: item.name, value: item.sign };
+                return {
+                    label: item.name,
+                    value: item.sign,
+                    vendors: item.vendors
+                };
             });
             return all.concat(back_list);
         },
@@ -209,13 +212,34 @@ export default {
                 }
             });
         },
-        actSort(sign) {
-            console.log("类型标识", sign);
-            this.active_game = sign;
-            this.getList();
+        actSort(game) {
+            // console.log("类型标识", game);
+            let gameVendors = game.vendors;
+            this.active_game = game.value;
+            // console.log("游戏平台", gameVendors);
+            this.plants = [];
+            this.list = [];
+            if (gameVendors.length > 0) {
+                let all = [];
+                let firstPlants = gameVendors[0].sign;
+                this.choose_platform(firstPlants);
+                let all_list = gameVendors.map(item => {
+                    return { label: item.name, value: item.sign };
+                });
+                this.plants = all.concat(all_list);
+            } else {
+                let all = [
+                    {
+                        label: "暂无",
+                        value: ""
+                    }
+                ];
+                this.plants = all;
+            }
         },
         choose_platform(sign) {
-            console.log("平台标识", sign);
+            if (!sign) return;
+            // console.log("平台标识", sign);
             this.active_plant = sign;
             this.getList();
         },
@@ -408,7 +432,7 @@ export default {
             let data = window.all.tool.rmEmpty(datas);
             let { method, url } = this.$api.wash_code_list;
             this.$http({ method: method, url: url, data: data }).then(res => {
-                console.log("res", res);
+                // console.log("res", res);
                 if (res && res.code == "200") {
                     this.list = res.data;
                     this.total = res.data.length;
@@ -437,10 +461,11 @@ export default {
         }
     },
     mounted() {
-        this.getList();
+        // this.getList();
         this.getLevList();
-        this.getTypeData();
-        this.gameVendorData();
+        // this.getTypeData();
+        // this.gameVendorData();
+        this.getGameTypeData();
     }
 };
 </script>
@@ -459,8 +484,15 @@ export default {
     border-bottom: 2px solid #48f;
 }
 .game-plant {
+    height: 30px;
     margin-top: 20px;
+    margin-left: 10px;
 }
+/* .game-plant span{
+    
+    display: inline-block;
+    vertical-align: baseline;
+} */
 .btn {
     /* height: 26px; */
     padding-left: 15px;

@@ -123,7 +123,7 @@ export default {
         //获取json资源
         getTypeOfAccount() {
             axios.get("http://pic.397017.com/common/linter.json").then(res => {
-                // console.log("json", res);
+                console.log("json", res);
                 if (res && res.status == "200") {
                     this.jsonList = res.data;
                     if (this.jsonList) {

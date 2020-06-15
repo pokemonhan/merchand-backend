@@ -150,7 +150,7 @@ export default {
             }
             let datas = {
                 game_vendor_name: this.filter.account,
-                project_day: project_data
+                report_day: project_data
             };
             console.log("请求数据", datas);
             let data = window.all.tool.rmEmpty(datas);

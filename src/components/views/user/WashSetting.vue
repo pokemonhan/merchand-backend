@@ -390,9 +390,10 @@ export default {
                 bet: String(this.wash_form.code_numbers[1]),
                 percent: JSON.stringify(percent)
             };
-            // console.log('请求数据',data)
+            console.log('请求数据',data)
             let { method, url } = this.$api.wash_code_set;
             this.$http({ method, url, data }).then(res => {
+                console.log('返回数据',res)
                 if (res && res.code == "200") {
                     this.show_modal = false;
                     this.$toast.success(res.message);

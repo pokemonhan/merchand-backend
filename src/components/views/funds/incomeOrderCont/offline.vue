@@ -69,7 +69,10 @@
                     >{{(review_status_obj[row.status]||{}).text}}</td>
                     <td>{{row.created_at}}</td>
                     <td>
-                        <button :class="['btn-green',row.status==3?'visit-view':'visit-hide']"  @click="passShow(row)">通过</button>
+                        <button
+                            :class="['btn-green',row.status==3?'visit-view':'visit-hide']"
+                            @click="passShow(row)"
+                        >通过</button>
                         <button
                             :class="['btn-red',row.status==3?'visit-view':'visit-hide']"
                             @click="rejectShow(row)"
@@ -156,12 +159,11 @@ export default {
             },
             review_status_opt: [
                 { label: "全部", value: "" },
-                { label: "客户发起订单", value: "0" },
-                { label: "审核通过", value: "1" },
-                { label: "审核拒绝", value: "-1" },
-                { label: "订单过期", value: "-2"},
-                { label: "审核中", value: "3"},
-                { label: "客户撤销订单", value: "-3"}
+                { label: "未确认支付", value: "0" },
+                { label: "审核中", value: "1" },
+                { label: "审核通过", value: "2" },
+                { label: "审核拒绝", value: "3" },
+                { label: "取消订单", value: "4" }
             ],
             formal_status_opt: [
                 { label: "全部", value: "" },
@@ -169,12 +171,11 @@ export default {
                 { label: "否", value: "1" }
             ],
             review_status_obj: {
-                "0": { text: "客户未确认订单", color: "orange" },
-                "1": { text: "审核通过", color: "green" },
-                "-1": { text: "审核拒绝", color: "red" },
-                "-2": { text: "订单过期", color: "purple" },
-                "3": { text: "审核中", color: "yellow" },
-                "-3": { text: "客户撤销订单", color: "gray" },
+                "0": { text: "未确认支付", color: "orange" },
+                "2": { text: "审核通过", color: "green" },
+                "3": { text: "审核拒绝", color: "red" },
+                "1": { text: "审核中", color: "yellow" },
+                "4": { text: "取消订单", color: "gray" }
             },
             headers: [
                 "订单号",
@@ -342,7 +343,7 @@ export default {
                     context.fillText("转入银行：", ml, mt * 3);
                     context.fillText(row.bank, ml + 100, mt * 3);
                     context.fillText("转入账号：", w, mt * 3);
-                    context.fillText(row.card_number, w + 100, mt * 3);//ok
+                    context.fillText(row.card_number, w + 100, mt * 3); //ok
                     // row4
                     context.fillText("充值金额：", ml, mt * 4);
                     context.fillText(row.money, ml + 100, mt * 4);
@@ -379,7 +380,7 @@ export default {
                 console.log("返回数据", res);
                 if (res && res.code == "200") {
                     this.offline_conf = false;
-                    this.$toast.success(res && res.message)
+                    this.$toast.success(res && res.message);
                     this.getList();
                 }
             });
@@ -406,7 +407,7 @@ export default {
                 console.log("返回数据", res);
                 if (res && res.code == "200") {
                     this.offline_conf = false;
-                    this.$toast.success(res && res.message)
+                    this.$toast.success(res && res.message);
                     this.getList();
                 }
             });
@@ -474,19 +475,17 @@ export default {
                 page: this.pageNo,
                 pageSize: this.pageSize
             };
-            console.log('请求数据',datas)
+            console.log("请求数据", datas);
             let data = window.all.tool.rmEmpty(datas);
             let { method, url } = this.$api.founds_incomeorder_list;
-            this.$http({ method: method, url: url, data: data }).then(
-                res => {
-                    console.log("返回数据：", res);
-                    if (res && res.code == "200") {
-                        this.list = res.data.data;
-                        this.total = res.data.total;
-                        this.countFunction(res.data && res.data.data);
-                    }
+            this.$http({ method: method, url: url, data: data }).then(res => {
+                console.log("返回数据：", res);
+                if (res && res.code == "200") {
+                    this.list = res.data.data;
+                    this.total = res.data.total;
+                    this.countFunction(res.data && res.data.data);
                 }
-            );
+            });
         },
         countFunction(count) {
             // console.log("count", count);
@@ -526,10 +525,10 @@ export default {
 </script>
 
 <style scoped>
-.visit-hide{
+.visit-hide {
     visibility: hidden;
 }
-.visit-view{
+.visit-view {
     visibility: visible;
 }
 .filter {

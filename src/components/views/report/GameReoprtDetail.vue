@@ -44,6 +44,7 @@
             @updateNo="updateNo"
             @updateSize="updateSize"
         />
+        
     </div>
 </template>
 
@@ -89,7 +90,7 @@ export default {
             let datas = {
                 game_vendor_sign: this.row.game_vendor_sign,
                 game_name: this.filter.account,
-                project_day: project_day
+                report_day: project_day
             };
             // console.log("请求数据", datas);
             let data = window.all.tool.rmEmpty(datas);

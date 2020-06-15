@@ -35,6 +35,7 @@
                 <li>
                     <button class="btn-blue" @click="getList">查询</button>
                     <button class="btn-blue" @click="add">新增线上入款</button>
+                    <button class="btn-blue" @click="testButton">测试按钮</button>
                 </li>
             </ul>
         </div>
@@ -95,7 +96,7 @@
                     </li>
                     <li>
                         <span>商户编号:</span>
-                        <Input  limit="en-num" class="w250" v-model="form.merchant_code" />
+                        <Input limit="en-num" class="w250" v-model="form.merchant_code" />
                     </li>
                     <li>
                         <span>密钥方式:</span>
@@ -146,7 +147,13 @@
                     </li>
                     <li>
                         <span>请求地址:</span>
-                        <Input class="w250" v-model="form.url" required :showerr="errUrlShow(form.url)" errmsg="url格式错误!" />
+                        <Input
+                            class="w250"
+                            v-model="form.url"
+                            required
+                            :showerr="errUrlShow(form.url)"
+                            errmsg="url格式错误!"
+                        />
                     </li>
                     <li>
                         <span>第三方域名:</span>
@@ -160,6 +167,7 @@
                         <span>标签选择:</span>
                         <div class="tag-choose" @click="tag_show=true">
                             <span
+                                style="display:inline-block;"
                                 class="el-tag"
                                 v-for="(item,index) in showTag"
                                 :key="index"
@@ -167,7 +175,7 @@
                             >{{item.label}}</span>
                         </div>
                     </li>
-                    <li @click.stop class="chooseTag" style="display:block">
+                    <li @click.stop class="chooseTag" style="display:inline-block">
                         <p
                             v-show="tag_show"
                             v-for="(item) in all_tag"
@@ -208,6 +216,172 @@
                 </ul>
             </div>
         </Dialog>
+        <Dialog :show.sync="dia_show_step" :title="dia_title_step">
+            <div class="dia-inner">
+                <el-steps :active="active" align-center finish-status="success">
+                    <el-step
+                        class="pointer"
+                        title="支付配置"
+                        description="基础信息配置"
+                        :status="stepStatus(0)"
+                        @click.native="active=0"
+                    ></el-step>
+                    <el-step
+                        class="pointer"
+                        title="商户配置"
+                        description="商户信息配置"
+                        :status="stepStatus(1)"
+                        @click.native="active=1"
+                    ></el-step>
+                    <el-step
+                        class="pointer"
+                        title="标签配置"
+                        description="标签选择"
+                        :status="stepStatus(2)"
+                        @click.native="active=2"
+                    ></el-step>
+                </el-steps>
+                <div class="edit-form">
+                    <!-- 基础内容 -->
+                    <ul v-if="active==0" class="form">
+                        <li>
+                            <span>支付方式：</span>
+                            <Select
+                                input
+                                style="width:250px;display:inline-block;"
+                                v-model="form.pay_method"
+                                :options="pay_method_opt"
+                            ></Select>
+                        </li>
+                        <li>
+                            <span>前端名称：</span>
+                            <Input class="w250" v-model="form.front_name" />
+                        </li>
+                        <li>
+                            <span>支付限额：</span>
+                            <Input limit="number" style="width:114px;" v-model="form.pay_limit[0]" />
+                            <span class="mv5">~</span>
+                            <Input limit="number" style="width:114px;" v-model="form.pay_limit[1]" />
+                        </li>
+                        <li>
+                            <span>入款手续费：</span>
+                            <Input limit="number" class="w250" v-model="form.income_charge" />
+                        </li>
+                        <li>
+                            <span>充值说明：</span>
+                            <textarea class="textarea form-area" v-model="form.specifcation"></textarea>
+                        </li>
+                        <li>
+                            <span>后台备注：</span>
+                            <textarea class="textarea form-area" v-model="form.mark"></textarea>
+                        </li>
+                    </ul>
+                    <ul v-if="active==1" class="form">
+                        <li>
+                            <span>商户号：</span>
+                            <Input limit="en-num" class="w250" v-model="form.merchant_num" />
+                        </li>
+                        <li>
+                            <span>商户编号：</span>
+                            <Input limit="en-num" class="w250" v-model="form.merchant_code" />
+                        </li>
+                        <li>
+                            <span>密钥方式：</span>
+                            <Radio
+                                class="mr50"
+                                label="密钥模式"
+                                :value="form.secret_method"
+                                val="1"
+                                v-model="form.secret_method"
+                                @update="secretUpd"
+                            />
+                            <Radio
+                                class="radio-right"
+                                label="证书方式"
+                                :value="form.secret_method"
+                                val="2"
+                                v-model="form.secret_method"
+                                @update="secretUpd"
+                            />
+                        </li>
+                        <li v-if="form.secret_method==='1'">
+                            <span>商户密钥：</span>
+                            <Input class="w250" v-model="form.merchant_key" />
+                        </li>
+                        <li v-if="form.secret_method==='1'">
+                            <span>商户公钥：</span>
+                            <Input class="w250" v-model="form.merchant_public" />
+                        </li>
+                        <li v-if="form.secret_method==='1'">
+                            <span>商户私钥：</span>
+                            <Input class="w250" v-model="form.merchant_private" />
+                        </li>
+                        <li v-if="form.secret_method=='2'">
+                            <span>上传证书：</span>
+                            <Input v-model="form.certificate_path" style="width:125px;" />
+                            <Upload
+                                style="width:125px;"
+                                title="上传证书"
+                                v-model="form.certificate"
+                                @change="upLoadChange($event,form)"
+                            />
+                        </li>
+                        <li>
+                            <span>请求地址：</span>
+                            <Input
+                                class="w250"
+                                v-model="form.url"
+                                required
+                                :showerr="errUrlShow(form.url)"
+                                errmsg="url格式错误!"
+                            />
+                        </li>
+                        <li>
+                            <span>第三方域名：</span>
+                            <Input class="w250" v-model="form.third_href" />
+                        </li>
+                        <li>
+                            <span>终端号：</span>
+                            <Input class="w250" v-model="form.terminal" />
+                        </li>
+                    </ul>
+                    <ul v-if="active==2" class="form">
+                        <li v-clickoutside="tagListShow">
+                            <span>标签选择:</span>
+                            <div class="tag-choose" @click="tag_show=true">
+                                <span
+                                    class="el-tag"
+                                    v-for="(item,index) in showTag"
+                                    :key="index"
+                                    @click="closeTag(item,index)"
+                                >{{item.label}}</span>
+                            </div>
+                        </li>
+                        <li @click.stop class="chooseTag" style="display:block">
+                            <p
+                                v-show="tag_show"
+                                v-for="(item) in all_tag"
+                                :key="item.value"
+                                class="allTag-list"
+                            >
+                                <input
+                                    class="choosebox"
+                                    type="checkbox"
+                                    v-model="form.formtag[item.value]"
+                                    @change="tagChange(item)"
+                                />
+                                <span>{{item.label}}</span>
+                            </p>
+                        </li>
+                    </ul>
+                </div>
+                <div class="form-btns">
+                    <button v-show="active!==0" class="btn-blue-large" @click="prevStep">上一步</button>
+                    <button v-if="active!=2" class="btn-blue-large" @click="nextStep">下一步</button>
+                    <button v-else class="btn-blue-large" @click="diaCfm">确定</button>
+                </div>
+            </div>
+        </Dialog>
         <Modal
             :show.sync="mod_show"
             title="删除"
@@ -218,8 +392,14 @@
     </div>
 </template>
 <script>
+import { Steps, step, Step } from "element-ui";
+import axiox from "axios";
 export default {
     name: "OnlinePay",
+    components: {
+        [Steps.name]: Steps,
+        [Step.name]: Step
+    },
     data() {
         return {
             filter: {
@@ -256,7 +436,7 @@ export default {
             dia_status: "",
             dia_title: "",
             form: {
-                pay_method: "",
+                pay_method: "1",
                 front_name: "",
                 merchant_num: "",
                 merchant_code: "", // 商户编码
@@ -285,16 +465,63 @@ export default {
             showTag: [],
             curr_row: {},
             // urlCheck: /^(http|ftp|https):\/\/[\w\-_]+(\.[\w\-_]+)+([\w\-\.,@?^=%&:/~\+#]*[\w\-\@?^=%&/~\+#])?$/,
-            urlShow: false
+            urlShow: false,
+            dia_show_step: false,
+            dia_title_step: "",
+            active: 0
         };
     },
     methods: {
+        nextStep() {
+            if (this.active < 2) {
+                this.active++;
+            }
+        },
+        prevStep() {
+            this.active--;
+        },
+        testButton() {
+            this.dia_show_step = true;
+            this.dia_title_step = "新增线上入款";
+            this.dia_status = "add";
+            this.addClearAll();
+        },
+        /** 展示 步骤条 状态 */
+        stepStatus(stepVal) {
+            // wait / process / finish / error / success
+            if (this.active === stepVal) {
+                return "process";
+            } else if (this.active > stepVal) {
+                switch (stepVal) {
+                    case 0:
+                        return this.step0Check() ? "success" : "error";
+                        break;
+                    case 1:
+                        return this.step1Check() ? "success" : "error";
+                        break;
+                    case 2:
+                        return this.step2Check() ? "success" : "error";
+                    case 4:
+                        break;
+                    default:
+                        break;
+                }
+            }
+        },
+        step0Check() {
+            return true;
+        },
+        step1Check() {
+            return true;
+        },
+        step2Check() {
+            return true;
+        },
         errUrlShow(val) {
-            if (!val) return true
+            if (!val) return true;
             // ip 正则
-            let reg = /^(http|ftp|https):\/\/[\w\-_]+(\.[\w\-_]+)+([\w\-\.,@?^=%&:/~\+#]*[\w\-\@?^=%&/~\+#])?$/
-            return !reg.test(val)
-
+            let reg = /^(http|ftp|https):\/\/[\w\-_]+(\.[\w\-_]+)+([\w\-\.,@?^=%&:/~\+#]*[\w\-\@?^=%&/~\+#])?$/;
+            return !reg.test(val);
         },
         checkForm() {
             // console.log('url',this.form.url)
@@ -411,7 +638,7 @@ export default {
             let data = window.all.tool.rmEmpty(datas);
             let { url, method } = this.$api.online_finance_add;
             this.$http({ method, url, data }).then(res => {
-                console.log('添加返回数据',res)
+                console.log("添加返回数据", res);
                 if (res && res.code == "200") {
                     this.dia_show = false;
                     this.getList();
@@ -421,7 +648,8 @@ export default {
         edit(row) {
             this.dia_status = "edit";
             this.dia_title = "编辑";
-            this.dia_show = true;
+            // this.dia_show = true;
+            this.dia_show_step=true
             this.addClearAll();
             let tagsId = row.tags;
             // console.log("tagsId", tagsId);
@@ -646,17 +874,8 @@ export default {
     max-height: 80vh;
     overflow: auto;
 }
-.form li {
-    display: flex;
-    /* justify-content: baseline; */
-    align-items: center;
-    margin-top: 20px;
-}
-.form li:first-child {
-    margin-top: 0;
-}
 .form li > span:first-child {
-    min-width: 6em;
+    min-width: 7em;
     margin-right: 10px;
     text-align: right;
 }
@@ -689,7 +908,7 @@ export default {
 .chooseTag {
     width: 250px;
     min-height: 10px;
-    margin-left: 84px;
+    margin-left: 120px;
 }
 .chooseTag p {
     width: 125px;
@@ -705,5 +924,38 @@ export default {
     margin-top: -50%;
     margin-bottom: -50%;
     color: red;
+}
+.dia-inner {
+    min-width: 670px;
+    min-height: 650px;
+}
+.dia-inner .edit-form {
+    height: 250px;
+    /* margin-top: 5%; */
+    display: flex;
+    justify-content: center;
+}
+.form > li:nth-child(1) {
+    display: flex;
+    align-items: center;
+    margin-top: 25px;
+}
+.form li {
+    display: flex;
+    align-items: center;
+    margin-top: 25px;
+}
+
+.form-btns {
+    margin-top: 240px;
+    text-align: center;
+}
+.form > li:nth-child(2) {
+    margin-top: 10px;
+}
+
+.form .upload-btn > div {
+    display: flex;
+    margin-top: 10px;
 }
 </style>

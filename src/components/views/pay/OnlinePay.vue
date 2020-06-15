@@ -255,11 +255,11 @@
                         </li>
                         <li>
                             <span>前端名称：</span>
-                            <Input class="w250" v-model="form.front_name" />
+                            <Input errmsg="内容不可为空" :showerr="errFrontName(form.front_name)"  class="w250" v-model="form.front_name" />
                         </li>
                         <li>
                             <span>支付限额：</span>
-                            <Input limit="number" style="width:114px;" v-model="form.pay_limit[0]" />
+                            <Input :errmsg="dia_err" limit="number" style="width:114px;" v-model="form.pay_limit[0]" />
                             <span class="mv5">~</span>
                             <Input limit="number" style="width:114px;" v-model="form.pay_limit[1]" />
                         </li>
@@ -402,6 +402,7 @@ export default {
     },
     data() {
         return {
+            dia_err:"",
             filter: {
                 merchant_num: "",
                 person: "",
@@ -472,6 +473,11 @@ export default {
         };
     },
     methods: {
+        errFrontName(val){
+            if(!val){
+                return true
+            }
+        },
         nextStep() {
             if (this.active < 2) {
                 this.active++;

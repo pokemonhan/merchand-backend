@@ -70,11 +70,11 @@
                     <td>{{row.created_at}}</td>
                     <td>
                         <button
-                            :class="['btn-green',row.status==3?'visit-view':'visit-hide']"
+                            :class="['btn-green',row.status==1?'visit-view':'visit-hide']"
                             @click="passShow(row)"
                         >通过</button>
                         <button
-                            :class="['btn-red',row.status==3?'visit-view':'visit-hide']"
+                            :class="['btn-red',row.status==1?'visit-view':'visit-hide']"
                             @click="rejectShow(row)"
                         >拒绝</button>
                         <button class="btn-blue" @click="showDetail(row)">详情</button>

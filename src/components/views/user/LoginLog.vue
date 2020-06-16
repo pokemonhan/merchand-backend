@@ -17,7 +17,12 @@
                 </li>
                 <li>
                     <span>登录IP</span>
-                    <Input errmsg="格式错误" :showerr="errIpShow(filter.lastLoginIp)" style="width:100px" v-model="filter.lastLoginIp" />
+                    <Input
+                        errmsg="格式错误"
+                        :showerr="errIpShow(filter.lastLoginIp)"
+                        style="width:100px"
+                        v-model="filter.lastLoginIp"
+                    />
                 </li>
                 <li>
                     <span>
@@ -34,10 +39,10 @@
                 <template v-slot:item="{row}">
                     <td>{{row.mobile || '--'}}</td>
                     <td>{{row.guid || '--'}}</td>
-                    <td>{{row.last_login_ip || '--'}}</td>
-                    <td>{{row.origin || '--'}}</td>
-                    <td>{{row.last_login_device==1?'PC':row.last_login_device==2?'H5':row.last_login_device==3?'APP':row.last_login_device==4?'未知设备':'' || '--'}}</td>
-                    <td>{{row.updated_at || '--'}}</td>
+                    <td>{{row.ip || '--'}}</td>
+                    <td>{{row.web_type==1?'PC':row.web_type==2?'H5':row.web_type==3?'APP':'--'}}</td>
+                    <td>{{row.device || '--'}}</td>
+                    <td>{{row.created_at || '--'}}</td>
                 </template>
             </Table>
             <Page
@@ -81,35 +86,39 @@ export default {
             total: 0,
             pageNo: 1,
             pageSize: 25,
-            menu_list:[],
+            menu_list: []
         };
     },
     methods: {
         //校验ip地址
-        errIpShow(val){
-            if(!val) return false
-            let reg=/^(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])$/
+        errIpShow(val) {
+            if (!val) return false;
+            let reg = /^(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])$/;
 
-            return !reg.test(val)
+            return !reg.test(val);
         },
         //校验查询条件
-        checkFilter(){
-            let reg=/^(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])$/
+        checkFilter() {
+            if(!this.filter.lastLoginIp) return true
+            let reg = /^(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])$/;
             // let re=new RegExp(IpCheck)
-            if(!reg.test(this.filter.lastLoginIp) && this.filter.lastLoginIp!='' ){
-                return false
+            if (
+                !reg.test(this.filter.lastLoginIp) &&
+                this.filter.lastLoginIp != ""
+            ) {
+                return false;
             }
-            return true
+            return true;
         },
         updateNo(val) {
             this.getList();
         },
         updateSize(val) {
-            this.pageNo=1;
+            this.pageNo = 1;
             this.getList();
         },
         getList() {
-            if(!this.checkFilter()) return
+            if (!this.checkFilter()) return;
             let createdAt = "";
             if (this.filter.dates[0] && this.filter.dates[1]) {
                 createdAt = JSON.stringify([
@@ -122,41 +131,39 @@ export default {
                 guid: this.filter.uniqueld,
                 created_at: createdAt,
                 last_login_ip: this.filter.lastLoginIp,
-                page:this.pageNo,
-                pageSize:this.pageSize
-
+                page: this.pageNo,
+                pageSize: this.pageSize
             };
             let data = window.all.tool.rmEmpty(para);
+            console.log('请求数据',data)
             let { method, url } = this.$api.user_login_log_list;
-            this.$http({ method: method, url: url, data }).then(
-                res => {
-                    // console.log("res", res);
-                    if (res && res.code == "200") {
-                        this.list = res.data.data;
-                        this.total=res.data.total
-                    }
+            this.$http({ method: method, url: url, data: data }).then(res => {
+                console.log("res", res);
+                if (res && res.code == "200") {
+                    this.list = res.data.data;
+                    this.total = res.data.total;
                 }
-            );
+            });
         },
         //获取列表
-        getMenuList(){
-            if(!window.all.tool.getLocal('Authorization')) return
-            if(window.all.tool.getLocal('menu')){
-                this.menu_list=window.all.tool.getLocal('menu')
+        getMenuList() {
+            if (!window.all.tool.getLocal("Authorization")) return;
+            if (window.all.tool.getLocal("menu")) {
+                this.menu_list = window.all.tool.getLocal("menu");
             }
         },
         exportExcel() {
             // console.log('列表',this.menu_list)
-            let firstList={}
-            let childList={}
-            let fatherList={}
-            for(var i=0;i<this.menu_list.length;i++){
-                firstList=this.menu_list[i].children
-                let fatherTemplate=this.menu_list[i]
-                for(var j=0;j<firstList.length;j++){
-                    if(firstList[j].path=='/user/loginlog'){
-                        fatherList=fatherTemplate
-                        childList=firstList[j]
+            let firstList = {};
+            let childList = {};
+            let fatherList = {};
+            for (var i = 0; i < this.menu_list.length; i++) {
+                firstList = this.menu_list[i].children;
+                let fatherTemplate = this.menu_list[i];
+                for (var j = 0; j < firstList.length; j++) {
+                    if (firstList[j].path == "/user/loginlog") {
+                        fatherList = fatherTemplate;
+                        childList = firstList[j];
                     }
                 }
             }
@@ -164,18 +171,18 @@ export default {
                 const tHeader = this.headers;
                 const data = this.list.map(item => {
                     return [
-                        item.mobile,
-                        item.uid,
-                        item.last_login_ip,
-                        item.a4,
-                        item.last_login_device,
-                        item.last_login_time
+                        item.mobile || '--',
+                        item.guid || '--',
+                        item.ip || '--',
+                        item.web_type==1?'PC':item.web_type==2?'H5':item.web_type==3?'APP':'--',
+                        item.device || '--',
+                        item.created_at || '--'
                     ];
                 });
                 excel.export_json_to_excel({
                     header: tHeader,
                     data,
-                    filename:fatherList.label+'-'+"登录记录",
+                    filename: fatherList.label + "-" + "登录记录",
                     autoWidth: true,
                     bookType: "xlsx"
                 });
@@ -184,7 +191,7 @@ export default {
     },
     mounted() {
         this.getList();
-        this.getMenuList()
+        this.getMenuList();
     }
 };
 </script>

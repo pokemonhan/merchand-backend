@@ -551,7 +551,7 @@ export default {
             this.isUpPc = false;
         },
         editCfm() {
-            console.log("this.nowDate", this.nowData);
+            // console.log("this.nowDate", this.nowData);
             let h5_pic_id = "";
             let app_pic_id = "";
             let pc_pic_id = "";

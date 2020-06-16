@@ -35,7 +35,6 @@
                 <li>
                     <button class="btn-blue" @click="getList">查询</button>
                     <button class="btn-blue" @click="add">新增线上入款</button>
-                    <button class="btn-blue" @click="testButton">测试按钮</button>
                 </li>
             </ul>
         </div>
@@ -75,147 +74,6 @@
                 @updateSize="updateSize"
             />
         </div>
-        <Dialog :show.sync="dia_show" :title="dia_title">
-            <div class="dia-inner">
-                <ul class="form">
-                    <li>
-                        <span>支付方式:</span>
-                        <Select
-                            style="width:250px"
-                            v-model="form.pay_method"
-                            :options="pay_method_opt"
-                        ></Select>
-                    </li>
-                    <li>
-                        <span>前端名称:</span>
-                        <Input class="w250" v-model="form.front_name" />
-                    </li>
-                    <li>
-                        <span>商户号:</span>
-                        <Input limit="en-num" class="w250" v-model="form.merchant_num" />
-                    </li>
-                    <li>
-                        <span>商户编号:</span>
-                        <Input limit="en-num" class="w250" v-model="form.merchant_code" />
-                    </li>
-                    <li>
-                        <span>密钥方式:</span>
-                        <!-- <Input class="w250" v-model="form.screte_key" /> -->
-                        <Radio
-                            class="mr50"
-                            label="密钥模式"
-                            :value="form.secret_method"
-                            val="1"
-                            v-model="form.secret_method"
-                            @update="secretUpd"
-                        />
-                        <Radio
-                            class="radio-right"
-                            label="证书方式"
-                            :value="form.secret_method"
-                            val="2"
-                            v-model="form.secret_method"
-                            @update="secretUpd"
-                        />
-                    </li>
-
-                    <!-- 1. 密钥方式 -->
-                    <li v-if="form.secret_method==='1'">
-                        <span>商户密钥:</span>
-                        <Input class="w250" v-model="form.merchant_key" />
-                    </li>
-                    <li v-if="form.secret_method==='1'">
-                        <span>商户公钥:</span>
-                        <Input class="w250" v-model="form.merchant_public" />
-                    </li>
-                    <li v-if="form.secret_method==='1'">
-                        <span>商户私钥:</span>
-                        <Input class="w250" v-model="form.merchant_private" />
-                    </li>
-
-                    <!-- 2. 证书 -->
-                    <li v-if="form.secret_method=='2'">
-                        <span>上传证书</span>
-                        <Input v-model="form.certificate_path" style="width:125px;" />
-                        <Upload
-                            style="width:125px;"
-                            title="上传证书"
-                            v-model="form.certificate"
-                            @change="upLoadChange($event,form)"
-                        />
-                        <!-- <input type="file"> -->
-                    </li>
-                    <li>
-                        <span>请求地址:</span>
-                        <Input
-                            class="w250"
-                            v-model="form.url"
-                            required
-                            :showerr="errUrlShow(form.url)"
-                            errmsg="url格式错误!"
-                        />
-                    </li>
-                    <li>
-                        <span>第三方域名:</span>
-                        <Input class="w250" v-model="form.third_href" />
-                    </li>
-                    <li>
-                        <span>终端号:</span>
-                        <Input class="w250" v-model="form.terminal" />
-                    </li>
-                    <li v-clickoutside="tagListShow">
-                        <span>标签选择:</span>
-                        <div class="tag-choose" @click="tag_show=true">
-                            <span
-                                style="display:inline-block;"
-                                class="el-tag"
-                                v-for="(item,index) in showTag"
-                                :key="index"
-                                @click="closeTag(item,index)"
-                            >{{item.label}}</span>
-                        </div>
-                    </li>
-                    <li @click.stop class="chooseTag" style="display:inline-block">
-                        <p
-                            v-show="tag_show"
-                            v-for="(item) in all_tag"
-                            :key="item.value"
-                            class="allTag-list"
-                        >
-                            <input
-                                class="choosebox"
-                                type="checkbox"
-                                v-model="form.formtag[item.value]"
-                                @change="tagChange(item)"
-                            />
-                            <span>{{item.label}}</span>
-                        </p>
-                    </li>
-                    <li>
-                        <span>支付限额:</span>
-                        <Input limit="number" style="width:114px;" v-model="form.pay_limit[0]" />
-                        <span class="mv5">~</span>
-                        <Input limit="number" style="width:114px;" v-model="form.pay_limit[1]" />
-                    </li>
-                    <li>
-                        <span>入款手续费:</span>
-                        <Input limit="number" class="w250" v-model="form.income_charge" />
-                    </li>
-                    <li>
-                        <span>充值说明:</span>
-                        <textarea class="textarea form-area" v-model="form.specifcation"></textarea>
-                    </li>
-                    <li>
-                        <span>后台备注:</span>
-                        <textarea class="textarea form-area" v-model="form.mark"></textarea>
-                    </li>
-                    <li class="center-box">
-                        <button class="btn-plain mr50" @click="dia_show=false">取消</button>
-                        <button class="btn-blue" @click="diaCfm">确认</button>
-                    </li>
-                </ul>
-            </div>
-        </Dialog>
         <Dialog :show.sync="dia_show_step" :title="dia_title_step">
             <div class="dia-inner">
                 <el-steps :active="active" align-center finish-status="success">
@@ -255,11 +113,22 @@
                         </li>
                         <li>
                             <span>前端名称：</span>
-                            <Input errmsg="内容不可为空" :showerr="errFrontName(form.front_name)"  class="w250" v-model="form.front_name" />
+                            <Input
+                                errmsg="内容不可为空"
+                                :showerr="errFrontName(form.front_name)"
+                                class="w250"
+                                v-model="form.front_name"
+                            />
                         </li>
                         <li>
                             <span>支付限额：</span>
-                            <Input :errmsg="dia_err" limit="number" style="width:114px;" v-model="form.pay_limit[0]" />
+                            <Input
+                                :errmsg="dia_err"
+                                :showerr="errPayLimt(form.pay_limit[0],form.pay_limit[1])"
+                                limit="number"
+                                style="width:114px;"
+                                v-model="form.pay_limit[0]"
+                            />
                             <span class="mv5">~</span>
                             <Input limit="number" style="width:114px;" v-model="form.pay_limit[1]" />
                         </li>
@@ -279,7 +148,13 @@
                     <ul v-if="active==1" class="form">
                         <li>
                             <span>商户号：</span>
-                            <Input limit="en-num" class="w250" v-model="form.merchant_num" />
+                            <Input
+                                errmsg="不能为空"
+                                :showerr="errNum(form.merchant_num)"
+                                limit="en-num"
+                                class="w250"
+                                v-model="form.merchant_num"
+                            />
                         </li>
                         <li>
                             <span>商户编号：</span>
@@ -357,6 +232,12 @@
                                 >{{item.label}}</span>
                             </div>
                         </li>
+                        <li>
+                            <span
+                                v-if="tagErrShow"
+                                style="color:red;margin-top:-10px;margin-left:100px;"
+                            >标签不可为空</span>
+                        </li>
                         <li @click.stop class="chooseTag" style="display:block">
                             <p
                                 v-show="tag_show"
@@ -393,7 +274,7 @@
 </template>
 <script>
 import { Steps, step, Step } from "element-ui";
-import axiox from "axios";
+import axios from "axios";
 export default {
     name: "OnlinePay",
     components: {
@@ -402,7 +283,8 @@ export default {
     },
     data() {
         return {
-            dia_err:"",
+            tagErrShow: true,
+            dia_err: "",
             filter: {
                 merchant_num: "",
                 person: "",
@@ -473,9 +355,52 @@ export default {
         };
     },
     methods: {
-        errFrontName(val){
-            if(!val){
-                return true
+        getJsonData() {
+            axios.get("http://pic.397017.com/common/linter.json").then(res => {
+                // console.log("json-res", res);
+                if (res && res.status == "200") {
+                    if (res.data) {
+                        let finance_type = res.data.system_finance_type;
+                        // console.log('json数据',finance_type)
+                        if (finance_type) {
+                            let finance_type_path = finance_type.path;
+                            axios.get(finance_type_path).then(res => {
+                                if (res && res.status == "200") {
+                                    let fiance_type_data = res.data;
+                                    // console.log("支付方式", fiance_type_data);
+                                    this.pay_method_opt = this.backToSelOpt(
+                                        res.data
+                                    );
+                                }
+                            });
+                        }
+                    }
+                }
+            });
+        },
+        backToSelOpt(list = []) {
+            let all = [];
+            let back_list = list.map(item => {
+                // console.log(item)
+                return { label: item.name, value: item.id };
+            });
+            return all.concat(back_list);
+        },
+        errNum(val) {
+            if (!val) {
+                return true;
+            }
+        },
+        errPayLimt(min, max) {
+            if (!min && !max) return false;
+            if (parseInt(min) > parseInt(max)) {
+                this.dia_err = "数据错误";
+                return true;
+            }
+        },
+        errFrontName(val) {
+            if (!val) {
+                return true;
             }
         },
         nextStep() {
@@ -486,10 +411,12 @@ export default {
         prevStep() {
             this.active--;
         },
-        testButton() {
+        add() {
+            this.dia_status = "add";
             this.dia_show_step = true;
             this.dia_title_step = "新增线上入款";
-            this.dia_status = "add";
+            this.active = 0;
+            this.tagErrShow = true;
             this.addClearAll();
         },
         /** 展示 步骤条 状态 */
@@ -515,13 +442,33 @@ export default {
             }
         },
         step0Check() {
-            return true;
+            if (
+                this.form.pay_method != "" &&
+                this.form.pay_limit != "" &&
+                this.form.front_name != ""
+            ) {
+                return true;
+            } else {
+                return false;
+            }
         },
         step1Check() {
-            return true;
+            if (
+                this.form.merchant_num != "" &&
+                this.form.url != "" &&
+                this.form.secret_method != ""
+            ) {
+                return true;
+            } else {
+                return false;
+            }
         },
         step2Check() {
-            return true;
+            if (this.tagErrShow) {
+                return false;
+            } else {
+                return true;
+            }
         },
         errUrlShow(val) {
             if (!val) return true;
@@ -530,6 +477,7 @@ export default {
             return !reg.test(val);
         },
         checkForm() {
+            if (this.tagErrShow) return false;
             // console.log('url',this.form.url)
             let urlCheck = /^(http|ftp|https):\/\/[\w\-_]+(\.[\w\-_]+)+([\w\-\.,@?^=%&:/~\+#]*[\w\-\@?^=%&/~\+#])?$/;
             let re = new RegExp(urlCheck);
@@ -539,29 +487,7 @@ export default {
                 return false;
             }
         },
-        getSelectOpt() {
-            let { url, method } = this.$api.online_finance_channel_list;
-            this.$http({ url, method }).then(res => {
-                // console.log("返回数据", res);
-                if (res && res.code == "200") {
-                    this.pay_method_opt = this.backToSelOpt(res.data);
-                    // console.log('列表',this.pay_method_opt)
-                }
-            });
-        },
-        backToSelOpt(list = []) {
-            let all = [
-                // {
-                //     label: "全部",
-                //     value: ""
-                // }
-            ];
-            let back_list = list.map(item => {
-                // console.log(item)
-                return { label: item.name, value: item.id };
-            });
-            return all.concat(back_list);
-        },
+
         diaCfm() {
             if (this.dia_status == "add") {
                 this.addCfm();
@@ -608,12 +534,7 @@ export default {
             };
             this.showTag = [];
         },
-        add() {
-            this.dia_status = "add";
-            this.dia_title = "新增线上入款";
-            this.dia_show = true;
-            this.addClearAll();
-        },
+
         addCfm() {
             if (!this.checkForm()) return;
             let datas = {
@@ -646,16 +567,16 @@ export default {
             this.$http({ method, url, data }).then(res => {
                 console.log("添加返回数据", res);
                 if (res && res.code == "200") {
-                    this.dia_show = false;
+                    this.dia_show_step = false;
                     this.getList();
                 }
             });
         },
         edit(row) {
             this.dia_status = "edit";
-            this.dia_title = "编辑";
+            this.dia_title_step = "编辑";
             // this.dia_show = true;
-            this.dia_show_step=true
+            this.dia_show_step = true;
             this.addClearAll();
             let tagsId = row.tags;
             // console.log("tagsId", tagsId);
@@ -722,7 +643,7 @@ export default {
             this.$http({ method, url, data }).then(res => {
                 console.log("编辑返回数据", res);
                 if (res && res.code == "200") {
-                    this.dia_show = false;
+                    this.dia_show_step = false;
                     this.$toast.success(res.message);
                     this.getList();
                 }
@@ -798,6 +719,7 @@ export default {
             this.showTag.splice(index, 1);
         },
         tagChange() {
+            this.tagErrShow = false;
             // console.log(this.form.formtag);
             let show_arr = [];
             for (let key in this.form.formtag) {
@@ -854,8 +776,9 @@ export default {
     },
     mounted() {
         this.getList();
-        this.getSelectOpt();
+        // this.getSelectOpt();
         this.getTagList();
+        this.getJsonData();
     }
 };
 </script>
@@ -955,9 +878,6 @@ export default {
 .form-btns {
     margin-top: 240px;
     text-align: center;
-}
-.form > li:nth-child(2) {
-    margin-top: 10px;
 }
 
 .form .upload-btn > div {

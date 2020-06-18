@@ -296,7 +296,7 @@ export default {
 }
 .err-tips {
     position: absolute;
-    top: 2.2em;
+    top: 1.8em;
     left: 6em;
     color: red;
 }

@@ -179,6 +179,9 @@
                                 @update="secretUpd"
                             />
                         </li>
+                        <li>
+                            <span style="color:red;margin-left:120px;margin-top:-15px;" v-show="!form.secret_method">密钥方式未选择</span>
+                        </li>
                         <li v-if="form.secret_method==='1'">
                             <span>商户密钥：</span>
                             <Input class="w250" v-model="form.merchant_key" />
@@ -876,7 +879,7 @@ export default {
 }
 
 .form-btns {
-    margin-top: 240px;
+    margin-top: 280px;
     text-align: center;
 }
 

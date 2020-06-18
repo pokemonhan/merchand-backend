@@ -28,8 +28,8 @@
                     <td>{{row.a2}}</td>
                     <td>{{row.a3}}</td>
                     <td>
-                        <span class="a" @click="detail(row)">发送详情</span>
-                        <span class="a" @click="del(row)">删除</span>
+                        <button class="btn-blue" @click="detail(row)">发送详情</button>
+                        <button class="btn-blue" @click="del(row)">删除</button>
                     </td>
                 </template>
             </Table>

@@ -182,7 +182,8 @@ export default {
                         childList = firstList[j];
                     }
                 }
-            }
+            };
+            
             import("../../../js/config/Export2Excel").then(excel => {
                 const tHeader = this.headers;
                 const data = this.list.map(item => {
@@ -227,5 +228,8 @@ export default {
 }
 .table {
     margin-top: 20px;
+}
+.table .v-table{
+    min-height: 0;
 }
 </style>

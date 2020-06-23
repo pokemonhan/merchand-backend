@@ -254,7 +254,7 @@ export default {
             }
         },
         exportExcel() {
-            console.log("列表", this.menu_list);
+            // console.log("列表", this.menu_list);
             let firstList = {};
             let childList = {};
             let fatherList = {};
@@ -490,7 +490,7 @@ export default {
             let data = window.all.tool.rmEmpty(datas);
             let { method, url } = this.$api.founds_incomeorder_list;
             this.$http({ method: method, url: url, data: data }).then(res => {
-                console.log("列表返回数据", res);
+                // console.log("列表返回数据", res);
                 if (res && res.code == "200") {
                     this.list = res.data.data;
                     this.total = res.data.total;
@@ -499,7 +499,7 @@ export default {
             });
         },
         countFunction(count) {
-            console.log("count", count);
+            // console.log("count", count);
             let top_up_money = 0;
             for (var i = 0; i < count.length; i++) {
                 if (!count[i].money) {

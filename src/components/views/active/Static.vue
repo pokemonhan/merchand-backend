@@ -238,7 +238,7 @@ export default {
                 end_time: this.form.dates[1],
                 status: this.form.status
             };
-            console.log('请求数据',data)
+            // console.log('请求数据',data)
             let { url, method } = this.$api.static_active_add;
             this.$http({ method, url, data }).then(res => {
                 // console.log('返回数据',res)
@@ -355,7 +355,7 @@ export default {
             let data = window.all.tool.rmEmpty(datas);
             let { method, url } = this.$api.static_active_list;
             this.$http({ method, url, data }).then(res => {
-                console.log("返回数据", res);
+                // console.log("返回数据", res);
                 if (res && res.code == "200") {
                     this.total = res.data.total;
                     this.list = res.data.data;

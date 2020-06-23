@@ -530,11 +530,11 @@ export default {
                 their_create_time: their_create_time,
                 created_at: created_at
             };
-            console.log("请求数据", datas);
+            // console.log("请求数据", datas);
             let data = window.all.tool.rmEmpty(datas);
             let { method, url } = this.$api.platform_note_list;
             this.$http({ method, url, data }).then(res => {
-                console.log("请求返回数据", res);
+                // console.log("请求返回数据", res);
                 if (res && res.code == "200") {
                     this.list = res.data.data;
                     this.total = res.data.total;

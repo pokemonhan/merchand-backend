@@ -564,11 +564,11 @@ export default {
                 desc: this.form.specifcation,
                 backend_remark: this.form.mark
             };
-            console.log("添加请求数据", datas);
+            // console.log("添加请求数据", datas);
             let data = window.all.tool.rmEmpty(datas);
             let { url, method } = this.$api.online_finance_add;
             this.$http({ method, url, data }).then(res => {
-                console.log("添加返回数据", res);
+                // console.log("添加返回数据", res);
                 if (res && res.code == "200") {
                     this.dia_show_step = false;
                     this.getList();
@@ -641,10 +641,10 @@ export default {
                 backend_remark: this.form.mark
             };
             let data = window.all.tool.rmEmpty(datas);
-            console.log("编辑请求数据", data);
+            // console.log("编辑请求数据", data);
             let { method, url } = this.$api.online_finance_edit;
             this.$http({ method, url, data }).then(res => {
-                console.log("编辑返回数据", res);
+                // console.log("编辑返回数据", res);
                 if (res && res.code == "200") {
                     this.dia_show_step = false;
                     this.$toast.success(res.message);
@@ -766,10 +766,10 @@ export default {
                 pageSize: this.pageSize
             };
             let data = window.all.tool.rmEmpty(datas);
-            console.log("请求数据", data);
+            // console.log("请求数据", data);
             let { method, url } = this.$api.online_finance_list;
             this.$http({ method: method, url: url, data: data }).then(res => {
-                console.log("列表数据", res);
+                // console.log("列表数据", res);
                 if (res && res.code == "200") {
                     this.list = res.data.data;
                     this.total = res.data.total;

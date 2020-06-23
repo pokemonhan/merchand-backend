@@ -281,7 +281,7 @@ export default {
             };
             let { url, method } = this.$api.announce_loginpopup_del;
             this.$http({ method, url, data }).then(res => {
-                console.log("返回数据", res);
+                // console.log("返回数据", res);
                 this.$toast.success(res && res.message);
                 this.show_del_modal = false;
                 this.getList();

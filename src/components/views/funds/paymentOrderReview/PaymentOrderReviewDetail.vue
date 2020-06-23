@@ -133,7 +133,7 @@ export default {
                 id:this.row.id,
                 remark:String(row.remark),
             }
-            console.log('订单审核请求数据',data)
+            // console.log('订单审核请求数据',data)
             let data=window.all.tool.rmEmpty(datas)
             let{method,url}=this.$api.founds_paymentorder_examination_rejected;
             this.$http({method,url,data}).then(res=>{

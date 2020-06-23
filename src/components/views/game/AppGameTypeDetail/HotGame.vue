@@ -152,7 +152,7 @@ export default {
 
     methods: {
         downLoadAllPic() {
-            console.log("列表", this.list);
+            // console.log("列表", this.list);
             let all_data = this.list;
             let all_pic_path = [];
             for (var i = 0; i < all_data.length; i++) {
@@ -208,10 +208,10 @@ export default {
                 id: row.id,
                 icon_id: row.default_icon_id,
             };
-            console.log("data", data);
+            // console.log("data", data);
             let { method, url } = this.$api.picture_update;
             this.$http({ method, url, data }).then(res => {
-                console.log('上传返回',res)
+                // console.log('上传返回',res)
                 if (res && res.code == "200") {
                     this.$toast.success(res && res.message);
                     this.getList();
@@ -219,7 +219,7 @@ export default {
             });
         },
         downLoad(row) {
-            console.log("row", row);
+            // console.log("row", row);
             var image = new Image();
             // 解决跨域 Canvas 污染问题
             image.setAttribute("crossOrigin", "anonymous");
@@ -308,10 +308,10 @@ export default {
                 id: row.id,
                 hot_new: "2"
             };
-            console.log("请求数据", data);
+            // console.log("请求数据", data);
             let { url, method } = this.$api.game_hot_set;
             this.$http({ method, url, data }).then(res => {
-                console.log("新游戏", res);
+                // console.log("新游戏", res);
                 if (res && res.code == "200") {
                     this.$toast.success(res && res.message);
                     this.list=[];
@@ -406,7 +406,7 @@ export default {
                 url: this.$api.game_app_list.url,
                 data: data
             }).then(res => {
-                console.log("res", res);
+                // console.log("res", res);
                 if (res && res.code === "200") {
                     this.list = res.data.data || [];
                     this.total = this.list.length;

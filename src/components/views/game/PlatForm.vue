@@ -257,18 +257,18 @@ export default {
             });
         },
         updatePicture(data, id) {
-            console.log("id:", id);
+            // console.log("id:", id);
             if (!data) return;
-            console.log(data);
+            // console.log(data);
             let para = {
                 id: id,
                 icon: data.path
             };
-            console.log(para);
+            // console.log(para);
             let { url, method } = this.$api.game_plant_picture_update;
             this.$http({ method, url, data: para }).then(res => {
                 if (res && res.code == "200") {
-                    console.log("res", res);
+                    // console.log("res", res);
                     this.getList();
                 }
             });
@@ -285,7 +285,7 @@ export default {
             let params = window.all.tool.rmEmpty(para);
             let { url, method } = this.$api.game_vendor;
             this.$http({ method, url, params }).then(res => {
-                console.log("返回数据", res);
+                // console.log("返回数据", res);
                 if (res && res.code == "200") {
                     this.total = res.data.total;
                     this.list = res.data.data;

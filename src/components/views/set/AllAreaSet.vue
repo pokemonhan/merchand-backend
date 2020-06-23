@@ -262,7 +262,7 @@ export default {
                 key: "status",
                 value: String(item.status ? 1 : 0)
             };
-            console.log("上传数据", datas);
+            // console.log("上传数据", datas);
             let data = window.all.tool.rmEmpty(datas);
             let { method, url } = this.$api.allarea_set_save;
             this.$http({ method, url, data }).then(res => {

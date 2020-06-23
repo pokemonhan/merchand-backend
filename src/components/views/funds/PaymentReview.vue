@@ -328,7 +328,7 @@ export default {
             let data = window.all.tool.rmEmpty(datas);
             let { method, url } = this.$api.founds_interface_list;
             this.$http({ method: method, url: url, data: data }).then(res => {
-                console.log("出款数据", res);
+                // console.log("出款数据", res);
                 if (res && res.code == "200") {
                     this.list = res.data.data;
                     this.total = res.data.total;
@@ -386,7 +386,7 @@ export default {
             }
         },
         exportExcel() {
-            console.log("列表", this.menu_list);
+            // console.log("列表", this.menu_list);
             let firstList = {};
             let childList = {};
             let fatherList = {};

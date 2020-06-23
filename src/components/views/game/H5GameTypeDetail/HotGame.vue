@@ -160,7 +160,7 @@ export default {
 
     methods: {
         downLoadAllPic() {
-            console.log("列表", this.list);
+            // console.log("列表", this.list);
             let all_data = this.list;
             let all_pic_path = [];
             for (var i = 0; i < all_data.length; i++) {
@@ -212,15 +212,15 @@ export default {
             }
         },
         changeDefaultIcon(row) {
-            console.log("row", row);
+            // console.log("row", row);
             let data = {
                 id: row.id,
                 icon_id: row.default_icon_id
             };
-            console.log("data", data);
+            // console.log("data", data);
             let { method, url } = this.$api.picture_update;
             this.$http({ method, url, data }).then(res => {
-                console.log("上传返回", res);
+                // console.log("上传返回", res);
                 if (res && res.code == "200") {
                     this.$toast.success(res && res.message);
                     this.getList();
@@ -228,7 +228,7 @@ export default {
             });
         },
         downLoad(row) {
-            console.log("row", row);
+            // console.log("row", row);
             var image = new Image();
             // 解决跨域 Canvas 污染问题
             image.setAttribute("crossOrigin", "anonymous");
@@ -259,7 +259,7 @@ export default {
         getSelectOpt() {
             let { url, method } = this.$api.game_search_condition_list;
             this.$http({ url, method }).then(res => {
-                console.log("下拉数据", res);
+                // console.log("下拉数据", res);
                 if (res && res.code == "200") {
                     this.select = res.data;
                     this.plant_opt = this.backToSelOpt(
@@ -288,7 +288,7 @@ export default {
                 id: row.id,
                 hot_new: "0"
             };
-            console.log("请求数据", data);
+            // console.log("请求数据", data);
             let { url, method } = this.$api.game_hot_set;
             this.$http({ method, url, data }).then(res => {
                 if (res && res.code == "200") {
@@ -394,7 +394,7 @@ export default {
                         id: row.id,
                         icon_id: res.data.id
                     };
-                    console.log("data", data);
+                    // console.log("data", data);
                     let { method, url } = this.$api.picture_update;
                     this.$http({ method, url, data }).then(res => {
                         // console.log('上传返回',res)
@@ -419,7 +419,7 @@ export default {
             let data = window.all.tool.rmEmpty(datas);
             let { url, method } = this.$api.game_h5_list;
             this.$http({ method, url, data }).then(res => {
-                console.log("列表返回数据", res);
+                // console.log("列表返回数据", res);
                 if (res && res.code == "200") {
                     this.list = res.data.data || [];
                     this.total = this.list.length;

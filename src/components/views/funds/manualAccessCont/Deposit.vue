@@ -215,7 +215,7 @@ export default {
                 url
             } = this.$api.founds_manualaccess_artificial_recharge_recording;
             this.$http({ method: method, url: url, data: data }).then(res => {
-                console.log("返回数据：", res);
+                // console.log("返回数据：", res);
                 if (res && res.code == "200") {
                     this.list = res.data.data;
                     this.total = res.data.total;
@@ -229,7 +229,7 @@ export default {
             }
         },
         exportExcel() {
-            console.log("列表", this.menu_list);
+            // console.log("列表", this.menu_list);
             let firstList = {};
             let childList = {};
             let fatherList = {};
@@ -288,7 +288,7 @@ export default {
                 method
             } = this.$api.founds_manualaccess_artificial_recharge;
             this.$http({ method, url, data }).then(res => {
-                console.log("返回数据", res);
+                // console.log("返回数据", res);
                 if (res && res.code == "200") {
                     this.$toast.success(res && res.message);
                     this.dia_show = false;

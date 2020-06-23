@@ -169,7 +169,7 @@ export default {
 
     methods: {
         downLoadAllPic() {
-            console.log("列表", this.list);
+            // console.log("列表", this.list);
             let all_data = this.list;
             let all_pic_path = [];
             for (var i = 0; i < all_data.length; i++) {
@@ -228,7 +228,7 @@ export default {
             console.log("data", data);
             let { method, url } = this.$api.picture_update;
             this.$http({ method, url, data }).then(res => {
-                console.log('上传返回',res)
+                // console.log('上传返回',res)
                 if (res && res.code == "200") {
                     this.$toast.success(res && res.message);
                     this.getList();
@@ -236,7 +236,7 @@ export default {
             });
         },
         downLoad(row) {
-            console.log("row", row);
+            // console.log("row", row);
             var image = new Image();
             // 解决跨域 Canvas 污染问题
             image.setAttribute("crossOrigin", "anonymous");
@@ -362,10 +362,10 @@ export default {
                 id: row.id,
                 hot_new: "2"
             };
-            console.log("请求数据", data);
+            // console.log("请求数据", data);
             let { url, method } = this.$api.game_hot_set;
             this.$http({ method, url, data }).then(res => {
-                console.log("新游戏", res);
+                // console.log("新游戏", res);
                 if (res && res.code == "200") {
                     this.$toast.success(res && res.message);
                     this.getList();
@@ -397,12 +397,12 @@ export default {
                 page: this.pageNo,
                 pageSize: this.pageSize
             };
-            console.log(datas);
+            // console.log(datas);
             let data = window.all.tool.rmEmpty(datas);
 
             let { url, method } = this.$api.game_h5_list;
             this.$http({ method, url, data }).then(res => {
-                console.log("列表👌👌👌👌: ", res);
+                // console.log("列表👌👌👌👌: ", res);
                 if (res && res.code === "200") {
                     this.total = res.data.total;
                     this.list = res.data.data;
@@ -422,13 +422,13 @@ export default {
             let headers = { "Content-Type": "multipart/form-data" };
             this.$http({ method, url, data, headers }).then(res => {
                 if (res && res.code == "200") {
-                    console.log("返回数据", res);
+                    // console.log("返回数据", res);
                     // returnData=res.data
                     let data = {
                         id: row.id,
                         icon_id: res.data.id
                     };
-                    console.log("data", data);
+                    // console.log("data", data);
                     let { method, url } = this.$api.picture_update;
                     this.$http({ method, url, data }).then(res => {
                         // console.log('上传返回',res)

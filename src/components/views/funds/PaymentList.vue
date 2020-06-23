@@ -171,9 +171,9 @@ export default {
         updateSize(val) {},
         paymentConfirm() {
             if (this.show_conf === "pass") {
-                console.log("pass");
+                // console.log("pass");
             } else if (this.show_conf === "refuse") {
-                console.log("refuse");
+                // console.log("refuse");
             }
         },
         pass(row) {

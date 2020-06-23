@@ -387,7 +387,7 @@ export default {
             let data = formList;
             let headers = { "Content-Type": "multipart/form-data" };
             this.$http({ method, url, data, headers }).then(res => {
-                console.log("上传图片返回数据", res);
+                // console.log("上传图片返回数据", res);
                 if (res && res.code == "200") {
                     this.form.qrcode = res.data.path;
                 }
@@ -417,10 +417,10 @@ export default {
                 remark: this.form.description
             };
             let data = window.all.tool.rmEmpty(datas);
-            console.log("请求数据", data);
+            // console.log("请求数据", data);
             let { url, method } = this.$api.offline_finance_add;
             this.$http({ method, url, data }).then(res => {
-                console.log("返回数据", res);
+                // console.log("返回数据", res);
                 if (res && res.code == "200") {
                     this.$toast.success(res && res.message);
                     this.dia_show = false;
@@ -493,10 +493,10 @@ export default {
                 remark: this.form.description
             };
             let data = window.all.tool.rmEmpty(datas);
-            console.log("请求数据", data);
+            // console.log("请求数据", data);
             let { method, url } = this.$api.offline_finance_set;
             this.$http({ method, url, data }).then(res => {
-                console.log("返回数据", res);
+                // console.log("返回数据", res);
                 if (res && res.code == "200") {
                     this.dia_show = false;
                     this.$toast.success(res.message);
@@ -554,11 +554,11 @@ export default {
                 page: this.pageNo,
                 pageSize: this.pageSize
             };
-            console.log("请求数据", datas);
+            // console.log("请求数据", datas);
             let data = window.all.tool.rmEmpty(datas);
             let { method, url } = this.$api.offline_finance_list;
             this.$http({ method, url, data }).then(res => {
-                console.log("返回数据", res);
+                // console.log("返回数据", res);
                 if (res && res.code == "200") {
                     this.list = res.data.data;
                     this.total = res.data.total;

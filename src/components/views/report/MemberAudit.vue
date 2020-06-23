@@ -123,7 +123,7 @@ export default {
             }
         },
         exportExcel() {
-            console.log('列表',this.menu_list)
+            // console.log('列表',this.menu_list)
             let firstList={}
             let childList={}
             let fatherList={}
@@ -191,11 +191,11 @@ export default {
                 created_at:created_at,
                 status:this.filter.user_state
             }
-            console.log('请求数据',datas)
+            // console.log('请求数据',datas)
             let data =window.all.tool.rmEmpty(datas)
             let {method,url}=this.$api.member_audit_list
             this.$http({method,url,data}).then(res=>{
-                console.log('返回数据',res)
+                // console.log('返回数据',res)
                 if(res && res.code=='200'){
                     this.list=res.data.data
                     this.total=res.data.total

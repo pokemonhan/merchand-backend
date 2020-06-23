@@ -135,10 +135,10 @@ export default {
                 pageSize: this.pageSize
             };
             let data = window.all.tool.rmEmpty(para);
-            console.log('请求数据',data)
+            // console.log('请求数据',data)
             let { method, url } = this.$api.user_login_log_list;
             this.$http({ method: method, url: url, data: data }).then(res => {
-                console.log("res", res);
+                // console.log("res", res);
                 if (res && res.code == "200") {
                     this.list = res.data.data;
                     this.total = res.data.total;

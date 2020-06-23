@@ -123,7 +123,7 @@ export default {
         //获取json资源
         getTypeOfAccount() {
             axios.get("http://pic.397017.com/common/linter.json").then(res => {
-                console.log("json", res);
+                // console.log("json", res);
                 if (res && res.status == "200") {
                     this.jsonList = res.data;
                     if (this.jsonList) {
@@ -188,7 +188,7 @@ export default {
                 created_at: created_at,
                 type_in: type_in
             };
-            console.log('请求数据',datas)
+            // console.log('请求数据',datas)
             let data = window.all.tool.rmEmpty(datas);
             let { method, url } = this.$api.capital_account_change_list;
             this.$http({ method, url, data }).then(res => {

@@ -183,10 +183,10 @@ export default {
                 pic:this.form.pic,
                 status:this.form.status,
             }
-            console.log('请求数据',data)
+            // console.log('请求数据',data)
             let {method,url}=this.$api.promotion_configuration_add
             this.$http({method,url,data}).then(res=>{
-                console.log('添加返回数据',res)
+                // console.log('添加返回数据',res)
                 if(res && res.code=='200'){
                     this.dia_show=false
                     this.$toast.success(res.message)
@@ -215,7 +215,7 @@ export default {
                 pic:this.form.pic,
                 status:this.form.status ? 1 : 0
             }
-            console.log('请求数据',data)
+            // console.log('请求数据',data)
             let {method,url}=this.$api.promotion_configuration_edit
             this.$http({method,url,data}).then(res=>{
                 if(res && res.code=='200'){
@@ -271,7 +271,7 @@ export default {
             let data=window.all.tool.rmEmpty(datas);
             let {method,url}=this.$api.promotion_configuration_list
             this.$http({method,url,data}).then(res=>{
-                console.log('res',res)
+                // console.log('res',res)
                 if(res && res.code=='200'){
                     this.list=res.data.data
                     this.total=res.data.total

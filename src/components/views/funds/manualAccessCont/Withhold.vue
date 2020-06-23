@@ -224,7 +224,7 @@ export default {
             }
         },
         exportExccel() {
-            console.log("列表", this.menu_list);
+            // console.log("列表", this.menu_list);
             let firstList = {};
             let childList = {};
             let fatherList = {};

@@ -323,10 +323,10 @@ export default {
                 bet: String(this.wash_form.code_numbers[1]),
                 percent: JSON.stringify(percent)
             };
-            console.log("请求数据", data);
+            // console.log("请求数据", data);
             let { method, url } = this.$api.wash_code_add;
             this.$http({ method, url, data }).then(res => {
-                console.log("返回数据", res);
+                // console.log("返回数据", res);
                 if (res && res.code == "200") {
                     this.show_modal = false;
                     this.$toast.success(res && res.message);
@@ -390,10 +390,10 @@ export default {
                 bet: String(this.wash_form.code_numbers[1]),
                 percent: JSON.stringify(percent)
             };
-            console.log('请求数据',data)
+            // console.log('请求数据',data)
             let { method, url } = this.$api.wash_code_set;
             this.$http({ method, url, data }).then(res => {
-                console.log('返回数据',res)
+                // console.log('返回数据',res)
                 if (res && res.code == "200") {
                     this.show_modal = false;
                     this.$toast.success(res.message);
@@ -429,7 +429,7 @@ export default {
                 page: this.pageNo,
                 pageSize: this.pageSize
             };
-            console.log("请求数据", datas);
+            // console.log("请求数据", datas);
             let data = window.all.tool.rmEmpty(datas);
             let { method, url } = this.$api.wash_code_list;
             this.$http({ method: method, url: url, data: data }).then(res => {

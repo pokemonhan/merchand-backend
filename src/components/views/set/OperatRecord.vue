@@ -186,11 +186,11 @@ export default {
                     pageSize: this.pageSize,
                     page: this.pageNo
                 };
-                console.log("列表请求数据", datas);
+                // console.log("列表请求数据", datas);
                 let data = window.all.tool.rmEmpty(datas);
                 let { method, url } = this.$api.operation_record_list;
                 this.$http({ method, url, data }).then(res => {
-                    console.log("返回数据", res);
+                    // console.log("返回数据", res);
                     if (res && res.code == "200") {
                         resolve(res);
                     } else {

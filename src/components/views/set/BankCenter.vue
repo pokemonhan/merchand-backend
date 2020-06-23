@@ -100,7 +100,7 @@ export default {
         //获取json资源
         getJsonData(){
             axios.get('http://pic.397017.com/common/linter.json').then(res=>{
-                console.log('json',res)
+                // console.log('json',res)
                 if(res && res.status=='200'){
                     this.jsonList=res.data
                     if(this.jsonList){
@@ -176,7 +176,7 @@ export default {
             let data=window.all.tool.rmEmpty(datas) 
             let {method,url}=this.$api.bank_cards_list
             this.$http({method,url,data}).then(res=>{
-                console.log('返回数据',res)
+                // console.log('返回数据',res)
                 if(res && res.code=='200'){
                     this.list=res.data.data
                     this.total=res.data.total

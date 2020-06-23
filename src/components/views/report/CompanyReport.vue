@@ -89,7 +89,7 @@ export default {
             let data = window.all.tool.rmEmpty(datas);
             let { method, url } = this.$api.company_report_list;
             this.$http({ method, url, data }).then(res => {
-                console.log("公司报表", res);
+                // console.log("公司报表", res);
                 if (res && res.code == "200") {
                     this.list = res.data.data;
                     this.total = res.data.total;

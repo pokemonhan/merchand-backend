@@ -530,7 +530,7 @@ export default {
             this.initForm();
         },
         edit(row) {
-            console.log("row", row);
+            // console.log("row", row);
             this.nowData = row;
             this.active = 0;
             this.dia_title = "编辑";
@@ -637,7 +637,7 @@ export default {
                 end_time: this.form.dates[1],
                 status: this.form.status
             };
-            console.log("请求数据", data);
+            // console.log("请求数据", data);
             let data = window.all.tool.rmEmpty(datas);
             let { url, method } = this.$api.announce_systemannounce_edit;
             this.$http({ method, url, data }).then(res => {
@@ -830,7 +830,7 @@ export default {
                 let data = formList;
                 let headers = { "Content-Type": "multipart/form-data" };
                 this.$http({ method, url, data, headers }).then(res => {
-                    console.log("检查", res);
+                    // console.log("检查", res);
                     if (res && res.code == "200") {
                         this.pc_pic_data = res.data.id;
                         resolve(res.data.path);
@@ -925,11 +925,11 @@ export default {
                 end_time: this.form.dates[1],
                 status: this.form.status
             };
-            console.log("请求数据", data);
+            // console.log("请求数据", data);
             let data = window.all.tool.rmEmpty(datas);
             let { url, method } = this.$api.announce_systemannounce_add;
             this.$http({ method, url, data }).then(res => {
-                console.log("返回数据", res);
+                // console.log("返回数据", res);
                 if (res && res.code == "200") {
                     this.$toast.success(res && res.message);
                     this.dia_show = false;

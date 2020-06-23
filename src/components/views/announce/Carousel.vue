@@ -205,7 +205,7 @@ export default {
             }
         },
         edit(item) {
-            console.log("item内容:😀 ", item);
+            // console.log("item内容:😀 ", item);
             // let start_time=''
             // if(item.start_time){
             //     start_time=JSON.stringify([item.start_time])
@@ -256,10 +256,10 @@ export default {
                 end_time: this.form.dates[1],
                 status: this.form.active
             };
-            console.log("请求数据", data);
+            // console.log("请求数据", data);
             let { url, method } = this.$api.announce_carousel_edit;
             this.$http({ method, url, data }).then(res => {
-                console.log("返回数据", res);
+                // console.log("返回数据", res);
                 if (res && res.code == "200") {
                     this.$toast.success(res && res.message);
                     this.is_edit = false;
@@ -354,10 +354,10 @@ export default {
                 end_time: this.form.dates[1],
                 status: this.form.active
             };
-            console.log("请求数据", data);
+            // console.log("请求数据", data);
             let { url, method } = this.$api.announce_carousel_add;
             this.$http({ method, url, data }).then(res => {
-                console.log("返回数据", res);
+                // console.log("返回数据", res);
                 if (res && res.code == "200") {
                     this.$toast.success(res && res.message);
                     this.getList();
@@ -390,7 +390,7 @@ export default {
             let data = window.all.tool.rmEmpty(datas);
             let { url, method } = this.$api.announce_carousel_list;
             this.$http({ method, url, data }).then(res => {
-                console.log("返回数据", res);
+                // console.log("返回数据", res);
                 if (res && res.code == "200") {
                     this.list = res.data.data;
                 }

@@ -370,14 +370,14 @@ export default {
             let datas = {
                 id: String(this.curr_row.id)
             };
-            console.log("请求数据", datas);
+            // console.log("请求数据", datas);
             let data = window.all.tool.rmEmpty(datas);
             let {
                 method,
                 url
             } = this.$api.founds_incomeorder_examination_passed;
             this.$http({ method, url, data }).then(res => {
-                console.log("返回数据", res);
+                // console.log("返回数据", res);
                 if (res && res.code == "200") {
                     this.offline_conf = false;
                     this.$toast.success(res && res.message);
@@ -397,14 +397,14 @@ export default {
             let datas = {
                 id: String(this.curr_row.id)
             };
-            console.log("请求数据", datas);
+            // console.log("请求数据", datas);
             let data = window.all.tool.rmEmpty(datas);
             let {
                 method,
                 url
             } = this.$api.founds_incomeorder_examination_rejected;
             this.$http({ method, url, data }).then(res => {
-                console.log("返回数据", res);
+                // console.log("返回数据", res);
                 if (res && res.code == "200") {
                     this.offline_conf = false;
                     this.$toast.success(res && res.message);
@@ -475,11 +475,11 @@ export default {
                 page: this.pageNo,
                 pageSize: this.pageSize
             };
-            console.log("请求数据", datas);
+            // console.log("请求数据", datas);
             let data = window.all.tool.rmEmpty(datas);
             let { method, url } = this.$api.founds_incomeorder_list;
             this.$http({ method: method, url: url, data: data }).then(res => {
-                console.log("返回数据：", res);
+                // console.log("返回数据：", res);
                 if (res && res.code == "200") {
                     this.list = res.data.data;
                     this.total = res.data.total;

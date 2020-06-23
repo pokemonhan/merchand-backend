@@ -170,7 +170,7 @@ export default {
 
     methods: {
         downLoadAllPic() {
-            console.log("列表", this.list);
+            // console.log("列表", this.list);
             let all_data = this.list;
             let all_pic_path = [];
             for (var i = 0; i < all_data.length; i++) {
@@ -226,10 +226,10 @@ export default {
                 id: row.id,
                 icon_id: row.default_icon_id,
             };
-            console.log("data", data);
+            // console.log("data", data);
             let { method, url } = this.$api.picture_update;
             this.$http({ method, url, data }).then(res => {
-                console.log('上传返回',res)
+                // console.log('上传返回',res)
                 if (res && res.code == "200") {
                     this.$toast.success(res && res.message);
                     this.getList();
@@ -237,7 +237,7 @@ export default {
             });
         },
         downLoad(row) {
-            console.log("row", row);
+            // console.log("row", row);
             var image = new Image();
             // 解决跨域 Canvas 污染问题
             image.setAttribute("crossOrigin", "anonymous");
@@ -364,10 +364,10 @@ export default {
                 id: row.id,
                 hot_new: "2"
             };
-            console.log("请求数据", data);
+            // console.log("请求数据", data);
             let { url, method } = this.$api.game_hot_set;
             this.$http({ method, url, data }).then(res => {
-                console.log("新游戏", res);
+                // console.log("新游戏", res);
                 if (res && res.code == "200") {
                     this.$toast.success(res && res.message);
                     this.getList();
@@ -399,11 +399,11 @@ export default {
                 page: this.pageNo,
                 pageSize: this.pageSize
             };
-            console.log("123456789", datas);
+            // console.log("123456789", datas);
             let data = window.all.tool.rmEmpty(datas);
             let { url, method } = this.$api.game_pc_list;
             this.$http({ method, url, data }).then(res => {
-                console.log("列表👌👌👌👌: ", res);
+                // console.log("列表👌👌👌👌: ", res);
                 if (res && res.code === "200") {
                     this.total = res.data.total;
                     this.list = res.data.data;
@@ -443,17 +443,17 @@ export default {
             });
         },
         updatePicture(data, id) {
-            console.log("id: ", id);
+            // console.log("id: ", id);
             if (!data) return;
             console.log(data);
             let para = {
                 id: id,
                 icon: data.path
             };
-            console.log(para);
+            // console.log(para);
             let { url, method } = this.$api.picture_update;
             this.$http({ method, url, data: para }).then(res => {
-                console.log("res", res);
+                // console.log("res", res);
                 // TODO
                 this.getList();
             });

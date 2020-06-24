@@ -16,7 +16,7 @@
     "echarts": "^4.4.0",
     "element-ui": "^2.13.2",
     "file-saver": "^2.0.2",
-    "jquery": "^3.4.1",
+    "jquery": "^3.5.0",
     "jsencrypt": "^3.0.0-rc.1",
     "jszip": "^3.4.0",
     "laravel-echo": "^1.7.0",

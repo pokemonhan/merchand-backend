@@ -95,13 +95,44 @@ function slideToggle (ele, time = 200) {
     }
 }
 
+// 获取json数据
+function getJsonOpt (key) {
+    return new Promise(resolve => {
+        let all_json_base_url = store.state.picPrefix + 'common/linter.json'
+        // 请求所有下拉路径
+        let all_url = window.all.tool.getSession('allJsonUrl')
+        if (!all_url) {
+            axios.get(all_json_base_url).then(res => {
+                if (res && res.data) {
+                    all_url = res.data
+                    window.all.tool.setSession('allJsonUrl', res.data)
+                    let all_url_obj = all_url[key] || {}
+                    // 请求 命令集opt
+                    if (all_url_obj.path) {
+                        axios.get(all_url_obj.path).then(response => {
+                            resolve(response && response.data)
+                        })
+                    }
+                }
+            })
+        } else {
+            let all_url_obj = all_url[key] || {}
+            // 请求 命令集opt
+            if (all_url_obj.path) {
+                axios.get(all_url_obj.path).then(response => {
+                    resolve(response && response.data)
+                })
+            }
+        }
+
+    })
+}
 
 
 const Tool = {
     //工具汇总
 
     //  本地存储类工具************************************************************************* //
-
     setSession: (key, val) => sessionStorage.setItem(key, JSON.stringify(val)),//保存本地信息
     getSession: key => JSON.parse(sessionStorage.getItem(key)),//获取本地信息
     removeSession: key => sessionStorage.removeItem(key),  // 清除session
@@ -196,12 +227,12 @@ const Tool = {
         for (const key in obj) {
             if (Array.isArray(obj[key])) {
                 if (obj[key].length > 0) {
-                    if(obj[key].length===2){
+                    if (obj[key].length === 2) {
                         // 数组[0] 或者[1] 有值才赋值
-                        if(obj[key][0]||obj[key][1]){
+                        if (obj[key][0] || obj[key][1]) {
                             params[key] = obj[key]
                         }
-                    }else {
+                    } else {
                         params[key] = obj[key]
                     }
                 }
@@ -228,7 +259,7 @@ const Tool = {
             return ''
         }
         let menuList = window.all.tool.getLocal('menu')
-        if(!menuList) {
+        if (!menuList) {
             console.log('wait get the menu list')
             return ''
         }
@@ -267,36 +298,31 @@ const Tool = {
             return 'Unkonwn';
         }
     },
-    getJsonOpt (key) {
-        return new Promise(resolve => {
-            let all_json_base_url = store.state.picPrefix + 'common/linter.json'
-            // 请求所有下拉路径
-            let all_url = window.all.tool.getSession('allJsonUrl')
-            if (!all_url) {
-                axios.get(all_json_base_url).then(res => {
-                    if (res && res.data) {
-                        all_url = res.data
-                        window.all.tool.setSession('allJsonUrl', res.data)
-                        let all_url_obj = all_url[key] || {}
-                        // 请求 命令集opt
-                        if (all_url_obj.path) {
-                            axios.get(all_url_obj.path).then(response => {
-                                resolve(response && response.data)
-                            })
-                        }
-                    }
-                })
-            } else {
-                let all_url_obj = all_url[key] || {}
-                // 请求 命令集opt
-                if (all_url_obj.path) {
-                    axios.get(all_url_obj.path).then(response => {
-                        resolve(response && response.data)
-                    })
-                }
-            }
+    getJsonOpt: getJsonOpt,
+    scrollIntoView (container, selected) {
+        // if (Vue.prototype.$isServer) return;
 
-        })
+        if (!selected) {
+            container.scrollTop = 0;
+            return;
+        }
+
+        const offsetParents = [];
+        let pointer = selected.offsetParent;
+        while (pointer && container !== pointer && container.contains(pointer)) {
+            offsetParents.push(pointer);
+            pointer = pointer.offsetParent;
+        }
+        const top = selected.offsetTop + offsetParents.reduce((prev, curr) => (prev + curr.offsetTop), 0);
+        const bottom = top + selected.offsetHeight;
+        const viewRectTop = container.scrollTop;
+        const viewRectBottom = viewRectTop + container.clientHeight;
+
+        if (top < viewRectTop) {
+            container.scrollTop = top;
+        } else if (bottom > viewRectBottom) {
+            container.scrollTop = bottom - container.clientHeight;
+        }
     },
 };
 export default Tool;

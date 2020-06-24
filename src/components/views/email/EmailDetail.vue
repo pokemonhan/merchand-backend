@@ -157,7 +157,7 @@ export default {
                         // this.content_obj[String(idx)] = item
                         // console.log('🍗 item: ', item);
                         this.receive_id_obj[idx] = item.email_id
-                        console.log('😘 this.receive_id_obj[idx]: ', this.receive_id_obj[idx]);
+                        // console.log('😘 this.receive_id_obj[idx]: ', this.receive_id_obj[idx]);
                     })
                     this.getReceiveList(this.receive_id_obj[this.list_idx])
                 }
@@ -205,7 +205,9 @@ export default {
             this.list_idx--
 
             // 判断是否在其中, 在就获取内部, 2. 不在就getList
-            if (this.content_obj[this.list_idx]) {
+            this.content = {}
+            let email = this.content_obj[this.list_idx]||{}
+            if (Object.keys(email).length) {
                 this.content = this.content_obj[this.list_idx]
             } else {
                 this.getList()
@@ -214,6 +216,7 @@ export default {
         nextEmail() {
             // 判断是否在其中, 在就获取内部, 2. 不在就getList
             if (this.list_idx >= this.total) return
+            this.content = {}
             this.list_idx++
             if (this.content_obj[this.list_idx]) {
                 this.content = this.content_obj[this.list_idx]

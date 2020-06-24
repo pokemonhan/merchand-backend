@@ -12,7 +12,7 @@ const state = {
     loudSpeakerOpen: true, // 是否打开喇叭
     tab_nav_list: [],        // 顶部导航菜单
     BASE_PATH: '',
-    keepAliveExclude: ['SendEmail'],   // 不需要缓存的 组件name
+    keepAliveExclude: ['SendEmail','ReceiveEmail'],   // 不需要缓存的 组件name
     picPrefix: window.location.protocol + '//pic.397017.com/', // 静态图片前缀
     loadingShow: false,
     //路由传参

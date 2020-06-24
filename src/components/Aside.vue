@@ -194,6 +194,7 @@ export default {
                     }
                 })
             }
+
         }
         // 获取当前路由的父级或祖先级
         // getFather() {
@@ -244,6 +245,7 @@ export default {
         $route: function(to, from) {
             // this.getFather()
             if (from.path === '/login') {
+                
                 this.getMenuList()
             }
         },

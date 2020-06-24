@@ -103,13 +103,13 @@ export default {
                 status:this.filter.status
             };
             let data = window.all.tool.rmEmpty(datas);
-            console.log("请求数据", data);
+            // console.log("请求数据", data);
             let {
                 method,
                 url
             } = this.$api.founds_interface_examination_view_audit;
             this.$http({ method, url, data }).then(res => {
-                console.log("返回数据", res);
+                // console.log("返回数据", res);
                 if (res && res.code == "200") {
                     this.list = res.data.data;
                     this.total = res.data.total;
@@ -126,13 +126,13 @@ export default {
                 pageSize: this.pageSize
             };
             let data = window.all.tool.rmEmpty(datas);
-            console.log("请求数据", data);
+            // console.log("请求数据", data);
             let {
                 method,
                 url
             } = this.$api.founds_interface_examination_view_audit;
             this.$http({ method, url, data }).then(res => {
-                console.log("返回数据", res);
+                // console.log("返回数据", res);
                 if (res && res.code == "200") {
                     this.list = res.data.data;
                     this.total = res.data.total;

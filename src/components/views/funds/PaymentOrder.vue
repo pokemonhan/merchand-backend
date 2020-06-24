@@ -71,10 +71,15 @@
                             @click="statusShow(row)"
                         >详情</button>
                         <button
-                            v-if="row.status!=2"
+                            v-if="row.status==4"
                             :class="status_obj[row.status].button"
                             @click="statusShow(row)"
-                        >{{status_obj[row.status].text}}</button>
+                        >详情</button>
+                        <button
+                            v-if="row.status==1"
+                            :class="review_status_obj[row.status].button"
+                            @click="statusShow(row)"
+                        >{{review_status_obj[row.status].text}}</button>
                     </td>
                 </template>
             </Table>
@@ -146,17 +151,25 @@ export default {
                 { label: "微信", value: "3" }
             ],
             color_obj: {
-                "-2": {
+                "4": {
                     color: "red",
-                    text: "已拒绝"
+                    text: "拒绝出款"
+                },
+                "3": {
+                    color: "red",
+                    text: "审核拒绝"
                 },
                 "2": {
                     color: "green",
-                    text: "已通过"
+                    text: "出款成功"
                 },
                 "1": {
+                    color: "green",
+                    text: "审核通过"
+                },
+                "0": {
                     color: "purple",
-                    text: "待审核"
+                    text: "审核中"
                 }
             },
             total: 0,
@@ -175,24 +188,41 @@ export default {
             payment_status_opt: [
                 { label: "全部", value: "" },
                 { label: "待出款", value: "1" },
-                { label: "已出款", value: "2" },
-                { label: "已拒绝", value: "-2" }
+                { label: "出款成功", value: "2" },
+                { label: "拒绝出款", value: "-2" }
             ],
+            review_status_obj: {
+                "1": {
+                    color: "purple",
+                    button: "btns-yellow",
+                    text: "审核中"
+                }
+            },
             status_obj: {
-                "-2": {
+                "3": {
                     color: "red",
                     button: "btns-red",
-                    text: "已拒绝"
+                    text: "审核拒绝"
+                },
+                "1": {
+                    color: "green",
+                    button: "btns-green",
+                    text: "审核通过"
+                },
+                "0": {
+                    color: "purple",
+                    button: "btns-yellow",
+                    text: "审核中"
                 },
                 "2": {
                     color: "green",
                     button: "btns-green",
-                    text: "已出款"
+                    text: "出款成功"
                 },
-                "1": {
-                    color: "purple",
-                    button: "btns-yellow",
-                    text: "待审核"
+                "4": {
+                    color: "red",
+                    button: "btns-red",
+                    text: "拒绝出款"
                 }
             },
             withdraw_obj: {
@@ -248,29 +278,23 @@ export default {
                 const tHeaders = this.headers;
                 const data = this.list.map(item => {
                     return [
-                        item.order_no,
-                        item.user && item.user.mobile,
-                        item.user && item.user.guid,
+                        item.order_no || "--",
+                        item.user && item.user.mobile || "--",
+                        item.user && item.user.guid || "--",
                         item.account_type == 1
                             ? "银行"
                             : item.account_type == 2
                             ? "支付宝"
                             : item.account_type == 3
                             ? "微信"
-                            : "",
-                        item.amount,
-                        item.audit_fee,
-                        item.amount_received,
-                        item.handing_fee,
-                        item.created_at,
-                        item.reviewer && item.reviewer.name,
-                        item.status == -2
-                            ? "已拒绝"
-                            : item.status == 2
-                            ? "已通过"
-                            : item.status == 1
-                            ? "待审核"
-                            : ""
+                            : "--",
+                        item.amount || "--",
+                        item.audit_fee || "--",
+                        item.amount_received || "--",
+                        item.handing_fee || "--",
+                        item.created_at || "--",
+                        item.reviewer && item.reviewer.name || "--",
+                        item.status == 0 ? "审核中": item.status == 1? "审核通过":item.status==2? "出款成功":item.status==3?"审核拒绝":item.status==4?"出款拒绝":"--"
                     ];
                 });
                 excel.export_json_to_excel({
@@ -339,7 +363,7 @@ export default {
             let data = window.all.tool.rmEmpty(datas);
             let { method, url } = this.$api.founds_paymentorder_list;
             this.$http({ method: method, url: url, data: data }).then(res => {
-                // console.log("返回数据", res);
+                console.log("返回数据", res);
                 if (res && res.code == "200") {
                     this.list = res.data.data;
                     this.total = res.data.total;

@@ -51,7 +51,7 @@
                      </tr>
                      <tr>
                          <td>操作人</td>
-                         <td>{{row.admin_id || '--'}}</td>
+                         <td>{{row.admin && row.admin.name || '--'}}</td>
                          <td>操作时间</td>
                          <td>{{row.operation_at || '--'}}</td>
                          <td>出款方式</td>
@@ -68,7 +68,7 @@
                      <tr>
                          <td>备注</td>
                          <td colspan="5">
-                            <input disabled v-show="row.status==2" class="remarkText" type="text"  v-model="row.remark" >
+                            <input disabled v-show="row.status==2 || row.status==4" class="remarkText" type="text"  v-model="row.remark" >
                             <input v-show="row.status==1" class="remarkText" type="text"  v-model="row.remark" placeholder="请输入备注内容">
                          </td>
                      </tr>
@@ -96,20 +96,30 @@ export default {
                 '1': 'iconfont icongou green'
             },
             status_obj: {
-                '-2': {
-                    color: 'red',
-                    button: 'btns-red',
-                    text: '已拒绝'
+                "3": {
+                    color: "red",
+                    button: "btns-red",
+                    text: "审核拒绝"
                 },
-                '2': {
-                    color: 'green',
-                    button: 'btns-green',
-                    text: '已通过'
+                "1": {
+                    color: "green",
+                    button: "btns-green",
+                    text: "审核通过"
                 },
-                '1': {
-                    color: 'purple',
-                    button: 'btns-yellow',
-                    text: '审核中'
+                "0": {
+                    color: "purple",
+                    button: "btns-yellow",
+                    text: "审核中"
+                },
+                "2": {
+                    color: "green",
+                    button: "btns-green",
+                    text: "出款成功"
+                },
+                "4": {
+                    color: "red",
+                    button: "btns-red",
+                    text: "拒绝出款"
                 }
             },
             withdraw_obj:{

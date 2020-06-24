@@ -78,7 +78,22 @@
                             @click="statusShow(row)"
                         >详情</button>
                         <button
-                            v-if="row.status!=1"
+                            v-if="row.status==3"
+                            :class="status_obj[row.status].button"
+                            @click="statusShow(row)"
+                        >详情</button>
+                        <button
+                            v-if="row.status==2"
+                            :class="status_obj[row.status].button"
+                            @click="statusShow(row)"
+                        >详情</button>
+                        <button
+                            v-if="row.status==4"
+                            :class="status_obj[row.status].button"
+                            @click="statusShow(row)"
+                        >详情</button>
+                        <button
+                            v-if="row.status==0"
                             :class="status_obj[row.status].button"
                             @click="statusShow(row)"
                         >{{status_obj[row.status].text}}</button>
@@ -186,8 +201,11 @@ export default {
 
             review_status_opt: [
                 { label: "全部", value: "" },
-                { label: "通过", value: "1" },
-                { label: "拒绝", value: "0" }
+                { label: "审核中", value: "0" },
+                { label: "审核通过", value: "1" },
+                // { label: "出款成功", value: "2" },
+                { label: "审核拒绝", value: "3" },
+                // { label: "拒绝出款", value: "4" }
             ],
             audit_withhold_opt: [
                 { label: "全部", value: "" },
@@ -195,20 +213,30 @@ export default {
                 { label: "否", value: "0" }
             ],
             status_obj: {
-                "-1": {
+                "3": {
                     color: "red",
                     button: "btns-red",
-                    text: "已拒绝"
+                    text: "审核拒绝"
                 },
                 "1": {
                     color: "green",
                     button: "btns-green",
-                    text: "已通过"
+                    text: "审核通过"
                 },
                 "0": {
                     color: "purple",
                     button: "btns-yellow",
                     text: "审核中"
+                },
+                "2": {
+                    color: "green",
+                    button: "btns-greenn",
+                    text: "出款成功"
+                },
+                "4": {
+                    color: "red",
+                    button: "btns-red",
+                    text: "拒绝出款"
                 }
             },
             // show_audit_button: [],
@@ -413,11 +441,7 @@ export default {
                         item.created_at,
                         item.reviewer && item.reviewer.name,
                         item.review_at,
-                        item.status == 1
-                            ? "已通过"
-                            : item.status == -1
-                            ? "已拒绝"
-                            : "审核中"
+                        item.status == 0 ? "审核中": item.status == 1? "审核通过":item.status==2? "出款成功":item.status==3?"审核拒绝":item.status==4?"出款拒绝":"--"
                     ];
                 });
                 excel.export_json_to_excel({

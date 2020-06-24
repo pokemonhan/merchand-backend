@@ -57,7 +57,7 @@
                      <tr>
                          <td>备注:</td>
                          <td colspan="5">
-                            <input disabled v-show="row.status==-1 || row.status==1" class="remarkText" type="text"  v-model="row.remark" >
+                            <input disabled v-show="row.status==1 || row.status==2 || row.status==3 || row.status==4" class="remarkText" type="text"  v-model="row.remark" >
                             <input v-show="row.status==0" class="remarkText" type="text"  v-model="row.remark" placeholder="请输入备注内容">
                          </td>
                      </tr>
@@ -85,20 +85,30 @@ export default {
                 '1': 'iconfont icongou green'
             },
             status_obj: {
-                '-1': {
-                    color: 'red',
-                    button: 'btns-red',
-                    text: '已拒绝'
+                "3": {
+                    color: "red",
+                    button: "btns-red",
+                    text: "审核拒绝"
                 },
-                '1': {
-                    color: 'green',
-                    button: 'btns-green',
-                    text: '已通过'
+                "1": {
+                    color: "green",
+                    button: "btns-green",
+                    text: "审核通过"
                 },
-                '0': {
-                    color: 'purple',
-                    button: 'btns-yellow',
-                    text: '审核中'
+                "0": {
+                    color: "purple",
+                    button: "btns-yellow",
+                    text: "审核中"
+                },
+                "2": {
+                    color: "green",
+                    button: "btns-greenn",
+                    text: "出款成功"
+                },
+                "4": {
+                    color: "red",
+                    button: "btns-red",
+                    text: "拒绝出款"
                 }
             },
         }
@@ -109,11 +119,11 @@ export default {
                 id:this.row.id,
                 remark: String(row.remark),
             }
-            console.log('审核拒绝请求数据',datas)
+            // console.log('审核拒绝请求数据',datas)
             let data=window.all.tool.rmEmpty(datas)
             let{method,url}=this.$api.founds_interface_examination_rejected;
             this.$http({method,url,data}).then(res=>{
-                console.log('拒绝审核返回数据',res)
+                // console.log('拒绝审核返回数据',res)
                 if(res && res.code=='200'){
                     this.$emit("closeDia")
                     this.$emit("getList")

@@ -41,6 +41,7 @@
                     <td>{{row.guid || '--'}}</td>
                     <td>{{row.ip || '--'}}</td>
                     <td>{{row.web_type==1?'PC':row.web_type==2?'H5':row.web_type==3?'APP':'--'}}</td>
+                    <td>{{row.origin}}</td>
                     <td>{{row.device || '--'}}</td>
                     <td>{{row.created_at || '--'}}</td>
                 </template>
@@ -78,6 +79,7 @@ export default {
                 "会员账号",
                 "会员ID",
                 "登录IP",
+                "服务端",
                 "登录网址",
                 "登录设备",
                 "登录日期"
@@ -175,6 +177,7 @@ export default {
                         item.guid || '--',
                         item.ip || '--',
                         item.web_type==1?'PC':item.web_type==2?'H5':item.web_type==3?'APP':'--',
+                        item.origin || '--',
                         item.device || '--',
                         item.created_at || '--'
                     ];

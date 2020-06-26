@@ -16,7 +16,7 @@
             <div class="cont-left">
                 <ul>
                     <li
-                        :class="[searchGroup.indexOf(group.id)>-1?'had-search':'']"
+                        :class="[searchGroup.indexOf(group.id)>-1?'had-search':'',form.id===group.id?'curr-group':'']"
                         v-for="(group,index) in group_list"
                         :key="index"
                     >
@@ -51,9 +51,10 @@
                     </div>
                     <div class="edit-authority">
                         <p class="mb10">选择组权限:</p>
-                        <AuthorityTree
+                        <AuthorityList
                             :menutree="tree_list"
                             :disabled="form.id===1"
+                            :rightShow.sync="tree_select_show"
                             v-model="form.tagList"
                             @update="treeListUpd"
                         />
@@ -97,15 +98,17 @@
         <Modal :show.sync="mod_show" :title="mod_title" :content="mod_cont" @confirm="modConf"></Modal>
     </div>
 </template> <script>
-import Tree from '../../commonComponents/Tree'
+// import Tree from '../../commonComponents/Tree'
 import AdminTable from './AdminSortDir/AdminTable'
 import AuthorityTree from '../../commonComponents/AuthorityTree'
+import AuthorityList from '../../commonComponents/AuthorityList'
 export default {
     name: 'AdminSort',
     components: {
-        Tree: Tree,
+        // Tree: Tree,
         AdminTable: AdminTable,
-        AuthorityTree: AuthorityTree
+        AuthorityTree: AuthorityTree,
+        AuthorityList: AuthorityList
     },
     data() {
         return {
@@ -116,6 +119,7 @@ export default {
             /** 搜索 成员结果 */
             searchGroup: [],
             group_list: [], // 左侧群组列表
+            tree_select_show: false, //权限树右侧选择内容
             form: {
                 id: '',
                 group_name: '',
@@ -295,15 +299,12 @@ export default {
         },
 
         cancel() {
-            // let group = Object.assign({}, this.curr_group)
-            // this.form.group_name = group.group_name
-            // this.admin_id = group.id
-            // this.treeSelectShow(group)
-            // this.form.tagList = group.
             if (this.right_show === 'add') {
                 this.initForm()
             } else {
-                this.check(this.curr_group)
+                if (Object.keys(this.curr_group).length) {
+                    this.check(this.curr_group)
+                }
             }
         },
         // 创建分组 ——确认
@@ -373,6 +374,8 @@ export default {
             this.$http({ method, url, data }).then(res => {
                 if (res.code === '200') {
                     this.$toast.success(res.message)
+                    this.curr_group = {}
+                    this.admin_id = ''
                     this.initMod()
                     this.getGroupList()
                 }
@@ -380,18 +383,40 @@ export default {
         },
 
         // 获取群组列表 (左侧的列表)
-        getGroupList() {
+        getGroupList(fallback) {
             // let para = {
             //     page:this.pageNo,
             //     pageSize:this.pageSize
             // };
-            // let params = window.all.tool.rmEmpty(para);
             let { url, method } = this.$api.admin_group_list
-
             this.$http({ method, url }).then(res => {
                 // console.log('res: ', res)
-                if (res && res.code === '200') {
+                if (res && res.code === '200' && res.data && res.data.data) {
                     this.group_list = res.data.data || []
+                    // this.check(this.group_list[0]||[])
+
+                    if (this.right_show === 'add') {
+                        let last = this.group_list[this.group_list.length - 1]
+                        if (last) {
+                            this.check(last)
+                        }
+                    } else if (this.right_show === 'edit') {
+                        if (this.admin_id) {
+                            console.log('🍶 this.admin_id: ', this.admin_id)
+                            let group = this.group_list.find(
+                                item => item.id === this.admin_id
+                            )
+                            if (group) {
+                                console.log('🍼️ group: ', group)
+                                this.check(group)
+                            }
+                        }
+                    } else if (this.right_show === 'del') {
+                        this.check(this.group_list[0])
+                    }
+                    if (fallback) {
+                        fallback(this.group_list)
+                    }
                 }
             })
         },
@@ -449,9 +474,12 @@ export default {
     background: #f9fbfc;
 }
 .cont .cont-left .had-search {
-    /* border: 1px solid rgb(250, 207, 195);
-    background: rgb(248, 222, 215); */
     border: 1px solid rgb(195, 250, 240);
+    background: rgb(234, 245, 251);
+    transition: background-color 0.2s;
+}
+.cont .cont-left .curr-group {
+    border: 1px solid rgb(195, 210, 250);
     background: rgb(234, 245, 251);
     transition: background-color 0.2s;
 }

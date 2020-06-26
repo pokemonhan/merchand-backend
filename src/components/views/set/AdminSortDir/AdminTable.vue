@@ -154,6 +154,7 @@ export default {
                 pageSize: this.pageSize,
                 page: this.pageNo
             }
+            if(!this.group_id) return
             let { url, method } = this.$api.admin_group_users_list
             this.$http({ method, url, params }).then(res => {
                 if (res && res.code === '200') {

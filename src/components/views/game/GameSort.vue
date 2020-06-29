@@ -230,7 +230,7 @@ export default {
     border-radius: 5px;
     width: 50%;
     margin: 50px;
-    padding-top: 20xp;
+    padding-top: 20px;
 }
 
 .right-inner {
